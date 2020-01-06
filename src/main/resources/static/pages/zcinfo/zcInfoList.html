@@ -207,6 +207,7 @@
 <script type="text/javascript">
     var pers = checkPermission();
     var useStatus = showDictSelect("useStatus","useStatus",false)
+    var status = 0;
     if ($.inArray("sys:zcInfo:import", pers) < 0) {
         $("#gdImportBt").hide();
         $("#dzImportBt").hide();
@@ -216,6 +217,10 @@
     }
     if ($.inArray("sys:zcInfo:add", pers) < 0) {
         $("#addBtn").hide();
+    }
+    debugger
+    if ($.inArray("sys:zcinfo:card", pers) > 0) {
+        status = 1;
     }
 
     var tableIns;
@@ -409,12 +414,15 @@
                 // ,{field:'bf',title:'是否报废  0:未报废 1:已报废', width:100, sort: true}
 
                 , {
-                    field: 'caozuo', title: '操作', fixed: 'right', width: 150, templet: function (d) {
+                    field: 'caozuo', title: '操作',align:'center', fixed: 'right', width: 150, templet: function (d) {
                         var id = d.id;
                         var href = "updateZcInfo.html?id=" + id;
                         var edit = buttonEdit(href, "sys:zcInfo:edit", pers);
                         var del = buttonDel(id, "sys:zcInfo:del", pers);
-                        var card = "<button class='layui-btn layui-btn-xs' title='发卡' lay-event='card'>发卡</button>"
+                        var card = "";
+                        // if (status == 1) {
+                        //     card = "<button class='layui-btn layui-btn-xs' title='发卡' lay-event='card'>发卡</button>"
+                        // }
                         return edit + del + card;
                     }
                 }

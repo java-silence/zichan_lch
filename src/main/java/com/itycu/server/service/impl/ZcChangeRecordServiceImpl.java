@@ -27,13 +27,14 @@ public class ZcChangeRecordServiceImpl implements ZcChangeRecordService {
     private ZcChangeRecordDao zcChangeRecordDao;
 
     @Override
-    public ZcChangeRecord save(ZcInfo zcInfo) {
+    public ZcChangeRecord save(ZcInfo zcInfo,String chageField) {
         ZcChangeRecord zcChangeRecord = new ZcChangeRecord();
         if (zcInfo != null){
             BeanUtils.copyProperties(zcInfo,zcChangeRecord);
             zcChangeRecord.setCreateBy(UserUtil.getLoginUser().getId());
             zcChangeRecord.setCreateTime(new Date());
             zcChangeRecord.setZcInfoId(zcInfo.getId());
+            zcChangeRecord.setChangeField(chageField);
             zcChangeRecordDao.save(zcChangeRecord);
             log.info("保存变更记录{}");
         }

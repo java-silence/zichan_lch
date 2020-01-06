@@ -12,10 +12,7 @@ import com.itycu.server.model.*;
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcChangeRecordService;
 import com.itycu.server.service.ZcInfoService;
-import com.itycu.server.utils.EcpIdUtil;
-import com.itycu.server.utils.ExcelUtil;
-import com.itycu.server.utils.UserUtil;
-import com.itycu.server.utils.ZiChanCodeUtil;
+import com.itycu.server.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -29,10 +26,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,10 +56,19 @@ public class ZcInfoServiceImpl implements ZcInfoService {
 
     @Override
     public ZcInfo update(ZcInfo zcInfo) {
+
+        // 查询原始的资产信息
+        ZcInfoDto oldZcInfo = zcInfoDao.getById(zcInfo.getId());
         zcInfo.setUpdateBy(UserUtil.getLoginUser().getId());
         zcInfoDao.update(zcInfo);
-
-        zcChangeRecordService.save(zcInfo); //保存变更记录
+        // 资产更新
+        //ZcInfo zc = new ZcInfo();
+        //BeanUtils.copyProperties(oldZcInfo,zcInfo);
+        ZcInfoDto after = zcInfoDao.getById(zcInfo.getId());
+        List<String> fields = CompareFileds.compareFields(oldZcInfo, after, CompareFileds.getFiledName(zcInfo));
+        String changeField = String.join(",", fields);
+        //保存变更记录
+        zcChangeRecordService.save((ZcInfo)after,changeField);
         log.debug("编辑资产档案{}", zcInfo.getUpdateBy() + zcInfo.getZcName());
         return zcInfo;
     }

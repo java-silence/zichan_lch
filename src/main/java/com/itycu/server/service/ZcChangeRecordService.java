@@ -7,6 +7,8 @@ import com.itycu.server.page.table.PageTableRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface ZcChangeRecordService {
-    ZcChangeRecord save(ZcInfo zcInfo);
+
+    ZcChangeRecord save(ZcInfo zcInfo,String changeField);
+
     void export(PageTableRequest request, HttpServletResponse response);
 }

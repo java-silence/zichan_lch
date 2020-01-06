@@ -27,9 +27,9 @@
 <script type="text/javascript" src="../../js/common.js"></script>
 <script type="text/javascript" src="../../js/dict.js"></script>
 <script type="text/javascript">
-    var pers = checkPermission();
-    var tableIns;
 
+    var pers = checkPermission();
+    var tableIns,el;
     layui.use(['layer', 'form', 'laydate', 'table'], function () {
 
         var layer = layui.layer;
@@ -38,42 +38,29 @@
         var table = layui.table;
         tableIns = table.render({
             elem: '#data'
-            ,
-            url: "/zcChangeRecords/list2"
-            ,
-            limit: 20
-            ,
-            limits: [20, 40, 50, 100, 200, 500, 1000, 2000]
-            ,
-            totalRow: true
-            ,
-            toolbar: 'defaultX'
-            ,
-            height: 'full-50'
-            ,
-            even: true //开启隔行背景
-            ,
-            size: 'sm' //小尺寸的表格
-            ,
-            autoSort: false
-            ,
-            where: {
+            ,url: "/zcChangeRecords/list2"
+            ,limit: 20
+            ,limits: [20, 40, 50, 100, 200, 500, 1000, 2000]
+            ,totalRow: true
+            ,toolbar: 'defaultX'
+            ,height: 'full-50'
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort: false
+            ,where: {
                 zcInfoId:getUrlParam("zcInfoId")
             }
-            ,
-            page: true
-            ,
-            request: {
+            ,page: true
+            ,request: {
                 pageName: 'offset' //页码的参数名称，默认：page
             }
-            ,
-            cols: [[
+            ,cols: [[
                 {field: 'id', hide: true}
                 // ,{field:'selfCodenum',title:'同资产编码', width:100, sort: true}
                 , {field: 'epcid', title: '资产追溯码', width: 100}
                 // , {field: 'cardNum', title: '卡片编号', width: 100}
                 , {field: 'zcCodenum', title: '资产编码', width: 100}
-                , {field: 'zcName', title: '资产名称', width: 100}
+                , {field: 'zcName', title: '资产名称', width: 130}
                 , {field: 'zcCategoryName', title: '资产分类', width: 100}
                 , {field: 'specification', title: '规格', width: 100}
                 , {field: 'model', title: '型号', width: 100}
@@ -126,6 +113,13 @@
                 // ,{field:'lastMaintainTime',title:'保养日期', width:100, sort: true}
                 // ,{field:'bf',title:'是否报废  0:未报废 1:已报废', width:100, sort: true}
             ]]
+            ,done: function (res,curr,count) {
+                var da = res.data;
+                for (var i = 0; i < da.length; i++) {
+                    var fieldName = da[i].changeField;
+                    setColor('.layui-table',fieldName,i);
+                }
+            }
         });
 
         //监听排序事件
@@ -234,6 +228,25 @@
             $(".eleTree").hide();
         })
     });
+
+    function setColor(tableClassName,name,index){
+        var $table = $(tableClassName).eq(1);
+        if($table.length > 0){
+            //遍历所有行
+            // $table.find('tr').each(function(){
+            //     var open = $(this).find('td[data-field="open"]').attr('data-content');
+            //     if(open == "2"){   //给状态为2的数据行设置背景色
+            //         $(this).attr('style',"background:#f1dddd;color:#000");
+            //     }
+            // })
+            var arr = name.split(",");
+            for (var i = 0; i < arr.length; i++) {
+                var t1 = $table.find('tr')[index];
+                var open = $(t1).find('td[data-field="'+arr[i]+'"]');
+                open.attr('style',"background:#009688;color:#f3ecec");
+            }
+        }
+    }
 
     $("#searchBt").click(function () {
         tableIns.reload({

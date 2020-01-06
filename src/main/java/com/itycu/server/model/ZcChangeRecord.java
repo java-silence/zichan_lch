@@ -73,7 +73,11 @@ public class ZcChangeRecord extends BaseEntity<Long> {
 	private Long updateBy;
 	private String epcid;
 	private String zcCoding;
-    private String cardNum;/**
+    private String cardNum;
+
+    private String changeField;
+
+    /**
 	 * 制单人（多表关联查询字段）
 	 */
 	private String creator;
@@ -468,4 +472,12 @@ public class ZcChangeRecord extends BaseEntity<Long> {
 	public void setCardNum(String cardNum) {
 		this.cardNum = cardNum;
 	}
+
+    public String getChangeField() {
+        return changeField;
+    }
+
+    public void setChangeField(String changeField) {
+        this.changeField = changeField;
+    }
 }

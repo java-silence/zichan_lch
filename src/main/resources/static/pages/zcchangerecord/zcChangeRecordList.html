@@ -16,7 +16,9 @@
             overflow: hidden;
             display: inline-block;
         }
-
+        .layui-form-select .layui-input {
+            padding-right: 0px!important;
+        }
         .ele5 {
             height: auto;
             width: 98%;
@@ -45,7 +47,7 @@
     <!--		</div>-->
     <!--		<div class="layui-col-md9" style="height:100%">-->
     <div class="layui-card">
-        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:190px">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:242px">
             <div class="layui-form-item">
                 <form class="form-inline layui-inline" style="margin-top:15px" id="form" method="post"
                       action="/zcChangeRecords/export" onsubmit="return false" enctype="multipart/form-data">
@@ -78,14 +80,14 @@
                                 <input class="layui-input" type="hidden" id="catCode" name="catCode">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">规格</label>
                             <div class="layui-input-block">
                                 <input id="specification" name="specification" type="text" class="layui-input" placeholder="规格">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">型号</label>
                             <div class="layui-input-block">
@@ -106,10 +108,12 @@
                                        placeholder="终止日期">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">使用状态</label>
                             <div class="layui-input-block">
-                                <select id="useStatus" name="useStatus" class="layui-input"></select>
+                                <select id="useStatus" name="useStatus" class="form-control layui-input"></select>
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -121,8 +125,6 @@
                                 <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">原价值</label>
                             <div class="layui-input-block">
@@ -137,6 +139,8 @@
                                        placeholder="净值">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">使用月限</label>
                             <div class="layui-input-block">
@@ -259,26 +263,16 @@
         var table = layui.table;
         tableIns = table.render({
             elem: '#data'
-            ,
-            url: "/zcChangeRecords/groupList"
-            ,
-            limit: 20
-            ,
-            limits: [20, 40, 50, 100, 200, 500, 1000, 2000]
-            ,
-            totalRow: true
-            ,
-            toolbar: 'defaultX'
-            ,
-            height: 'full-300'
-            ,
-            even: true //开启隔行背景
-            ,
-            size: 'sm' //小尺寸的表格
-            ,
-            autoSort: false
-            ,
-            where: {
+            ,url: "/zcChangeRecords/groupList"
+            ,limit: 20
+            ,limits: [20, 40, 50, 100, 200, 500, 1000, 2000]
+            ,totalRow: true
+            ,toolbar: 'defaultX'
+            ,height: 'full-200'
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort: false
+            ,where: {
                 epcid:$('#epcid').val(),
                 zcName: $('#zcName').val(),
                 zcCodenum: $('#zcCodenum').val(),
@@ -296,19 +290,16 @@
                 createSdate: $('#createSdate').val(),
                 orderBy:"group by zc_info_id"
             }
-            ,
-            page: true
-            ,
-            request: {
+            ,page: true
+            ,request: {
                 pageName: 'offset' //页码的参数名称，默认：page
             }
-            ,
-            cols: [[
+            ,cols: [[
                 {field: 'id', hide: true}
                 // ,{field:'selfCodenum',title:'同资产编码', width:100, sort: true}
                 , {field: 'epcid', title: '资产追溯码', width: 100}
                 // , {field: 'cardNum', title: '卡片编号', width: 100}
-                , {field: 'zcCodenum', title: '资产编码', width: 100}
+                , {field: 'zcCodenum', title: '资产编码', width: 140}
                 , {field: 'zcName', title: '资产名称', width: 100}
                 , {field: 'zcCategoryName', title: '资产分类', width: 100}
                 , {field: 'specification', title: '规格', width: 100}
