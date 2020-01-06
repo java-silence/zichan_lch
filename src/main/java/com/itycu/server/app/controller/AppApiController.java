@@ -4,6 +4,7 @@ package com.itycu.server.app.controller;
 import com.itycu.server.app.model.AppUserInfo;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.utils.UserUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@Api(tags = "获取登录用户信息")
 public class AppApiController {
 
 
