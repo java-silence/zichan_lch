@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.TodoDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and auditby = #{params.auditby}
+			</if>
+			<if test="params.sendby != null and params.sendby != ''">
+				and sendby = #{params.sendby}
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime}
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.biaoti != null and params.biaoti != ''">
+				and biaoti = #{params.biaoti} 
+			</if>
+			<if test="params.neirong != null and params.neirong != ''">
+				and neirong = #{params.neirong} 
+			</if>
+			<if test="params.biztype != null and params.biztype != ''">
+				and biztype = #{params.biztype} 
+			</if>
+			<if test="params.bizid != null and params.bizid != ''">
+				and bizid = #{params.bizid} 
+			</if>
+			<if test="params.biztable != null and params.biztable != ''">
+				and biztable = #{params.biztable} 
+			</if>
+			<if test="params.bizcreateby != null and params.bizcreateby != ''">
+				and bizcreateby = #{params.bizcreateby}
+			</if>
+			<if test="params.bizdeptid != null and params.bizdeptid != ''">
+				and bizdeptid = #{params.bizdeptid}
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and flowid = #{params.flowid}
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and stepid = #{params.stepid}
+			</if>
+			<if test="params.tofinish != null and params.tofinish != ''">
+				and tofinish = #{params.tofinish}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from v_flow_todo t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="com.itycu.server.dto.TodoVO">
+		select * from v_flow_todo t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="saveFiles">
+		update file_info
+		<set>
+			biztype =#{biztype},
+			bizid = #{todoId}
+		</set>
+		where id in (
+		<foreach collection="fileIds" item="fileId" separator=",">#{fileId}
+		</foreach> )
+	</update>
+
+	<update id="update">
+		update flow_todo t
+		<set>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="biaoti != null">
+				biaoti = #{biaoti}, 
+			</if>
+			<if test="neirong != null">
+				neirong = #{neirong}, 
+			</if>
+			<if test="biztype != null">
+				biztype = #{biztype},
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="todoIds != null and todoIds != ''">
+				todoIds = #{todoIds}
+			</if>
+		</set>
+		where t.id = #{id}
+	</update>
+
+	<select id="listByBizid" resultType="com.itycu.server.dto.TodoVO">
+		select *
+		from v_flow_todo t
+		where t.bizid = #{bizid} and t.flowid = #{flowid} and status = 1
+		order by t.updateTime
+	</select>
+
+	<update id="bizNextStep" statementType="STATEMENT">
+		update ${biztable}
+		set stepid = ${stepid} where id = ${bizid}
+	</update>
+
+	<!--查询审核信息-->
+	<select id="findAuditors" parameterType="map" resultType="map">
+        SELECT
+            DATE_FORMAT(t.updateTime,'%Y-%m-%d %H:%i:%s') updateTime,
+            u.username,
+            u.nickname,
+            p.deptname
+        FROM
+        (SELECT * FROM flow_todo t WHERE t.bizid = #{buyId} AND t.url = #{actionUrl} and t.memo = 2 and t.status = 1
+        GROUP BY t.auditby ORDER BY t.createTime) t
+        LEFT JOIN sys_user u ON u.id = t.auditby
+        LEFT JOIN t_dept p ON p.id = u.deptid
+	</select>
+
+    <!--查询审核信息-->
+	<select id="findShenheList" parameterType="map" resultType="map">
+        SELECT
+            DATE_FORMAT(t.updateTime,'%Y-%m-%d %H:%i:%s') updateTime,
+            u.nickname,
+            u.username,
+            p.deptname
+        FROM
+            flow_todo t
+        LEFT JOIN sys_user u ON t.auditby = u.id
+        LEFT JOIN t_dept p ON u.deptid = p.id
+        WHERE t.bizid = #{bizid} and t.memo = #{memo} AND t.url = #{actionUrl} AND t.status = 1
+    </select>
+
+	<!--根据ID查询审核信息-->
+	<select id="getShenhe" parameterType="long" resultType="map">
+		SELECT
+            DATE_FORMAT(t.updateTime,'%Y-%m-%d %H:%i:%s') updateTime,
+            u.nickname,
+            u.username,
+            p.deptname
+        FROM
+            flow_todo t
+        LEFT JOIN sys_user u ON t.auditby = u.id
+        LEFT JOIN t_dept p ON u.deptid = p.id
+        WHERE t.id = #{todoId}
+	</select>
+
+    <!--根据ID查询审核信息-->
+    <select id="getShenpi" parameterType="long" resultType="map">
+		SELECT
+            DATE_FORMAT(t.updateTime,'%Y-%m-%d %H:%i:%s') updateTime,
+            u.nickname,
+            u.username,
+            p.deptname
+        FROM
+            flow_todo t
+        LEFT JOIN sys_user u ON t.auditby = u.id
+        LEFT JOIN t_dept p ON u.deptid = p.id
+        where t.id in
+        (
+        <foreach collection="ids" item="fileId" separator=",">
+            #{fileId}
+        </foreach>
+        )
+	</select>
+
+</mapper>

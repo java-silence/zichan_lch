@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+	<script type="text/javascript" charset="utf-8" src="../../ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../../ueditor/ueditor.all.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="../../ueditor/lang/zh-cn/zh-cn.js"></script>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<input type="hidden" id="id" name="id">
+			<div class='form-group'>
+				<label class='col-md-1 control-label'>所属栏目</label>
+				<div class='col-md-3'>
+					<select id="permissionId" name="permissionId" class="form-control input-sm"></select>
+				</div>
+				<label class='col-md-2 control-label'>文章作者</label>
+				<div class='col-md-6'>
+					<input class='form-control' placeholder='文章作者' type='text' name='author' id='author'>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-1 control-label'>文章标题</label>
+				<div class='col-md-11'>
+					<input class='form-control' placeholder='文章标题' type='text' name='title' id='title' data-bv-notempty='true' data-bv-notempty-message='标题不能为空'>
+				</div>
+			</div>
+			<!--<div class='form-group'>-->
+			<!--<label class='col-md-2 control-label'>brief</label>-->
+			<!--<div class='col-md-10'>-->
+			<!--<input class='form-control' placeholder='brief' type='text' name='brief' id='brief' data-bv-notempty='true' data-bv-notempty-message='brief 不能为空'>-->
+			<!--</div>-->
+			<!--</div>-->
+			<div class='form-group'>
+				<label class='col-md-1 control-label'>内容</label>
+				<div class='col-md-11'>
+					<!--<textarea class="layui-textarea" id="content" style="display: none"></textarea>-->
+					<script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+                    </div>
+                    </div>
+
+
+                    <div class='form-group'>
+                        <label class='col-md-1 control-label'>日期</label>
+                        <div class='col-md-2'>
+                        <input class='form-control' placeholder='日期' type='text' name='eventdate' id='eventdate'>
+                        </div>
+                        <label class='col-md-1 control-label'>时间</label>
+                        <div class='col-md-2'>
+                        <input class='form-control' placeholder='时间' type='text' name='eventtime' id='eventtime'>
+                        </div>
+                        <label class='col-md-1 control-label'>地点</label>
+                        <div class='col-md-2'>
+                        <input class='form-control' placeholder='地点' type='text' name='eventlocation' id='eventlocation'>
+                        </div>
+                        </div>
+                        <div class='form-group'>
+
+                        <div class='col-md-1'>
+                        <select id="imgtype" name="imgtype" class="form-control input-sm" lay-filter="filter">
+                        <option value="0">不显示</option>
+                        <option value="2">图片新闻</option>
+                        <option value="1">顶部大图</option>
+                        </select>
+						</div>
+                        <div class='col-md-5'>
+                        <select id="img" name="img" class="form-control input-sm" >
+                        <option value=" ">无首页图片</option>
+                        </select>
+                        </div>
+                        <label class='col-md-1 control-label'>备注</label>
+                        <div class='col-md-5'>
+                        <input class='form-control' placeholder='备注' type='text' name='memo' id='memo'>
+                        </div>
+                        </div>
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+					    <button class="layui-btn" onclick="location.href='cmsNewsList.html'">返回</button>
+						<button class="layui-btn" type="submit" onclick="update()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+
+        var ue = UE.getEditor('editor');
+
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+
+
+        initMenuSelect();
+
+        ue.ready(function () {
+
+            initData();
+
+        })
+
+		
+		function initData(){
+			var id = getUrlParam("id");
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/cmsNewss/'+id,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#permissionId').val(data.permissionId);
+						$('#title').val(data.title);
+						$('#author').val(data.author);
+						//$('#brief').val(data.brief);
+						//$('#content').val(data.content);
+
+                        UE.getEditor('editor').setContent(data.content, false);
+                        Get_UEditor_Img();
+                        $('#img').val(data.img);
+                        $('#imgtype').val(data.imgtype);
+						$('#memo').val(data.memo);
+                        $('#eventdate').val(data.eventdate);
+                        $('#eventtime').val(data.eventtime);
+                        $('#eventlocation').val(data.eventlocation);
+					}
+				});
+			}
+		}
+
+		function update() {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    var formdata = $("#form").serializeObject();
+            //formdata.content = layedit.getContent(index);
+            formdata.content = UE.getEditor('editor').getContent();
+			$.ajax({
+				type : 'put',
+				url : '/cmsNewss',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("修改成功", {shift: -1, time: 1000}, function(){
+                        location.href = "cmsNewsList.html?id=" + $("#permissionId").val();
+                    });
+				}
+			});
+		}
+
+
+        function initMenuSelect(){
+            $.ajax({
+                type : 'get',
+                url : '/permissions/navigation',
+                async : false,
+                success : function(data) {
+                    var select = $("#permissionId");
+                    //select.append("<option value='0'>root</option>");
+                    for(var i=0; i<data.length; i++){
+                        var d = data[i];
+                        var id = d['id'];
+                        var name = d['name'];
+                        select.append("<option value='"+ id +"'>" +name+"</option>");
+                    }
+                }
+            });
+        }
+
+
+        function Get_UEditor_Img()
+        {
+            var imgs =UE.getEditor('editor').getContent();
+            console.log(imgs);
+            retImgArr = imgs.match(/src\s*=\s*[\"|\']?\s*[^>\"\'\s]*\.(jpg|jpeg|png|gif|bmp)/gi);
+            var imgstr = "";
+            $("#img option").remove();
+            $("#img").append("<option value=' '>无首页图片</option>");
+            for(var img=0;img<retImgArr.length;img++)
+            {
+                var imgfile= retImgArr[img];
+                imgfile=imgfile.replace('src="','');
+                $("#img").append("<option value ='" + imgfile + "'>" + imgfile+ "</option>");
+            }
+            renderForm();
+        }
+
+
+        //var layedit, index;
+        layui.use(['layer','form','laydate','layedit','upload'], function(){
+            var layer = layui.layer;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#eventdate'
+                ,type: 'datetime'
+            });
+            var form = layui.form;
+//            layedit = layui.layedit;
+//            layedit.set({
+//                uploadImage: {
+//                    url: '/files/layui?domain=' + domain+"&token="+localStorage.getItem("token"),
+//                    type: 'post'
+//                }
+//            });
+//            index = layedit.build('content');
+
+            form.on('select(filter)', function(data){
+                Get_UEditor_Img();
+            });
+
+        });
+
+        //重新渲染表单
+        function renderForm(){
+            layui.use('form', function(){
+                var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                form.render();
+            });
+        }
+
+
+	</script>
+</body>
+</html>

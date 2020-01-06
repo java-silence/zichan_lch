@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+    <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+    <style>
+        .eleTree {
+            width: 350px;
+            height: 500px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .ele5 {
+            height: auto;
+            width: 98%;
+            display: none;
+            position: absolute;
+            top: 100%;
+            background-color: #fff;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-header">数据编辑</div>
+    <div class="layui-card-body">
+        <div class="form-actions">
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+                    <button class="layui-btn" type="submit" onclick="update()"><i class="fa fa-save"></i> 保存</button>
+                </div>
+            </div>
+        </div>
+        <hr style="height:3px;">
+        <form class="layui-form" onsubmit="return false" id="form">
+            <input class='layui-input' placeholder='deptID' type='hidden' name='deptID' id='deptID'>
+            <input class='layui-input' placeholder='deviceID' type='hidden' name='deviceID' id='deviceID'>
+            <div class='layui-form-item'>
+                <div class='layui-col-md3'>
+                    <label class='layui-form-label'>机房机柜</label>
+                    <div class='layui-input-block'>
+                        <input class='layui-input' placeholder='机房机柜' lay-verify="deviceName" type='text'
+                               name='deviceName' id='deviceName'>
+                    </div>
+                </div>
+                <div class='layui-col-md3'>
+                    <label class='layui-form-label'>采购日期</label>
+                    <div class='layui-input-block'>
+                        <input class='layui-input' placeholder='采购日期' type='text' name='procurementDate'
+                               id='procurementDate'>
+                    </div>
+                </div>
+            </div>
+            <div class='layui-form-item'>
+                <div class='layui-col-md3'>
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="state" value="0" title="激活">
+                        <input type="radio" name="state" value="1" title="不激活" checked>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" id="A">A组(1#-12#)</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="Alevel">
+                            <div class='layui-form-item'>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>起始地址</label>
+                                    <div class='layui-input-block'>
+                                        <input class='layui-input' placeholder="请输入1-255之间的数字" type='text'
+                                               id="startAdd1"
+                                               name='startAdd1'/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='layui-form-item'>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>1# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name1" value="0" title="安装">
+                                        <input type="radio" name="name1" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>2# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name2" value="0" title="安装">
+                                        <input type="radio" name="name2" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>3# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name3" value="0" title="安装">
+                                        <input type="radio" name="name3" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>4# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name4" value="0" title="安装" checked>
+                                        <input type="radio" name="name4" value="1" title="未安装">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='layui-form-item'>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>5# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name5" value="0" title="安装" checked>
+                                        <input type="radio" name="name5" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>6# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name6" value="0" title="安装" checked>
+                                        <input type="radio" name="name6" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>7# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name7" value="0" title="安装" checked>
+                                        <input type="radio" name="name7" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>8# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name8" value="0" title="安装">
+                                        <input type="radio" name="name8" value="1" title="未安装">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='layui-form-item'>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>9# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name9" value="0" title="安装" checked>
+                                        <input type="radio" name="name9" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>10# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name10" value="0" title="安装" checked>
+                                        <input type="radio" name="name10" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>11# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name11" value="0" title="安装" checked>
+                                        <input type="radio" name="name11" value="1" title="未安装">
+                                    </div>
+                                </div>
+                                <div class='layui-col-md3'>
+                                    <label class='layui-form-label'>12# Point</label>
+                                    <div class='layui-input-block'>
+                                        <input type="radio" name="name12" value="0" title="安装" checked>
+                                        <input type="radio" name="name12" value="1" title="未安装">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='layui-form-item'>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/num-alignment.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/zcCategory.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript">
+
+    var id = getUrlParam("id");
+
+    layui.config({
+        base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree'
+    });
+
+    var el, el1, el2;
+    var form
+    layui.use(['layer', 'form', 'laydate', 'eleTree', 'element'], function () {
+        var layer = layui.layer;
+        form = layui.form;
+        var eleTree = layui.eleTree;
+        var laydate = layui.laydate;
+        var element = layui.element;
+        laydate.render({
+            elem: '#procurementDate'
+        });
+
+        setData();
+    });
+
+
+    function setData() {
+        $.ajax({
+            type: 'POST',
+            url: '/dianya/getById/' + id,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+
+                if (data.code == 0) {
+
+                    var name1 = data.data.name1;
+                    var name2 = data.data.name2;
+                    var name3 = data.data.name3;
+                    var name4 = data.data.name4;
+                    var name5 = data.data.name5;
+                    var name6 = data.data.name6;
+                    var name7 = data.data.name7;
+                    var name8 = data.data.name8;
+                    var name9 = data.data.name9;
+                    var name10 = data.data.name10;
+                    var name11 = data.data.name11;
+                    var name12 = data.data.name12;
+                    var deptID = data.data.deptID;
+                    var deviceName = data.data.deviceName;
+                    var deviceId = data.data.deviceID;
+                    var procurementDate = data.data.procurementDate;
+                    var state = data.data.state;
+                    var startAdd1 = data.data.startAdd1;
+
+                    $("[name='name1'][value='" + name1 + "']").prop('checked', 'checked');
+                    $("[name='name2'][value='" + name2 + "']").prop('checked', 'checked');
+                    $("[name='name3'][value='" + name3 + "']").prop('checked', 'checked');
+                    $("input[name='name4'][value='" + name4 + "']").attr('checked', 'true');
+                    $("input[name='name5'][value='" + name5 + "']").attr('checked', 'true');
+                    $("input[name='name6'][value='" + name6 + "']").attr('checked', 'true');
+                    $("input[name='name7'][value='" + name7 + "']").attr('checked', 'true');
+                    $("input[name='name8'][value='" + name8 + "']").attr('checked', 'true');
+                    $("input[name='name9'][value='" + name9 + "']").attr('checked', 'true');
+                    $("input[name='name10'][value='" + name10 + "']").attr('checked', 'true');
+                    $("input[name='name11'][value='" + name11 + "']").attr('checked', 'true');
+                    $("input[name='name12'][value='" + name12 + "']").attr('checked', 'true');
+                    $("input[name='state'][value='" + state + "']").attr('checked', 'true');
+                    $("#deviceID").val(deviceId);
+                    $("#deptID").val(deptID);
+                    $("#deviceName").val(deviceName);
+                    $("#procurementDate").val(procurementDate);
+                    $("#startAdd1").val(startAdd1);
+
+                    form.render();
+                } else {
+                    layer.msg("获取数据失败");
+                }
+            }
+        });
+    }
+
+
+
+    function isRealNum(val) {
+        // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除
+        if (val === "" || val == null) {
+            return false;
+        }
+        if (!isNaN(val)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function update() {
+        var loadingFlag;
+        var StartAdd1 = $("#startAdd1").val();
+        if (!StartAdd1) {
+            layer.msg("请输入起始地址!", {
+                icon: 2,
+                time: 2000
+            });
+            return false;
+        }
+        if (!isRealNum(StartAdd1)) {
+            layer.msg("请输入数字", {
+                icon: 2,
+                time: 2000
+            });
+            return false;
+        }
+        if (StartAdd1 > 255 && StartAdd1 < 1) {
+            layer.msg("输入数字范围在1-255之间", {
+                icon: 2,
+                time: 2000
+            });
+            return false;
+        }
+        var formdata = $("#form").serializeObject();
+        $.ajax({
+            type: 'post',
+            url: '/dianya/update',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(formdata),
+            beforeSend: function (XMLHttpRequest) {
+                loadingFlag = layer.msg('正在提交数据，请稍候……', {icon: 16, shade: 0.01, shadeClose: false, time: 60000});
+            },
+            success: function (data) {
+                layer.close(loadingFlag);
+                if (data.code == 0) {
+                    layer.msg("操作成功", {
+                        icon: 1,
+                        time: 200,
+                        end: function () {
+                            location.href = "wence.html";
+                        }
+                    });
+                } else {
+                    layer.msg("操作失败", {
+                        icon: 2,
+                        time: 200,
+                    });
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

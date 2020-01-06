@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" href="../css/font-awesome/css/font-awesome.min.css" />
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+	<body>
+        <div class="mui-content">
+		        <ul id="menu" class="mui-table-view mui-grid-view mui-grid-9"></ul> 
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../js/properties.js" ></script>
+	<script>
+		var token = JSON.parse(localStorage.getItem('$state')).token;
+		
+		initMenu();
+		function initMenu(){
+			 $.ajax({  
+			     url:server_url+"/permissions/current",  
+			     type:"get",  
+			     async:false,
+			     headers:{'token':token},
+			     success:function(data){
+			    	 if(!$.isArray(data)){
+			    		 location.href='/login.html';
+			    		 return;
+			    	 }
+			    	 var menu = $("#menu");
+			    	 var html = "";
+			    	 $.each(data, function(i,item){
+			    	 	if(item.typeapp==0||item.typeapp==2){
+				             html += "<div class='title' style='font-size:14px;color:#0000FF'>"+item.name+"</div>";
+				             
+				             //二级菜单
+				             var child2 = item.child;
+				             if(child2 != null && child2.length > 0){
+				            	 $.each(child2, function(j,item2){
+				            	 	if(item2.typeapp==0||item2.typeapp==2){
+					            		 html += "<li class='mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3' style='height:90px' onclick='chakan("+JSON.stringify(item2)+")'>"+		            		 
+												 "<a href='#'>"
+// 											if(item2.name == "待办事宜" || item2.name == "跟踪事宜" || item2.name == "通知公告")	{
+// 												html += "<span class='mui-badge mui-badge-danger'>12</span>"
+// 											}
+                                        if(item2.cssapp){
+											html +=  "<img src='../images/app/icons/"+item2.cssapp+"' style='width:35px;height:35px' onError='srcError(this)'>"
+										}else{
+											html +=  "<img src='../images/app/icons/todo.png' style='width:35px;height:35px'>"
+										}				       
+								            html +=  "<div class='mui-media-body' style='font-size:12px' >"+item2.name+"</div></a></li>";
+							        }         
+				            	 });
+				             }		
+				        }     
+			        });
+			        menu.append(html);
+			     }
+			 });
+		}
+		
+		function chakan(item){	
+			var url = item.href.replace("pages/","");
+			var hrefapp = item.hrefapp;
+	
+			var button = [];
+			if(hrefapp){
+				button = [ //Array[ WebviewCustomButtonStyles ]类型,标题栏上的自定义按钮.建的自定义按钮数目不限制,实际应用中建议最多设置4个按钮(包括左侧返回按钮).
+								                {
+								                    fontSize: '15', //String类型,按钮上文字大小.可取值:字体高度像素值,数字加"px"格式字符串.
+								                    fontSrc: '', //String类型,按钮上文字使用的字体文件路径.相对路径:相对于当前页面的host位置,如"a.jpg",注意当前页面为网络地址则不支持.绝对路径:如Android平台"/sdcard/logo.png",此类路径通常通过其它5+ API获取的.扩展相对路径URL(RelativeURL):以"_"开头的相对路径,如"_www/a.jpg".本地路径URL:以"file://"开头,后面跟随系统绝对路径.
+								                    onclick: function(){openadd(hrefapp)}, //WebviewCustomButtonCallback类型,按钮点击后触发的回调函数.回调函数中将返回此JSON对象
+								                    text: '添加' //String类型,按钮上显示的文字.推荐使用一个字符,超过一个字符可能无法正常显示,使用字体图标时unicode字符表示必须'\u'开头,如"\ue123"(注意不能写成"\e123").
+								                }
+								            ]
+			}
+			var titleText = item.name;
+			mui.openWindow({
+							url: "webview_main.html",
+							id: "webview_main.html",
+							preload: true,
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide',
+								titleNView: {
+									autoBackButton: true,
+									titleText:titleText,
+									buttons: button,
+								}
+							},
+							waiting: {
+								autoShow: false
+							},	
+							extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+								url:url
+							}
+						});
+		}
+		
+		function openadd(hrefapp){					
+			mui.openWindow({
+							url: hrefapp,
+							id: hrefapp,
+							preload: true,
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide',
+								titleNView: {
+									autoBackButton: true,
+									titleText:"添加"
+								}
+							},
+							waiting: {
+								autoShow: false
+							},							
+						});
+		}
+		
+		function srcError(src){
+			$(src).attr("src","../images/app/icons/todo.png")
+		}
+	</script>
+</html>

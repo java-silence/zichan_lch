@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>layuiAdmin 主页示例模板一</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />-->
+</head>
+<body>
+<div class="layui-fluid">
+	<input type="hidden" id="flowid"/>
+	<input type="hidden" id="stepid"/>
+	<input type="hidden" id="material"/>
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-card-header" id="title">
+					维修单
+				</div>
+				<div class="layui-card-body">
+					<div class="layui-row layui-col-space10">
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>维修单明细</div>
+								<p class="layui-text-center" id="weixiumx" ></p>
+								<p class="layui-text-bottom" id="deptname"></p>
+								<p class="layui-text-bottom" id="xitong"></p>
+								<p class="layui-text-bottom" id="wxqksm"></p>
+							</div>
+						</div>
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>备品备件信息</div>
+								<table class="layui-hide" id="datas" lay-filter="datas"></table>
+
+								<script type="text/html" id="barDemo">
+									<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+								</script>
+								<!--<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>
+                                <p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>-->
+							</div>
+						</div>
+
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>报修照片</div>
+								<div id="zhaopian"></div>
+								<!--<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>
+                                <p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>-->
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="layui-card">
+				<div class="layui-card-header">审批动态</div>
+				<div class="layui-card-body">
+					<dl class="layuiadmin-card-status" id="shenpidongtai">
+						<!--<dd>-->
+						<!--<div class="layui-status-img"><a href="javascript:;"><img src="../../layuiadmin/style/res/logo.png"></a></div>-->
+						<!--<div>-->
+						<!--<p>【收费部】 审批通过</p>-->
+						<!--<p>审批意见：</p>-->
+						<!--<p></p>-->
+						<!--<span>2018-11-01 15:32:31</span>-->
+						<!--</div>-->
+						<!--</dd>-->
+
+					</dl>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript">
+    var pro = window.location.protocol;
+    var host = window.location.host;
+    var domain = pro + "//" + host;
+
+    showUserbyRole("userid",6);
+
+    var ids = [];
+
+    var tableIns2;
+    layui.use(['layer','form','laydate','table'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+
+        tableIns2 = table.render({
+            elem: '#datas'
+            // ,url:"/stockinss/listByStockinId"
+            ,cols: [[
+                {field:'id', title: '序号', sort: true}
+                ,{field:'invname', title: '备件名称', sort: true}
+//            ,{field:'iprice', title: '单价', sort: true}
+//            ,{field:'imoney', title: '金额', sort: true}
+                ,{field:'', title: '状态'}
+            ]]
+        });
+
+        //监听工具条
+        table.on('tool(datas)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    $.ajax({
+                        type : 'delete',
+                        url : '/repairss/'+data.id,
+                        success : function(data) {
+                            obj.del();
+                            layer.msg('删除成功');
+                        }
+                    });
+
+                    layer.close(index);
+                });
+            }
+        });
+
+        initData();//提取维修单内容，并显示
+    });
+
+
+
+
+
+    function initData(){
+        var id = getUrlParam("id");
+//			console.log(id);
+        if(id != ""){
+            $.ajax({
+                type : 'get',
+                url : '/repairs/viewRepair/'+id,
+                async : false,
+                success : function(data) {
+                    console.log(data);
+                    $('#id').val(data.todoid);
+
+                    $('#bizid').val(data.id);
+                    $('#title').text(data.biaoti);
+                    $('#deptname').text(data.deptname + "-" +  "巡检区域:"+data.xjqyname);  //data.createname +
+//                      $('#qianzi').text(data.createname);
+                    $('#xitong').text(data.xtname + "-" +  "时间:"+data.createTime);
+                    $('#weixiumx').text("报修设备:" + data.cname + "  故障原因：" + data.gzname + "  故障名称："+data.gzmc);
+
+                    $('#wxqksm').text("损坏情况说明:" + data.description);
+
+                    $('#biztype').val(data.biztype);
+                    //机电站审核
+                    $('#flowid').val(data.flowid);
+                    $('#stepid').val(data.stepid);
+                    if(data.stepid==3 && data.flowid==1){
+                        $("#divwxr").attr("style","display:block;");
+                        //备件编辑按钮
+                    }else{
+                        $("#divwxr").attr("style","display:none;");
+
+                    }
+
+                    shenpidongtai(data.id);	//提取审批动态
+
+                    initbxFiles(data.id,data.biztype);	//调出本待办事宜审批人自己上传的附件
+
+                    $('#material').val(data.material);
+                    getBeijian(data.flowid,data.stepid,data.id,data.material);   //获取备品备件
+                }
+            });
+        }
+    }
+
+    function getBeijian(flowid,stepid,repairid,material){
+
+            tableIns2.reload({
+                url:"/repairss/listByRepairId?repairid="+repairid
+                ,cols: [[
+                    {field:'id', title: '序号', sort: true}
+                    ,{field:'invname', title: '备件名称', sort: true}
+//            ,{field:'iprice', title: '单价', sort: true}
+//            ,{field:'imoney', title: '金额', sort: true}
+                    ,{field:'', title: '状态',templet: function(d){
+                            if(!material){
+                                return "未出库";
+                            }
+                            if (material == 1){
+                                return "已出库";
+                            }
+                        }}
+                ]]
+            })
+    }
+
+    function initbxFiles(bizid,biztype){
+        $.ajax({
+            type : 'get',
+            url : '/files?bizid=' + bizid + '&biztype='+biztype,
+            success : function(data) {
+                var length = data.length;
+                for (var i = 0; i < length; i++) {
+                    var demoListView = $('#zhaopian');
+                    demoListView.append('<div id="" class="file-iteme">' +
+                        '<div class="handle"><span class="glyphicon glyphicon-trash"></span></div>' +
+                        '<img style="width: 220px;height: 180px;" src="' + domain + '/statics'+ data[i].url +'" alt="'+ data[i].filename +'" class="layui-upload-img">')
+                }
+            }
+        });
+    }
+
+    function inittodoFiles(bizid) {
+        $.ajax({
+            type : 'get',
+            url : '/files?bizid=' + bizid + '&biztype=2',
+            success : function(data) {
+                var length = data.length;
+                for (var i = 0; i < length; i++) {
+                    var demoListView = $('#demoList');
+                    var tr = $(['<tr id="upload-'+ i +'">'
+                        ,'<td>'+ data[i]['filename'] +'</td>'
+                        //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>已上传</td>'
+                        ,'<td>'
+                        ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete" id="'+ data[i]['id'] +'">删除</button>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+                    //删除
+
+                    tr.find('.demo-delete').on('click', function(){
+                        del( this.id ); //删除对应的文件
+                        tr.remove();
+                    });
+                    demoListView.append(tr);
+                }
+            }
+        });
+    }
+
+    function initFiles(bizid) {
+        $.ajax({
+            type : 'get',
+            url : '/files?bizid=' + bizid + '&biztype=1',
+            success : function(data) {
+                var length = data.length;
+                for (var i = 0; i < length; i++) {
+                    var demoListView = $('#zhaopian');
+                    console.log(data[i]['url'].replace("/","%2F"));
+                    var preview ="<a target='_blank' href='https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Fwww.itycu.com%3A8090%2Fstatics"+data[i]['url'].replace(/\//g,"%2F")+"'>预览</a>"
+                    var tr = $(['<tr id="upload-'+ i +'">'
+                        ,'<td>'+ data[i]['filename'] +'</td>'
+                        //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>'+preview+'</td>'
+                        ,'<td>'
+                        ,'<a target="_blank" href="' + domain + '/statics' + data[i]['url'] +'">下载</a>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+                    demoListView.append(tr);
+                }
+            }
+        });
+    }
+
+    var ids = [];
+    layui.use(['layer','form','laydate','upload'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+//            var laydate = layui.laydate;
+//            laydate.render({
+//                elem: '#qsriqi'
+//            });
+
+        var upload = layui.upload;
+        //多文件列表示例
+        var demoListView = $('#demoList')
+            ,uploadListIns = upload.render({
+            elem: '#testList'
+            ,url: '/files/'
+            ,accept: 'file'
+            ,multiple: true
+            ,auto: false
+            ,bindAction: '#testListAction'
+            ,data:{id:123,biztype:1}
+            ,choose: function(obj){
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function(index, file, result){
+                    var tr = $(['<tr id="upload-'+ index +'">'
+                        ,'<td>'+ file.name +'</td>'
+                        //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>等待上传</td>'
+                        ,'<td>'
+                        ,'<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+                        ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function(){
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function(){
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
+                });
+            }
+            ,done: function(res, index, upload){
+
+                ids.push(res.id);
+                //console.log(res);
+                //if(res.code == 0){ //上传成功
+                var tr = demoListView.find('tr#upload-'+ index)
+                    ,tds = tr.children();
+                tds.eq(1).html('<span style="color: #5FB878;">上传成功</span>');
+                //tds.eq(2).html(''); //清空操作
+                tds.eq(2).html(res.id);
+                return delete this.files[index]; //删除文件队列已经上传成功的文件
+                //}
+                //this.error(index, upload);
+            }
+            ,error: function(index, upload){
+                var tr = demoListView.find('tr#upload-'+ index)
+                    ,tds = tr.children();
+                tds.eq(1).html('<span style="color: #FF5722;">上传失败</span>');
+                tds.eq(2).find('.demo-reload').removeClass('layui-hide'); //显示重传
+            }
+        });
+    });
+
+
+
+    //显示审批动态
+    function shenpidongtai(id) {
+        $.ajax({
+            type : 'get',
+            url : '/todos/listbizid?bizid='+id,
+            async : false,
+            success : function(data) {
+                var length = data.length;
+                console.log(id + "abc" + data);
+                for (var i = 0; i < length; i++) {
+                    var html = "";
+
+                    html += "   <dd>";
+                    html += "			<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
+                    html += "			<div>";
+                    if(data[i].biztype = "同意"){
+                        html += "<p class='agree'>【" + data[i].auditname + "】审批结果:同意</p>";
+                    }else {
+                        html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
+                    }
+                    // html += "                        <p>审批意见：</p>";
+                    html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+                    html += "                        <span>" +data[i].updateTime + "</span>";
+                    html += "			</div>";
+                    html += "		</dd>";
+
+                    $("#shenpidongtai").append(html);
+
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+				<fieldset>
+					<input type="hidden" id="id" name="id">
+					<div class='form-group'>
+						<label class='col-md-2 control-label'>系统分类</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='' type='text' name='xtid' id='xtid' >
+						</div>
+						<label class='col-md-1 control-label'>设备类别</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='' type='text' name='lbid' id='lbid' >
+						</div>
+						<label class='col-md-1 control-label'>存放仓库</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='' type='text' name='whid' id='whid' >
+						</div>
+					</div>
+
+					<div class='form-group'>
+						<label class='col-md-2 control-label'>所属站</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='' type='text' name='deptid' id='deptid' >
+						</div>
+
+						<label class='col-md-1 control-label'>巡检区域</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='' type='text' name='xjqyid' id='xjqyid' >
+						</div>
+
+						<label class='col-md-1 control-label'>维护区域</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='' type='text' name='whqyid' id='whqyid' >
+						</div>
+					</div>
+
+					<div class='form-group'>
+						<label class='col-md-2 control-label'>设备序列号</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='设备序列号' type='text' name='serialno' id='serialno' >
+						</div>
+
+						<label class='col-md-1 control-label'>设备名称</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='设备名称' type='text' name='cname' id='cname' >
+						</div>
+					</div>
+					<div class='form-group'>
+						<label class='col-md-2 control-label'>设备型号</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='设备类型' type='text' name='etype' id='etype' >
+						</div>
+
+						<label class='col-md-1 control-label'>厂家</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='厂家' type='text' name='factoryid' id='factoryid' >
+						</div>
+
+						<label class='col-md-1 control-label'>创建时间</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='创建时间' type='text' name='buildtime' id='buildtime' >
+						</div>
+
+					</div>
+
+					<div class='form-group'>
+						<label class='col-md-2 control-label'>技术支持电话</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='技术支持电话' type='text' name='techphone' id='techphone' >
+						</div>
+
+						<label class='col-md-1 control-label'>支持人员</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='技术支持名称（人员）' type='text' name='techname' id='techname' >
+						</div>
+
+						<label class='col-md-1 control-label'>质量周期</label>
+						<div class='col-md-2'>
+							<input class='form-control' placeholder='质量周期' type='text' name='qualityperiod' id='qualityperiod' >
+						</div>
+					</div>
+					<div class='form-group'>
+						<label class='col-md-2 control-label'>设备状态</label>
+						<div class='col-md-8'>
+							<input class='form-control' placeholder='设备状态' type='text' name='equipmentstatus' id='equipmentstatus' >
+						</div>
+					</div>
+
+				</fieldset>
+			</form>
+
+		</div>
+
+	</div>
+	<div class="layui-card">
+
+		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+
+
+
+		</div>
+
+		<div class="layui-card-body" id="cvlist">
+			<!--<ul class="layui-timeline">-->
+				<!--<li class="layui-timeline-item">-->
+					<!--<i class="layui-icon layui-timeline-axis"></i>-->
+					<!--<div class="layui-timeline-content layui-text">-->
+						<!--<h2 class="layui-timeline-title">2018年6月16日</h2>-->
+						<!--<p>-->
+						<!--<h3>-->
+							<!--设备报废处理-->
+							<!--<br><br>-->
+							<!--<ul style=" font-size: 18px;">-->
+								<!--<li>维修人员孙良申请替换设备</li>-->
+							<!--</ul>-->
+						<!--</h3>-->
+						<!--</p>-->
+					<!--</div>-->
+				<!--</li>-->
+			<!--</ul>-->
+		</div>
+	</div>
+</div>
+
+
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>-->
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/experiment.js"></script>-->
+<!--<script type="text/javascript" src="../../js/lab.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<script type="text/javascript" src="../../js/dept.js"></script>
+	<script type="text/javascript">
+        var id = getUrlParam("id");
+        initData();		//提取设备基本信息，含登记人，登记时间 等
+
+        listanzhuang();		//列出该设备所有安装记录
+
+		function listanzhuang() {
+            $.ajax({
+                url:"/anzhuangs/listbyeqpid/" + id ,
+                type:"get",
+                async:false,
+                success:function(data){
+                    for(var i=0; i<data.length; i++){
+                        var d = data[i];
+                        var html;
+                        html ="<ul class='layui-timeline'>" +
+                            "<li class='layui-timeline-item'>" +
+                            "<i class='layui-icon layui-timeline-axis'></i>" +
+                            "<div class='layui-timeline-content layui-text'>" +
+                            "<h2 class='layui-timeline-title'>"+ d['createTime'] + " - " + d['creater'] +"</h2>" +
+                            "<p><h3>设备安装<br><br>" +
+                            "<ul style=' font-size: 18px;'>" +
+                            "<li>安装位置："+ d['deptname'] + d['xjqyname'] + "</li>" +
+                            "<li>安装人："+ d['person'] + "仓库:" + d['whname']  + "</li>" +
+                            "</ul></h3></p></div></li></ul>";
+                        $('#cvlist').append(html);
+                    }
+                }
+            });
+        }
+
+        function initData(){
+            if(id != ""){
+                $.ajax({
+                    type : 'get',
+                    url : '/equipments/'+id,
+                    async : false,
+                    success : function(data) {
+//                        $('#id').val(data.id);
+                        $('#xtid').val(data.xtfl);
+                        $('#lbid').val(data.sblb);
+                        $('#whid').val(data.whname);
+                        $('#deptid').val(data.deptname);
+                        $('#xjqyid').val(data.xjqyname);
+                        $('#whqyid').val(data.whqyname);
+                        $('#cname').val(data.cname);
+                        $('#etype').val(data.etype);
+                        $('#factoryid').val(data.factory);
+                        $('#buildtime').val(data.buildtime);
+                        $('#techphone').val(data.techphone);
+                        $('#techname').val(data.techname);
+                        $('#qualityperiod').val(data.qualityperiod);
+                        $('#equipmentstatus').val(data.equipmentstatus);
+
+                        var html;
+                        html ="<ul class='layui-timeline'>" +
+							     "<li class='layui-timeline-item'>" +
+							    	"<i class='layui-icon layui-timeline-axis'></i>" +
+									"<div class='layui-timeline-content layui-text'>" +
+										"<h2 class='layui-timeline-title'>"+ data.createTime + " - " + data.creater +"</h2>" +
+							"<p><h3>设备登记<br><br>" +
+							"<ul style=' font-size: 18px;'>" +
+							  "<li>设备序列号："+ data.serialno + "</li>" +
+							"</ul></h3></p></div></li></ul>";
+                        $('#cvlist').append(html);
+                    }
+                });
+            }
+        }
+	</script>
+</body>
+</html>

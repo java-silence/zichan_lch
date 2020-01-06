@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+</head>
+<body>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="form-actions">
+			<div class="row">
+				<div class="col-md-12">
+					<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+					<button class="layui-btn" type="submit" onclick="update()"><i class="fa fa-save"></i> 保存</button>
+				</div>
+			</div>
+		</div>
+		<hr style="height:3px;">
+		<form class="layui-form" onsubmit="return false" id="form">
+			<input type="hidden" id="id" name="id"/>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>资产类别代码</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产类别代码' type='text' name='code' id='code' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>资产类别名称</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产类别名称' type='text' name='name' id='name' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>资产编码</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产类别名称' type='text' name='catCode' id='catCode' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>上级资产分类</label>
+					<div class='layui-input-block'>
+						<select id="pid" name="pid" class="input-sm"></select>
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>卡片样式</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='卡片样式' type='text' name='cardStyle' id='cardStyle' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>会计科目代码</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='会计科目代码' type='text' name='accountantCode' id='accountantCode' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>会计科目名称</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='会计科目名称' type='text' name='accountantName' id='accountantName' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md12'>
+					<label class='layui-form-label'>备注</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='备注' type='text' name='bz' id='bz' >
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/zcCategory.js"></script>
+	<script type="text/javascript">
+
+		showZcCategorySelect("pid","zcCategory",false)
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+		});
+		
+		initData();
+		
+		function initData(){
+			var id = getUrlParam("id");
+			if(id){
+				$.ajax({
+					type : 'get',
+					url : '/zcCategorys/'+id,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#catCode').val(data.catCode);
+						$('#pid').val(data.pid);
+						$('#code').val(data.code);
+						$('#name').val(data.name);
+						$('#cardStyle').val(data.cardStyle);
+						$('#accountantCode').val(data.accountantCode);
+						$('#accountantName').val(data.accountantName);
+						$('#bz').val(data.bz);
+						$('#createBy').val(data.createBy);
+						$('#updateBy').val(data.updateBy);
+
+						renderForm();       //重新渲染表单
+					}
+				});
+
+			}
+		}
+
+		function update() {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+
+			$.ajax({
+				type : 'put',
+				url : '/zcCategorys',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("修改成功", {shift: -1, time: 1000}, function(){
+                        location.href = "zcCategoryList.html";
+                    });
+				}
+			});
+		}
+	</script>
+</body>
+</html>

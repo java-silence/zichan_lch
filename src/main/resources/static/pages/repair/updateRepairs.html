@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<input type="hidden" id="id" name="id">
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>父节点ID</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='父节点ID' type='text' name='pid' id='pid' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>存货</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='存货' type='text' name='invid' id='invid' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>数量</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='数量' type='text' name='inum' id='inum' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>单价</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='单价' type='text' name='iprice' id='iprice' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>折扣</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='折扣' type='text' name='discount' id='discount' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>税率</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='税率' type='text' name='taxrate' id='taxrate' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>税额</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='税额' type='text' name='itax' id='itax' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>金额</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='金额' type='text' name='imoney' id='imoney' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>批号</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='批号' type='text' name='cbatch' id='cbatch' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>业务类型</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='业务类型' type='text' name='ctype' id='ctype' >
+				</div>
+			</div>
+
+
+
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+					    <button class="layui-btn" onclick="location.href='repairsList.html'">返回</button>
+						<button class="layui-btn" type="submit" onclick="update()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+
+	//var appStatus = showStepSelect("stepid", "1", true);
+
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+		});
+		
+		initData();
+		
+		function initData(){
+			var id = getUrlParam("id");
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/repairss/'+id,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#pid').val(data.pid);
+						$('#invid').val(data.invid);
+						$('#inum').val(data.inum);
+						$('#iprice').val(data.iprice);
+						$('#discount').val(data.discount);
+						$('#taxrate').val(data.taxrate);
+						$('#itax').val(data.itax);
+						$('#imoney').val(data.imoney);
+						$('#cbatch').val(data.cbatch);
+						$('#memo').val(data.memo);
+						$('#ctype').val(data.ctype);
+
+					}
+				});
+				renderForm();       //重新渲染表单
+			}
+		}
+
+		function update() {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+
+			$.ajax({
+				type : 'put',
+				url : '/repairss',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("修改成功", {shift: -1, time: 1000}, function(){
+                        location.href = "repairsList.html";
+                    });
+				}
+			});
+		}
+
+		    //重新渲染表单
+            function renderForm(){
+                layui.use('form', function(){
+                    var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                    form.render();
+                });
+            }
+	</script>
+</body>
+</html>

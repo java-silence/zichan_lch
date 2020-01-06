@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>表单列表</title>
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">id</label>
+					<div class="layui-input-block">
+						<input id="id" type="text" class="form-control layui-input" placeholder="id">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+						<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+					</button>
+					<!--<button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>-->
+					<button class="layui-btn layuiadmin-btn-useradmin" data-type="add" onclick="location.href='addZcRepairItem.html'">添加</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-card-body">
+			<!--<div style="padding-bottom: 10px;"></div>-->
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript">
+var pers = checkPermission();
+//showStepSelect("stepid", "1", true);
+//showDeptSelect("deptid", "dept", true);
+//showUserSelect("createby", "user", true);
+   var tableIns;
+
+    layui.use(['layer','form','laydate','table'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/zcRepairItems/list2"
+            ,limit: 20
+            ,limits: [20,40,50,100,200,500,1000,2000]
+            ,totalRow: true
+            ,toolbar: 'defaultX'
+            ,height:  'full-180'
+//          ,skin: 'line' //行边框风格
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {id:$('#id').val()}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+					,{field:'zcRepairId',title:'报修主表ID', width:100, sort: true}
+					,{field:'zcId',title:'资产设备ID', width:100, sort: true}
+					,{field:'repairDes',title:'报修原因', width:100, sort: true}
+					,{field:'applyId',title:'申请人', width:100, sort: true}
+					,{field:'applyDeptId',title:'申请部门', width:100, sort: true}
+					,{field:'repairMode',title:'报修方式', width:100, sort: true}
+					,{field:'deliverMode',title:'配送方式(上门/送修)', width:100, sort: true}
+					,{field:'outCompany',title:'委外单位名称', width:100, sort: true}
+					,{field:'outAddress',title:'委外单位地址', width:100, sort: true}
+					,{field:'outUsername',title:'委外单位人姓名', width:100, sort: true}
+					,{field:'outPhone',title:'委外联系电话', width:100, sort: true}
+					,{field:'outFee',title:'维修费用', width:100, sort: true}
+					,{field:'repairTime',title:'维修时间', width:100, sort: true}
+					,{field:'frontDescription',title:'报修前说明', width:100, sort: true}
+					,{field:'frontPics',title:'报修前照片(多个逗号分隔)', width:100, sort: true}
+					,{field:'backDescription',title:'报修后说明', width:100, sort: true}
+					,{field:'backPics',title:'报修后照片(多个逗号分隔)', width:100, sort: true}
+					,{field:'bz',title:'备注', width:100, sort: true}
+					,{field:'shbStatus',title:'管理部审核状态', width:100, sort: true}
+					,{field:'qrStatus',title:'发起人确认', width:100, sort: true}
+					,{field:'createBy',title:'创建人', width:100, sort: true}
+					,{field:'updateBy',title:'更新人', width:100, sort: true}
+					,{field:'RepairAddress',title:'送修地址', width:100, sort: true}
+
+//              ,{field:'deptname',title:'部门', width:100, sort: true}
+                ,{field:'creator',title:'制单人', width:100, sort: true}
+                ,{field:'auditor',title:'审核人', width:100, sort: true}
+                ,{field:'caozuo', title: '操作',fixed:'right', width:140,templet: function(d){
+                    var id = d.id;
+                    var href = "updateZcRepairItem.html?id=" + id;
+                    var edit = buttonEdit(href, "", pers);
+                    var del = buttonDel(id, "", pers);
+                    if(d.status==0){
+                       var audit = buttonAudit(id,"sys:ZcRepairItem:audit",pers);
+                    }else{
+                       var audit = buttonUnAudit(id,"sys:ZcRepairItem:audit",pers);
+                    }
+                    if(d.status>0){
+                        edit ="";
+                        del="";
+                    }
+                    return edit + del + audit  ;
+                }}
+            ]]
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    id:$('#id').val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        //form.on('select(deptChange)', function(data){
+        //    showClassSelect("classid", "class", true, data.value);
+        //    renderForm()
+        //})
+    });
+function del(id){
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/zcRepairItems/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+    function audit(id){
+        layer.confirm('确定要审核吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/zcRepairItems/audit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function unaudit(id){
+        layer.confirm('确定要弃审吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/zcRepairItems/unaudit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("弃审成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+$("#searchBt").click(function(){
+	tableIns.reload({where: {id:$('#id').val()},page:{curr:1}})
+});
+</script>

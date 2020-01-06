@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<style>
+	.layui-form-label{
+		width: 120px;
+	}
+
+</style>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" style="display: none;"/>
+	<input id="gongyingshang" style="display: none;"/>
+
+	<br>
+
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<button class="layui-btn layui-btn-sm" onclick="location.href='ylddlist.html'">返回</button>
+				<div class="demoTable" style="display: inline-block">
+					<button class="layui-btn layui-btn-sm" id="tj"  data-type="getCheckData">
+						<i class="fa fa-save"></i> 保存
+					</button>
+				</div>
+				<button class="layui-btn layui-btn-sm" id="printBt">打印</button>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+		<input type="hidden" id="id" name="id">
+		<div class='layui-form-item'>
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>计划编码</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='计划编码' type='text' name='ccode' id='ccode' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class='layui-inline'>
+				<label class='layui-form-label'>订单日期</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='订单日期' type='text' name='ddate' id='ddate' >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label '>业务类型</label>
+				<div class='layui-input-inline'>
+					<select class="layui-input" name="busstype" id="busstype"></select>
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>供应商</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='供应商' type='text' name='ksname' id='ksname' readonly onclick="tianjiaGys()">
+					<input class='layui-input' placeholder='供应商ID' type='hidden' name='ksid' id='ksid' >
+					<!--<select class="layui-input" name="venid" id="venid"></select>-->
+				</div>
+			</div>
+
+			<div class='layui-inline'>
+				<label class='layui-form-label'>数量</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='数量' type='text' name='inum' id='inum' >
+				</div>
+			</div>
+
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>单据来源</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='单据来源' type='text' name='csource' id='csource' >-->
+				<!--</div>-->
+			<!--</div>-->
+		</div>
+		<input class='layui-input' placeholder='对应业务单号' type='hidden' name='bussid' id='bussid' >
+
+		<!--<div class='layui-form-item'>-->
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>仓库</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--&lt;!&ndash;<input class='layui-input' placeholder='仓库' type='text' name='whid' id='whid' >&ndash;&gt;-->
+					<!--<select class='layui-input input-sm' type='text' name='whid' id='whid' ></select>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>部门</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='部门' type='text' name='deptid' id='deptid' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>业务员</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='业务员' type='text' name='userid' id='userid' >-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+
+		<div class='layui-form-item'>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>金额</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='金额' type='text' name='imoney' id='imoney' >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>税率（%）</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='税率' type='text' name='taxrate' id='taxrate' >
+				</div>
+			</div>
+
+			<div class='layui-inline'>
+				<label class='layui-form-label'>税额</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='税额' type='text' name='tax' id='tax' >
+				</div>
+			</div>
+
+<!--			<div class='layui-inline'>-->
+<!--				<label class='layui-form-label'>价税合计</label>-->
+<!--				<div class='layui-input-inline'>-->
+<!--					<input class='layui-input' placeholder='价税合计' type='text' name='itotal' id='itotal' >-->
+<!--				</div>-->
+<!--			</div>-->
+			<div class='layui-inline'>
+				<label class='layui-form-label'>付款方式</label>
+				<div class='layui-input-inline'>
+					<select class="layui-input" name="fkfs" id="fkfs"></select>
+				</div>
+			</div>
+
+		</div>
+		<div class='layui-form-item'>
+<!--			<div class='layui-inline'>-->
+<!--				<label class='layui-form-label'>运费单价</label>-->
+<!--				<div class='layui-input-inline'>-->
+<!--					<input class='layui-input' placeholder='运费单价' type='text' name='yfdj' id='yfdj' >-->
+<!--				</div>-->
+<!--			</div>-->
+
+			<div class='layui-inline'>
+				<label class='layui-form-label'>运费金额</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='运费金额' type='text' name='yfje' id='yfje' >
+				</div>
+			</div>
+
+
+			<div class='layui-inline'>
+				<label class='layui-form-label'>车辆</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='车辆' type='text' name='clbm' id='clbm' >
+				</div>
+			</div>
+
+			<div class='layui-inline'>
+				<label class='layui-form-label'>司机电话</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='司机电话' type='text' name='telephone' id='telephone' >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>备注</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+			<input class='layui-input' placeholder='运费付款单号' type='hidden' name='yffkid' id='yffkid' >
+
+		</div>
+
+
+		<!--<div class='layui-inline'>-->
+			<!--<label class='layui-form-label'>到货数量</label>-->
+			<!--<div class='layui-input-inline'>-->
+				<!--<input class='layui-input' placeholder='到货数量' type='text' name='dhsl' id='dhsl' >-->
+			<!--</div>-->
+		<!--</div>-->
+		<!--<div class='layui-form-item'>-->
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>到货金额</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='到货金额' type='text' name='dhje' id='dhje' >-->
+				<!--</div>-->
+			<!--</div>-->
+
+
+			<!-- <div class='layui-inline'>
+                 <label class='layui-form-label'>入库数量</label>
+                 <div class='layui-input-inline'>
+                     <input class='layui-input' placeholder='入库数量' type='text' name='rksl' id='rksl' >
+                 </div>
+             </div>-->
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>已开发票</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='已开发票' type='text' name='ykfp' id='ykfp' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>已付金额</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='已付金额' type='text' name='yfkje' id='yfkje' >-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+	</form>
+
+	<br>
+	<header style="height: 100%">
+		<div align="left">
+			<table style="width: 100%">
+				<tr>
+					<td>
+						<form class="form-inline" onsubmit="return false">
+							<script type="text/html" id="toolbarDemo">
+								<div class="form-group">
+									<button class="layui-btn layui-btn-sm" onclick="tianjia()">
+										<i class="layui-icon">&#xe608;</i> 添加
+									</button>
+									<button class="layui-btn layui-btn-sm" lay-event="batchdel">
+										<i class="layui-icon">&#xe640;</i> 批量删除
+									</button>
+								</div>
+							</script>
+						</form>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</header>
+	<div>
+		<div class="widget-body no-padding">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+
+			<script type="text/html" id="barDemo">
+				<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+			</script>
+		</div>
+	</div>
+</div>
+<div id="test" style="display: none;"></div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<script type="text/javascript" src="../../js/num-alignment.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/vendor.js"></script>
+<script type="text/javascript" src="../../js/inv.js"></script>
+
+<script type="text/javascript">
+	var id;
+	var ctype = "1";		//1原料 2辅料 3备件
+    showDictNameSelect("busstype", "cgddtype",false);
+    showDictNameSelect("fkfs", "fktype",false);
+    // showVenSelect("ksid", "vendor", false);
+    //    showCusSelect("ksid", "customer", true);
+
+
+    var tableIns;
+    var table;
+
+    layui.use(['layer','form','laydate','table'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#ddate'
+			,value: new Date()
+        });
+
+        table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            // ,url: "/cgJihuass/listBypid"
+            // ,where: {pid:$("#id").val()}
+            ,data:[]
+            ,toolbar: '#toolbarDemo'
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,totalRow: true
+            ,cols: [[
+                {checkbox: true}
+                ,{field:'invname', title: '品名', sort: true, totalRowText: '合计'}
+                ,{field:'cpgg', title: '规格', edit:"text",sort: false}
+                ,{field:'inum', title: '数量', event: 'countMoney',edit:"text",totalRow: true}
+                // ,{field:'danwei', title: '单位', sort: true}
+                ,{field:'iprice', title: '单价', edit:"text",sort: true}
+                ,{field:'imoney', title: '金额', sort: true, totalRow: true}
+				,{field:'yfdj', title: '运费单价', edit:"text",sort: true}
+				,{field:'yfje', title: '运费', edit:"text",sort: true, totalRow: true}
+                ,{fixed: 'right', title: '操作', width:178, align:'center', toolbar: '#barDemo'}
+            ]]
+            , done: function(){
+                var key1 ='inum';
+                var key2 ='imoney';
+                var e1=$("#data").next().find('.layui-table-total').find('td[data-field="'+ key1 +'"] div').text();
+                var e2=$("#data").next().find('.layui-table-total').find('td[data-field="'+ key2 +'"] div').text();
+				var e3=$("#data").next().find('.layui-table-total').find('td[data-field="yfje"] div').text();
+                $("#inum").val(e1);
+                $("#imoney").val(e2);
+                $("#yfje").val(e3);
+
+
+            }
+//                ,done: function(res, curr, count){
+//                    var _table_box = $("#data").next().find(".layui-table-box");
+//                    _table_box.find("[data-field='checkbox']").hide();
+//                }
+        });
+
+		//根据申请ID提取数据，生成订单
+        initData_jhid();
+
+        function initData_jhid(){
+            var jhid = getUrlParam("jhid");
+//            console.log(id)
+            if(jhid){
+                $.ajax({
+                    type : 'get',
+                    url : '/cgJihuas/'+jhid,
+                    async : false,
+                    success : function(data) {
+                        $('#id').val(data.id);
+//                        $('#ccode').val(data.ccode);
+//                        $('#ddate').val(data.ddate);
+                        $('#busstype').val(data.busstype);
+//                        $('#csource').val(data.csource);
+                        $('#bussid').val(data.id);
+//                        $('#whid').val(data.whid);
+//                        $('#deptid').val(data.deptid);
+                        $('#ksid').val(data.ksid);
+                        $('#inum').val(data.inum);
+                        $('#taxrate').val(data.taxrate);
+                        $('#tax').val(data.tax);
+                        $('#imoney').val(data.imoney);
+                        $('#itotal').val(data.itotal);
+                        $('#memo').val(data.memo.replace("申请","订购"));
+//                        $('#ctype').val(data.ctype);
+//                        $('#flowid').val(data.flowid);
+//                        $('#stepid').val(data.stepid);
+
+                        renderForm();       //重新渲染表单
+                    }
+                });
+
+                $.ajax({
+                    type : 'get',
+                    url : "/cgJihuass/listBypid?pid="+id,
+                    async : false,
+                    success : function(data) {
+                        tableIns.reload({
+                            data: data.data
+                        })
+                    }
+                });
+            }
+        }
+
+
+		//编辑，根据id调出订单数据进行编辑
+		initData();
+
+		function initData(){
+			id = getUrlParam("id");
+			if(id){
+				$.ajax({
+					type : 'get',
+					url : '/cgDingdans/'+id,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#ccode').val(data.ccode);
+						$('#ddate').val(data.ddate);
+						$('#busstype').val(data.busstype);
+						$('#csource').val(data.csource);
+						$('#bussid').val(data.bussid);
+						$('#jglx').val(data.jglx);
+						$('#fkfs').val(data.fkfs);
+						$('#whid').val(data.whid);
+						$('#deptid').val(data.deptid);
+						$('#userid').val(data.userid);
+						$('#ksid').val(data.ksid);
+						$("#ksname").val(data.ksmc);
+						$('#inum').val(data.inum);
+						$('#taxrate').val(data.taxrate);
+						$('#tax').val(data.tax);
+						$('#imoney').val(data.imoney);
+						$('#itotal').val(data.itotal);
+						$('#yfdj').val(data.yfdj);
+						$('#yfje').val(data.yfje);
+						$('#yffkid').val(data.yffkid);
+						$('#memo').val(data.memo);
+						$('#ctype').val(data.ctype);
+						$('#flowid').val(data.flowid);
+						$('#stepid').val(data.stepid);
+						$('#dhsl').val(data.dhsl);
+						$('#dhje').val(data.dhje);
+						$('#rksl').val(data.rksl);
+						$('#ykfp').val(data.ykfp);
+						$('#yfkje').val(data.yfkje);
+
+						renderForm();       //重新渲染表单
+					}
+				});
+
+				$.ajax({
+					type : 'get',
+					url : "/cgDingdanss/listBypid?pid="+id,
+					async : false,
+					success : function(data) {
+						tableIns.reload({
+							data: data.data
+						})
+					}
+				});
+			}
+		}
+        //监听工具条
+        table.on('tool(data)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    var oldData =  table.cache["data"];
+
+                    if(!oldData){
+                        oldData = [];
+                    }
+
+                    for (var i in oldData){
+                        var d = oldData[i];
+                        if (d.id == data.id){
+                            oldData.splice(i,1);
+                            break;
+                        }
+                    }
+                    tableIns.reload({
+                        data : oldData
+
+                    })
+
+                    layer.close(index);
+                });
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(data)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data;
+            switch(obj.event){
+                case 'batchdel':  //批量删除
+                    var oldData = table.cache["data"];
+                    var newData = [];
+                    if(!oldData || data.length == 0) {
+                        layer.msg("请选择要删除的行");
+                    }else{
+                        layer.confirm('真的批量删除行么', function (index) {
+                            for (var i = 0; i < oldData.length; i++) {
+                                var isdel = false;
+                                for (var a = 0; a < data.length; a++) {
+                                    if (data[a].id == oldData[i].id) {
+                                        isdel = true;
+                                    }
+                                }
+
+                                if (!isdel) {
+                                    newData.push(oldData[i]);
+                                }
+                            }
+                            tableIns.reload({
+
+                                data: newData
+                            });
+
+                            layer.close(index);
+                        });
+                    }
+                    break;
+            };
+        });
+
+
+        active = {
+            getCheckData: function(){ //保存
+                var data = table.cache.data;
+                add(data);
+                $("#tj").attr("class","layui-btn layui-btn-sm layui-btn-radius layui-btn-disabled").removeAttr("data-type","getCheckData");
+
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听单元格编辑
+        table.on('edit(data)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            if(!matchNum(value)) layer.msg("请输入正确的数量");
+            var oldData =  table.cache["data"];
+            if(!oldData){
+                oldData = [];
+            }
+            for (var i in oldData){
+                var d = oldData[i];
+                if (d.id == data.id){
+					if(field == "inum" || field =="iprice" || field =="yfdj" ){
+						var money = d.iprice * d.inum;
+						d.imoney = money.toFixed(2);
+						var iyfje = d.inum * d.yfdj /1000;
+						d.yfje = iyfje.toFixed(2);
+					}
+
+                }
+            }
+            tableIns.reload({
+                data : oldData
+            })
+        });
+    });
+
+
+    //监听税率,数量金额改变调用此函数更新税额和价税合计
+
+
+
+    $("#taxrate").blur(function () {
+        var value = parseFloat(this.value);
+        var imoney = parseFloat($("#imoney").val());
+        var tax = value*imoney*0.01;
+        var tax1 = tax.toFixed(2);
+        // var itotal = imoney+tax;
+        // var itotal1 = itotal.toFixed(2);
+//        console.log(typeof itotal);
+        $("#tax").val(tax1);
+        // $("#itotal").val(itotal1);
+    });
+
+    $("#yfdj").blur(function () {
+        var value = parseFloat(this.value);
+        var inum = parseFloat($("#inum").val());
+        var iyfje = inum * value /1000;
+        var iyfje1 = iyfje.toFixed(2);
+        $("#yfje").val(iyfje1);
+    });
+
+    function add(data) {
+        $('#form').bootstrapValidator();
+        var bootstrapValidator = $("#form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(!bootstrapValidator.isValid()){
+            return;
+        }
+        var formdata = $("#form").serializeObject();
+        formdata.csource = "采购计划"
+        console.log(formdata)
+        if(!data || data.length == 0){
+            layer.msg("请添加存货");
+            return;
+        }
+        for (var i=0;i<data.length;i++){
+            if(!data[i])
+                continue;
+
+            if(!matchNum(data[i].inum)){
+                layer.msg("请输入正确的数量");
+                return;
+            }else{
+                if(data[i].inum<=0){
+                    layer.msg("存货数量不能小于等于0");
+                    return
+                }
+            }
+        }
+
+        formdata.cgDingdansList = data;
+        formdata.ctype = ctype;
+		var posttype="post";
+		if (id){
+			posttype="put";
+		}
+		// console.log(JSON.stringify(formdata));
+        $.ajax({
+            type : posttype,
+            url : '/cgDingdans',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+            success : function(data) {
+                layer.msg("保存成功", {shift: -1, time: 1000}, function(){
+                    location.href = "ylddlist.html";
+                });
+            }
+        });
+    }
+
+
+	function tianjiaGys(){
+		layer.open({
+			type: 2,
+			title: '添加供应商',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['70%', '70%'],
+			content: '../vendor/vendorList.html?searchVen=true',
+			end : function(){
+				var gongyingshang = JSON.parse($("#gongyingshang").val());
+				$("#ksid").val(gongyingshang.id);
+				$("#ksname").val(gongyingshang.cname);
+			}
+		});
+	}
+
+    function tianjia(){
+
+        layer.open({
+            type: 2,
+            title: '添加',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '80%'],
+            content: '../inv/searchInv1.html?ppath=1-',
+            end : function(){
+                var oldData =  table.cache["data"];
+
+				/* if(!oldData){
+				 oldData = [];
+				 }*/
+                var newData = JSON.parse($("#shuzhi").val())
+
+                // console.log($("#shuzhi").val());
+                for(var i=0;i<newData.length;i++){
+//                     if(i==0){
+// //              		console.log("newdata"+newData[i].invname);
+//                         $("#memo").val($("#memo").val() + "入" +newData[i].invname + "等");
+//                     }
+                    var ishas = false;
+                    // for(var a=0;a<oldData.length;a++){
+                    //     if(oldData[a].invid == newData[i].id){
+                    //         ishas = true;
+                    //     }
+                    // }
+
+                    if(!ishas){
+                        newData[i].invid = newData[i].id;
+						newData[i].cpgg = newData[i].invstd;
+                        newData[i].inum = 0;
+                        newData[i].imoney = 0;
+						newData[i].yfdj = 0;
+						newData[i].yfje = 0;
+                        oldData.push(newData[i]);
+                        // console.log(oldData)
+                    }
+                }
+                tableIns.reload({
+                    url:"",
+                    data : oldData
+                })
+            }
+        });
+
+
+    }
+
+    $("#printBt").click(function(){
+        var oldData =  table.cache["data"];   //备件列表
+        var html = "<h3 style='text-align: center'>入库单</h3>"
+        var money = 0;
+        html += "<table class='layui-table'>" +
+            "<tr><td style='border:none' colspan='3'>往来单位："+$("#cusid").find("option:selected").text()+"</td>" +
+            "<td style='border:none;text-align: right' colspan='3'>"+getDate()+"</td></tr>" +
+            "<tr><th>备件</th><th>型号</th><th>数量</th><th>单位</th><th>单价</th><th>金额</th></tr>";
+        for(var i=0;i<oldData.length;i++){
+            var inv = oldData[i];
+            for(l in inv){
+                if(!inv[l]){
+                    inv[l] = "";
+                }
+            }
+
+            html += "<tr><td>"+inv.invname+"</td><td>"+inv.invstd+"</td><td>"+inv.inum+"</td><td>"+inv.unit1+"</td><td>"+inv.iprice+"</td><td>"+inv.imoney+"</td>" +
+                "</tr>"
+
+            money += Number(inv.imoney);
+        }
+        html += "<tr><td>合计</td><td colspan='4'>"+DX(money.toFixed(2))+"</td><td>"+money.toFixed(2)+"</td></tr>"
+        html += "<tr><td style='border:none' colspan='3'>验收人：</td><td style='border:none;'></td><td style='border:none;' colspan='2'>制单人：</td></tr>"
+        html += "</table>"
+
+        $("#test").print({
+            //Use Global styles
+            globalStyles : false,
+            //Add link with attrbute media=print
+            mediaPrint : false,
+            //Print in a hidden iframe
+            iframe : false,
+            //Don't print this
+            noPrintSelector : ".avoid-this",
+            //Add this at top
+            prepend : html,
+            //Add this on bottom
+            append : "",
+            //Log to console when printing is done via a deffered callback
+            deferred: $.Deferred().done(function() { console.log('Printing done', arguments); }),
+            stylesheet:'../../layuiadmin/layui/css/layui.css'
+        });
+    });
+</script>
+</body>
+</html>

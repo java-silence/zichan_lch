@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcDeployDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id}
+			</if>
+			<if test="params.zcIds != null and params.zcIds != ''">
+				and t.zc_ids = #{params.zcIds}
+			</if>
+			<if test="params.applyUserId != null and params.applyUserId != ''">
+				and t.apply_user_id = #{params.applyUserId}
+			</if>
+			<if test="params.applyDeptId != null and params.applyDeptId != ''">
+				and t.apply_dept_id = #{params.applyDeptId}
+			</if>
+			<if test="params.frontDeptId != null and params.frontDeptId != ''">
+				and t.front_dept_id = #{params.frontDeptId}
+			</if>
+			<if test="params.frontAddress != null and params.frontAddress != ''">
+				and t.front_address = #{params.frontAddress}
+			</if>
+			<if test="params.backDeptId != null and params.backDeptId != ''">
+				and t.back_dept_id = #{params.backDeptId}
+			</if>
+			<if test="params.backAddress != null and params.backAddress != ''">
+				and t.back_address = #{params.backAddress}
+			</if>
+			<if test="params.description != null and params.description != ''">
+				and t.description = #{params.description}
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and t.flowid = #{params.flowid}
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and t.stepid = #{params.stepid}
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status}
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del}
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz}
+			</if>
+			<if test="params.createBy != null and params.createBy != ''">
+				and t.create_by = #{params.createBy}
+			</if>
+			<if test="params.updateBy != null and params.updateBy != ''">
+				and t.update_by = #{params.updateBy}
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.create_time = #{params.createTime}
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime}
+			</if>
+			<if test="params.nickname != null and params.nickname != ''">
+				and u.nickname like concat('%',#{params.nickname},'%')
+			</if>
+		</where>
+	</sql>
+
+	<select id="getById" resultType="ZcDeploy">
+		select
+		  t.*
+		from zc_deploy t
+		where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+		select count(1) from zc_deploy t left join sys_user u on u.id = t.apply_user_id
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="ZcDeploy">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_deploy t
+		LEFT OUTER JOIN sys_user t_creator ON t.createby=t_creator.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update zc_deploy t
+		<set>
+			<if test="zcIds != null">
+				zc_ids = #{zcIds},
+			</if>
+			<if test="applyUserId != null">
+				apply_user_id = #{applyUserId},
+			</if>
+			<if test="applyDeptId != null">
+				apply_dept_id = #{applyDeptId},
+			</if>
+			<if test="frontDeptId != null">
+				front_dept_id = #{frontDeptId},
+			</if>
+			<if test="frontAddress != null">
+				front_address = #{frontAddress},
+			</if>
+			<if test="backDeptId != null">
+				back_dept_id = #{backDeptId},
+			</if>
+			<if test="backAddress != null">
+				back_address = #{backAddress},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="flowid != null">
+				flowid = #{flowid},
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="del != null">
+				del = #{del},
+			</if>
+			<if test="bz != null">
+				bz = #{bz},
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy},
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+		</set>
+		where t.id = #{id}
+	</update>
+
+	<!--更新调配的状态-->
+	<update id="updateStatus">
+		update zc_deploy t
+		<set>
+			<if test="params.status != null">
+				t.status = #{params.status},
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				t.stepid = #{params.stepid},
+			</if>
+			t.update_time = now()
+		</set>
+		where t.id = #{params.zcDeployId} and t.del = 0
+	</update>
+
+
+	<select id="listZcDeploy" parameterType="map" resultType="map">
+		SELECT
+		t.id,
+		DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') createtime,
+		t.back_dept_id backDeptId,
+		t.description,
+		t.bz,
+		t.status,
+		f.id flowid,
+		f.flowname,
+		s.id stepid,
+		s.stepname,
+		u.id userid,
+		u.nickname,
+		u.username,
+		d.id deptid,
+		d.deptname,
+		d1.deptname backDeptname
+		FROM
+		zc_deploy t
+		LEFT JOIN sys_user u ON t.apply_user_id = u.id
+		LEFT JOIN t_dept d ON t.apply_dept_id = d.id
+		LEFT JOIN t_dept d1 ON t.back_dept_id = d1.id
+		LEFT JOIN flow f ON t.flowid = f.id
+		LEFT JOIN flowstep s ON t.stepid = s.id
+		<include refid="where" />
+		<where>
+			<if test="params.nickname != null and params.nickname != ''">
+				and u.nickname like concat('%',#{params.nickname},'%')
+			</if>
+		</where>
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<!--查看调配主表信息-->
+	<select id="getZcDeployDetail" parameterType="long" resultType="map">
+		SELECT
+		t.id,
+		DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m:%s') createTime,
+		t.flowid,
+		t.stepid,
+		t.description,
+		t.back_dept_id backDeptId,
+		if(t.status=0,"待办理","已办理") statusText,
+		u.nickname,
+		u.username,
+		p1.deptname uDeptName,
+		p2.deptname backDeptName
+		FROM
+		zc_deploy t
+		LEFT JOIN sys_user u ON u.id = t.apply_user_id
+		LEFT JOIN t_dept p1 ON p1.id = u.deptid
+		LEFT JOIN t_dept p2 ON p2.id = t.back_dept_id
+		<where>
+			<if test="deployId != null">
+				t.id = #{deployId}
+			</if>
+		</where>
+	</select>
+
+	<select id="countListZcDeployRecord" parameterType="map" resultType="int">
+		SELECT
+			count(t.id)
+		FROM zc_deploy_item t
+		LEFT JOIN zc_info z on t.zc_id = z.id
+		LEFT JOIN t_dept p1 ON t.gl_dept_id = p1.id
+		LEFT JOIN t_dept p2 ON t.front_dept_id = p2.id
+		LEFT JOIN t_dept p3 ON t.back_dept_id = p3.id
+		LEFT JOIN zc_deploy b ON b.id = t.zc_deploy
+		<where>
+			<if test="params.applyUserId != null and params.applyUserId != '' ">
+				t.apply_user_id = #{params.applyUserId}
+			</if>
+            <if test="params.deployNum != null and params.deployNum != '' ">
+                and b.deployNum = #{params.deployNum}
+            </if>
+			<if test="params.frontDeptId != null and params.frontDeptId != ''">
+				and t.front_dept_id = #{params.frontDeptId}
+			</if>
+			<if test="params.backDeptId != null and params.backDeptId != ''">
+				and t.back_dept_id = #{params.backDeptId}
+			</if>
+			<if test="params.zcCategoryId != null and params.zcCategoryId != ''">
+				and z.zc_category_id = #{params.zcCategoryId}
+			</if>
+			<if test="params.sdate != null and params.sdate != '' ">
+				and <![CDATA[ z.start_use_time >= #{params.sdate} ]]>
+			</if>
+			<if test="params.edate != null and params.edate != '' ">
+				and <![CDATA[ z.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != '' ">
+				and t.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.zcName != null and params.zcName != ''">
+				and z.zc_name like concat('%',#{params.zcName},'%')
+			</if>
+			<if test="params.originalValue != null and params.originalValue != '' ">
+				and z.original_value = #{params.originalValue}
+			</if>
+			<if test="params.zcCodenum != null and params.zcCodenum != '' ">
+				and z.zc_codenum = #{params.zcCodenum}
+			</if>
+			<if test="params.epcid != null and params.epcid != '' ">
+				and z.epcid = #{params.epcid}
+			</if>
+			and t.cwb_status = 1 and t.del = 0
+		</where>
+	</select>
+
+	<!--资产记录信息-->
+	<select id="listZcDeployRecord" parameterType="map" resultType="map">
+		SELECT
+			b.deployNum,
+			t.bz bfReason,
+			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') applyTime,
+			DATE_FORMAT(t.update_time,'%Y-%m-%d %H:%m') finishTime,
+			p1.deptname gldeptname,
+			p2.deptname frontDeptname,
+			p3.deptname backDeptname,
+			z.specification,
+			z.model,
+			z.zc_codenum zcCodenum,
+			z.zc_name zcName,
+			z.epcid,
+			z.store_address storeAddress,
+			z.inspect_time inspectTime,
+			z.warrantyperiod,
+			z.zc_from zcFrom,
+			z.original_value originalValue,
+			z.lj_zhejiu ljZhejiu,
+			z.bn_zhejiu bnZhejiu,
+			z.netvalue,
+			z.jzzb,
+			z.net,
+			z.net_residual_rate netResidualRate,
+			z.net_residual_value netResidualValue,
+			z.start_use_time startUseTime,
+			z.use_months usemonths,
+			z.have_count haveCount,
+			z.use_status
+		FROM zc_deploy_item t
+		LEFT JOIN zc_info z on t.zc_id = z.id
+		LEFT JOIN t_dept p1 ON t.gl_dept_id = p1.id
+		LEFT JOIN t_dept p2 ON t.front_dept_id = p2.id
+		LEFT JOIN t_dept p3 ON t.back_dept_id = p3.id
+		LEFT JOIN zc_deploy b ON b.id = t.zc_deploy
+		<where>
+			<if test="params.applyUserId != null and params.applyUserId != '' ">
+				t.apply_user_id = #{params.applyUserId}
+			</if>
+            <if test="params.deployNum != null and params.deployNum != '' ">
+                and b.deployNum = #{params.deployNum}
+            </if>
+			<if test="params.frontDeptId != null and params.frontDeptId != ''">
+				and t.front_dept_id = #{params.frontDeptId}
+			</if>
+			<if test="params.backDeptId != null and params.backDeptId != ''">
+				and t.back_dept_id = #{params.backDeptId}
+			</if>
+			<if test="params.zcCategoryId != null and params.zcCategoryId != ''">
+				and z.zc_category_id = #{params.zcCategoryId}
+			</if>
+			<if test="params.sdate != null and params.sdate != '' ">
+				and <![CDATA[ z.start_use_time >= #{params.sdate} ]]>
+			</if>
+			<if test="params.edate != null and params.edate != '' ">
+				and <![CDATA[ z.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != '' ">
+				and t.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.zcName != null and params.zcName != ''">
+				and z.zc_name like concat('%',#{params.zcName},'%')
+			</if>
+			<if test="params.originalValue != null and params.originalValue != '' ">
+				and z.original_value = #{params.originalValue}
+			</if>
+			<if test="params.zcCodenum != null and params.zcCodenum != '' ">
+				and z.zc_codenum = #{params.zcCodenum}
+			</if>
+			<if test="params.epcid != null and params.epcid != '' ">
+				and z.epcid = #{params.epcid}
+			</if>
+				and t.cwb_status = 1 and t.del = 0
+		</where>
+		ORDER BY b.deployNum ASC,t.create_time DESC
+		limit #{offset}, #{limit}
+	</select>
+
+	<!--查询本年度该商行的购买数-->
+	<select id="countByDeptThisYear" parameterType="string" resultType="int">
+        SELECT count(1) FROM zc_deploy t WHERE YEAR(t.create_time) = YEAR(now()) AND t.deptCode LIKE concat(#{deptcode},'%')
+    </select>
+
+</mapper>

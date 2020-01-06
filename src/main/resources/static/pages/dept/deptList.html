@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Insert title here</title>
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">id</label>
+					<div class="layui-input-block">
+						<input id="id" type="text" class="form-control layui-input" placeholder="id">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+						<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+					</button>
+					<!--<button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>-->
+					<button class="layui-btn layuiadmin-btn-useradmin" data-type="add" onclick="location.href='addDept.html'">添加</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-card-body">
+			<!--<div style="padding-bottom: 10px;"></div>-->
+
+			<table class="layui-hide" id="data"></table>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>-->
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/course.js"></script>-->
+<!--<script type="text/javascript" src="../../js/experiment.js"></script>-->
+<!--<script type="text/javascript" src="../../js/lab.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript">
+var pers = checkPermission();
+//showStepSelect("stepid", "1", true);
+//showDeptSelect("deptid", "dept", true);
+//showUserSelect("createby", "user", true);
+//UserSelect("teacherid", "user", true);
+   var tableIns;
+
+    layui.use(['layer','form','laydate','table'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/depts/list2"
+            ,limit: 20 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+            ,height:  'full-180'
+//        ,skin: 'line' //行边框风格
+            ,even: true //开启隔行背景
+//        ,size: 'sm' //小尺寸的表格
+            ,where: {id:$('#id').val()}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+					,{field:'deptcode',title:'部门编码', width:100, sort: true}
+					,{field:'deptname',title:'部门名称', width:100, sort: true}
+//					,{field:'pid',title:'上级部门ID', width:100, sort: true}
+					,{field:'phone',title:'电话', width:100, sort: true}
+					,{field:'address',title:'地址', width:100, sort: true}
+					,{field:'leader',title:'负责人', width:100, sort: true}
+					,{field:'memo',title:'备注', width:100, sort: true}
+//					,{field:'ctype',title:'业务类型', width:100, sort: true}
+
+//                ,{field:'creator',title:'制单人', width:100, sort: true}
+//                ,{field:'auditor',title:'审核人', width:100, sort: true}
+                ,{field:'caozuo', title: '操作',fixed:'right', width:320,templet: function(d){
+                    var id = d.id;
+                    var href = "updateDept.html?id=" + id;
+                    var edit = buttonEdit(href, "", pers);
+                    var del = buttonDel(id, "", pers);
+                    if(d.status==0){
+                       var audit = buttonAudit(id,"sys:labreq:audit",pers);
+                    }else{
+                       var audit = buttonUnAudit(id,"sys:labreq:audit",pers);
+                    }
+                    if(d.status>0){
+                        edit ="";
+                        del="";
+                    }
+
+                    var xjlist = "<a class='layui-btn layui-btn-xs' lay-href='pages/xunjianquyu/xunjianquyuList.html?id="+d.id+"' lay-id="+ d['id'] +"href=javascript:void(0)><i class='layui-icon'>&#xe63c;</i>巡检区域</a>";
+                    var whlist = "<a class='layui-btn layui-btn-xs' lay-href='pages/weihuquyu/weihuquyuList.html?id="+d.id+"' lay-id="+ d['id'] +"href=javascript:void(0)><i class='layui-icon'>&#xe63c;</i>维护区域</a>";
+
+
+                    return xjlist +whlist + edit + del + audit  ;
+                }}
+            ]]
+        });
+
+        //form.on('select(deptChange)', function(data){
+        //    showClassSelect("classid", "class", true, data.value);
+        //    renderForm()
+        //})
+    });
+function del(id){
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/depts/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+    function audit(id){
+        layer.confirm('确定要审核吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/depts/audit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function unaudit(id){
+        layer.confirm('确定要弃审吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/depts/unaudit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("弃审成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+$("#searchBt").click(function(){
+	tableIns.reload({where: {id:$('#id').val()}})
+});
+
+layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'console']);
+
+</script>

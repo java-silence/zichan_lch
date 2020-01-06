@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.title {
+				padding: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				background-color: #fff;
+			}
+			.nodata{
+				display: none;
+			}
+			.demoTable{
+				position: fixed;
+				left: 0%;
+				bottom: 0px;
+				width:100%;
+				height:40px
+			}
+			.demoTable-btn{
+				width:100%;
+				height:40px;
+				float: left;
+			}
+		</style>
+	</head>
+	<body>
+		<form class="mui-input-group" onsubmit="return false" id="form">
+		    <div class="mui-input-row">	
+				<select type='text' style="width:30%;;" name='cid' id='cid'></select>
+		        <input placeholder='客户名称' type='text' name='cname' id='cname' style="width:30%;">
+				<button id="searchBt" style="width:15%;border:0"><span class="mui-icon mui-icon-search"></span><span></span></button>
+				<button onclick="openAdd()" style="width:15%;border:0"><span class="mui-icon mui-icon-plus"></span><span></span></button>
+		    </div>
+		</form>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<ul id="OA_task_1" class="mui-table-view mui-table-view-chevron"></ul>
+			<div id="nodata" class="nodata" style="height:40px;line-height:40px;text-align: center">没有数据了！</div>
+	    </div>
+		<div style="height:80px"></div>
+		<div class="demoTable">
+				<button class="mui-btn mui-btn-primary demoTable-btn"  onclick="add()">
+						确定
+				</button>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../js/customer.js"></script>
+
+</html>
+<script>	    
+	    var token = JSON.parse(localStorage.getItem('$state')).token;
+	
+	        var view = null;
+			mui.plusReady(function () {
+				showCusSelect("cid", "cid", true);
+					view = plus.webview.currentWebview();
+                    
+					mui.init({
+						swipeBack: false,
+						pullRefresh: {
+							container: '#pullrefresh',
+							down: {
+								callback: pulldownRefresh
+							},
+							up: {
+								auto:true,
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh
+							}
+						}
+					});
+					
+					
+			});
+
+			window.addEventListener('refresh', function(e) {
+					location.reload();
+			});
+
+			var start = 1;
+			var length = 20;
+			function getData(type){
+				mui.ajax(server_url+'/customers/list2?offset='+start+'&limit='+length+'&cid='+ $("#cid").val() +'&cname=' + $("#cname").val() +'&orderBy= order by createTime desc',{
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'token':token},
+					success:function(data){
+						// console.log("test");
+						    liebiao(data);
+							var table = $(".mui-table-view");
+							var cells = document.body.querySelectorAll('.mui-table-view-cell');
+							var html = '';
+							if(data.data.length != 0){
+								if(!$("#nodata").hasClass("nodata")){
+		                             $("#nodata").addClass("nodata");
+		                        }
+
+								for (var i = 0; i<data.data.length ; i++) {
+									var inv = JSON.stringify(data.data[i])
+									html+='<li class="mui-table-view-cell mui-media">'+
+// 												'<div class="mui-slider-right mui-disabled" onclick="del('+data.data[i].id+',this)">'+
+// 													'<a class="mui-btn mui-btn-red">删除</a>'+
+// 												'</div>'+
+												'<a class="mui-navigate-right mui-slider-handle">'+
+												    '<div class="mui-input-row mui-radio mui-left" style="float:left">'+
+													  '<label></label>'+
+													  '<input name="invcheckbox" id="input_'+data.data[i].id+'" data-id="'+data.data[i].id+'" data-cname="'+data.data[i].cname+'" type="radio">'+
+													'</div>'+
+													'<div class="mui-media-body"  onclick="edit('+data.data[i].id+')">'+ data.data[i].cname +'-'+ data.data[i].abbname +
+														'<p class="mui-ellipsis">'+data.data[i].classname+ '-' + data.data[i].createTime + '-' + data.data[i].creator +  '</p>'+
+													'</div>'+
+												'</a>'+
+											'</li>'
+								}
+								if(type == 'up'){
+									table.append(html);
+								}else{
+									table.html(html);
+								}
+								start += 1;
+								mui('#pullrefresh').pullRefresh().enablePullupToRefresh();
+							}else{
+								if(type == 'down'){
+									table.html(html);
+								}
+								
+								if($("#nodata").hasClass("nodata")){
+		                            $("#nodata").removeClass("nodata");
+								}
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+							}
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						var msg = xhr.responseText;
+						var response = JSON.parse(msg);
+						alert(response.message);
+					}
+				});
+			}
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+                    start = 1;
+					getData("down");
+				}, 1000);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+					getData("up");
+				}, 1000);
+			}
+			
+			function openAdd(){
+				mui.openWindow({
+								url: 'addChda.html',
+								id: 'addChda',
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"添加客户档案"
+									}
+								},
+								waiting: {
+									autoShow: false
+								}	
+							});
+			}
+
+			$("#searchBt").click(function(){
+				start = 1;
+				getData("down");
+			})
+						
+			function add(){
+				var invList = [];
+				$("input[name='invcheckbox']").each(function(){
+					if(this.checked)
+					   invList.push({id:$(this).data("id"),
+					                cname:$(this).data("cname")});	
+				})
+				
+				mui.plusReady(function() {	
+					        var wvs=plus.webview.all();
+							var invView = plus.webview.getWebviewById(wvs[wvs.length-3].id);
+							var clist = plus.webview.currentWebview().opener();
+							mui.fire(invView, 'loadcusRadio',{
+								customer: invList
+							});
+							
+							clist.close();
+							view.close();  
+				})				
+			}
+			
+			function edit(id){
+				var invcheckbox = document.getElementById("input_"+id);
+				if(invcheckbox.checked){
+					invcheckbox.checked = false
+				}else{
+					invcheckbox.checked = true
+				}
+				
+				var num = 0;
+				$("input[name='invcheckbox']").each(function(){
+					if(this.checked)
+					    num++;
+				})
+				
+				// $("#yixuan").html("已选存货（"+num+"）")
+			}
+			
+			function openAdd(){
+				mui.openWindow({
+								url: 'addCustomer.html',
+								id: 'addCustomer',
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"添加客户"
+									}
+								},
+								waiting: {
+									autoShow: false
+								}	
+							});
+			}
+</script>

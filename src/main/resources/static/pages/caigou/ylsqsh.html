@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>layuiAdmin 主页示例模板一</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />-->
+</head>
+<body>
+<div class="layui-fluid">
+	<input type="hidden" id="flowid"/>
+	<input type="hidden" id="stepid"/>
+	<div class="layui-row layui-form-pane layui-col-space15">
+		<div class="layui-col-md8">
+			<div class="layui-card">
+				<div class="layui-card-header">
+					采购申请审批
+				</div>
+				<div class="layui-card-body">
+					<div class="layui-row layui-col-space10">
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>审批内容明细</div>
+								<div class='layui-form-item'>
+									<!--<div class='layui-inline'>-->
+									<!--<label class='layui-form-label' >计划编码</label>-->
+									<!--<div class='layui-input-inline'>-->
+									<!--<input class="layui-input" placeholder='计划编码' type='text' name='ccode' id='ccode' lay-verify="required">-->
+									<!--</div>-->
+									<!--</div>-->
+
+									<div class='layui-inline'>
+										<label class='layui-form-label'>部门</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='部门' type='text' name='deptname' id='deptname' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label'>申请人</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='申请人' type='text' name='creator' id='creator' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label'>需求日期</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='需求日期' type='text' name='ddate' id='ddate' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label '>业务类型</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='业务类型' type='text' name='busstype' id='busstype' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label '>供应商</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='供应商' type='text' name='ksmc' id='ksmc' >
+										</div>
+									</div>
+								</div>
+
+								<div class='layui-form-item'>
+
+									<div class='layui-inline'>
+										<label class='layui-form-label '>数量</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='数量' type='text' name='inum' id='inum' lay-verify="required|number">
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label '>金额</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='金额' type='text' name='imoney' id='imoney' lay-verify="required|number">
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label '>备注</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+										</div>
+									</div>
+									<table class="layui-hide" id="datas" lay-filter="datas"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-card">
+				<div class="layui-card-header">审批动态</div>
+				<div class="layui-card-body">
+					<dl class="layuiadmin-card-status" id="shenpidongtai">
+						<!--<dd>-->
+							<!--<div class="layui-status-img"><a href="javascript:;"><img src="../../layuiadmin/style/res/logo.png"></a></div>-->
+							<!--<div>-->
+								<!--<p>【收费部】 审批通过</p>-->
+                                <!--<p>审批意见：</p>-->
+                                <!--<p></p>-->
+                                <!--<span>2018-11-01 15:32:31</span>-->
+							<!--</div>-->
+						<!--</dd>-->
+
+					</dl>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4" id="divshenpi">
+			<div class="layui-card">
+				<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+					<input type="hidden" id="id" name="id">
+					<input type="hidden" id="bizid" name="bizid">
+
+					<div class="layui-card-header">审批操作</div>
+					<div class="layui-card-body">
+						<div class="layui-card-header" >
+							<button class="layui-btn layui-btn-normal" type="submit" onclick="update(1,0)">审批通过</button>
+							<button class="layui-btn layui-btn-danger" onclick="update(1,1)" >审批驳回</button>
+						</div>
+						<div class="layui-card-body layui-row layui-col-space10">
+
+							<div class="layui-col-md12">审批意见</div>
+							<div class="layui-col-md12">
+								<textarea id="neirong" name="neirong" placeholder="请输入审批意见" class="layui-textarea"></textarea>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script src="../../layuiadmin/layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/user.js"></script>
+	<script type="text/javascript">
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+
+//        showUserbyRole("userid",6);
+
+        var ids = [];
+		var id = getUrlParam("id");
+		var bizid = getUrlParam("bizid");
+		var flowid = getUrlParam("flowid");
+
+       		layui.use(['layer','form','laydate','table'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            // var tableIns2;
+
+				tableIns2 = table.render({
+					elem: '#datas'
+					,url:"/cgJihuass/listBypid?pid="+bizid
+					,cols: [[
+						{field:'invname', title: '货品', sort: false}
+						,{field:'cpgg', title: '型号', sort: false}
+						,{field:'inum', title: '数量', sort: false}
+						,{field:'imoney', title: '金额', sort: false}
+					]]
+					,done: function(res, curr, count){
+						$("td").each(function(){
+							$(this).find(".layui-table-cell").removeClass('layui-table-cell');
+						});
+					}
+				});
+
+
+				initData(id,bizid,flowid);
+        });
+
+
+        var type = getUrlParam("type");
+//        console.log(type);
+        if(type !=""){
+            if(type=="1"){
+                $("#divshenpi").attr("style","display:none;");
+			}
+		}
+		function initData(){
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/cgJihuas/'+bizid,
+					async : false,
+					success : function(data) {
+					    // console.log(data);
+                        $('#id').val(id);
+                        $('#bizid').val(bizid);
+                        $('#deptname').val(data.deptname);
+                        $('#creator').val(data.creator);
+                        $('#ddate').val(data.ddate);
+						$('#ksmc').val(data.ksmc);
+						$('#inum').val(data.inum);
+						$('#imoney').val(data.imoney);
+						$('#memo').val(data.memo);
+						$('#busstype').val(data.busstype);
+
+                        shenpidongtai(bizid);	//提取审批动态
+					}
+				});
+			}
+		}
+
+		function update(send,back) {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+
+//            formdata.fileIds=ids;
+			formdata.send = send;
+			formdata.back = back;
+			$.ajax({
+				type : 'put',
+				url : '/cgJihuas/todo',
+				contentType: "application/json; charset=utf-8",
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("审批成功", {shift: -1, time: 1000}, function(){
+                        location.href = "/pages/todo/todoList.html";
+                    });
+				}
+			});
+		}
+
+        //显示审批动态
+        function shenpidongtai(id) {
+            $.ajax({
+                type : 'get',
+                url : '/todos/listbizid?bizid='+id +'&flowid=' + flowid,
+                async : false,
+                success : function(data) {
+//                    console.log(data);
+                    var length = data.length;
+
+                    for (var i = 0; i < length; i++) {
+                        var html = "";
+
+                        html += "   <dd>";
+                        html += "			<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
+                        html += "			<div>";
+                        if(data[i].biztype = "同意"){
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:同意</p>";
+                        }else {
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
+                        }
+                        // html += "                        <p>审批意见：</p>";
+                        html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+                        html += "                        <span>" +data[i].updateTime + "</span>";
+                        html += "			</div>";
+                        html += "		</dd>";
+
+                        $("#shenpidongtai").append(html);
+
+                    }
+                }
+            });
+        }
+
+
+	</script>
+</body>
+</html>

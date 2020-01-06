@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>layuiAdmin 主页示例模板一</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />-->
+</head>
+<body>
+<div class="layui-fluid">
+	<input type="hidden" id="flowid"/>
+	<input type="hidden" id="stepid"/>
+	<input type="hidden" id="material"/>
+	<div class="layui-row layui-form-pane layui-col-space15">
+		<div class="layui-col-md8">
+			<div class="layui-card">
+				<div class="layui-card-header">
+					审批事项
+				</div>
+				<div class="layui-card-body">
+					<div class="layui-row layui-col-space10">
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class='layui-form-item'>
+									<!--<div class='layui-inline'>-->
+									<!--<label class='layui-form-label' >计划编码</label>-->
+									<!--<div class='layui-input-inline'>-->
+									<!--<input class="layui-input" placeholder='计划编码' type='text' name='ccode' id='ccode' lay-verify="required">-->
+									<!--</div>-->
+									<!--</div>-->
+
+									<div class='layui-inline'>
+										<label class='layui-form-label'>部门</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='部门' type='text' name='deptname' id='deptname' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label'>发起人</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='发起人' type='text' name='creator' id='creator' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label'>付款日期</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='付款日期' type='text' name='ddate' id='ddate' >
+										</div>
+									</div>
+									
+								</div>
+
+								<div class='layui-form-item'>
+
+									<div class='layui-inline'>
+										<label class='layui-form-label '>供应商</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='供应商' type='text' name='ksmc' id='ksmc' >
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label '>金额</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='金额' type='text' name='fkje' id='fkje' lay-verify="required|number">
+										</div>
+									</div>
+									<div class='layui-inline'>
+										<label class='layui-form-label '>备注</label>
+										<div class='layui-input-inline'>
+											<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top">照片列表</div>
+								<div id="zhaopian"></div>
+								<!--<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>
+						        <p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>-->
+							</div>
+						</div>
+						
+						
+						
+					</div>
+				</div>
+			</div>
+			<div class="layui-card">
+				<div class="layui-card-header">流程动态</div>
+				<div class="layui-card-body">
+					<dl class="layuiadmin-card-status" id="shenpidongtai">
+						<!--<dd>-->
+							<!--<div class="layui-status-img"><a href="javascript:;"><img src="../../layuiadmin/style/res/logo.png"></a></div>-->
+							<!--<div>-->
+								<!--<p>【收费部】 审批通过</p>-->
+                                <!--<p>审批意见：</p>-->
+                                <!--<p></p>-->
+                                <!--<span>2018-11-01 15:32:31</span>-->
+							<!--</div>-->
+						<!--</dd>-->
+
+					</dl>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4" id="divshenpi">
+			<div class="layui-card">
+				<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+					<input type="hidden" id="id" name="id">
+					<input type="hidden" id="bizid" name="bizid">
+
+					<div class="layui-card-header">审批操作</div>
+					<div class="layui-card-body">
+						<div class="layui-card-header" >
+							<button class="layui-btn layui-btn-normal" type="submit" onclick="update(1,0)">审批通过</button>
+							<button class="layui-btn layui-btn-danger" onclick="update(1,1)" >审批驳回</button>
+						</div>
+						<div class="layui-card-body layui-row layui-col-space10">
+
+							<div class="layui-col-md12">附言</div>
+							<div class="layui-col-md12">
+								<textarea id="neirong" name="neirong" placeholder="请输入附言" class="layui-textarea"></textarea>
+							</div>
+						</div>
+						<div class="layui-card-body layui-row layui-col-space10">
+			<!-- 			<div class='layui-inline'>
+							<label class='layui-form-label '>采购金额</label>
+							<div class='layui-input-inline'>
+								<input class='layui-input' style="width: 130px;" placeholder='金额' type='text' name='canshu1' id='canshu1' lay-verify="required|number">
+							</div>
+						</div>
+						</div>
+						<button class="layui-btn test" id="uploadpic">图片上传</button>
+						<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 88%">
+								<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list"></div>
+						</blockquote> -->
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+	var token = JSON.parse(localStorage.getItem('$state')).token;
+	var self = null;
+	var id;
+	var bizid;
+	var flowid;
+	
+	var pro = window.location.protocol;
+    var host = window.location.host;
+    var domain = pro + "//" + host;
+	var ids = [];	//文件数组
+	
+	mui.plusReady(function() {
+		self = plus.webview.currentWebview();
+		id = self.todoid;
+		bizid = self.bizid;
+		flowid = self.flowid;
+		initData();
+		var type = self.type;
+									
+		if(type=="1"){
+			$("#divshenpi").attr("style","display:none;");
+		}
+		mui.init({
+			beforeback: function() {
+				self.close();
+			}
+		});
+	});
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+        var ids = [];
+		var sum = 0;
+       		layui.use(['layer','form','laydate','upload'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+			//普通图片上传
+			            var upload = layui.upload;
+			            upload.render({
+			                elem: '#uploadpic'
+			                ,url: server_url+'/files/'
+			                ,multiple: true
+			                ,before: function(obj){
+			                    layer.msg('图片上传中...', {
+			                        icon: 16,
+			                        shade: 0.01,
+			                        time: 0
+			                    })
+			                    obj.preview(function(index, file, result){
+			//                        console.log(index);
+			//                        console.log(file);
+			//                        console.log(result);
+			                        $('#uploader-list').append('<div id="" class="file-iteme">' +
+			                            '<div class="handle"><span class="glyphicon glyphicon-trash"></span></div>' +
+			                            '<img style="width: 220px;height: 180px;" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+			                    });
+			                }
+			                ,done: function(res){
+			
+			                    ids.push(res.id);
+			                    // console.log($('#uploader-list img').last().attr("alt",res.id));
+			
+			                    // console.log(res);
+			
+			                    sum++;
+			                    layer.close(layer.msg());//关闭上传提示窗口
+			                }
+			            });
+			            $(document).on("mouseenter mouseleave", ".file-iteme", function(event){
+			                if(event.type === "mouseenter"){
+			                    //鼠标悬浮
+			                    $(this).children(".info").fadeIn("fast");
+			                    $(this).children(".handle").fadeIn("fast");
+			                }else if(event.type === "mouseleave") {
+			                    //鼠标离开
+			                    $(this).children(".info").hide();
+			                    $(this).children(".handle").hide();
+			                }
+			            });
+			            // 删除图片
+			            $(document).on("click", ".file-iteme .handle", function(event){
+			                // $(this).parent().remove();
+			                console.log($(this).next().attr("alt"));
+			                del( $(this).parent(), $(this).next().attr("alt") ); //删除对应的文件
+			
+			                sum--;
+			                if(sum<0){
+			                    sum=0;
+			                }
+			            });
+						
+						
+        });
+
+		function initData(){
+			// console.log("initdata-id" + id + "bizid" + bizid + "flowid" +flowid);
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : server_url+'/fukuanshenqings/'+bizid,
+					async : false,
+					success : function(data) {
+					    // console.log(data);
+                        $('#id').val(id);
+                        $('#bizid').val(bizid);
+                        $('#deptname').val(data.deptname);
+                        $('#creator').val(data.creator);
+                        $('#ddate').val(data.ddate);
+						$('#ksmc').val(data.ksmc);
+						$('#inum').val(data.inum);
+						$('#imoney').val(data.imoney);
+						$('#memo').val(data.memo);
+						$('#busstype').val(data.busstype);
+						$('#username').val(data.username);
+                        shenpidongtai(bizid);	//提取审批动态
+						
+						initpicfiles(bizid,data.flowid);
+					}
+				});
+			}
+		}
+
+		function update(send,back) {
+		    var formdata = $("#form").serializeObject();
+			formdata.fileIds=ids;
+            formdata.send = send;
+			formdata.back = back;
+            // console.log(formdata);
+			$.ajax({
+				type : 'put',
+				url : server_url+'/fukuanshenqings/todo',
+				contentType: "application/json; charset=utf-8",
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					mui.plusReady(function() {						 
+						var clist = plus.webview.currentWebview().opener();
+						mui.fire(clist, 'refresh'); 	
+						layer.msg("审批完成", {shift: -1, time: 1000}, function(){
+								self.close();  
+						});
+					})
+				}
+			});
+		}
+
+        //显示审批动态
+        function shenpidongtai(id) {
+            $.ajax({
+                type : 'get',
+                url : server_url+'/todos/listbizid?bizid='+id +'&flowid=' + flowid,
+                async : false,
+                success : function(data) {
+//                    console.log(data);
+                    var length = data.length;
+
+                    for (var i = 0; i < length; i++) {
+                        var html = "";
+
+                        html += "   <dd>";
+                        html += "			<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
+                        html += "			<div>";
+                        if(data[i].biztype = "同意"){
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:同意</p>";
+                        }else {
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
+                        }
+                        // html += "                        <p>审批意见：</p>";
+                        html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+                        html += "                        <span>" +data[i].updateTime + "</span>";
+                        html += "			</div>";
+                        html += "		</dd>";
+
+                        $("#shenpidongtai").append(html);
+
+                    }
+                }
+            });
+        }
+
+
+		function initpicfiles(bizid,biztype){
+            $.ajax({
+                type : 'get',
+                url : server_url+'/files?bizid=' + bizid + '&biztype='+biztype,
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#zhaopian');
+                        demoListView.append('<div id="" class="file-iteme">' +
+                            '<div class="handle"><span class="glyphicon glyphicon-trash"></span></div>' +
+                            '<img style="width: 220px;height: 180px;" src="' + server_url + '/statics'+ data[i].url +'" alt="'+ data[i].filename +'" class="layui-upload-img mui-action-preview">')
+                    }
+					initImgPreview()
+                }
+            });
+		}
+		
+		function initImgPreview() {
+		    var imgs = document.querySelectorAll("img.mui-action-preview");
+		    imgs = mui.slice.call(imgs);
+		    if(imgs && imgs.length > 0) {
+		        var slider = document.createElement("div");
+		        slider.setAttribute("id", "__mui-imageview__");
+		        slider.classList.add("mui-slider");
+		        slider.classList.add("mui-fullscreen");
+		        slider.style.display = "none";
+		        slider.addEventListener("tap", function() {
+		            slider.style.display = "none";
+		        });
+		        slider.addEventListener("touchmove", function(event) {
+		            event.preventDefault();
+		        })
+		        var slider_group = document.createElement("div");
+		        slider_group.setAttribute("id", "__mui-imageview__group");
+		        slider_group.classList.add("mui-slider-group");
+		        imgs.forEach(function(value, index, array) {
+		            //给图片添加点击事件，触发预览显示；
+		            value.addEventListener('tap', function() {
+		                slider.style.display = "block";
+		                _slider.refresh();
+		                _slider.gotoItem(index, 0);
+		            })
+		            var item = document.createElement("div");
+		            item.classList.add("mui-slider-item");
+		            var a = document.createElement("a");
+		            var img = document.createElement("img");
+		            img.setAttribute("src", value.src);
+		            a.appendChild(img)
+		            item.appendChild(a);
+		            slider_group.appendChild(item);
+		        });
+		        slider.appendChild(slider_group);
+		        document.body.appendChild(slider);
+		        var _slider = mui(slider).slider();
+		    }
+		}
+	</script>
+</body>
+</html>

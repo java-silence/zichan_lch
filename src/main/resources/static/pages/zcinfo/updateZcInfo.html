@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+	<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+	<style>
+		.eleTree{
+			width: 350px;
+			height: 500px;
+			border: 1px solid #ccc;
+			overflow: hidden;
+			display: inline-block;
+		}
+		.ele5{
+			height: auto;
+			width: 98%;
+			display: none;
+			position: absolute;
+			top:100%;
+			background-color: #fff;
+			z-index: 100;
+		}
+	</style>
+</head>
+<body>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="form-actions">
+			<div class="row">
+				<div class="col-md-12">
+					<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+					<button class="layui-btn" type="submit" onclick="update()"><i class="fa fa-save"></i> 保存</button>
+				</div>
+			</div>
+		</div>
+		<hr style="height:3px;">
+		<form class="layui-form" onsubmit="return false" id="form">
+			<input type="hidden" id="id" name="id"/>
+			<input type="hidden" id="selfCodenum" name="selfCodenum"/>
+			<input type="hidden" id="cardNum" name="cardNum"/>
+			<div class='layui-form-item'>
+				<!--				<div class='layui-col-md6'>-->
+				<!--					<label class='layui-form-label'>同资产编码</label>-->
+				<!--					<div class='layui-input-block'>-->
+				<!--						<input class='layui-input' placeholder='同资产编码' type='text' name='selfCodenum' id='selfCodenum' >-->
+				<!--					</div>-->
+				<!--				</div>-->
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>资产编码</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产编码' type='text' name='zcCodenum' id='zcCodenum' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>资产编号</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产编号' type='text' name='zcCoding' id='zcCoding' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>资产名称</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产名称' type='text' name='zcName' id='zcName' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>资产分类</label>
+					<div class='layui-input-block'>
+						<input class="layui-input" type="text" id="zcCategoryName" data-id="" placeholder="请选择资产分类" readonly="" autocomplete="off">
+						<div class="eleTree ele5" id="zcCategoryEleTree" lay-filter="zcCategoryEleTree"></div>
+						<input class="layui-input" type="hidden" id="zcCategoryId" name="zcCategoryId">
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>规格(填写)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='规格(填写)' type='text' name='specification' id='specification' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>型号(填写)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='型号(填写)' type='text' name='model' id='model' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>厂家</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='厂家' type='text' name='factory' id='factory' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>品牌</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='品牌' type='text' name='brand' id='brand' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>技术支持人员</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='技术支持人员' type='text' name='supportName' id='supportName' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>技术支持电话</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='技术支持电话' type='text' name='supportPhone' id='supportPhone' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>安装单位</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='安装单位' type='text' name='installationFactory' id='installationFactory' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>折旧年限(月份)</label>
+					<div class='layui-input-block'>
+						<input name='depreciationTime' id='depreciationTime' data-step="1" data-min="0" data-digit="0" class="alignment" data-edit="true" value="0"/>
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>净参值(5%)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='净参值(5%)' type='text' name='jcz' id='jcz' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>采购日期</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='采购日期' type='text' name='stockTime' id='stockTime' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>计量单位</label>
+					<div class='layui-input-block'>
+						<select name='unit' id='unit'></select>
+						<!--						<input class='layui-input' placeholder='计量单位' type='text' name='unit' id='unit' >-->
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>资产来源</label>
+					<div class='layui-input-block'>
+						<select name='zcFrom' id='zcFrom'></select>
+						<!--						<input class='layui-input' placeholder='资产来源' type='text' name='zcFrom' id='zcFrom' >-->
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>使用状态</label>
+					<div class='layui-input-block'>
+						<select name='useStatus' id='useStatus'></select>
+						<!--						<input class='layui-input' placeholder='使用状态' type='text' name='useStatus' id='useStatus' >-->
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>入账状态</label>
+					<div class='layui-input-block'>
+						<select name='accountentryStatus' id='accountentryStatus'>
+							<option value="">请选择</option>
+							<option value="0">未入账</option>
+							<option value="1">已入账</option>
+						</select>
+						<!--						<input class='layui-input' placeholder='入账状态' type='text' name='accountentryStatus' id='accountentryStatus' >-->
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>入账日期</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='入账日期' type='text' name='accountentryTime' id='accountentryTime' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>会计凭证号</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='会计凭证号' type='text' name='accountantNum' id='accountantNum' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>原价值(元)</label>
+					<div class='layui-input-block'>
+						<input name='originalValue' id='originalValue' data-step="100" data-min="0" data-digit="2" data-max="9999999" class="alignment" data-edit="true" value="0"/>
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>发卡状态</label>
+					<div class='layui-input-block'>
+						<select name='cardStatus' id='cardStatus'>
+							<option value="">请选择</option>
+							<option value="0">未发卡</option>
+							<option value="1">已发卡</option>
+						</select>
+						<!--						<input class='layui-input' placeholder='发卡状态' type='text' name='cardStatus' id='cardStatus' >-->
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>发卡日期</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='发卡日期' type='text' name='cardTime' id='cardTime' >
+					</div>
+				</div>
+
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>责任人(填写)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='责任人(填写)' type='text' name='responsible' id='responsible' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>管理部门</label>
+					<div class='layui-input-block'>
+						<input class="layui-input" type="text" id="glDeptName" data-id=""  placeholder="请选择管理部门" readonly="" autocomplete="off">
+						<div class="eleTree ele5" id="glDeptEleTree" lay-filter="glDeptEleTree"></div>
+						<input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>使用部门</label>
+					<div class='layui-input-block'>
+						<input class="layui-input" type="text" id="syDeptName" data-id=""  placeholder="请选择使用部门" readonly="" autocomplete="off">
+						<div class="eleTree ele5" id="syDeptEleTree" lay-filter="syDeptEleTree"></div>
+						<input class="layui-input" type="hidden" id="syDeptId" name="syDeptId">
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>使用人(填写)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='使用人(填写)' type='text' name='syName' id='syName' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>存放地点</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='存放地点' type='text' name='storeAddress' id='storeAddress' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>开始使用日期</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='开始使用日期' type='text' name='startUseTime' id='startUseTime' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>预计使用年限</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='预计使用年限' type='text' name='predictYears' id='predictYears' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>维护周期/天</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='维护周期/天' type='text' name='maintainCycle' id='maintainCycle' >
+					</div>
+				</div>
+
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>剩余期限(月)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='剩余期限' type='text' name='laveTime' id='laveTime' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>临保时间</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='临保时间' type='text' name='maintainDeadline' id='maintainDeadline' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>保养日期</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='保养日期' type='text' name='lastMaintainTime' id='lastMaintainTime' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>累计折旧</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='累计折旧' type='text' name='ljZhejiu' id='ljZhejiu' >
+					</div>
+				</div>
+
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>本年折旧</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='本年折旧' type='text' name='bnZhejiu' id='bnZhejiu' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>净值(元)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='净值' type='text' name='netvalue' id='netvalue' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>减值准备</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='减值准备' type='text' name='jzzb' id='jzzb' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>净额(元)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='净额' type='text' name='net' id='net' >
+					</div>
+				</div>
+
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>净残值率</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='净残值率' type='text' name='netResidualRate' id='netResidualRate' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>净残值(元)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='净残值' type='text' name='netResidualValue' id='netResidualValue' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>使用月限(月)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='使用月限' type='text' name='useMonths' id='useMonths' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>已计提期数</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='已计提期数' type='text' name='haveCount' id='haveCount' >
+					</div>
+				</div>
+
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>剩余期限(月)</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='剩余期限' type='text' name='remainingperiod' id='remainingperiod' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>服务商名称</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='服务商名称' type='text' name='cname' id='cname' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>联系人</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='联系人' type='text' name='venperson' id='venperson' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>联系方式</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='联系方式' type='text' name='venphone' id='venphone' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>服务商地址</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='服务商地址' type='text' name='venaddress' id='venaddress' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<!--				<div class='layui-col-md6'>-->
+				<!--					<label class='layui-form-label'>是否报废  0:未报废 1:已报废</label>-->
+				<!--					<div class='layui-input-block'>-->
+				<!--						<input class='layui-input' placeholder='是否报废  0:未报废 1:已报废' type='text' name='bf' id='bf' >-->
+				<!--					</div>-->
+				<!--				</div>-->
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>保修期限</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='保修期限' type='text' name='warrantyperiod' id='warrantyperiod' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>巡检周期</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='巡检周期' type='text' name='inspectTime' id='inspectTime' style="width:250px;float:left">
+						<div class="layui-form-mid layui-word-aux" style="margin-left: 5px">天</div>
+					</div>
+
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>资产追溯码</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='资产追溯码' type='text' name='epcid' id='epcid' >
+					</div>
+				</div>
+				<div class='layui-col-md3'>
+					<label class='layui-form-label'>备注</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='备注' type='text' name='bz' id='bz' >
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../js/num-alignment.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+    <script type="text/javascript" src="../../js/zcCategory.js"></script>
+    <script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+		// 加减数字初始化
+		alignmentFns.initialize();
+		showZcCategorySelect("zcCategoryId","zcCategory",false)
+		showDictSelect("useStatus","useStatus",false)
+		showDictSelect("unit","danwei",false)
+		showDictSelect("zcFrom","zcFrom",false)
+		layui.config({
+			base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+		}).extend({
+			eleTree: 'eleTree'
+		});
+		var el,el1,el2;
+		layui.use(['layer','form','laydate','eleTree'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+			var layer = layui.layer;
+			var form = layui.form;
+			var eleTree = layui.eleTree;
+			var laydate = layui.laydate;
+			laydate.render({
+				elem: '#stockTime'
+			});
+			laydate.render({
+				elem: '#accountentryTime'
+			});
+			laydate.render({
+				elem: '#cardTime'
+			});
+			laydate.render({
+				elem: '#startUseTime'
+			});
+			laydate.render({
+				elem: '#laveTime'
+			});
+			laydate.render({
+				elem: '#maintainDeadline'
+			});
+			laydate.render({
+				elem: '#lastMaintainTime'
+			});
+
+			if(!el){
+				el=eleTree.render({
+					elem: '#zcCategoryEleTree',
+					url:'/zcCategorys/eleTree',
+					request: {
+						name: "name",
+					},
+					emptText:"暂无资产分类",
+					// defaultExpandAll: true,
+					expandOnClickNode: false,
+					highlightCurrent: true,
+					done:function(res){
+
+					}
+				});
+			}
+			if(!el1){
+				el1=eleTree.render({
+					elem: '#glDeptEleTree',
+					url:'/depts/eleTree',
+					request: {
+						name: "name",
+					},
+					emptText:"暂无管理部门",
+					// defaultExpandAll: true,
+					expandOnClickNode: false,
+					highlightCurrent: true,
+					done:function(res){
+
+					}
+				});
+			}
+			if(!el2){
+				el2=eleTree.render({
+					elem: '#syDeptEleTree',
+					url:'/depts/eleTree',
+					request: {
+						name: "name",
+					},
+					emptText:"暂无使用部门",
+					// defaultExpandAll: true,
+					expandOnClickNode: false,
+					highlightCurrent: true,
+					done:function(res){
+
+					}
+				});
+			}
+			$("#zcCategoryName").on("click",function (e) {
+				e.stopPropagation();
+				$(this).next(".eleTree").toggle();
+			})
+			eleTree.on("nodeClick(zcCategoryEleTree)",function(d) {
+				$('#zcCategoryName').trigger('change');
+				$("#zcCategoryName").val(d.data.currentData.name)
+				$("#zcCategoryId").val(d.data.currentData.id);
+				$(".eleTree").hide();
+			})
+			$("#glDeptName").on("click",function (e) {
+				e.stopPropagation();
+				$(this).next(".eleTree").toggle();
+			})
+			eleTree.on("nodeClick(glDeptEleTree)",function(d) {
+				$('#glDeptName').trigger('change');
+				$("#glDeptName").val(d.data.currentData.name)
+				$("#glDeptId").val(d.data.currentData.id);
+				$(".eleTree").hide();
+			})
+			$("#syDeptName").on("click",function (e) {
+				e.stopPropagation();
+				$(this).next(".eleTree").toggle();
+			})
+			eleTree.on("nodeClick(syDeptEleTree)",function(d) {
+				$('#syDeptName').trigger('change');
+				$("#syDeptName").val(d.data.currentData.name)
+				$("#syDeptId").val(d.data.currentData.id);
+				$(".eleTree").hide();
+			})
+			$(document).on("click",function() {
+				$(".eleTree").hide();
+			})
+		});
+		
+		initData();
+		
+		function initData(){
+			var id = getUrlParam("id");
+			if(id){
+				$.ajax({
+					type : 'get',
+					url : '/zcInfos/'+id,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#selfCodenum').val(data.selfCodenum);
+						$('#zcCodenum').val(data.zcCodenum);
+						$('#zcName').val(data.zcName);
+						$('#zcCategoryId').val(data.zcCategoryId);
+						$('#zcCategoryName').val(data.zcCategoryName);
+						$('#specification').val(data.specification);
+						$('#model').val(data.model);
+						$('#factory').val(data.factory);
+						$('#brand').val(data.brand);
+						$('#supportName').val(data.supportName);
+						$('#supportPhone').val(data.supportPhone);
+						$('#installationFactory').val(data.installationFactory);
+						$('#depreciationTime').val(data.depreciationTime);
+						$('#jcz').val(data.jcz);
+						$('#stockTime').val(data.stockTime);
+						$('#unit').val(data.unit);
+						$('#zcFrom').val(data.zcFrom);
+						$('#useStatus').val(data.useStatus);
+						$('#accountentryStatus').val(data.accountentryStatus);
+						$('#accountentryTime').val(data.accountentryTime);
+						$('#accountantNum').val(data.accountantNum);
+						$('#originalValue').val(data.originalValue);
+						$('#cardStatus').val(data.cardStatus);
+						$('#cardTime').val(data.cardTime);
+						$('#responsible').val(data.responsible);
+						$('#glDeptId').val(data.glDeptId);
+						$('#glDeptName').val(data.glDeptName);
+						$('#syDeptId').val(data.syDeptId);
+						$('#syDeptName').val(data.syDeptName);
+						$('#syName').val(data.syName);
+						$('#storeAddress').val(data.storeAddress);
+						$('#startUseTime').val(data.startUseTime);
+						$('#predictYears').val(data.predictYears);
+						$('#maintainCycle').val(data.maintainCycle);
+						$('#laveTime').val(data.laveTime);
+						$('#maintainDeadline').val(data.maintainDeadline);
+						$('#lastMaintainTime').val(data.lastMaintainTime);
+						$('#ljZhejiu').val(data.ljZhejiu);
+						$('#bnZhejiu').val(data.bnZhejiu);
+						$('#netvalue').val(data.netvalue);
+						$('#jzzb').val(data.jzzb);
+						$('#net').val(data.net);
+						$('#netResidualRate').val(data.netResidualRate);
+						$('#netResidualValue').val(data.netResidualValue);
+						$('#useMonths').val(data.useMonths);
+						$('#haveCount').val(data.haveCount);
+						$('#remainingperiod').val(data.remainingperiod);
+						$('#cname').val(data.cname);
+						$('#venperson').val(data.venperson);
+						$('#venphone').val(data.venphone);
+						$('#venaddress').val(data.venaddress);
+						$('#warrantyperiod').val(data.warrantyperiod);
+						$('#bf').val(data.bf);
+						$('#bz').val(data.bz);
+						$('#createBy').val(data.createBy);
+						$('#updateBy').val(data.updateBy);
+						$('#inspectTime').val(data.inspectTime);
+						$('#epcid').val(data.epcid);
+						$('#zcCoding').val(data.zcCoding);
+						$('#cardNum').val(data.cardNum);
+						renderForm();       //重新渲染表单
+					}
+				});
+
+			}
+		}
+
+		function update() {
+		    var formdata = $("#form").serializeObject();
+
+			$.ajax({
+				type : 'put',
+				url : '/zcInfos',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("修改成功", {shift: -1, time: 1000}, function(){
+                        location.href = "zcInfoList.html";
+                    });
+				}
+			});
+		}
+	</script>
+</body>
+</html>

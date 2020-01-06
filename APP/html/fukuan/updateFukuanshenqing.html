@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+	<style>
+		.layui-form-label{
+			width:30%;
+		}
+	    .layui-input-inline{
+			width:70%;
+		}
+	</style>
+</head>
+<body>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-header" align="center" ><h1>付款申请</h1></div>
+		<div class="layui-card-body">
+			<form class="layui-form layui-form-pane" onsubmit="return false" id="form">
+				<!--<div class='layui-form-item'>-->
+					<!--&lt;!&ndash;<label class='layui-form-label'>单据编码</label>&ndash;&gt;-->
+					<!--&lt;!&ndash;<div class='layui-input-block'>&ndash;&gt;-->
+						<!--&lt;!&ndash;<input class='layui-input' placeholder='单据编码' type='text' name='ccode' id='ccode' lay-verify="required" lay-verType="tips">&ndash;&gt;-->
+					<!--&lt;!&ndash;</div>&ndash;&gt;-->
+				<!--</div>-->
+				<div class='layui-form-item'>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>日期</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='日期' type='text' name='ddate' id='ddate' lay-verify="required" lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>付款方式</label>
+						<div class='layui-input-inline'>
+							<select class="layui-input" name="fkfs" id="fkfs"></select>
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>供应商</label>
+						<div class='layui-input-inline'>
+							<select class="layui-input" name="ksid" id="ksid"></select>
+						</div>
+					</div>
+				<!--<div class='layui-form-item'>-->
+					<!--<label class='layui-form-label'>业务类型</label>-->
+					<!--<div class='layui-input-block'>-->
+						<!--<input class='layui-input' placeholder='业务类型' type='text' name='busstype' id='busstype' lay-verify="required" lay-verType="tips">-->
+					<!--</div>-->
+				<!--</div>-->
+				<!--<div class='layui-form-item'>-->
+					<!--<label class='layui-form-label'>单据来源</label>-->
+					<!--<div class='layui-input-block'>-->
+						<!--<input class='layui-input' placeholder='单据来源' type='text' name='csource' id='csource' lay-verify="required" lay-verType="tips">-->
+					<!--</div>-->
+				<!--</div>-->
+				<!--<div class='layui-form-item'>-->
+					<!--<label class='layui-form-label'>对应业务单号</label>-->
+					<!--<div class='layui-input-block'>-->
+						<input class='layui-input' placeholder='对应业务单号' type='hidden' name='bussid' id='bussid' lay-verify="required" lay-verType="tips">
+					<!--</div>-->
+				<!--</div>-->
+					<div class='layui-inline'>
+						<label class='layui-form-label'>付款项目</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='付款项目' type='text' name='fkxm' id='fkxm' lay-verify="required" lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>付款金额</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='付款金额' type='text' name='fkje' id='fkje' lay-verify="required" lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>备注</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+						</div>
+					</div>
+				</div>
+				<!--<div class='layui-form-item'>-->
+					<!--<label class='layui-form-label'>业务类型</label>-->
+					<!--<div class='layui-input-block'>-->
+						<!--<input class='layui-input' placeholder='业务类型' type='text' name='ctype' id='ctype' lay-verify="required" lay-verType="tips">-->
+					<!--</div>-->
+				<!--</div>-->
+				<!--<div class='layui-form-item'>
+                    <label class='layui-form-label'>流程</label>
+                    <div class='layui-input-block'>
+                        <input class='layui-input' placeholder='流程' type='text' name='flowid' id='flowid' >
+                    </div>
+                </div>
+                <div class='layui-form-item'>
+                    <label class='layui-form-label'>节点</label>
+                    <div class='layui-input-block'>
+                        <input class='layui-input' placeholder='节点' type='text' name='stepid' id='stepid' >
+                    </div>
+                </div>-->
+				<div class="form-actions">
+					<div class="row" align="center">
+						<div class="col-md-12">
+							<!-- <button class="layui-btn" onclick="location.href='fukuanshenqingList.html'">返回</button> -->
+							<button class="layui-btn"  lay-submit  lay-filter="tj" id="tj">
+								<i class="fa fa-save"></i> 保存
+							</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/vendor.js"></script>
+<script type="text/javascript">
+     var self = null;
+    //var appStatus = showStepSelect("stepid", "1", true);
+    showDictNameSelect("fkfs", "fktype",false);
+    showVenSelect("ksid", "vendor", false);
+	
+mui.plusReady(function() {
+	self = plus.webview.currentWebview();
+	
+	mui.init({								
+		beforeback: function() {	        
+				self.close();
+		}
+	});	
+    layui.use(['layer','form','laydate'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+        self = plus.webview.currentWebview();
+        
+        var id = self.ddid;
+        initData(id)
+        function initData(id){
+
+            if(id){
+                $.ajax({
+                    type : 'get',
+                    url : server_url+'/fukuanshenqings/'+id,
+                    async : false,
+                    success : function(data) {
+                    	$('#id').val(data.id);
+						$('#ccode').val(data.ccode);
+						$('#ddate').val(data.ddate);
+						$('#busstype').val(data.busstype);
+						$('#csource').val(data.csource);
+						$('#bussid').val(data.bussid);
+						$('#fkfs').val(data.fkfs);
+						$('#fkxm').val(data.fkxm);
+						$('#fkje').val(data.fkje);
+						$('#ksid').val(data.ksid);
+						$('#memo').val(data.memo);
+						$('#ctype').val(data.ctype);
+						$('#flowid').val(data.flowid);
+						$('#stepid').val(data.stepid);
+				
+                        renderForm();       //重新渲染表单
+                    }
+                });
+
+            }
+        }
+
+
+
+        form.on('submit(tj)', function(data){
+
+            $("#tj").attr("class","layui-btn layui-btn-radius layui-btn-disabled").removeAttr("lay-filter","tj");
+
+            var formdata = $("#form").serializeObject();
+
+            $.ajax({
+                type : 'put',
+                url : server_url+'/fukuanshenqings',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(formdata),
+                success : function(data) {
+                    mui.plusReady(function() {						 
+                    			var clist = plus.webview.currentWebview().opener();
+                    			mui.fire(clist, 'refresh'); 	
+                    			layer.msg("保存成功", {shift: -1, time: 1000}, function(){
+                    					self.close();  
+                    			});
+                    })
+                }
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    });
+});	
+</script>
+</body>
+</html>

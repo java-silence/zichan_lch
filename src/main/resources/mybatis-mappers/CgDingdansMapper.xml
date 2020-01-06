@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.CgDingdansDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.pid != null and params.pid != ''">
+				and pid = #{params.pid} 
+			</if>
+			<if test="params.invid != null and params.invid != ''">
+				and invid = #{params.invid} 
+			</if>
+			<if test="params.cpgg != null and params.cpgg != ''">
+				and cpgg = #{params.cpgg} 
+			</if>
+			<if test="params.danwei != null and params.danwei != ''">
+				and danwei = #{params.danwei} 
+			</if>
+			<if test="params.inum != null and params.inum != ''">
+				and inum = #{params.inum} 
+			</if>
+			<if test="params.iprice != null and params.iprice != ''">
+				and iprice = #{params.iprice} 
+			</if>
+			<if test="params.taxrate != null and params.taxrate != ''">
+				and taxrate = #{params.taxrate} 
+			</if>
+			<if test="params.itax != null and params.itax != ''">
+				and itax = #{params.itax} 
+			</if>
+			<if test="params.imoney != null and params.imoney != ''">
+				and imoney = #{params.imoney} 
+			</if>
+			<if test="params.itotal != null and params.itotal != ''">
+				and itotal = #{params.itotal} 
+			</if>
+			<if test="params.cbatch != null and params.cbatch != ''">
+				and cbatch = #{params.cbatch} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and ctype = #{params.ctype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.dhsl != null and params.dhsl != ''">
+				and dhsl = #{params.dhsl} 
+			</if>
+			<if test="params.rksl != null and params.rksl != ''">
+				and rksl = #{params.rksl} 
+			</if>
+			<if test="params.yfdj != null and params.yfdj != ''">
+				and yfdj = #{params.yfdj}
+			</if>
+			<if test="params.yfje != null and params.yfje != ''">
+				and yfje = #{params.yfje}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from cg_dingdans t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="CgDingdans">
+		select * from cg_dingdans t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update cg_dingdans t
+		<set>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="invid != null">
+				invid = #{invid}, 
+			</if>
+			<if test="cpgg != null">
+				cpgg = #{cpgg}, 
+			</if>
+			<if test="danwei != null">
+				danwei = #{danwei}, 
+			</if>
+			<if test="inum != null">
+				inum = #{inum}, 
+			</if>
+			<if test="iprice != null">
+				iprice = #{iprice}, 
+			</if>
+			<if test="taxrate != null">
+				taxrate = #{taxrate}, 
+			</if>
+			<if test="itax != null">
+				itax = #{itax}, 
+			</if>
+			<if test="imoney != null">
+				imoney = #{imoney}, 
+			</if>
+			<if test="itotal != null">
+				itotal = #{itotal}, 
+			</if>
+			<if test="cbatch != null">
+				cbatch = #{cbatch}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="dhsl != null">
+				dhsl = #{dhsl}, 
+			</if>
+			<if test="rksl != null">
+				rksl = #{rksl}, 
+			</if>
+			<if test="yfdj != null">
+				yfdj = #{yfdj},
+			</if>
+			<if test="yfje != null">
+				yfje = #{yfje},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<insert id="saves">
+		INSERT INTO
+		cg_dingdans
+		(pid, invid, cpgg, danwei, inum, iprice, taxrate, itax, imoney, itotal, cbatch, status, del, memo, ctype, c01, c02, c03, dhsl, rksl,yfdj,yfje)
+		VALUES
+		<foreach collection="datasList" item="datas" separator=",">
+			(#{pid}, #{datas.invid}, #{datas.cpgg}, #{datas.danwei}, #{datas.inum}, #{datas.iprice}, #{datas.taxrate}, #{datas.itax}, #{datas.imoney}, #{datas.itotal}, #{datas.cbatch}, #{datas.status}, #{datas.del}, #{datas.memo}, #{datas.ctype}, #{datas.c01}, #{datas.c02}, #{datas.c03}, #{datas.dhsl}, #{datas.rksl}, #{datas.yfdj}, #{datas.yfje})
+		</foreach>
+	</insert>
+
+</mapper>

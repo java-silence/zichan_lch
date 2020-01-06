@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			 .oa-contact-cell.mui-table .mui-table-cell {
+				padding: 11px 0;
+				vertical-align: middle;
+			}
+			
+			.oa-contact-cell {
+				position: relative;
+				margin: -11px 0;
+			}
+	
+			.oa-contact-avatar {
+				width: 75px;
+			}
+			.oa-contact-avatar img {
+				border-radius: 50%;
+			}
+			.oa-contact-content {
+				width: 100%;
+			}
+			.oa-contact-name {
+				margin-right: 20px;
+			}
+			.oa-contact-name, oa-contact-position {
+				float: left;
+			}
+			.nodata{
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<ul id="OA_task_1" class="mui-table-view mui-table-view-chevron"></ul>
+			<div id="nodata" class="nodata" style="height:40px;line-height:40px;text-align: center">没有更多的用户了！</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script type="text/javascript" src="../js/properties.js" ></script>
+	<script type="text/javascript" src="../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../js/dept.js" ></script>
+	<script>
+		var deptData = getDeptByUser("");
+
+		mui.init({
+						swipeBack: false,				
+						pullRefresh: {
+							container: '#pullrefresh',
+							down: {
+								callback: pulldownRefresh
+							},
+							up: {
+		                        auto:true,
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh
+							}
+						}
+					});
+						
+			        var token = JSON.parse(localStorage.getItem('$state')).token;	
+				
+					var start = 0;
+					var length = 20;
+					function getData(type){				
+						mui.ajax(server_url+'/users?start='+start+'&length='+length,{
+							dataType:'json',//服务器返回json格式数据
+							type:'get',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							headers:{'token':token},
+							success:function(data){	
+									var table = $(".mui-table-view");
+									var cells = document.body.querySelectorAll('.mui-table-view-cell');
+									var html = '';
+									if(data.data.length != 0){
+										if(!$("#nodata").hasClass("nodata")){
+				                             $("#nodata").addClass("nodata");
+				                        }
+										
+										var headimg ;
+										for (var i = 0; i<data.data.length ; i++) {
+											//console.log(JSON.stringify(data.data[i]));
+											headimg ="../images/touxiang.jpg";
+											if(data.data[i].headImgUrl != null){
+												headimg=server_url+'/statics'+data.data[i].headImgUrl;
+											}
+											html+='<li class="mui-table-view-cell mui-media">'+	
+														'<div class="mui-slider-right mui-disabled">'+
+															'<a class="mui-btn mui-btn-red"  onclick="tel('+data.data[i].phone+')">拨打电话</a>'+
+															'<a class="mui-btn mui-btn-blue" onclick="pushmsg('+data.data[i].id+')">发送消息</a>'+
+														'</div>'+
+														'<a class="mui-navigate-right mui-slider-handle">'+
+															'<img class="mui-media-object mui-pull-left" src="'+headimg+'">'+
+															'<div class="mui-media-body">'+data.data[i].nickname+'-'+ deptData[data.data[i].deptid] +							
+																'<p class="mui-ellipsis">'+data.data[i].phone +'</p>'+
+															'</div>'+
+														'</a>'+
+													'</li>'
+													
+										}
+										
+										if(type == 'up'){
+											table.append(html);											
+										}else{
+											table.html(html);
+										}
+										start += length;
+										mui('#pullrefresh').pullRefresh().enablePullupToRefresh();
+									}else{
+										if($("#nodata").hasClass("nodata")){
+				                            $("#nodata").removeClass("nodata");
+										}
+										mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									}
+									
+									
+							},
+							error:function(xhr,type,errorThrown){
+								//异常处理；
+		
+								var msg = xhr.responseText;
+								var response = JSON.parse(msg);
+								alert(response.message);
+							}
+						});
+					}
+					/**
+					 * 下拉刷新具体业务实现
+					 */
+					function pulldownRefresh() {
+						setTimeout(function() {
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+		                    start = 0;
+							getData("down");
+						}, 1000);
+					}
+					var count = 0;
+					/**  
+					 * 上拉加载具体业务实现
+					 */
+					function pullupRefresh() {
+						setTimeout(function() {
+							mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+							getData("up");
+						}, 1000);
+					}
+					
+					function tel(phone){
+                        plus.device.dial(phone);						
+					}
+					
+					function pushmsg(id){
+					    mui.openWindow({
+					    				url: 'pushmsg/addPushmsg.html',
+					    				id: 'pushmsg/addPushmsg.html',
+					    				preload: true,
+					    				show: {
+					    					aniShow: 'pop-in'
+					    				},
+					    				styles: {
+					    					popGesture: 'hide',
+					    					titleNView: {
+					    						autoBackButton: true,
+					    						titleText:"发送消息"
+					    					}
+					    				},
+					    				waiting: {
+					    					autoShow: false
+					    				},
+										extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+											userid:id
+										},
+					    		});					
+					}
+	</script>
+</html>

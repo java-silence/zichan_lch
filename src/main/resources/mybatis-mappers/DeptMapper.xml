@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.DeptDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.deptcode != null and params.deptcode != ''">
+				and deptcode like #{params.deptcode}
+			</if>
+			<if test="params.deptname != null and params.deptname != ''">
+				and deptname = #{params.deptname} 
+			</if>
+			<if test="params.pid != null and params.pid != ''">
+				and pid = #{params.pid} 
+			</if>
+			<if test="params.phone != null and params.phone != ''">
+				and phone = #{params.phone} 
+			</if>
+			<if test="params.address != null and params.address != ''">
+				and address = #{params.address} 
+			</if>
+			<if test="params.leader != null and params.leader != ''">
+				and leader = #{params.leader} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and ctype = #{params.ctype}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from t_dept t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="Dept">
+		select * from t_dept t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+	<select id="listDeptxm" resultType="Dept">
+		select * from t_dept t
+		<include refid="where" />
+		order by id
+	</select>
+
+	<update id="update">
+		update t_dept t
+		<set>
+			<if test="deptcode != null">
+				deptcode = #{deptcode}, 
+			</if>
+			<if test="deptname != null">
+				deptname = #{deptname}, 
+			</if>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="phone != null">
+				phone = #{phone}, 
+			</if>
+			<if test="address != null">
+				address = #{address}, 
+			</if>
+			<if test="leader != null">
+				leader = #{leader}, 
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<!--根据部门ID集合查询部门信息-->
+	<select id="listDeptSAndParent" resultType="Dept">
+		SELECT * FROM t_dept p WHERE p.id in
+        <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+	</select>
+
+	<select id="queryAllDept" resultType="com.itycu.server.model.Dept">
+		select * FROM t_dept as a where a.pid = 0 and a.deptcode != "01"
+	</select>
+
+
+	<select id="getJxById" resultType="java.lang.String">
+		select jx from zc_check as a left join
+		t_dept as b on a.check_dept_id = b.id
+		where a.id = #{checkId}
+	</select>
+
+
+	<select id="queryMaxBh" resultType="java.lang.Integer">
+		select max(a.bh) from
+		zc_check as a
+		left join  t_dept as b
+		on a.check_dept_id = b.id
+		where  b.jx  = "YQ"
+		and YEAR(a.create_time) = YEAR( NOW( ) )
+	</select>
+
+	<select id="xmSelectTreeByDeptId" resultType="com.itycu.server.model.Dept">
+		select * from t_dept as a
+		left join t_dept as b on a.id = b.pid
+		where a.id = #{pid}
+	</select>
+
+	<select id="getByPid" resultType="com.itycu.server.model.Dept">
+		select t.* from t_dept as t
+		where t.id = #{pid}
+		limit 1
+	</select>
+
+
+	<select id="queryDeptByPid" resultType="com.itycu.server.model.Dept">
+		select b.* from t_dept as t
+		left join t_dept as b on t.pid = b.id
+		where t.id = #{pid}
+		limit 1
+	</select>
+
+	<select id="queryAllSonDeptByPid" resultType="com.itycu.server.model.Dept">
+		select t.* from t_dept as t
+		where t.pid = #{pid}
+
+	</select>
+
+</mapper>

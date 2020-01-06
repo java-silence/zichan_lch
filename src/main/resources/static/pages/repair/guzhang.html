@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+</head>
+<style type="text/css">
+	/*h1{*/
+		/*font-weight: bold;*/
+		/*margin: 20px 0px 20px 0px;*/
+		/*text-align: center;*/
+	/*}*/
+	h6{
+		font-weight: bold;
+		margin: 10px 0px 10px 0px;
+		font-size:20px;
+	}
+	table{
+		margin: 0 auto;
+	}
+	table tr td{
+		margin: 0px;
+		padding: 10px;
+		text-indent:2em;
+		text-align: left;
+		width: 100%;
+		height: 30px;
+	}
+</style>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<!--<h1>设备照片</h1>-->
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<table border="0px" cellspacing="0" cellpadding="2" id="tab">
+				<tr>
+
+					<td colspan="2" >
+						<h6 id="demoList"></h6>
+
+					</td>
+				</tr>
+
+			</table>
+
+
+		</fieldset>
+	</form>
+	</div>
+
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript">
+        var id = getUrlParam("id");
+        init(id);
+
+        var example;
+        console.log(id);
+        function init(id) {
+            $.ajax({
+                type: 'get',
+                url: '/guzhangjis/'+id,
+                success: function (d) {
+//                    d.cname = $("#id").val();
+                    $("#demoList").html(d.tdesc);
+
+                }
+            });
+        }
+
+	</script>
+</body>
+</html>

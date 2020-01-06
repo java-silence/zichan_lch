@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+	<style>
+		.beizhu,.bumen{
+			width: 513px !important;
+		}
+		.eleTree{
+			width: 450px;
+			height: 500px;
+			border: 1px solid #ccc;
+			overflow: hidden;
+			display: inline-block;
+		}
+		.ele5{
+			height: auto;
+			width: 130%;
+			display: none;
+			position: absolute;
+			top:100%;
+			background-color: #fff;
+			z-index: 1000;
+		}
+	</style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="id" type="hidden"/>
+	<input id="shuzhi" type="hidden"/>
+	<input id="scrollTop" type="hidden"/>
+	<br>
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+				<button class="layui-btn" type="submit" onclick="add()"><i class="fa fa-save"></i>暂存</button>
+				<button class="layui-btn" type="submit" onclick="addAndCommit()"><i class="fa fa-save"></i>保存并提交</button>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+		<input id="type" name="type" type="hidden" />
+		<div class='layui-form-item'>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>调入部门</label>
+				<div class='layui-input-inline'>
+					<input class="layui-input" type="text" id="backDeptName" data-id=""  placeholder="请选择调出部门" readonly="" autocomplete="off">
+					<div class="eleTree ele5" id="backDeptEleTree" lay-filter="backDeptEleTree"></div>
+					<input class="layui-input" type="hidden" id="backDeptId" name="backDeptId">
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>调配描述</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input beizhu' placeholder='调配描述' type='text' name='description' id='description' >
+				</div>
+			</div>
+		</div>
+	</form>
+	<br>
+	<form class="layui-form layui-table-tool" onsubmit="return false">
+		<button class="layui-btn" onclick="tianjia()">
+			<i class="layui-icon">&#xe608;</i> 添加
+		</button>
+		<button class="layui-btn" onclick="batchdel()">
+			<i class="layui-icon">&#xe640;</i> 批量删除
+		</button>
+	</form>
+	<div>
+		<div class="widget-body no-padding table-overlay" id="scrollDiv">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+
+			<script type="text/html" id="barDemo">
+				<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+			</script>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript">
+
+    var deployId = getUrlParam("id");
+    var tableIns;
+    var tableIns2;
+    var table;
+    var el,el1,el2;
+    layui.config({
+        base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree'
+    });
+    layui.use(['layer','form','laydate','table','eleTree'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+        var eleTree = layui.eleTree;
+        table = layui.table;
+        // 查询管理部门
+        if(!el1){
+            el1=eleTree.render({
+                elem: '#backDeptEleTree',
+                url:'/depts/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无管理部门",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+                }
+            });
+        }
+        eleTree.on("nodeClick(backDeptEleTree)",function(d) {
+            $('#backDeptName').trigger('change');
+            $("#backDeptName").val(d.data.currentData.name)
+            $("#backDeptId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $("#backDeptName").on("click",function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        $(document).on("click",function() {
+            $(".eleTree").hide();
+        })
+        tableIns2 = table.render({
+            elem: '#data'
+            ,data:[]
+            ,url:"/zcDeployItems/listByZcDeployId?zcDeployId="+deployId
+            ,page: false
+            ,height: 'full-300'
+            ,limit: 10000
+            ,totalRow: true
+            ,cols: [[
+                {checkbox: true}
+                ,{field:'id',title:'ID', width:100, sort: true,hide:true}
+                ,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
+                ,{field:'syDeptId',title:'使用部门ID', width:100, sort: true,hide:true}
+                ,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
+                ,{field:'zcCodenum',title:'编号', width:150, sort: true}
+                ,{field:'zcName',title:'名称', width:150, sort: true}
+                ,{field:'gldeptname',title:'管理部门', width:150, sort: true}
+                ,{field:'sydeptname',title:'使用部门', width:150, sort: true}
+                ,{field:'zcFrom',title:'来源', width:100, sort: true}
+                ,{field:'startusetime',title:'开始使用日期', width:140, sort: true}
+                ,{field:'remainingperiod',title:'剩余期限', width:100, sort: true}
+                ,{field:'originalvalue',title:'原价值', width:100, sort: true}
+                ,{field:'netvalue',title:'净值', width:100, sort: true}
+                ,{field:'bz',title:'调配说明', width:200, sort: true,edit:"text"}
+                ,{field:'caozuo',fixed:'right', title: '操作', width:120, align:'center', toolbar: '#barDemo'}
+            ]]
+            , done: function(res, curr, count){
+                if ($('#scrollDiv').find(".layui-table-main") && $("#scrollTop").val()) $('#scrollDiv').find(".layui-table-main").scrollTop($("#scrollTop").val());
+
+                $('#scrollDiv').find(".layui-table-main").scroll(function(){
+                    $("#scrollTop").val($(this).scrollTop())
+                })
+            }
+        });
+
+        //监听工具条
+        table.on('tool(data)', function(obj){
+            var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+
+            switch(event){
+                case "del":
+                    layer.confirm('真的删除行么', function (index) {
+                        var oldData =  table.cache["data"];
+
+                        oldData.splice(obj.tr.data('index'),1);
+                        tableIns2.reload({
+                            url:"",
+                            data : oldData
+                        });
+
+                        layer.close(index);
+                    });
+                    break;
+            }
+        });
+        initData();//提取维修单内容，并显示
+    });
+
+    // 初始化报废主信息
+    function initData(){
+        var id = getUrlParam("id");
+        if(id != ""){
+            $.ajax({
+                type : 'get',
+                url : '/zcDeploys/getZcDeployDetail?deployId='+id,
+                async : false,
+                success : function(data) {
+                    var data = data.data;
+                    $('#id').val(data.id);
+                    $('#description').val(data.description);
+                    $('#backDeptId').val(data.backDeptId);
+                    $('#backDeptName').val(data.backDeptName);
+                    renderForm();
+                }
+            });
+        }
+    }
+
+    function add() {
+        var formdata = $("#form").serializeObject();
+        var data =  table.cache["data"];
+        if(!data || data.length == 0){
+            layer.msg("请添加资产");
+            return;
+        }
+        var backDeptId = $('#backDeptId').val();
+        if (backDeptId == null || backDeptId == ''){
+            layer.msg("请选择调出部门");
+            return;
+        }
+        formdata.description = $('#description').val();
+        formdata.backDeptId = backDeptId;
+        formdata.zcDeployItems = data;
+        formdata.id = $('#id').val();
+        $.ajax({
+            type : 'post',
+            url : '/zcDeploys',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+            success : function(data) {
+                if (data.code == 0){
+                    layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "addZcDeploy.html";
+                    });
+                }else {
+                    layer.msg(data.msg, {shift: -1, time: 1000});
+                }
+            }
+        });
+    }
+
+    // 保存并提交
+    function addAndCommit(){
+        $('#type').val("1");
+        add();
+        $('#type').val("");
+    }
+
+    function tianjia(){
+        $("#shuzhi").val("[]");
+        layer.open({
+            type: 2,
+            title: '添加资产档案',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: encodeURI('../zcinfo/searchZcInfo.html'),
+            end : function(){
+                var oldData =  table.cache["data"];
+                for (var i = 0; i < oldData.length; i++) {
+                    // 改变ID值
+                    var zid = oldData[i].zcId;
+                    oldData[i].id = zid;
+                }
+                var newData = JSON.parse($("#shuzhi").val())
+                //if (!checkRepeat(oldData,newData)){
+                if (newData && newData.length > 0) {
+                    $.each(newData, function (index, item) {
+                        item.zcId = item.id;
+                        item.bz = "";
+                        if (!checkRepeat(oldData,item)) {
+                            oldData.push(item);
+                        }
+                    })
+
+                    tableIns2.reload({
+                        url:"",
+                        data : oldData
+                    })
+                }
+                //}
+            }
+        });
+    }
+
+    // 判断报废子单是否重复
+    function checkRepeat(array,item) {
+        //var id = item[0].id;
+        var id = item.id;
+        for (var i = 0; i < array.length; i++) {
+            if (array[i].id == id){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //批量删除
+    function batchdel(){
+        var oldData = table.cache["data"];
+        var newData = [];
+        if(!oldData || data.length == 0) {
+            layer.msg("请选择要删除的行");
+        }else{
+            layer.confirm('确定批量删除行么', function (index) {
+                for (var i = 0; i < oldData.length; i++) {
+                    if (!oldData[i].LAY_CHECKED){
+                        newData.push(oldData[i]);
+                    }
+                }
+                tableIns.reload({
+                    url:"",
+                    data: newData
+                });
+
+                layer.close(index);
+            });
+        }
+    }
+</script>
+</body>
+</html>

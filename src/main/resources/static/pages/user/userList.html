@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Insert title here</title>
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+    <link rel="stylesheet" type="text/css" media="screen" href="../../css/common.css">
+    <style type="text/css">
+        html,body{
+            margin: 0;
+            padding: 0;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div style="height:100%;overflow-x: hidden">
+    <div class="layui-col-space15" style="height:100%;">
+        <div class="layui-col-md3" style="height:100%;margin-top: 10px" id="deptTree">
+            <div class="layui-card" style="height:100%;">
+                <div class="layui-card-header">组织架构</div>
+                <div class="layui-card-body">
+                    <!--<div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-normcol">-->
+                        <div id="eleTree" lay-filter="eleTree"></div>
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9" style="height:100%">
+            <div class="layui-card" style="height:100%">
+                <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                    <form class="form-horizontal" id="form" method="post" action="/users/export" onsubmit="return false" enctype="multipart/form-data">
+                        <input id="token" name="token" type="hidden" />
+                        <div class="layui-form-item">
+                            <!--<div class="layui-inline">-->
+                                <!--<label class="layui-form-label">部门</label>-->
+                                <!--<div class="layui-input-block">-->
+                                    <!--<select id="deptid" name="deptid" class="form-control input-sm"></select>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="layui-inline">
+                                <label class="layui-form-label">用户名</label>
+                                <div class="layui-input-block">
+                                    <input id="username" name="username"  type="text" class="form-control layui-input" placeholder="用户名">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">姓名</label>
+                                <div class="layui-input-block">
+                                    <input id="nickname" name="nickname"  type="text" class="form-control layui-input" placeholder="姓名">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <select id="status" name="status" class="form-control input-sm"></select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label"></label>
+                                <div class="layui-input-block">
+                                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                    <button class="layui-btn layuiadmin-btn-useradmin"  id="exportBt">
+                                        导出
+                                    </button>
+                                    <button class="layui-btn layuiadmin-btn-useradmin"  id="printBt">
+                                        打印
+                                    </button>
+                                    <button class="layui-btn layuiadmin-btn-useradmin" data-type="add" onclick="add()">添加</button>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-card-body">
+                    <!--<div style="padding-bottom: 10px;"></div>-->
+
+                    <table class="layui-hide" id="data" lay-filter="data"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="test"></div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript">
+    var pers = checkPermission();
+    if (getUrlParam("searchUser")){
+        $("#deptTree").hide();
+    }
+
+    var userStatus = showDictSelect("status", "userStatus", true);
+    // showDeptSelect("deptid", "dept", false,1);
+
+    var tableIns;
+    var el;
+    var deptid,deptcode;
+    layui.config({
+        base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree'
+    })
+
+    layui.use(['layer','form','table','eleTree'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/users/list2"
+            ,limit: 20 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+            ,height:  'full-200'
+//        ,skin: 'line' //行边框风格
+            ,even: true //开启隔行背景
+//        ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {username:$('#username').val(),nickname:$('#nickname').val(),status:$('#status').val(),deptcode:deptcode,orderBy:"order by createTime desc"}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+                ,{field:'nickname',title:'姓名',fixed:'left', width:200, sort: true}
+                ,{field:'username',title:'登录名', width:200, sort: true}
+                ,{field:'deptname',title:'部门', width:200, sort: true}
+                ,{field:'telephone',title:'电话', width:100, sort: true}
+                // ,{field:'rzsj',title:'入职时间', width:100, sort: true}
+                // ,{field:'zytc',title:'专业特长', width:100, sort: true}
+                // ,{field:'yuexin',title:'月薪', width:100, sort: true}
+                ,{field:'memo',title:'备注', width:100, sort: true}
+                ,{field:'status',title:'状态', width:100, sort: true,templet: function(d){
+                        return userStatus[d.status];
+                    }}
+                ,{field:'caozuo', title: '操作',fixed:'right', width:170,templet: function(d){
+                        var id = d.id;
+                        var href = "updateUser.html?id=" + id;
+                        var edit = buttonEdit(href, "", pers);
+                        var del = buttonDel(id, "", pers);
+                        var rePass = "<button class='layui-btn layui-btn-xs' title='初始化密码' onclick='rePass(" + id +")'><i class='layui-icon'>&#xe673;</i></button>";
+                        var push = "<button class='layui-btn layui-btn-xs' title='推送消息' onclick='pushInfo("+id+")'><i class='layui-icon'>&#xe667;</i></button>";
+                        return edit + del + rePass +push;
+                    }}
+            ]]
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    username:$('#username').val(),nickname:$('#nickname').val(),status:$('#status').val(),deptcode:deptcode,
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        var eleTree = layui.eleTree;
+
+        el = eleTree.render({
+            elem: '#eleTree',
+            url:'/depts/eleTree',
+            request: {
+                name: "name",
+            },
+            emptText:"暂无组织架构",
+            highlightCurrent:true,
+            // accordion:true,
+            // showCheckbox:true,
+            // checkOnClickNode:true,
+            // accordion:true
+        });
+
+        // 节点点击事件
+        eleTree.on("nodeClick(eleTree)",function(d) {
+            //console.log(d.data.currentData.id);    // 点击节点对于的数据
+            deptid = d.data.currentData.id;
+            deptname = d.data.currentData.name;
+            deptcode = d.data.currentData.deptcode;
+            $('#searchBt').trigger('click');
+        })
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('row(data)', function(obj){
+
+            var data = obj.data;
+
+            var id = data.id;
+
+            //标注选中样式
+            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+
+            if (getUrlParam("searchUser")){
+                parent.$('#user').val(JSON.stringify(data));
+                //当你在iframe页面关闭自身时
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            }
+        });
+    });
+    function del(id){
+        layer.confirm('确定要删除吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'delete',
+                url : '/users/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("删除成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+    function rePass(id){
+        layer.confirm('确定要初始化密码吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'get',
+                url : '/users/rePassword?id='+id,
+                success : function(data) {
+                    layer.msg("初始化密码成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function add(){
+        if (!deptid) deptid = null;
+        location.href="addUser.html?deptid="+deptid;
+    }
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {username:$('#username').val(),nickname:$('#nickname').val(),status:$('#status').val(),deptcode:deptcode,orderBy:"order by createTime desc"},page:{curr:1}})
+
+    });
+
+    $("#exportBt").click(function(){
+        $("#token").val(localStorage.getItem("token"))
+        $("#form").attr("onsubmit", "return true");
+        $("#form").submit();
+        $("#form").attr("onsubmit", "return false");
+    });
+
+
+    function pushInfo(id){
+        var content = '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top:20px">'+
+            '<form class="form-horizontal">'+
+            '<fieldset>'+
+            '<div class="form-group">'+
+            '<label class="col-md-2 control-label">消息标题</label>'+
+            '<div class="col-md-10">'+
+            '<input class="form-control" placeholder="消息标题" type="text" id="title">'+
+            '</div>'+
+            '</div>'+
+            '<div class="form-group">'+
+            '<label class="col-md-2 control-label">消息内容</label>'+
+            '<div class="col-md-10">'+
+            '<textarea class="form-control" placeholder="消息内容" type="text" id="msg" style="height: 150px;"></textarea>'+
+            '</div>'+
+            '</div>'+
+            '</fieldset>'+
+            '</form>'+
+            '</div>';
+        layer.open({
+            type: 1
+            ,area:  ['600px', '400px']
+            ,title: '推送消息'
+            ,btn: ['确定', '取消']
+            ,btnAlign: 'c'
+            ,moveType: 1 //拖拽模式，0或者1
+            ,content: content
+            ,yes: function(index, layero){
+                var title = $("#title").val();
+                var msg = $("#msg").val();
+                $.ajax({
+                    type : 'post',
+                    url : '/pushTest/test?title='+title+'&msg='+msg+'&userid='+id,
+                    async : false,
+                    success : function(data) {
+                        layer.close(index);
+                    }
+                });
+            }
+        });
+    }
+
+    $("#printBt").click(function(){
+        var username = $('#username').val();
+        var nickname = $('#nickname').val();
+        var status = $('#status').val();
+        var deptid = deptid;
+        if (!deptid) deptid = "";
+
+            $.ajax({
+                type : 'get',
+                url : '/users/listByCondition',
+                data:{username:username,nickname:nickname,deptid:deptid,status:status},
+                success : function(data) {
+                    var html = "<h3 style='text-align: center'>人员档案</h3>"
+                    html += "<table class='layui-table'><thead><tr><th>姓名</th><th>登录名</th><th>部门</th><th>状态</th></tr></thead>";
+                    for(var i=0;i<data.length;i++){
+                        var user = data[i];
+                        for(l in user){
+                            if(!user[l]){
+                                user[l] = "";
+                            }
+                        }
+
+                        html += "<tbody><tr><td>"+user.nickname+"</td><td>"+user.username+"</td><td>"+user.deptname+"</td><td>"+userStatus[user.status]+"</td>" +
+                            "</tr></tbody>"
+                    }
+                    html += "</table>"
+
+                    $("#test").print({
+                        //Use Global styles
+                        globalStyles : false,
+                        //Add link with attrbute media=print
+                        mediaPrint : false,
+                        //Print in a hidden iframe
+                        iframe : false,
+                        //Don't print this
+                        noPrintSelector : ".avoid-this",
+                        //Add this at top
+                        prepend : html,
+                        //Add this on bottom
+                        append : "",
+                        //Log to console when printing is done via a deffered callback
+                        deferred: $.Deferred().done(function() { console.log('Printing done', arguments); }),
+                        stylesheet:'../../layuiadmin/layui/css/layui.css'
+                    });
+                }
+            });
+    });
+</script>

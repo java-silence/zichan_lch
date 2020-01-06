@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcCategoryDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id} 
+			</if>
+			<if test="params.catCode != null and params.catCode != ''">
+				and t.cat_code = #{params.catCode} 
+			</if>
+			<if test="params.pid != null and params.pid != ''">
+				and t.pid = #{params.pid} 
+			</if>
+			<if test="params.code != null and params.code != ''">
+				and t.code = #{params.code} 
+			</if>
+			<if test="params.name != null and params.name != ''">
+				and t.name = #{params.name} 
+			</if>
+			<if test="params.cardStyle != null and params.cardStyle != ''">
+				and t.card_style = #{params.cardStyle} 
+			</if>
+			<if test="params.accountantCode != null and params.accountantCode != ''">
+				and t.accountant_code = #{params.accountantCode} 
+			</if>
+			<if test="params.accountantName != null and params.accountantName != ''">
+				and t.accountant_name = #{params.accountantName} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del} 
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and t.c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and t.c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and t.c03 = #{params.c03} 
+			</if>
+			<if test="params.createBy != null and params.createBy != ''">
+				and t.create_by = #{params.createBy} 
+			</if>
+			<if test="params.updateBy != null and params.updateBy != ''">
+				and t.update_by = #{params.updateBy} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.create_time = #{params.createTime} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime} 
+			</if>
+		
+		</where>
+	</sql>
+
+	<select id="getById" resultType="ZcCategory">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_category t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+		select count(1) from zc_category t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="ZcCategory">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_category t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update zc_category t
+		<set>
+			<if test="catCode != null">
+				cat_code = #{catCode}, 
+			</if>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="code != null">
+				code = #{code}, 
+			</if>
+			<if test="name != null">
+				name = #{name}, 
+			</if>
+			<if test="cardStyle != null">
+				card_style = #{cardStyle}, 
+			</if>
+			<if test="accountantCode != null">
+				accountant_code = #{accountantCode}, 
+			</if>
+			<if test="accountantName != null">
+				accountant_name = #{accountantName}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="bz != null">
+				bz = #{bz}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy}, 
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy}, 
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime}, 
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime}, 
+			</if>
+
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

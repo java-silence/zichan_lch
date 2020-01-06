@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../layuiadmin/formSelects/formSelects-v4.css">
+	<link rel="stylesheet" href="../../css/common.css">
+	<style>
+		.layui-table-header{
+			z-index:99999999
+		}
+		.xm-select-parent{
+			width:150px;
+			display: inline-block;
+		}
+	</style>
+</head>
+<body>
+<div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="main">
+		<div>
+			<header style="height: 100%">
+				<div align="left">
+					<table style="width: 100%">
+						<tr>
+							<td>
+								<form class="form-inline " id="form" method="post" action="/stockoutss/fhexport" onsubmit="return false" enctype="multipart/form-data">
+									<input id="token" name="token" type="hidden" />
+									<input  type="hidden" id="kehu"/>
+									<input  type="hidden" id="stockins"/>
+									<div class="form-group">
+										起始日期：
+										<input id="sdate" name="sdate" type="text" class="form-control" style="width:100px" placeholder="起始日期">
+										终止日期：
+										<input id="edate" name="edate" type="text" class="form-control" style="width:100px" placeholder="终止日期">
+
+										客户：
+										<input class='form-control' placeholder='客户' style="width:100px" type='text' name='cusname' id='cusname' >
+										仓库：
+										<select id="whid" name="whid" class="form-control input-sm"></select>
+										品名：
+										<!--<select id="invname" name="invname" class="form-control" lay-filter="inv"></select>-->
+										<input class='form-control' placeholder='品名' type='text' id="invname" name="invname" size="5">
+<!--										<input class='form-control' placeholder='品名' type='text' name='invname' id='invname' size="5">-->
+										规格：
+										<input class='form-control' placeholder='规格' type='text' name='cpgg' id='cpgg' size="5">
+										重量：
+										<input class='form-control' placeholder='重量' type='text' name='inum' id='inum' size="5">
+										出库类型：
+										<select class="form-control input-sm" name="outbusstype" id="outbusstype"></select>
+										状态：
+										<select class="form-control" name="status" id="status">
+											<option value="">全部</option>
+											<option value="0">待出库</option>
+											<option value="9" selected>已出库</option>
+										</select>
+										<button id="searchBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>明细</button>
+										<select id="huizongTj" xm-select="huizongTj" xm-select-search xm-select-height="40px">
+											<option value="cusid">客户</option>
+											<option value="ddate">日期</option>
+											<option value="invname">品名</option>
+											<option value="cpgg">规格</option>
+										</select>
+										<button id="huizongBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>汇总</button>
+										<button class="layui-btn layuiadmin-btn-useradmin layui-btn-sm" id="exportBt">
+											<i class="layui-icon layui-icon-export"></i>导出
+										</button>
+										<button class="layui-btn layuiadmin-btn-useradmin layui-btn-sm" id="printBt">
+											<i class="layui-icon layui-icon-print"></i>打印
+										</button>
+									</div>
+								</form>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</header>
+
+			<div>
+				<div class="widget-body no-padding">
+
+					<table class="layui-hide" id="data" lay-filter="data"></table>
+
+					<table class="layui-hide" id="datas" lay-filter="datas"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="test" style="display: none;"></div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<!--<script type="text/javascript" src="../../js/hcSticky/hc-sticky.js"></script>-->
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>-->
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../layuiadmin/formSelects/formSelects-v4.min.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript" src="../../js/inv.js"></script>
+<!--<script type="text/javascript" src="../../js/common.js"></script>-->
+<!--<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>-->
+<script type="text/javascript">
+    var pers = checkPermission();
+    var id;
+    //var appStatus = showStepSelect("stepid", "1", true);
+    //var showDept = showDeptSelect("deptid", "dept", true);
+    //var showUser = showUserSelect("createby", "user", true);
+    // showDictSelect("xsddtype", "smxsddtype",true);
+    // showWarehouseByType("whid", "warehouse", true,"产品库","0");
+	if ($.inArray("sys:ylcktj:zk", pers) > -1) {
+        $("#whid").append("<option value='1'>原料总库</option>");
+	}
+    if ($.inArray("sys:ylcktj:dm", pers) > -1) {
+        $("#whid").append("<option value='2'>地膜原料库</option>");
+    }
+    if ($.inArray("sys:ylcktj:gc", pers) > -1) {
+        $("#whid").append("<option value='3'>管材原料库</option>");
+        $("#whid").append("<option value='14'>PE100原料库</option>");
+    }
+    if ($.inArray("sys:ylcktj:bz", pers) > -1) {
+        $("#whid").append("<option value='4'>包装原料库</option>");
+    }
+    if ($.inArray("sys:ylcktj:flzk", pers) > -1) {
+        $("#whid").append("<option value='16'>辅料总库</option>");
+    }
+    if ($.inArray("sys:ylcktj:fldm", pers) > -1) {
+        $("#whid").append("<option value='12'>地膜辅料库</option>");
+    }
+    if ($.inArray("sys:ylcktj:flgc", pers) > -1) {
+        $("#whid").append("<option value='17'>管材辅料库</option>");
+        $("#whid").append("<option value='18'>PE100辅料库</option>");
+    }
+    if ($.inArray("sys:ylcktj:flbz", pers) > -1) {
+        $("#whid").append("<option value='13'>包装辅料库</option>");
+    }
+    showDictSelect("outbusstype", "stockouttype",true);
+    // var whid = $("#whid").val();
+    // var select = $("#invname");
+    // select.html("");
+    // if(whid){
+    //     invdata = getInvname(whid);
+    //     select.append("<option value=''>请选择</option>");
+    //     $.each(invdata, function(id, d) {
+    //         select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+    //     });
+    // }
+    renderForm()
+	// $("#whid").val(10);
+    var formSelects = layui.formSelects;
+    formSelects.render("huizongTj")
+	var tableIns;
+    var tableIns2;
+    var table;
+    var ziduan = [[
+        {type: 'checkbox', fixed: 'left'}
+        // ,{field:'ccode', title: '编码', sort: true}
+        ,{type:'numbers'}
+        ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                formatData(d)
+                return "<span style='color:brown'>"+d.cusname+"</span>"
+            }}
+        ,{field:'mxwhname', title: '仓库',width: 100, sort: true}
+        ,{field:'ddate', title: '日期', width: 110,sort: true}
+        ,{field:'invname', title: '品名',width: 120, sort: true}
+        ,{field:'cpgg', title: '规格', width: 140,sort: true}
+
+        ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+        ,{field:'jianzhong', title: '单件重',width: 80, sort: true}
+        ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+        ,{field:'danwei', title: '单位',width: 70, sort: true}
+        ,{field:'iprice', title: '单价',width: 80, sort: true}
+        ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+        // ,{field:'deptname', title: '部门', sort: true}
+        ,{field:'status', title: '状态', width: 90,sort: true,templet: function(d){
+                var status = "";
+                if (d.status == 2){
+                    status = "<span style='color: red'>待出库</span>";
+                }else if (d.status == 9){
+                    status = "<span style='color: blue'>已出库</span>";
+                }
+                return status;
+            }}
+        ,{field:'memo', title: '备注',width: 200}
+//            ,{field:'csource', title: '单据来源'}
+        ,{field:'caozuo', title: '操作',fixed:'right',width: 200,templet: function(d){
+                var id = d.id;
+                var chuku = "<button class='layui-btn layui-btn-xs' title='出库' onclick='stockout("+id+")'>出库</button>"
+                if (d.status==9) {
+                    chuku = "<button class='layui-btn layui-btn-xs' title='弃审出库' onclick='unstockout("+id+")'>弃审出库</button>";
+                }
+                if(d.status>0){
+                    del="";
+                }
+                return "";
+            }}
+        ,{field:'id', hide:true}
+    ]]
+    layui.use(['table','element','laydate'], function(){
+        var element = layui.element;
+        var laydate = layui.laydate;
+
+        var now = new Date();
+        var time = now.getFullYear() + "-" +((now.getMonth()+1)<10?"0":"")+(now.getMonth()+1)+"-"+(now.getDate()<10?"0":"")+now.getDate();
+        var times = time.substr(0,8) + "01";
+        var date = new Date().getFullYear() + "-" +((new Date().getMonth()+1)<10?"0":"")+(new Date().getMonth()+1)+"-"+(new Date().getDate()<10?"0":"")+new Date().getDate();
+
+        laydate.render({
+            elem: '#sdate'
+            ,value: new Date()
+        });
+
+        laydate.render({
+            elem: '#edate'
+            ,value: new Date()
+        });
+        table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/stockoutss/layuiList"
+            ,height: "full-100"
+            ,where: {outbusstype:$("#outbusstype").val(),sdate:date,edate:date,cusname:$("#cusname").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),inum:$("#inum").val(),status:$("#status").val(),outctype:"yl",whid:$("#whid").val(),orderBy:"order by ddate desc,cusid,invname,cpgg"}
+            ,page: true
+            ,autoSort:false
+            ,limit: 100
+			,limits: [20,40,50,100,200,500,1000,2000]
+			,toolbar: true
+			,totalRow: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: ziduan
+        });
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('row(data)', function(obj){
+            var data = obj.data;
+            id = data.id;
+            //标注选中样式
+            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    outbusstype:$("#outbusstype").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),inum:$("#inum").val(),status:$("#status").val(),outctype:"yl",whid:$("#whid").val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+		$("#whid").change(function(){
+			var whid = $(this).val();
+			var select = $("#invname");
+			select.html("");
+			if(whid){
+				invdata = getInvname(whid);
+				select.append("<option value=''>请选择</option>");
+				$.each(invdata, function(id, d) {
+					select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+				});
+			}
+			renderForm()
+		});
+
+    });
+
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {outbusstype:$("#outbusstype").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),inum:$("#inum").val(),status:$("#status").val(),outctype:"yl",whid:$("#whid").val(),orderBy:"order by ddate desc,cusid,invname,cpgg"},page:{curr:1},cols: ziduan})
+    });
+
+    $("#huizongBt").click(function(){
+        var huizongTj = formSelects.value('huizongTj', 'val').join(",");
+        if (!huizongTj)  huizongTj = "cusid,ddate,invname,cpgg"
+		var zziduan = [[
+            {type: 'checkbox', fixed: 'left'}
+            ,{type:'numbers'}
+            ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                    formatData(d)
+                    return "<span style='color:brown'>"+d.cusname+"</span>"
+                }}
+            ,{field:'ddate', title: '日期', width: 110,sort: true}
+            ,{field:'invname', title: '品名',width: 120, sort: true}
+            ,{field:'cpgg', title: '规格', width: 140,sort: true}
+            ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+            ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+            ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+            ,{field:'id', hide:true}
+        ]]
+		if (huizongTj == "cusid"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "cusid,ddate"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'ddate', title: '日期', width: 110,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "cusid,ddate,invname"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'ddate', title: '日期', width: 110,sort: true}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+		if (huizongTj == "cusid,invname") {
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "cusid,cpgg") {
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'cpgg', title: '规格', width: 140,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "cusid,invname,cpgg") {
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'cpgg', title: '规格', width: 140,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "ddate,invname"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'ddate', title: '日期', width: 110,sort: true}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "ddate,invname,cpgg"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'ddate', title: '日期', width: 110,sort: true}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'cpgg', title: '规格', width: 140,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "ddate,cpgg"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'ddate', title: '日期', width: 110,sort: true}
+                ,{field:'cpgg', title: '规格', width: 140,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "ddate"){
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'ddate', title: '日期', width: 110,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "invname") {
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "invname,cpgg") {
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'invname', title: '品名',width: 120, sort: true}
+                ,{field:'cpgg', title: '规格', width: 140,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        if (huizongTj == "cpgg") {
+            zziduan = [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{type:'numbers'}
+                ,{field:'cpgg', title: '规格', width: 140,sort: true}
+                ,{field:'jian', title: '件',width: 70, sort: true, totalRow: true}
+                ,{field:'inum', title: '总数量',width: 100, sort: true, totalRow: true}
+                ,{field:'imoney', title: '金额', width: 100,sort: true, totalRow: true}
+                ,{field:'id', hide:true}
+            ]]
+        }
+        tableIns.reload({where: {outbusstype:$("#outbusstype").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),inum:$("#inum").val(),status:$("#status").val(),outctype:"yl",whid:$("#whid").val(),groupby:huizongTj,orderBy:"order by ddate desc,cusid,invname,cpgg"},page:{curr:1},cols: zziduan})
+    });
+
+	//根据仓库获取品名
+	function getInvname(whid){
+		var invdata = []
+		if (whid) {
+			if (whid == 10){
+				invdata =  getinvGroupInvname("3");
+			} else if(whid == 5){
+				invdata =  getinvGroupInvname("13");
+			} else if(whid == 6){
+				invdata =  getinvGroupInvname("15");
+			} else if(whid == 7){
+				invdata =  getinvGroupInvname("14");
+			}
+		}
+		return invdata;
+	}
+
+    $("#exportBt").click(function(){
+        $("#token").val(localStorage.getItem("token"))
+        $("#form").attr("onsubmit", "return true");
+        $("#form").submit();
+        $("#form").attr("onsubmit", "return false");
+    });
+
+    $("#printBt").click(function(){
+        var html = "";
+        var title = "<h2 style='text-align: center'>山西金贵塑料制造有限公司发货统计</h2>";
+        html += title;
+        var money = 0;
+        html += "<table class='print-yltable'>" +
+            "<tr><td style='border:none' colspan='2'></td><td style='border:none;' colspan='3'>日期：" +
+            ""+new Date().getFullYear() + "-" +((new Date().getMonth()+1)<10?"0":"")+(new Date().getMonth()+1)+"-"+(new Date().getDate()<10?"0":"")+new Date().getDate()+"  "+new Date().getHours()+":"+(new Date().getMinutes()<10?"0":"")+new Date().getMinutes()+":"+new Date().getSeconds()+"</td></tr>"+
+            "<tr><th style='border-left: 1px solid #000;'>客户</th><th>仓库</th><th>日期</th><th>品名</th><th>规格</th><th>件</th><th>单件重</th><th>总数量</th><th>单位</th><th>单价</th><th>金额</th></tr>";
+
+        $.ajax({
+            type : 'get',
+            url : "/stockoutss/listByCondition",
+            data:{outbusstype:$("#outbusstype").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),inum:$("#inum").val(),status:$("#status").val(),outctype:"yl",whid:$("#whid").val(),orderBy:"order by ddate desc,cusid,invname,cpgg"},
+            async : false,
+            success : function(datas) {
+                var hangshu = datas.data.length;
+                var yeshu = hangshu / 26;
+                var dijiye = 1;
+                var dijihang = 0;
+                while (yeshu > 0) {
+                    for (var i = 0; i < 26; i++) {
+                        formatData(datas.data[dijihang]);
+                        var curr = datas.data[dijihang]
+                        if (curr) {
+							html += "<tr><td style='border-left: 1px solid #000;'>" + datas.data[dijihang].cusname + "</td><td>" + datas.data[dijihang].whname + "</td><td>" + datas.data[dijihang].ddate + "</td><td>" + datas.data[dijihang].invname + "</td><td>" + datas.data[dijihang].cpgg + "</td><td>" + datas.data[dijihang].jian + "</td><td>" + datas.data[dijihang].jianzhong + "</td><td>" + datas.data[dijihang].inum + "</td><td>" + datas.data[dijihang].danwei + "</td><td>" + datas.data[dijihang].iprice + "</td><td>" + datas.data[dijihang].imoney + "</td>" +
+								"</tr>";
+                            dijihang++;
+                        }
+                    }
+                    yeshu --;
+                }
+            }
+        });
+
+        html += "</table>";
+        html = html.replace("null","").replace("null","").replace("null","").replace("null","").replace("undefined","").replace("undefined","");
+
+        $("#test").print({
+            //Use Global styles
+            globalStyles : false,
+            //Add link with attrbute media=print
+            mediaPrint : false,
+            //Print in a hidden iframe
+            iframe : false,
+            //Don't print this
+            noPrintSelector : ".avoid-this",
+            //Add this at top
+            prepend : html,
+            //Add this on bottom
+            append : "",
+            //Log to console when printing is done via a deffered callback
+            deferred: $.Deferred().done(function() { console.log('Printing done', arguments); }),
+            stylesheet:'../../css/fahuoprint.css'
+        });
+    });
+</script>

@@ -1,0 +1,47 @@
+.uploader-list {
+	margin-left: -15px;
+}
+
+.uploader-list .info {
+	position: relative;
+	margin-top: -25px;
+	background-color: black;
+	color: white;
+	filter: alpha(Opacity=80);
+	-moz-opacity: 0.5;
+	opacity: 0.5;
+	width: 100px;
+	height: 25px;
+	text-align: center;
+	display: none;
+}
+
+.uploader-list .handle {
+	position: relative;
+	background-color: black;
+	color: white;
+	filter: alpha(Opacity=80);
+	-moz-opacity: 0.5;
+	opacity: 0.5;
+	/*width: 100px;*/
+	width:100%;
+	text-align: right;
+	/*height: 18px;*/
+	height:10%;
+	margin-bottom: -18px;
+	display: none;
+}
+
+.uploader-list .handle span {
+	margin-right: 5px;
+}
+
+.uploader-list .handle span:hover {
+	cursor: pointer;
+}
+
+.uploader-list .file-iteme {
+	margin: 12px 0 0 15px;
+	padding: 1px;
+	float: left;
+}

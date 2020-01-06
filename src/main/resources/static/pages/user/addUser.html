@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+	<link rel="stylesheet" href="../../layuiadmin/formSelects/formSelects-v4.css">
+<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+<style>
+	.eleTree{
+		width: 350px;
+		height: 500px;
+		border: 1px solid #ccc;
+		overflow: hidden;
+		display: inline-block;
+	}
+	.ele5{
+		height: auto;
+		width: 98%;
+		display: none;
+		position: absolute;
+		top:100%;
+		background-color: #fff;
+		z-index: 100;
+	}
+</style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<div class="form-group">
+				<label class="col-md-2 control-label">用户名</label>
+				<div class="col-md-10">
+					<input class="form-control" placeholder="登录名" type="text" name="username"
+						data-bv-notempty="true"
+						data-bv-notempty-message="登录名 不能为空">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">密码</label>
+				<div class="col-md-10">
+					<input class="form-control" placeholder="密码" type="text" value="123456" name="password"
+						data-bv-notempty="true"
+						data-bv-notempty-message="密码 不能为空">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">姓名</label>
+				<div class="col-md-10">
+					<input class="form-control" placeholder="姓名" type="text" name="nickname">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">部门</label>
+				<div class="col-md-10">
+					<!--<select id="deptid" name="deptid" class="form-control input-sm"></select>-->
+					<input class="form-control" type="text" id="deptid" name="deptid" data-id=""  placeholder="请选择部门" readonly="" autocomplete="off">
+					<div class="eleTree ele5" lay-filter="eleTree"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">手机号</label>
+				<div class="col-md-10">
+					<input class="form-control" placeholder="手机号" type="text" maxlength="11" name="phone">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">电话</label>
+				<div class="col-md-10">
+					<input class="form-control" placeholder="电话" type="text" maxlength="20" name="telephone">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">邮箱</label>
+				<div class="col-md-10">
+					<input class="form-control" placeholder="邮箱" type="email" maxlength="50" name="email"
+						   data-bv-emailaddress-message="请输入正确的邮箱格式">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">生日</label>
+				<div class="col-xs-2">
+				  <input type="text" class="form-control" placeholder="生日" id="birthday" name='birthday'>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">性别</label>
+				<div class="col-md-10" style="width: 100px">
+					<select class="form-control input-sm" name="sex" id="sex">
+					</select>
+				</div>
+			</div>
+
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>岗位</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='岗位' type='text' name='positionid' id='positionid' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>入职时间</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='入职时间' type='text' name='rzsj' id='rzsj' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>专业特长</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='专业特长' type='text' name='zytc' id='zytc' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>工人等级</label>
+				<div class='col-md-10'>
+					<select class="form-control input-sm" name="ctype" id="ctype"></select>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>紧急联系人</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='紧急联系人' type='text' name='jjlxr' id='jjlxr' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>紧急联系人电话</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='紧急联系人电话' type='text' name='jjlxrdh' id='jjlxrdh' >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">角色</label>
+				<!--<div class="checkbox" id="roles">-->
+				<!--</div>-->
+				<div class="col-md-10">
+					<select id="roles" xm-select="roles" xm-select-search></select>
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+					    <button class="btn btn-primary" onclick="location.href='userList.html'">返回</button>
+						<button class="btn btn-primary" type="submit" onclick="add()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../js/my/roles/role.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../layuiadmin/formSelects/formSelects-v4.min.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+    <script type="text/javascript" src="../../js/dept.js"></script>
+<!--<script type="text/javascript" src="../../js/gongzibz.js"></script>-->
+	<script type="text/javascript">
+        layui.config({
+            base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+        }).extend({
+            eleTree: 'eleTree'
+        });
+        var el;
+        showRoleSelect("roles", "roles", false);
+        // showGongzibzSelect("ctype","gongzibz",true);
+        var formSelects = layui.formSelects;
+        formSelects.render("roles")
+
+		layui.use(['layer','laydate','eleTree'], function(){
+		    var layer = layui.layer;
+		    var laydate = layui.laydate;
+		    laydate.render({
+	           elem: '#birthday'
+	        });
+            var eleTree = layui.eleTree;
+
+            if(!el){
+                el=eleTree.render({
+                    elem: '.eleTree',
+                    url:'/depts/eleTree',
+                    request: {
+                        name: "name",
+                    },
+                    emptText:"暂无组织架构",
+                    // defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true,
+					done:function(res){
+                        var data = res.data;
+                        for(var i=0;i<data.length;i++){
+                            if (data[i].id == deptid){
+                                $("#deptid").data("id",data[i].id);
+                                $("#deptid").val(data[i].name);
+							}
+						}
+					}
+                });
+            }
+            $("#deptid").on("click",function (e) {
+                e.stopPropagation();
+                $(".eleTree").toggle();
+            })
+
+            eleTree.on("nodeClick(eleTree)",function(d) {
+                $('#deptid').trigger('change');
+                $("#deptid").val(d.data.currentData.name)
+                $("#deptid").data("id",d.data.currentData.id);
+                $(".eleTree").hide();
+            })
+            $(document).on("click",function() {
+                $(".eleTree").hide();
+            })
+		});
+
+		showDictSelect("sex", "sex");
+        showDeptSelect("deptid", "dept", false);
+		var deptid = getUrlParam("deptid");
+	
+		$('#form').bootstrapValidator();
+		
+		function add() {
+            $("#form").bootstrapValidator("addField", "phone",{
+                validators: {
+                    regexp: {
+                        regexp: /^1(3|4|5|7|8)\d{9}$/,
+                        message: '请输入正确的手机格式！'
+                    }
+                }
+            });
+            $("#form").bootstrapValidator("addField", "telephone",{
+                validators: {
+                    regexp: {
+                        regexp: /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/,
+                        message: '请输入正确的电话格式！'
+                    }
+                }
+            });
+
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+		    formdata.deptid = $("#deptid").data("id");
+		    formdata.roleIds = formSelects.value('roles', 'val');
+
+			$.ajax({
+				type : 'post',
+				url : '/users',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "userList.html";
+                    });
+				}
+			});
+		}
+
+        //重新渲染表单
+        function renderForm(){
+            layui.use('form', function(){
+                var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                form.render();
+            });
+        }
+		
+	</script>
+</body>
+</html>

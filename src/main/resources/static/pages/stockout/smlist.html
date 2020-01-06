@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../layuiadmin/formSelects/formSelects-v4.css">
+	<link rel="stylesheet" href="../../css/common.css">
+	<style>
+		.layui-table-header{
+			z-index:99999999
+		}
+		.xm-select-parent{
+			width:200px;
+			display: inline-block;
+		}
+	</style>
+</head>
+<body>
+<div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="main">
+		<div>
+			<header style="height: 100%">
+				<div align="left">
+					<table style="width: 100%">
+						<tr>
+							<td style="height:50px;">
+								<form class="form-inline" onsubmit="return false">
+									<input  type="hidden" id="kehu"/>
+									<input  type="hidden" id="stockins"/>
+									<div class="form-group">
+										日期：
+										<input id="ddate" type="text" class="form-control" style="width:100px" placeholder="起始日期">
+										至：
+										<input id="edate" type="text" class="form-control" style="width:100px" placeholder="终止日期">
+										订单编号：
+										<input class='form-control' placeholder='订单编号' type='text' name='ccode' id='ccode' style="width:120px">
+										线路：
+										<select class="form-control" name="xianluid" id="xianluid"  xm-select="xianlu" xm-select-search xm-select-height="40px"></select>
+										客户：
+										<input class='form-control' placeholder='客户' type='text' name='cusname' id='cusname' style="width:120px">
+										订单类型：
+										<select class="form-control" name="xsddtype" id="xsddtype"></select>
+										状态：
+										<select class="form-control" name="status" id="status" xm-select="status" xm-select-search xm-select-height="40px">
+											<option value="">请选择</option>
+											<option value="0">待审</option>
+											<option value="1">已审</option>
+											<option value="2">待装车</option>
+											<option value="3">已装车</option>
+											<option value="4">已驳回</option>
+											<option value="9">已出库</option>
+										</select>
+										<button id="searchBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>搜索</button>
+									</div>
+								</form>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<form class="form-inline" onsubmit="return false">
+									<div class="form-group">
+									    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="add(1)">零售自提</button>
+										<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="add(2)">配送开票</button>
+										<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="add(3)">批发开票</button>
+										<select class="form-control" id="dayinhang" style="color: brown;">
+											<option value="7">7行/页</option>
+											<option value="8">8行/页</option>
+											<option value="9">9行/页</option>
+											<option value="10">10行/页</option>
+											<option value="11">11行/页</option>
+											<option value="12">12行/页</option>
+											<option value="1000">不分页</option>
+										</select>
+										<button id="testprintBt" class="layui-btn layui-btn-normal layui-btn-sm"><i class="layui-icon layui-icon-print"></i>打印</button>
+<!--										<button class="layui-btn layui-btn-sm" id="delBtn">批量删除</button>-->
+										<button class="layui-btn layui-btn-sm" id="auditBtn">批量审核</button>
+										<button class="layui-btn layui-btn-sm" id="unauditBtn">批量弃审</button>
+										<select class="form-control" id="tablesize" style="color: brown;">
+											<option value="sm">小尺寸表格</option>
+											<option value="mr">默认尺寸表格</option>
+											<option value="lg">大尺寸表格</option>
+										</select>
+<!--										<button class="layui-btn" id="stockoutBtn">批量出库</button>-->
+<!--										<button class="layui-btn" id="unstockoutBtn">批量弃审出库</button>-->
+									</div>
+								</form>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</header>
+
+			<div>
+				<div class="widget-body no-padding">
+
+					<table class="layui-hide" id="data" lay-filter="data"></table>
+
+					<table class="layui-hide" id="datas" lay-filter="datas"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="test" style="display: none;"></div>
+<div id="text"></div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/hcSticky/hc-sticky.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../layuiadmin/formSelects/formSelects-v4.min.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<script type="text/javascript" src="../../js/customrclass.js"></script>
+<script type="text/javascript" src="../../js/bigdecimal/math.min.js"></script>
+<script type="text/javascript" src="../../js/bigdecimal/floatMath.js"></script>
+<script type="text/javascript">
+    var pers = checkPermission();
+    var id;
+
+    showDictSelect("xsddtype", "smxsddtype",true);
+    var danwei = getAllDict("danwei");
+    var ctype = getUrlParam("ctype");
+    if (localStorage.getItem("tableSize")) {
+        $("#tablesize").val(localStorage.getItem("tableSize") )
+    }
+    var xianlu = getXianlu();
+    var select = $("#xianluid");
+    select.empty();
+    select.append("<option value=''>请选择</option>");
+    $.each(xianlu, function(index, item) {
+        select.append("<option value ='" + item.id + "'>" + item.cname + "</option>");
+    });
+
+    var formSelects = layui.formSelects;
+    formSelects.render("xianlu")
+	formSelects.render("status")
+
+    if(ctype == "bj") {
+        showWarehouseByType("whid", "warehouse", true,"备件库");
+    }else if(ctype == "yl") {
+        showWarehouseByType("whid", "warehouse", true,"原料库");
+    }else if(ctype == "cp") {
+        showWarehouseByType("whid", "warehouse", true,"产品库","1");
+    }else if(ctype == "sm") {
+        showWarehouseByType("whid", "warehouse", true,"商贸库");
+    }else{
+        showWarehouseSelect("whid", "warehouse", true);
+    }
+    var tableIns;
+    var tableIns2;
+    var table;
+    layui.use(['table','element','laydate'], function(){
+        var element = layui.element;
+        var laydate = layui.laydate;
+
+        var now = new Date();
+        var date = new Date().getFullYear() + "-" +((new Date().getMonth()+1)<10?"0":"")+(new Date().getMonth()+1)+"-"+(new Date().getDate()<10?"0":"")+new Date().getDate();
+
+        laydate.render({
+            elem: '#ddate'
+            ,value: new Date()
+        });
+
+        laydate.render({
+            elem: '#edate'
+            ,value: new Date()
+        });
+        table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/stockouts/layuiList"
+            ,toolbar: '#toolbar'
+            ,limit: 40
+            ,limits: [20,40,50,100,200,500,1000,2000]
+            ,height: 500
+            ,where: {xianluid:formSelects.value('xianlu', 'val').join(","),xsddtype:$("#xsddtype").val(),sdate:date,edate:date,cusname:$("#cusname").val(),dxstatus:formSelects.value('status', 'val').join(","),ctype:ctype,orderBy:"order by createTime desc"}
+            ,page: true
+            ,size:localStorage.getItem("tableSize")?localStorage.getItem("tableSize"):"sm"
+            ,autoSort:false
+			,totalRow: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left', totalRowText: '合计'}
+                ,{field:'ccode', title: '订单编号', width: 140,sort: true}
+                ,{field:'xianlu', title: '线路',width: 120, templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.xianlu+"</span>"
+                    }}
+                ,{field:'cidname', title: '客户分类',width: 100, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cidname+"</span>"
+                    }}
+                ,{field:'cusname', title: '客户',width: 150, sort: true,templet: function(d){
+                        formatData(d)
+                        return "<span style='color:brown'>"+d.cusname+"</span>"
+                    }}
+                ,{field:'ddate', title: '制单日期', width: 110,sort: true}
+                ,{field:'smxsddtype', title: '订单类型',width: 120, sort: true}
+				,{field:'itotal', title: '应收金额', width: 110,sort: true, totalRow: true}
+                ,{field:'fkfs', title: '付款方式',width: 100, sort: true}
+                ,{field:'yunfei', title: '欠款', width: 110,sort: true, totalRow: true}
+				,{field:'ssje', title: '实收金额', width: 110,sort: true, totalRow: true}
+                ,{field:'status', title: '状态', width: 90,sort: true,templet: function(d){
+                        var status = "";
+                        if (d.status == 0){
+                            status = "<span style='color: red'>待审</span>";
+                        }else if (d.status == 1){
+                            status = "<span style='color: blue'>已审</span>";
+                        }else if (d.status == 2){
+                            status = "<span style='color: red'>待装车</span>";
+                        }else if (d.status == 3){
+                            status = "<span style='color: blue'>已装车</span>";
+                        }else if (d.status == 4){
+                            status = "<span style='color: red'>已驳回</span>";
+                        }else if (d.status == 9){
+                            status = "<span style='color: blue'>已出库</span>";
+                        }
+                        return status;
+                    }}
+                ,{field:'printstatus', title: '打印状态',width: 90, sort: true,templet: function(d){
+                        var printstatus = "";
+                        if (d.printstatus == 0){
+                            printstatus = "<span style='color: red'>未打印</span>";
+                        }else if (d.printstatus == 1){
+                            printstatus = "<span style='color: blue'>已打印</span>";
+                        }
+                        return printstatus;
+                    }}
+                ,{field:'creator', title: '制单',width: 90, sort: true}
+                ,{field:'createTime', title: '制单日期',width: 180, sort: true}
+				,{field:'auditor', title: '审核',width: 90, sort: true}
+				,{field:'zcclbm', title: '车辆',width:100, sort: true}
+                ,{field:'memo', title: '备注',width: 200}
+                ,{field:'caozuo', title: '操作',fixed:'right',width: 200,templet: function(d){
+                        var id = d.id;
+                        var href = "smadd.html?id=" + id+ "&ctype="+getUrlParam("ctype");
+                        var edit = "<button class='layui-btn layui-btn-xs' title='编辑' onclick='edit("+id+")'><i class='layui-icon'>&#xe642;</i></button>";
+                        var del = buttonDel(id, "", pers);
+                        if(d.status==0){
+                            var audit = buttonAudit(id,"",pers);
+                        }else{
+                            var audit = buttonUnAudit(id,"",pers);
+                        }
+                        if(d.status>0){
+                            del="";
+                        }
+                        if(d.status==4 ){  //|| d.status==1
+                            edit = ""
+                        }
+						// if (d.printstatus == 1){
+						// 	edit ="";
+						// 	del ="";
+						// 	audit ="";
+						// }
+                        return edit + del + audit;
+                    }}
+                ,{field:'id', hide:true}
+            ]]
+        });
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('row(data)', function(obj){
+            var data = obj.data;
+            id = data.id;
+            tableIns2.reload({where: {stockid:id}});
+            //标注选中样式
+            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+        });
+
+        table.on('checkbox(data)', function(obj){
+
+        })
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    xianluid:formSelects.value('xianlu', 'val').join(","),xsddtype:$("#xsddtype").val(),sdate:$('#ddate').val(),edate:$('#edate').val(),whid:$("#whid").val(),cusname:$("#cusname").val(),dxstatus:formSelects.value('status', 'val').join(","),ctype:ctype,busstype:$("#busstype").val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        tableIns2 = table.render({
+            elem: '#datas'
+            ,url:"/stockoutss/listByStockoutId"
+            ,page: false
+            ,height: 'full-520'
+            ,limit: 10000
+            ,totalRow: true
+            ,cols: [[
+                {type:'numbers'}
+                ,{field:'mxwhname', title: '仓库',width:120, sort: true}
+                ,{field:'invname', title: '品名',width:140, sort: true}
+                ,{field:'cpgg', title: '规格',width:120, sort: true}
+				,{field:'c01', title: '打印规格',width:100, sort: true}
+                ,{field:'jian', title: '件',width:80, sort: true, totalRow: true}
+                ,{field:'jianzhong', title: '单位重',width:80, sort: true}
+                ,{field:'inum', title: '总数量',width:100, sort: true, totalRow: true}
+                ,{field:'danwei', title: '单位',width:70, sort: true}
+                ,{field:'iprice', title: '单价',width:80, sort: true}
+                ,{field:'imoney', title: '金额',width:100, sort: true, totalRow: true}
+				,{field:'ilen', title: '长度',width:80, sort: true, totalRow: true}
+				,{field:'perlen', title: '单件长',width:80, sort: true}
+                ,{field:'status', title: '状态',width: 90, sort: true, templet: function(d){
+                        var status = "";
+                        if (d.status == 1){
+                            status = "<span style='color: red'>待装车</span>";
+                        }else if (d.status == 2){
+                            status = "<span style='color: blue'>已装车</span>";
+                        }else if (d.status == 3){
+                            status = "<span style='color: red'>已驳回</span>";
+                        }else if (d.status == 9){
+                            status = "<span style='color: blue'>已出库</span>";
+                        }
+                        return status;
+                    }}
+                ,{field:'memo', title: '备注'}
+            ]]
+            ,done: function(res, curr, count){
+
+            }
+        });
+
+        $("#delBtn").click(function(){
+            var data = table.checkStatus('data').data;
+            if (data.length == 0){
+                layer.msg('请选择要删除的销售订单');
+            }else {
+                layer.confirm('确定要批量删除吗？', {
+                    btn : [ '确定', '取消' ]
+                }, function() {
+                    var inum = 0;
+                    for(var i=0;i<data.length;i++){
+                        if(data[i].status==0) {
+                            $.ajax({
+                                type: 'delete',
+                                url: '/stockouts/' + data[i].id,
+                                async:false,
+                                success: function (data) {
+                                    inum++;
+                                }
+                            });
+                        }
+                    }
+
+					tableIns.reload()
+					tableIns2.reload()
+					layer.msg("删除成功"+inum+"行");
+                });
+            }
+        })
+
+        $("#auditBtn").click(function(){
+            var data = table.checkStatus('data').data;
+            if (data.length == 0){
+                layer.msg('请选择要审核的销售订单');
+            }else {
+                layer.confirm('确定要批量审核吗？', {
+                    btn : [ '确定', '取消' ]
+                }, function() {
+                    var inum = 0;
+                    for(var i=0;i<data.length;i++){
+                        if(data[i].status==0) {
+                            $.ajax({
+                                type : 'put',
+                                url : '/stockouts/auditSm/'+data[i].id,
+                                async:false,
+                                success: function (data) {
+                                    inum++;
+                                }
+                            });
+                        }
+                    }
+
+					tableIns.reload()
+					layer.msg("审核成功"+inum+"行");
+                });
+            }
+        })
+
+        $("#unauditBtn").click(function(){
+            var data = table.checkStatus('data').data;
+            if (data.length == 0){
+                layer.msg('请选择要弃审的销售订单');
+            }else {
+                layer.confirm('确定要批量弃审吗？', {
+                    btn : [ '确定', '取消' ]
+                }, function() {
+                    var inum = 0;
+                    for(var i=0;i<data.length;i++){
+                        if(data[i].status==1) {
+                            $.ajax({
+                                type : 'put',
+                                url : '/stockouts/unauditSm/'+data[i].id,
+                                async:false,
+                                success: function (data) {
+                                    inum++;
+                                }
+                            });
+                        }
+                    }
+
+					tableIns.reload()
+					layer.msg("弃审成功"+inum+"行");
+                });
+            }
+        })
+    });
+
+    function del(id){
+        layer.confirm('确定要删除吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'delete',
+                url : '/stockouts/'+id,
+                success : function(data) {
+                    tableIns.reload()
+                    layer.msg("删除成功");
+                }
+            });
+
+            $.ajax({
+                type : 'delete',
+                url : '/stockoutss/'+id,
+                success : function(data) {
+                    tableIns2.reload()
+                    layer.msg("删除成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function audit(id){
+        layer.confirm('确定要审核吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/stockouts/auditSm/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function unaudit(id){
+        layer.confirm('确定要弃审吗？已打印或已装车的订单需谨慎弃审，如要加装货物，只需在预装车单下方订单列表中点编辑添加货物即可', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/stockouts/unauditSm/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("弃审成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    $("#testprintBt").click(function(){
+		var dayinhang = $("#dayinhang").val();
+		var checkData = table.checkStatus('data').data;
+		if (checkData.length == 0){
+			layer.msg('请选择销售订单');
+			return
+		}
+
+		var html = "";
+		var errmsg = "";
+		for (var s=0;s<checkData.length;s++){
+			var id = checkData[s].id
+			$.ajax({
+				type : 'get',
+				url : '/stockouts/' + id ,
+				async : false,
+				success : function(data) {
+					formatData(data);
+
+					$.ajax({
+						type : 'get',
+						url : "/stockoutss/printXsMd?stockid="+id,
+						async : false,
+						success : function(datas) {
+							console.log(JSON.stringify(datas.data));
+							var zcjianhs = 0;
+							var da = [];
+							for (var i=0;i<datas.data.length;i++){
+								var d = datas.data[i];
+								da.push(d);
+								var zcjians = d.zcjians
+								if (zcjians) {
+									var cishu = zcjians.length / 10;
+									var jiliangi = 0;
+									while (cishu > 0){
+										var jiliangob = {};
+										var jiliangarr = [];
+										for(var zci=0;zci<10;zci++){
+											var zcjian = zcjians[jiliangi];
+											if (zcjian) {
+												if (zcjian.inum)
+													jiliangarr.push(zcjian.inum);
+											}
+											jiliangi ++;
+										}
+										jiliangob.zcjianmx = jiliangarr;
+										da.push(jiliangob);
+										cishu --;
+									}
+								}
+							}
+							// var hangshu = datas.data.length + zcjianhs;
+							var hangshu = da.length;
+							var yeshu = hangshu / dayinhang;
+							var dijiye = 1;
+							var dijihang = 0;
+							var bianhao=1;
+							var isprevmd = false;
+							var money = 0;
+							while (yeshu > 0){
+								html += "<div style='position: relative;text-align: center;font-size: 35px;font-family: 宋体;margin-bottom: 10px;font-weight: 900'>山西金贵塑料制造有限公司销售单" +
+										"<div style='position: absolute;font-size: 14px;right:10px;top:20px'>第"+dijiye+"页，共"+Math.ceil(hangshu / dayinhang)+"页</div>" +
+										"<div style='position: absolute;font-size: 18px;right:0;top:0'>订单编号："+data.ccode+"</div></div>";
+								// var money = 0;
+								html += "<table class='print-table' style='page-break-after:always;'>" +
+										"<tr><td style='border:none;text-align: left;font-size: 20px' colspan='9'><ul><li style='width:450px'>客户："+data.cusname+"</li>" +
+										"<li style='width: 220px'>电话："+data.cusphone+"</li>" +
+										// "<li>订单编号："+data.ccode+"</li>" +
+										// "<li style='width: 240px;'>日期："+new Date().getFullYear() + "-" +((new Date().getMonth()+1)<10?"0":"")+(new Date().getMonth()+1)+"-"+(new Date().getDate()<10?"0":"")+new Date().getDate()+"  "+new Date().getHours()+":"+(new Date().getMinutes()<10?"0":"")+new Date().getMinutes()+"</li></ul></tr>" +
+										"<li style='width: 220px;text-align: right'>日期："+data.ddate+"</li></ul></tr>" +
+										"<tr><td  style='border-top: 1px solid #000;border-left: 1px solid #000;font-size: 20px;width:50px'>编号</td><td style='border-top: 1px solid #000;width:160px'>品名</td>" +
+										"<td style='border-top: 1px solid #000;font-size: 20px;width:161px'>规格</td><td style='border-top: 1px solid #000;;font-size: 20px;width:70px'>件</td><td style='border-top: 1px solid #000;;font-size: 20px;width:78.8px'>数量</td>" +
+										"<td style='border-top: 1px solid #000;font-size: 20px;width:80px'>单位</td><td style='border-top: 1px solid #000;;font-size: 20px;width:80px'>单价</td>" +
+										"<td style='border-top: 1px solid #000;font-size: 20px;width:161px'>金额</td>" +
+										"<td style='border-top: 1px solid #000;font-size: 20px;width:161px'>附注</td>" +
+										"<td style='position: relative;border: none'><div style='width:12px;font-size:12px;font-family:楷体;position: absolute;top: -15px;left:3px;line-height: 13px'>存根<div class='print-lian'>︵</div>白<div class='print-lian' style='line-height: 9px;'>︶</div>客户<div class='print-lian'>︵</div>红<div class='print-lian' style='line-height: 9px;'>︶</div>会计<div class='print-lian'>︵</div>蓝<div class='print-lian' style='line-height: 9px;'>︶</div>记账<div class='print-lian'>︵</div>绿<div class='print-lian' style='line-height: 9px;'>︶</div>库管<div class='print-lian'>︵</div>黄<div class='print-lian' style='line-height: 9px;'>︶</div></div></td>" +
+										"</tr>";
+								for (var i=0;i<dayinhang;i++){
+									var stockout = da[dijihang];
+									if(stockout){
+										formatData(stockout);
+
+										if(stockout.invname == "工程膜"){
+											if (stockout.cpgg) {
+												if (stockout.cpgg.split("*").length>0){
+													stockout.cpgg = stockout.cpgg.split("*")[0]
+												}
+											}
+										}
+										//如果打印规格c01不为空，则打印打印规格，否则打印规格
+										if(stockout.c01 !=""){
+											stockout.cpgg = stockout.c01;
+										}
+										if (stockout.zcjianmx){
+											var zcjianmx = stockout.zcjianmx;
+											var jiliangi = 0;
+											if (zcjianmx) {
+												isprevmd = true;
+												html += "<tr><td style='border-left: 1px solid #000;border-bottom: none'  colspan='2'></td>" +
+														"<td colspan='7'><table class='print-md'><tr>" ;
+												for(var zci=0;zci<10;zci++){
+													var inum = zcjianmx[jiliangi];
+													if (zci == 9){
+														if(inum){
+															html += "<td style='border-right:none;font-size:17px;font-style:oblique'>"+inum+"</td>"
+														}else{
+															html += "<td style='border-right:none '></td>"
+														}
+													} else{
+														if(inum){
+															html += "<td style='font-size:17px;font-style:oblique'>"+inum+"</td>"
+														}else{
+															html += "<td></td>"
+														}
+													}
+													jiliangi ++;
+												}
+												html += "</tr></table></td><td style='border: none'></td></tr>";
+											}
+										} else{
+											if(!stockout.iprice || !stockout.inum || !stockout.imoney){
+												if(stockout.cpgg != "小计"){
+													errmsg += "订单编号："+data.ccode+",第"+bianhao+"行"+stockout.invname+","+stockout.cpgg
+													if(!stockout.iprice){
+														errmsg += "，没有单价";
+													}
+													if (!stockout.inum) {
+														errmsg += "，没有总数量";
+													}
+													if (!stockout.imoney) {
+														errmsg += "，没有金额";
+													}
+													errmsg += "，请核对数据。<br>"
+												}
+
+											}
+											var dwmark = ""
+											if (stockout.danwei) {    //单位
+												if (danwei) {
+													for (var a=0;a<danwei.length;a++){
+														if (danwei[a].k == stockout.danwei && danwei[a].dwmark){
+															dwmark = danwei[a].dwmark
+															break
+														}
+													}
+												}
+											}
+											if (dwmark){
+												if (dwmark == 1){
+													stockout.inum = stockout.jian;
+												} else if (dwmark == 2){
+													stockout.inum = stockout.ilen;
+												}
+											}
+
+											if (stockout.imoney) stockout.imoney = Number(stockout.imoney).toFixed(2)
+											if (stockout.iprice) stockout.iprice = Number(stockout.iprice).toFixed(2)
+											if(stockout.cpgg =="小计"){
+												if(stockout.iprice =="0") stockout.iprice="";
+												html +="<tr style='font-size:20px;'><td style='border-left: 1px solid #000;border-top: 1px solid #000;' colspan='2'>小计:</td><td colspan='1'>"+stockout.jian+"件</td><td colspan='2'>"+stockout.inum+"kg</td><td colspan='2'>单价:"+stockout.iprice+"</td><td>金额:"+stockout.imoney+"元</td><td></td><td style='border: none'></td></tr>";
+											}else {
+												if(stockout.invname =="PE100级给水管材(2)") stockout.invname="PE100级给水管材";
+												if(stockout.invname =="PE盘管(2)") stockout.invname="PE盘管";
+												if(stockout.invname =="PE水龙带(2)") stockout.invname="PE水龙带";
+												if (isprevmd){
+													html += "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>"+bianhao+"</td><td style='text-align: left;text-indent: 0.3em;border-top: 1px solid #000;'>"+stockout.invname+"</td>"
+													isprevmd = false;
+												}else{
+													html += "<tr><td style='border-left: 1px solid #000;'>"+bianhao+"</td><td style='text-align: left;text-indent: 0.3em'>"+stockout.invname+"</td>"
+												}
+												html += "<td style='text-align: left;text-indent: 1em'>"+stockout.cpgg+"</td><td>"+stockout.jian+"</td><td style='width:80px'>"+stockout.inum+"</td><td>"+stockout.danwei+"</td><td>"+stockout.iprice+"</td><td>"+stockout.imoney+"</td><td>"+stockout.memo+"</td><td style='border: none'></td>" +
+														"</tr>";
+											}
+
+
+											if(stockout.cpgg !="小计"){
+												money = Number(money) + Number(stockout.imoney);
+												bianhao ++;
+											}
+
+										}
+										dijihang ++;
+
+									}
+								}
+								money = Number(money).toFixed(2)
+								if (dijiye == Math.ceil(hangshu / dayinhang)) {
+									if (isprevmd){
+										html += "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'></td><td style='font-size: 20px;border-top: 1px solid #000;'>合计</td>"
+										isprevmd = false;
+									}else{
+										html += "<tr><td style='border-left: 1px solid #000'></td><td style='font-size: 22px'>合计</td>"
+									}
+									html += "<td colspan='6' style='font-size: 22px'>"+DX(money)+"</td><td style='font-size: 22px'>"+money+"元</td><td style='border: none'></td></tr>";
+								}
+								html += "<tr><td style='border-left: 1px solid #000;'></td><td style='font-size: 20px;'>备注</td>";
+								html += "<td colspan='6' style='font-size: 20px;text-align: left;text-indent: 1em'>"+data.memo+"</td><td>"+data.fkfs+"</td><td style='border: none'></td></tr>";
+								html += "<tr><td height='20px' valign='bottom' style='border:none;text-align: left;font-size: 16px;font-family:楷体;' colspan='9'>地址:运城空港经济开发区铺安街k6号 　　电话:0359-2550620 2550621 13008010600</td></tr>";   //存根(白)客户(红)会计(蓝)记账(绿)库管(黄)
+								html += "<tr><td style='border:none;text-align: left;font-size: 20px' colspan='2'>制单:"+data.creator+"</td><td style='border:none;text-align: right;font-size: 20px'>送货人:</td><td style='border:none;'></td><td style='border:none;text-align: center;font-size: 20px' colspan='3'></td><td style='border:none;text-align: center;font-size: 20px' colspan='2'>收货人签字：</td><td style='border:none;'></td></tr>";
+								html += "</table>";
+								yeshu --;
+								dijiye ++;
+							}
+						}
+					});
+				}
+			});
+		}
+		if(errmsg){
+			layer.alert(errmsg);
+			return
+		}
+
+		$("#test").print({
+			//Use Global styles
+			globalStyles : false,
+			//Add link with attrbute media=print
+			mediaPrint : false,
+			//Print in a hidden iframe
+			iframe : false,
+			//Don't print this
+			noPrintSelector : ".avoid-this",
+			//Add this at top
+			prepend : html,
+			//Add this on bottom
+			append : "",
+			//Log to console when printing is done via a deffered callback
+			deferred: $.Deferred().done(function() {
+				for (var d=0;d<checkData.length;d++){
+					var cd = checkData[d];
+					if (cd.printstatus == "0"){
+						$.ajax({
+							type : "put",
+							url : '/stockouts',
+							contentType: "application/json; charset=utf-8",
+							data : JSON.stringify({'id':cd.id,'printstatus':"1",stockoutsList:[]}),
+							success : function(data) {
+							}
+						});
+					}
+				}
+				tableIns.reload({where: {xianluid:formSelects.value('xianlu', 'val').join(","),xsddtype:$("#xsddtype").val(),sdate:$('#ddate').val(),edate:$('#edate').val(),whid:$("#whid").val(),cusname:$("#cusname").val(),dxstatus:formSelects.value('status', 'val').join(","),ctype:ctype,busstype:$("#busstype").val(),orderBy:"order by createTime desc"}})
+			}),
+			stylesheet:'../../css/fahuoprint.css'
+		});
+	});
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {xianluid:formSelects.value('xianlu', 'val').join(","),xsddtype:$("#xsddtype").val(),sdate:$('#ddate').val(),edate:$('#edate').val(),whid:$("#whid").val(),cusname:$("#cusname").val(),dxstatus:formSelects.value('status', 'val').join(","),ctype:ctype,busstype:$("#busstype").val(),orderBy:"order by createTime desc"},page:{curr:1}})
+    });
+
+    function add(xsddtype) {
+        location.href="smadd.html?ctype="+getUrlParam("ctype")+"&xsddtype="+xsddtype;
+    }
+
+	function edit(id){
+		layer.open({
+			type: 2,
+			title: '编辑',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['100%', '100%'],
+			content: "smadd.html?id=" + id+ "&ctype="+getUrlParam("ctype"),
+			end : function(){
+
+			}
+		});
+	}
+
+    $("#tablesize").change(function(){
+        var tablesize = $(this).val();
+        if(tablesize){
+            tableIns.reload({size:tablesize})
+            tableIns2.reload({size:tablesize})
+            localStorage.setItem("tableSize",tablesize)
+        }
+    })
+</script>

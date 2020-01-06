@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+		<style>
+			.layui-form-item{
+				margin:0
+			}
+			.bcbtn{
+				width:100%;
+				margin-top:20px
+			}
+		</style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+						<button class="layui-btn" type="submit" onclick="update()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+
+			<input type="hidden" id="id" name="id">
+{addDivs}
+
+	</form>
+</div>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+
+	    var token = JSON.parse(localStorage.getItem('$state')).token;
+    	var self = null;
+    	mui.plusReady(function() {
+    		self = plus.webview.currentWebview();
+    		var id = self.bizid;
+    		initData(id);
+    		mui.init({
+    			beforeback: function() {
+    		    	self.close();
+    			}
+    		});
+    	});
+
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+		});
+
+		function initData(id){
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : server_url+'/{beanParamName}s/'+id,
+					async : false,
+					success : function(data) {
+{initData}
+renderForm();       //重新渲染表单
+					}
+				});
+
+			}
+		}
+
+		function update() {
+
+		    var formdata = $("#form").serializeObject();
+
+			$.ajax({
+				type : 'put',
+				url : server_url+'/{beanParamName}s',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				headers:{'token':token},
+				success : function(data) {
+						mui.plusReady(function() {
+                					var clist = plus.webview.getWebviewById("{beanParamName}List.html");
+                					mui.fire(clist, 'refresh');
+                					layer.msg("保存成功", {shift: -1, time: 1000}, function(){
+                							self.close();
+                					});
+                		})
+				}
+			});
+		}
+
+	</script>
+</body>
+</html>

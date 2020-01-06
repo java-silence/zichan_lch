@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ParamsDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.pid != null and params.pid != ''">
+				and pid = #{params.pid} 
+			</if>
+			<if test="params.ccode != null and params.ccode != ''">
+				and ccode = #{params.ccode} 
+			</if>
+			<if test="params.cname != null and params.cname != ''">
+				and cname = #{params.cname} 
+			</if>
+			<if test="params.val1 != null and params.val1 != ''">
+				and val1 = #{params.val1} 
+			</if>
+			<if test="params.val2 != null and params.val2 != ''">
+				and val2 = #{params.val2} 
+			</if>
+			<if test="params.val3 != null and params.val3 != ''">
+				and val3 = #{params.val3} 
+			</if>
+			<if test="params.isort != null and params.isort != ''">
+				and isort = #{params.isort} 
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and createby = #{params.createby} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and updateby = #{params.updateby} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and auditby = #{params.auditby} 
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and auditTime = #{params.auditTime} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and ctype = #{params.ctype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+		
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from sys_params t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="Params">
+		select * from sys_params t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update sys_params t
+		<set>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="ccode != null">
+				ccode = #{ccode}, 
+			</if>
+			<if test="cname != null">
+				cname = #{cname}, 
+			</if>
+			<if test="val1 != null">
+				val1 = #{val1}, 
+			</if>
+			<if test="val2 != null">
+				val2 = #{val2}, 
+			</if>
+			<if test="val3 != null">
+				val3 = #{val3}, 
+			</if>
+			<if test="isort != null">
+				isort = #{isort}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

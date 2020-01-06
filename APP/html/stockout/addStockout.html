@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+	<link rel="stylesheet" href="../../css/mui.min.css"> 
+    <style>
+		.layui-form-label{
+			width:30%;
+		}
+		.layui-input-inline{
+			width:70%;
+		}
+		.addbtn{
+			display: block;
+			margin: 0 auto;
+			margin-top:15px;
+			width:150px;
+			height:50px;
+			border-style:dashed;
+			color:royalblue 
+		}
+		.demoTable{
+			position: fixed;
+			left: 0%;
+			bottom: 0px;
+			width:100%;
+			height:60px
+		}
+		.demoTable-btn{
+			width:100%;
+			height:60px;
+			float: left;
+		}
+	</style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" style="display: none;"/>
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+		<input id="id" name="id" style="display:none">
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>出库类型</label>
+					<div class='layui-input-inline'>
+						<!--<input class='form-control' placeholder='业务类型' type='text' name='busstype' id='busstype' >-->
+						<select class="layui-input input-sm" name="busstype" id="busstype"></select>
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>仓库</label>
+					<div class='layui-input-inline'>
+						<select class="layui-input input-sm" name="whid" id="whid"></select>
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>客户</label>
+					<div class='layui-input-inline'>
+						<select class="layui-input input-sm" name="cusid" id="cusid"></select>
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>备注</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+					</div>
+				</div>
+			</div>
+	</form>
+</div>
+
+<div id="data"></div>
+
+<div class="mui-input-row" style="height:90px;">
+	<button class="addbtn" onclick="tianjia()"><span class="mui-icon mui-icon-plusempty"></span><span>添加存货</span></button>
+</div>
+<div style="height:60px"></div>
+<div class="demoTable">
+		<button class="mui-btn mui-btn-primary demoTable-btn"  onclick="add()">
+				保存
+		</button>
+</div>
+
+<script src="../../js/mui.min.js"></script>
+    <script type="text/javascript" src="../../js/properties.js" ></script>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript" src="../../js/customer.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript">
+	var self = null;
+	mui.plusReady(function() {
+							self = plus.webview.currentWebview();
+							
+							mui.init({								
+								beforeback: function() {	        
+										self.close();
+								}
+							});	
+				});
+	
+		showDictSelect("busstype", "stockouttype");
+		
+	    var biztype = getUrlParam("ctype");
+
+		if(biztype == "bj") {
+			showWarehouseByType("whid", "warehouse", false,"备件库");
+		}else if(biztype == "yl") {
+			showWarehouseByType("whid", "warehouse", false,"原料库");
+		}else if(biztype == "cp") {
+			showWarehouseByType("whid", "warehouse", false,"产品库","1");
+		}else{
+			showWarehouseSelect("whid", "warehouse", false);
+		}
+	
+	   showCusSelect("cusid", "customer", true);
+    
+    layui.use(['layer','form','laydate','table'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#ddate'
+        });
+    });
+
+    function add(data) {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+
+		    var formdata = $("#form").serializeObject();
+		    var data = getData();
+            if(!data || data.length == 0){
+                layer.msg("请添加存货");
+                return;
+			}
+
+		    for (var i=0;i<data.length;i++){
+                if(!data[i])
+                    continue;
+
+		        if(!matchNum(data[i].inum)){
+		            layer.msg("请输入正确的数量");
+		            return;
+				}else{
+		            if(data[i].inum<=0){
+                        layer.msg("存货数量不能小于等于0");
+                        return
+					}
+				}
+			}
+        formdata.stockoutsList = data;
+
+        $.ajax({
+            type : 'post',
+            url : server_url+'/stockouts',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+            success : function(data) {
+                mui.plusReady(function() {						 
+                			var clist = plus.webview.getWebviewById("stockout/stockoutList.html");
+                			mui.fire(clist, 'refresh'); 	
+                			layer.msg("保存成功", {shift: -1, time: 1000}, function(){
+                					self.close();  
+                			});
+                })
+            }
+        });
+    }
+	
+	function tianjia(){
+		mui.openWindow({
+						url: "../webview_main.html",
+						id: "invwebview_main.html",
+						preload: true,
+						show: {
+							aniShow: 'pop-in'
+						},
+						styles: {
+							popGesture: 'hide',
+							titleNView: {
+								autoBackButton: true,
+								titleText:"添加存货",
+							}
+						},
+						waiting: {
+							autoShow: false
+						},	
+						extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+							url:"currstock/searchCurrList.html?ctype="+getUrlParam("ctype")
+						}
+					});
+	}
+	
+	// 添加自定义事件监听
+	window.addEventListener('loadInv',function(event){
+	  //获得事件参数
+	    var invs= event.detail.invs;
+	    var oldData = getData();
+	  					 				
+	  	if(!oldData){
+	  	    oldData = [];
+	  	}
+	
+	  	var newData = invs
+	
+	  	for(var i=0;i<newData.length;i++){
+	  	                    if(i==0){
+	  	//              		console.log("newdata"+newData[i].invname);
+	  	                        $("#memo").val($("#memo").val() + "申请" +newData[i].invname + "等");
+	  	                    }
+	  	                    var ishas = false;
+	  	//                  for(var a=0;a<oldData.length;a++){
+	  	//                      if(oldData[a].invid == newData[i].id){
+	  	//                          ishas = true;
+	  	//                      }
+	  	//                  }
+	  	
+	  	                    if(!ishas){
+	  	//                      newData[i].invid = newData[i].id;
+	  	                        newData[i].cpgg = newData[i].invstd;
+	  	                        newData[i].inum = 0;
+	  	                        newData[i].imoney = 0;
+	  	                        oldData.push(newData[i]);
+	  	                    }
+	  	                }
+	  		
+	  					loadData(oldData)
+	});
+
+//  function getRenwu(){
+//      layer.open({
+//          type: 2,
+//          title: '添加',
+//          shadeClose: true,
+//          shade: 0.8,
+//          area: ['80%', '80%'],
+//          content: '../screnwu/scRenwuList.html?yanshou=1', //iframe的url
+//          end : function(){
+//              var newData = JSON.parse($("#shuzhi").val())
+//              $("#ccode").val(newData.ccode);
+//              tableIns.reload({where: {renwuid:newData.id}})
+//              tableIns1.reload({where: {renwuid:newData.id}})
+//          }
+//      });
+//  }
+
+    function getData(){
+		var data  = [];
+		$("#data").children().each(function(){		
+			data.push({invname:$(this).find("input[data-field='invname']").val(),
+			           invid:$(this).find("input[data-field='invid']").val(),
+					   cpgg:$(this).find("input[data-field='cpgg']").val(),
+					   danwei:$(this).find("input[data-field='danwei']").val(),
+					   inum:$(this).find("input[data-field='inum']").val(),
+					   iprice:$(this).find("input[data-field='iprice']").val(),
+					   imoney:$(this).find("input[data-field='imoney']").val(),
+					   memo:$(this).find("input[data-field='memo']").val()
+					 })
+		})
+
+			return data;
+	}
+		
+	function loadData(oldData){
+		var html = "";
+		liebiao(oldData)
+		for(var i=0;i<oldData.length;i++){
+			    var data = oldData[i];
+			    if(data.danwei == undefined){
+			    	data.danwei = "";
+			    }
+				var num = i+1;
+			    html += "<div data-index='"+i+"'>"+
+							"<div class='mui-input-row'>"+
+									"<label style='color:#9e9e9e'>采购明细("+num+")</label>"+	
+									"<label class='delbtn' onclick='delinv(this)' style='float:right;width:15%;color:royalblue'>删除</label>"+
+							"</div>"+
+							"<form class='mui-input-group'>"+
+								"<div class='mui-input-row' style='display: none;'>"+
+									"<label >存货ID</label>"+
+									"<input placeholder='存货ID' class='invid'  type='text' data-field='invid' value='"+data.invid+"'>"+
+								"</div>"+
+								"<div class='mui-input-row'>"+
+									"<label >存货</label>"+
+									"<input placeholder='存货' type='text' data-field='invname' readonly value='"+data.invname+"'>"+
+								"</div>"+
+								"<div class='mui-input-row'>"+
+									"<label >型号</label>"+
+									"<input placeholder='型号' type='text' data-field='cpgg' value='"+data.cpgg+"'>"+
+								"</div>"+
+							    "<div class='mui-input-row'>"+
+									"<label >单位</label>"+
+									"<input placeholder='单位' type='text' data-field='danwei' value='"+data.danwei+"'>"+
+								"</div>"+
+								"<div class='mui-input-row'>"+
+									"<label >数量</label>"+
+									"<input placeholder='数量' type='text' data-field='inum' onblur='suan(this)' value='"+data.inum+"'>"+
+								"</div>"+
+								"<div class='mui-input-row'>"+
+									"<label >单价</label>"+
+									"<input placeholder='单价' type='text' data-field='iprice' onblur='suan(this)' value='"+data.iprice+"'>"+
+								"</div>"+
+								"<div class='mui-input-row'>"+
+									"<label >金额</label>"+
+									"<input placeholder='金额' type='text' data-field='imoney' readonly value='"+data.imoney+"'>"+
+								"</div>"+
+								"<div class='mui-input-row'>"+
+									"<label >备注</label>"+
+									"<input placeholder='备注' type='text' data-field='memo' value='"+data.memo+"'>"+
+								"</div>"+
+							"</form>"+
+							"<div class='mui-input-row'  style='color:#9e9e9e;padding-left:5px'>如需采购多种产品，请点击\"添加存货\"</div>"+
+						"</div>"
+		}
+
+		$("#data").html(html)
+	}
+	
+	function suan(n){
+		var inum = $(n).parents("form").find("input[data-field='inum']").val();
+		var iprice = $(n).parents("form").find("input[data-field='iprice']").val();
+		var money = inum*iprice
+		$(n).parents("form").find("input[data-field='imoney']").val(money.toFixed(2))
+		
+		var data = getData();
+		var num = 0;
+		var imoney = 0;
+		for (var i=0;i<data.length;i++){
+		    if(!data[i])
+		        continue;
+				    
+			num = Number(num) + Number(data[i].inum)
+			imoney = Number(imoney) + Number(data[i].imoney)
+		}
+		$("#inum").val(num);
+		$("#imoney").val(imoney.toFixed(2));
+	}
+	
+	function delinv(inv){
+		mui.confirm('确认删除该条记录？',  '金贵塑料', ['确认','取消'], function(e) {
+				if(e.index==0){
+					$(inv).parent().parent().remove()
+				}                                     
+		});
+		var btnArray = ['确认', '取消'];		
+	}
+	
+	//格式化列表值
+	function liebiao(data){
+		 for(var i=0;i<data.length;i++){
+			  for(l in data[i]){
+				  if(!data[i][l]){
+					  data[i][l] = "";
+				  }
+			  }
+		 }
+	}
+
+</script>
+</body>
+</html>

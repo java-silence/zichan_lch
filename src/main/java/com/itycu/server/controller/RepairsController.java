@@ -1,0 +1,127 @@
+package com.itycu.server.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.itycu.server.dto.RepairsVO;
+import com.itycu.server.utils.UserUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.itycu.server.page.table.PageTableRequest;
+import com.itycu.server.page.table.PageTableHandler;
+import com.itycu.server.page.table.PageTableResponse;
+import com.itycu.server.page.table.PageTableHandler.CountHandler;
+import com.itycu.server.page.table.PageTableHandler.ListHandler;
+import com.itycu.server.dao.RepairsDao;
+import com.itycu.server.model.Repairs;
+
+import io.swagger.annotations.ApiOperation;
+
+@RestController
+@RequestMapping("/repairss")
+public class RepairsController {
+
+    @Autowired
+    private RepairsDao repairsDao;
+
+    @PostMapping
+    @ApiOperation(value = "保存")
+    public Repairs save(@RequestBody Repairs repairs) {
+//        repairs.setCreateby(UserUtil.getLoginUser().getId());
+        repairsDao.save(repairs);
+        return repairs;
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "根据id获取")
+    public Repairs get(@PathVariable Long id) {
+        return repairsDao.getById(id);
+    }
+
+    @PutMapping
+    @ApiOperation(value = "修改")
+    public Repairs update(@RequestBody Repairs repairs) {
+//        repairs.setUpdateby(UserUtil.getLoginUser().getId());
+        repairsDao.update(repairs);
+        return repairs;
+    }
+
+    @PutMapping("/audit/{id}")
+    @ApiOperation(value = "审核")
+    public Repairs audit(@PathVariable Long id) {
+        Repairs repairs = repairsDao.getById(id);
+
+//        repairs.setAuditby(UserUtil.getLoginUser().getId());
+//        repairs.setAuditTime(new Date());
+        repairs.setStatus("1");
+        repairsDao.update(repairs);
+        return repairs;
+    }
+
+    @PutMapping("/unaudit/{id}")
+    @ApiOperation(value = "弃审")
+    public Repairs unaudit(@PathVariable Long id) {
+        Repairs repairs = repairsDao.getById(id);
+
+//        repairs.setAuditby(null);
+//        repairs.setAuditTime(null);
+        repairs.setStatus("0");
+        repairsDao.update(repairs);
+        return repairs;
+    }
+
+    @GetMapping
+    @ApiOperation(value = "列表")
+    public PageTableResponse list(PageTableRequest request) {
+        return new PageTableHandler(new CountHandler() {
+
+            @Override
+            public int count(PageTableRequest request) {
+                return repairsDao.count(request.getParams());
+            }
+        }, new ListHandler() {
+
+            @Override
+            public List<Repairs> list(PageTableRequest request) {
+                return repairsDao.list(request.getParams(), request.getOffset(), request.getLimit());
+            }
+        }).handle(request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "删除")
+    public void delete(@PathVariable Long id) {
+        repairsDao.delete(id);
+    }
+
+    @GetMapping("/listall")
+    @ApiOperation(value = "列出所有数据")
+    public List<Repairs> listAll() {
+        List<Repairs> list = repairsDao.listAll();
+        return list;
+    }
+
+    @GetMapping("/listByRepairId")
+    @ApiOperation(value = "列出所有数据")
+    public Map listByRepairId(Long repairid) {
+        Map map = new HashMap();
+
+        List<RepairsVO> list = repairsDao.getByRepairId(repairid);
+
+        map.put("data",list);
+        map.put("code","0");
+        map.put("msg","");
+
+        return map;
+    }
+}

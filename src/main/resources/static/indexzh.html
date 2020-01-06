@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>首页</title>
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <!--    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
+    <!--    <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">-->
+    <!--    <link rel="stylesheet" type="text/css" media="screen" href="../../css/common.css">-->
+    <style>
+
+        .cds:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 44px;
+            right: -106px;
+            border-style: solid;
+            border-width: 106px;
+            border-color: transparent transparent #82e5f8 #82e5f8;
+            transform: rotate(-135deg);
+            -webkit-box-shadow: -2px 2px 3px 0 rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: -2px 2px 3px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: -2px 2px 3px 0 rgba(0, 0, 0, 0.2);
+        }
+        .cdn{
+            position: absolute;width: 213px;height: 213px;left: -109px;top: 42px;
+            transform:rotate(45deg);
+            background-color: #fff;
+
+
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- 内容主体区域 -->
+<div style="padding: 10px;">
+    <div style="margin-top: 2px;background-color: #fff;">
+        <div class="layui-row" style="height: 300px;">
+            <div class="layui-col-xs3" style="height: 100%;width:400px;padding-left: 20px;margin-top: 20px;">
+                <div class="grid-demo " style="height: 100%;border-top-left-radius:10px;border-bottom-left-radius:10px;z-index: 1;background:linear-gradient(to right,#64b1ff,#82e5f8) ;box-shadow:-2px -1px 4px rgba(153,153,153,0.8);position:relative">
+                    <div style="height: 50px;line-height: 50px;color: #fff;margin-left: 15px;">资产类别分布图</div>
+                    <div class="cds"></div>
+                    <div id="cllReport" style="width:400px;height:300px;"></div>
+                </div>
+            </div>
+            <div class="layui-col-xs9" style="height: 100%;margin-top: 20px;padding-left: 30px;">
+                <div class="grid-demo" style="height: 100%;background:linear-gradient(to right,#9ac1fd,#84d6f0);box-shadow:-2px -1px 4px rgba(153,153,153,0.8);position:relative ">
+                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 60px;color: #fff;">支行资产数量柱状图</div>
+                    <div class="cdn" ></div>
+                    <div id="liebiaoInfo" style="width:100%;height:300px;margin-left: 8%;margin-top: -50px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row" style="height: 400px;">
+            <div class="layui-col-xs4" style="height: 100%;">
+                <div class="grid-demo " style="height: 100%;background-color: #fff;">
+                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">支行资产概况</div>
+                    <div class="layui-form" style="height: 300px;margin-left: 20px;">
+
+                        <table class="layui-table" lay-even="" lay-skin="line" style="margin-top:20px" >
+                            <thead>
+
+                            <td >资产总值</td>
+                            <td >资产净值</td>
+                            <td >资产数量</td>
+                            <td >采购数量</td>
+                            </thead>
+                            <tbody id="BranchInfoList">
+                            </tbody>
+                        </table>
+                        <table class="layui-table" lay-even="" lay-skin="line" style="margin-top:26px">
+                            <thead>
+
+                            <td >本年度报修数量</td>
+                            <td >本年度处置数量</td>
+                            <td >本年度调配数量</td>
+                            <td >本年度巡检数量</td>
+
+                            </thead>
+                            <tbody id="BranchInfoList1">
+                            </tbody>
+                        </table>
+                        <table class="layui-table" lay-even="" lay-skin="line" style="margin-top:26px" >
+                            <thead>
+                            <td >保卫部资产数量</td>
+                            <td >综合办资产数量</td>
+                            <td >科技部资产数量</td>
+                            <td >运营部资产数量</td>
+                            </thead>
+                            <tbody id="BranchInfoList2">
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="layui-col-xs8" style="height: 100%;">
+                <div class="grid-demo" style="height: 100%;background-color: #fff;">
+                    <div class="layui-col-xs6" style="height: 100%;">
+                        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月采购</div>
+                        <div class="layui-form" style="height: 300px;margin-left: 20px;">
+                            <table class="layui-table" lay-even="" lay-skin="line" id="CaigouTable">
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs6" style="height: 100%;">
+                        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月调配</div>
+                        <div class="layui-form" style="height: 300px;margin-left: 20px;">
+                            <table class="layui-table" lay-even="" lay-skin="line" id="DiaoPeiTable">
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-row" style="height: 400px;">
+            <div class="layui-col-xs12" style="height: 100%;">
+                <div class="grid-demo " style="height: 100%;background-color: #fff;">
+
+                    <div class="layui-col-xs4" style="height: 100%;">
+                        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月报修</div>
+                        <div class="layui-form" style="height: 300px;margin-left: 20px;">
+                            <table class="layui-table" id="BaoXiuTable" lay-even="" lay-skin="line">
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-col-xs4" style="height: 100%;">
+                        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月巡检</div>
+                        <div class="layui-form" style="height: 300px;margin-left: 20px;">
+                            <table class="layui-table" lay-even="" lay-skin="line" id="XunJianTable">
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs4" style="height: 100%;">
+                        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月处置</div>
+                        <div class="layui-form" style="height: 300px;margin-left: 20px;">
+                            <table class="layui-table" lay-even="" lay-skin="line" id="baofeiTable">
+                            </table>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script src="https://cdn.bootcss.com/echarts/4.4.0-rc.1/echarts-en.min.js"></script>
+
+
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script type="text/javascript">
+    var req = GetRequest();
+
+    function GetRequest() {
+        var url = location.search;
+        //获取url中"?"符后的字串
+        console.log(url);
+        var result = url.substring(3, url.length);
+        return result;
+    }
+    var deptCode;
+    if (req && req != '1') {
+        $("#ZoneInfo").hide();
+        $("#Baoxiu").show();
+        $("#Caigou").show();
+        $("#zhuZhuang").hide();
+        $("#liebiao").show();
+        if (req <= 9) {
+            deptCode = "0" + req;
+        } else {
+            deptCode = req;
+        }
+        getBranch(deptCode);
+        ZhiHangZhiChangTongJi(deptCode);
+    }
+
+    var cllfx = function (timeType) {
+        var CLLChart = echarts.init(document.getElementById('cllReport'));
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/index/queryIndexAssetCategory/" + deptCode + "?v=" + new Date().getDate(),
+            // data: {"timeType": timeType},
+            success: function (data) {
+                if (!data) {
+                    layer.msg("暂无数据");
+                    return;
+                } else {
+                    var array = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var jsonObj = {
+                            'name': "",
+                            'value': ""
+                        };
+                        jsonObj.name = data[i].name;
+                        jsonObj.value = data[i].dataCount;
+                        array.push(jsonObj);
+                    }
+                    var options =
+                        {
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                            },
+                            legend: {
+                                orient: 'vertical',
+                                left: 'center',
+                                top: 'bottom',
+                                data: [100, 20, 40, 50, 60, 10]
+                            },
+                            series: [
+                                {
+                                    name: '资产数量',
+                                    type: 'pie',
+                                    radius: '55%',
+                                    center: ['50%', '45%'],
+                                    data: array,
+                                    label: {
+                                        normal: {
+                                            formatter: '{b}\n{c} ({d}%)',
+                                        }
+                                    },
+                                    itemStyle: {
+                                        emphasis: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    CLLChart.setOption(options);
+                }
+            }
+        });
+    };
+
+    var test = setTimeout(function () {
+        cllfx(1);
+        caigouCount();
+        repair();
+        xunjian();
+        diaoPeiCount();
+        baoFeiCount();
+    }, 1000);
+
+
+    function repair() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#BaoXiuTable'
+                , height: 300
+                , url: "/index/queryBenYueRepairCountInfo/" + deptCode + "?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'repairCompany', title: '报修单位',align: 'center',}
+                    , {field: 'repairCount', title: '报修单总数', width:100 }
+                    , {field: 'repairTime', title: '报修时间', width:100}
+                    , {field: 'wanCheng', title: '已完成', width:100}
+                    , {field: 'weiWanCheng', title: '未完成', width:100}
+                    //, {field: 'statusText', title: '报修结果',  width:100}
+                ]]
+            });
+        });
+    }
+
+
+    function xunjian() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#XunJianTable'
+                , height: 300
+                , url: "/index/queryBenYueXunjianDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'xunjianCompany', title: '巡检单位',align: 'center',}
+                    , {field: 'xunjianCount', title: '巡检单总数', width:100 }
+                    , {field: 'xunjianTime', title: '巡检时间', width:100}
+                    , {field: 'wanCheng', title: '已完成', width:100}
+                    , {field: 'weiWanCheng', title: '未完成', width:100}
+                    // , {field: 'xunjianText', title: '巡检结果', width:100 }
+                ]]
+            });
+        });
+    }
+
+    function baoFeiCount() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#baofeiTable'
+                , height: 300
+                , url: "/index/queryBenYueBaoFeiDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'baofeiCompany', title: '处置单位',align: 'center',}
+                    , {field: 'baofeiCount', title: '处置单总数', width:100}
+                    , {field: 'baofeiTime', title: '处置时间', width:100}
+                    , {field: 'wanCheng', title: '已完成', width:100}
+                    , {field: 'weiWanCheng', title: '未完成', width:100}
+                    //, {field: 'baofeiText', title: '处置结果', width:100 }
+                ]]
+            });
+        });
+    }
+
+    function diaoPeiCount() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#DiaoPeiTable'
+                , height: 300
+                , url: "/index/queryBenYueDiaoPeiDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'diaoPeiCompany', title: '调配单位',align: 'center',}
+                    , {field: 'diaoPeiCount', title: '调配单总数', width:100}
+                    , {field: 'diaoPeiTime', title: '调配时间', width:100}
+                    , {field: 'wanCheng', title: '已完成', width:100}
+                    , {field: 'weiWanCheng', title: '未完成', width:100}
+                    // , {field: 'diaoPeiStatus', title: '调配结果', width:100,templet:function(d){
+                    //         if (d.diaoPeiStatus==0) {
+                    //             return "初始";
+                    //         } else if (d.diaoPeiStatus==1) {
+                    //             return "审核中";
+                    //         } else if (d.diaoPeiStatus==2) {
+                    //             return "审核完成";
+                    //         }
+                    //
+                    //     }}
+                ]]
+            });
+        });
+    }
+
+    function caigouCount() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#CaigouTable'
+                , height: 300
+                , url: "/index/queryBenYueBuyDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'buyCompany', title: '采购单位',align: 'center',}
+                    , {field: 'goodsTotal', title: '采购单总数', width:100}
+                    , {field: 'buyTime', title: '采购时间', width:100}
+                    , {field: 'wanCheng', title: '已完成', width:100}
+                    , {field: 'weiWanCheng', title: '未完成', width:100}
+                    //, {field: 'statusText', title: '采购结果', width:100}
+                ]]
+            });
+        });
+
+    }
+
+
+    //首页查询支行的部门是 点击支行或者部门显示支行或者部门的资产概况
+    function getBranch(deptCode) {
+        console.log("===================>" + deptCode)
+        //到期资产列表
+        var zcNumber=0;
+
+        var repairCount=0;
+        $.ajax({
+            type: 'get',
+            url: '/index/queryIndexZoneAssetCount/' + deptCode,
+            async: false,
+            success: function (data) {
+                var tr = "";
+                var tr2 = "";
+                var d = data[0];
+                if (d) {
+                    zcNumber= d['zcNumber'];
+
+                    repairCount= d['repairCount'];
+                    tr = $(['<tr>'
+                        , '<td >' + d['zcTotalValue'] + '</td>'
+                        , '<td ><span id="zcJingZhi"></span></td>'
+                        , '<td ><span id="zcCount"></span></td>'
+                        , '<td ><span id="CaiGou"></span></td>'
+                        , '</tr>'].join(''));
+                    tr2 = $(['<tr>'
+                        , '<td >' + d['zhbZcNumber'] + '</td>'
+                        , '<td >' + d['kjbZcNumber'] + '</td>'
+                        , '<td >' + d['yybZcNumber'] + '</td>'
+                        , '<td >' + d['bwbZcNumber'] + '</td>'
+                        , '</tr>'].join(''));
+
+                } else {
+                    tr = $(['<tr>'
+                        , '<td >' + '<p></p>' + '</td>'
+                        , '<td >' + '<p></p>' + '</td>'
+                        , '<td >' + '<p>暂无数据</p>' + '</td>'
+                        , '<td >' + '<p></p>' + '</td>'
+                        , '</tr>'].join(''));
+                    tr2 = $(['<tr>'
+                        , '<td >' + '<p></p>' + '</td>'
+                        , '<td >' + '<p></p>' + '</td>'
+                        , '<td >' + '<p>暂无数据</p>' + '</td>'
+                        , '<td >' + '<p></p>' + '</td>'
+                        , '</tr>'].join(''));
+                }
+                $("#BranchInfoList").append(tr);
+                $("#BranchInfoList2").append(tr2);
+
+            }
+        });
+
+        $.ajax({
+            type: 'get',
+            url: '/index/queryIndexZhihangCount/' + deptCode,
+            async: false,
+            success: function (data){
+                if(data.zcJingZhi == undefined){
+                    data.zcJingZhi = 0;
+                }
+                if(data.countBaoFei == undefined){
+                    data.countBaoFei = 0;
+                }
+
+                debugger;
+                var tr = $(['<tr>'
+                    , '<td >' +  repairCount+ '</td>'
+                    , '<td >' + data.countBaoFei+ '</td>'
+                    , '<td >' + data.diaopeiCount + '</td>'
+                    , '<td >' + data.xunjianCount + '</td>'
+                    , '</tr>'].join(''));
+                $("#BranchInfoList1").append(tr);
+                $("#zcJingZhi").text(data.zcJingZhi);
+                $("#zcCount").text(zcNumber);
+                $("#CaiGou").text(data.caigouCount);
+
+            }
+
+        });
+    }
+
+
+    var app = {};
+    option = null;
+    var zhihang = document.getElementById("liebiaoInfo");
+    var zhihangMyChart = echarts.init(zhihang);
+
+    function ZhiHangZhiChangTongJi() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/index/queryBranchAllSubBranchAssert/" + deptCode + "?v=" + new Date().getDate(),
+            // data: {"timeType": timeType},
+            success: function (data) {
+                if (!data) {
+                    layer.msg("暂无数据");
+                    return;
+                } else {
+                    // 指定图表的配置项和数据
+                    console.log(data);
+                    var array = new Array();
+                    var value = new Array();
+                    for (var i = 0; i < data.length; i++) {
+                        array.push(data[i].name);
+                        value.push(data[i].resultValue);
+                    }
+                    var option = {
+                        tooltip: {},
+                        legend: {
+                            data: ['资产']
+                        },
+                        xAxis: {
+                            data: array,
+                            axisLabel: {
+                                interval: 0,
+                                rotate: -30
+                            },
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: '资产总数(件)',
+                            type: 'bar',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'inside'
+                                }
+                            },
+                            data: value
+                        }
+                        ]
+                    };
+                    if (option && typeof option === "object") {
+                        zhihangMyChart.setOption(option, true);
+                    }
+                }
+            }
+        });
+    }
+</script>

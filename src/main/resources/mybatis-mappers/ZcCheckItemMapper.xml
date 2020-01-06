@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcCheckItemDao">
+
+    <sql id="where">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and t.id = #{params.id}
+            </if>
+            <if test="params.zcCheckId != null and params.zcCheckId != ''">
+                and t.zc_check_id = #{params.zcCheckId}
+            </if>
+            <if test="params.zcId != null and params.zcId != ''">
+                and t.zc_id = #{params.zcId}
+            </if>
+            <if test="params.result != null and params.result != ''">
+                and t.result = #{params.result}
+            </if>
+            <if test="params.del != null and params.del != ''">
+                and t.del = #{params.del}
+            </if>
+            <if test="params.bz != null and params.bz != ''">
+                and t.bz = #{params.bz}
+            </if>
+            <if test="params.finishTime != null and params.finishTime != ''">
+                and t.finish_time = #{params.finishTime}
+            </if>
+            <if test="params.zcName != null and params.zcName != ''">
+                and i.zc_name like CONCAT('%',#{params.zcName},'%')
+            </if>
+
+        </where>
+    </sql>
+
+    <select id="getById" resultType="com.itycu.server.model.ZcCheckItem">
+		select t.*
+		from zc_check_item t
+
+		where t.id = #{id}
+	</select>
+
+    <select id="count" resultType="int">
+        select count(1)
+        from zc_check_item t
+        left join zc_info i on i.id=t.zc_id
+        WHERE 1=1
+        <if test="params.id != null and params.id != ''">
+            and t.id = #{params.id}
+        </if>
+        <if test="params.zcCheckId != null and params.zcCheckId != ''">
+            and t.zc_check_id = #{params.zcCheckId}
+        </if>
+        <if test="params.zcId != null and params.zcId != ''">
+            and t.zc_id = #{params.zcId}
+        </if>
+        <if test="params.result != null and params.result != ''">
+            and t.result = #{params.result}
+        </if>
+        <if test="params.del != null and params.del != ''">
+            and t.del = #{params.del}
+        </if>
+        <if test="params.bz != null and params.bz != ''">
+            and t.bz = #{params.bz}
+        </if>
+        <if test="params.finishTime != null and params.finishTime != ''">
+            and t.finish_time = #{params.finishTime}
+        </if>
+        <if test="params.zcName != null and params.zcName != ''">
+            and i.zc_name like CONCAT('%',#{params.zcName},'%')
+        </if>
+    </select>
+
+    <select id="list" resultType="com.itycu.server.model.ZcCheckItem">
+        select t.*,i.zc_name as zcName,
+        i.zc_codenum AS zcNum,
+        i.epcid AS zsNum,
+        i.self_codenum AS kpBm,
+        i.epcid,
+        i.specification,i.model,i.sy_Name syName ,i.store_Address as storeAddress
+        from zc_check_item t
+        left join zc_info i on i.id=t.zc_id
+        WHERE 1=1
+        <if test="params.id != null and params.id != ''">
+            and t.id = #{params.id}
+        </if>
+        <if test="params.zcCheckId != null and params.zcCheckId != ''">
+            and t.zc_check_id = #{params.zcCheckId}
+        </if>
+        <if test="params.zcId != null and params.zcId != ''">
+            and t.zc_id = #{params.zcId}
+        </if>
+        <if test="params.result != null and params.result != ''">
+            and t.result = #{params.result}
+        </if>
+        <if test="params.del != null and params.del != ''">
+            and t.del = #{params.del}
+        </if>
+        <if test="params.bz != null and params.bz != ''">
+            and t.bz = #{params.bz}
+        </if>
+        <if test="params.finishTime != null and params.finishTime != ''">
+            and t.finish_time = #{params.finishTime}
+        </if>
+        <if test="params.zcName != null and params.zcName != ''">
+            and i.zc_name like CONCAT('%',#{params.zcName},'%')
+        </if>
+
+
+        ${params.orderBy}
+        limit #{offset}, #{limit}
+    </select>
+
+    <update id="update">
+
+        update zc_check_item
+        <trim prefix="set" suffixOverrides=",">
+            <if test="zcCheckItem.zcCheckId != null">
+                zc_check_id = #{zcCheckItem.zcCheckId},
+            </if>
+            <if test="zcCheckItem.zcId != null">
+                zc_id = #{zcCheckItem.zcId},
+            </if>
+            <if test="zcCheckItem.result != null">
+                result = #{zcCheckItem.result},
+            </if>
+            <if test="zcCheckItem.del != null">
+                del = #{zcCheckItem.del},
+            </if>
+            <if test="zcCheckItem.bz != null">
+                bz = #{zcCheckItem.bz},
+            </if>
+
+            <if test="zcCheckItem.reCheck != null">
+                re_check = #{zcCheckItem.reCheck},
+            </if>
+            finish_time =now(),
+        </trim>
+        where id = #{zcCheckItem.id}
+
+    </update>
+
+    <update id="updates">
+        <foreach collection="list" separator=";" item="model">
+            update zc_check_item t
+            <set>
+                <if test="model.zcCheckId != null">
+                    zc_check_id = #{model.zcCheckId},
+                </if>
+                <if test="model.zcId != null">
+                    zc_id = #{model.zcId},
+                </if>
+                <if test="model.result != null">
+                    result = #{model.result},
+                </if>
+                <if test="model.del != null">
+                    del = #{model.del},
+                </if>
+                <if test="model.bz != null">
+                    bz = #{model.bz},
+                </if>
+                <if test="model.finishTime != null">
+                    finish_time = #{model.finishTime},
+                </if>
+            </set>
+            where t.id = #{model.id}
+        </foreach>
+    </update>
+
+    <insert id="saves">
+        insert into zc_check_item
+        (zc_check_id, zc_id, del) values
+        <foreach collection="list" item="model" separator=",">
+            (#{model.zcCheckId}, #{model.zcId}, 0)
+        </foreach>
+    </insert>
+
+
+    <insert id="saveZcItem" keyProperty="true" useGeneratedKeys="true">
+		insert into zc_check_item
+		(zc_check_id, zc_id, del,re_check) values
+		(#{model.zcCheckId}, #{model.zcId}, 0,#{model.reCheck})
+	</insert>
+
+
+    <select id="queryAllZcCheckItem" resultType="com.itycu.server.model.ZcCheckItem">
+    select
+		   id ,
+		  `zc_check_id` as  zcCheckId,
+		  `zc_id` as  zcId,
+		  `result` ,
+		  `del` ,
+		  `finish_time`  as finishTime
+		from zc_check_item where
+		zc_check_id = #{checkId}
+	</select>
+
+
+    <select id="queryCheckFailItem" resultType="com.itycu.server.model.ZcCheckItem">
+        select
+		   `id` ,
+		  `zc_check_id` as  zcCheckId,
+		  `zc_id` as  zcId,
+		  `result` ,
+		  `del` ,
+		  `finish_time`  as finishTime
+		from zc_check_item where
+		zc_check_id = #{checkId}
+		and  result = 2
+    </select>
+
+
+    <select id="list2" resultType="com.itycu.server.model.ZcEpcCheckItem">
+select b.zc_name as checkName, b.epcid as epcId, c.deptname as deptName,a.zc_check_id as zcCheckId
+from zc_check_item a
+         left join zc_info b on a.zc_id = b.id
+         left join t_dept c on b.sy_dept_id = c.id
+where  a.zc_check_id = #{checkId}  AND a.result =0
+    </select>
+
+    <select id="queryNotFullCheckItem" resultType="com.itycu.server.model.ZcEpcCheckItem">
+        SELECT
+            b.zc_name AS checkName,
+            b.epcid,
+            c.deptname AS deptName,
+            a.zc_check_id AS zcCheckId,
+            a.zc_check_id as zcCheckId
+        FROM
+            zc_check_item AS a
+            LEFT JOIN zc_info AS b ON a.zc_id = b.id
+            LEFT JOIN t_dept AS c ON b.sy_dept_id = c.id
+        WHERE
+            a.zc_check_id = #{checkId}
+            AND a.result =0
+    </select>
+
+
+    <select id="queryRecheckId" resultType="com.itycu.server.model.ZcCheckItem">
+        select
+		   `id` ,
+		  `zc_check_id` as  zcCheckId,
+		  `zc_id` as  zcId,
+		  `result` ,
+		  `del` ,
+		  `finish_time`  as finishTime
+		from zc_check_item where
+		zc_check_id = #{checkId}
+		and  re_check = 1
+    </select>
+
+    <update id="updateItemStatusByZid">
+        update zc_check_item set result = #{status}
+        where zc_check_id = #{checkId}
+        and zc_id = #{zcId}
+        and re_check = 1
+    </update>
+
+
+    <update id="deleteZcItem">
+        update zc_check_item set del = 1
+        where zc_check_id = #{checkId}
+
+    </update>
+
+    <!--根据资产报废主表查询查询全部资产信息-->
+    <select id="listDetailByZcCheckId" parameterType="long" resultType="map">
+        SELECT
+        t.id,
+        t.profit,
+        c.epcid,
+        c.zc_name zcName,
+        c.zc_codenum zcCodenum,
+        c.card_num cardNum,
+        c.model,
+        c.specification,
+        c.unit,
+        c.useStatusName,
+        t.result,
+        c.glDeptName,
+        c.syDeptName,
+        c.sy_name syName,
+        c.store_address storeAddress
+        FROM
+        zc_check_item t
+        LEFT JOIN v_zc_info c ON t.zc_id = c.id
+        <where>
+            <if test="zcCheckId != null and zcCheckId != ''">
+                t.zc_check_id = #{zcCheckId}
+            </if>
+        </where>
+        order by c.sy_dept_id, t.result asc
+    </select>
+
+
+    <select id="queryProfitCount" resultType="int">
+        select count(1) from zc_check_item
+        where zc_check_id = #{checkId} and profit = 1
+    </select>
+
+
+    <select id="findZcItemInZcCheckSubList" resultType="com.itycu.server.model.ZcCheckItem">
+        select * from
+        zc_check_item where zc_id = #{zcId}
+        and zc_check_id = #{zcCheckId}
+        limit 1
+    </select>
+
+
+    <select id="checkHasCreatedByCreateByAndDept" resultType="int">
+        select count(*)
+        from zc_check as a  where
+        a.create_by = #{creteBy} and a.check_dept_id  = #{deptId}
+        and a.status !=2
+    </select>
+    <select id="checkHasCreatedByCreateByAndDept2" resultType="int">
+        select count(*)
+        from zc_check as a  where
+        a.create_by = #{creteBy} and a.check_dept_id  = #{deptId}
+        and a.profit=#{profit}
+        and a.status !=2
+    </select>
+
+    <select id="queryPanYingCheckItem" resultType="com.itycu.server.model.ZcEpcCheckItem">
+        SELECT
+            b.zc_name AS checkName,
+            b.epcid,
+            c.deptname AS deptName,
+            a.zc_check_id AS zcCheckId
+        FROM
+            zc_check_item AS a
+            LEFT JOIN zc_info AS b ON a.zc_id = b.id
+            LEFT JOIN t_dept AS c ON b.sy_dept_id = c.id
+         WHERE
+                    a.zc_check_id = #{zcCheckId}
+                    AND a.profit =1
+    </select>
+</mapper>

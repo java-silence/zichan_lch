@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" style="display: none;"/>
+	<br>
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+				<div class="demoTable" style="display: inline-block">
+					<button class="layui-btn"  data-type="getCheckData">
+						<i class="fa fa-save"></i> 保存
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<input type="hidden" id="id" name="id">
+			<div class='layui-form-item'>
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>日期</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='日期' type='text' name='ddate' id='ddate' >-->
+<!--					</div>-->
+<!--				</div>-->
+				<div class='layui-inline'>
+					<label class='layui-form-label'>出库类型</label>
+					<div class='layui-input-inline'>
+						<!--<input class='form-control' placeholder='业务类型' type='text' name='busstype' id='busstype' >-->
+						<select class="layui-input input-sm" name="busstype" id="busstype"></select>
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>仓库</label>
+					<div class='layui-input-inline'>
+						<select class="layui-input" name="whid" id="whid"></select>
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>客户</label>
+					<div class='layui-input-inline'>
+						<select class="layui-input" name="cusid" id="cusid"></select>
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>备注</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+					</div>
+				</div>
+				<div class='layui-inline'>
+					<label class='layui-form-label renwu' style="display: none;">生产任务</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input renwu' style="display: none;" placeholder='生产任务' type='text'  onclick="getRenwu()">
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+
+	<br>
+	<header style="height: 100%">
+		<div align="left">
+			<table style="width: 100%">
+				<tr>
+					<td>
+						<form class="form-inline" onsubmit="return false">
+							<script type="text/html" id="toolbarDemo">
+								<div class="form-group">
+									<button class="layui-btn layui-btn-sm" onclick="tianjia()">
+										<i class="layui-icon">&#xe608;</i> 添加
+									</button>
+									<button class="layui-btn layui-btn-sm" lay-event="batchdel">
+										<i class="layui-icon">&#xe640;</i> 批量删除
+									</button>
+								</div>
+							</script>
+						</form>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</header>
+	<hr style="height:3px;">
+
+	<div>
+		<div class="widget-body no-padding">
+			<table class="layui-hide layui-table" id="data" lay-filter="data"></table>
+
+			<script type="text/html" id="barDemo">
+				<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+			</script>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript" src="../../js/customer.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript">
+    if(getUrlParam("lingliao")==1)  $(".renwu").show()
+    //var appStatus = showStepSelect("stepid", "1", true);
+    showDictSelect("busstype", "stockouttype");
+	var biztype = getUrlParam("ctype");
+	if(biztype == "bj") {
+		showWarehouseByType("whid", "warehouse", false,"备件库");
+	}else if(biztype == "yl") {
+		showWarehouseByType("whid", "warehouse", false,"原料库");
+	}else if(biztype == "cp") {
+		showWarehouseByType("whid", "warehouse", false,"产品库","1");
+	}else{
+		showWarehouseSelect("whid", "warehouse", false);
+	}
+
+    showCusSelect("cusid", "customer", true);
+    var tableIns;
+    var table;
+    layui.use(['layer','form','laydate','table'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#ddate'
+
+        });
+
+        initData();
+
+        function initData(){
+            var id = getUrlParam("id");
+            if(id != ""){
+                $.ajax({
+                    type : 'get',
+                    url : '/stockouts/'+id,
+                    async : false,
+                    success : function(data) {
+                        $('#id').val(data.id);
+                        $('#busstype').val(data.busstype);
+//                        $('#csource').val(data.csource);
+                        $('#bussid').val(data.bussid);
+                        $('#whid').val(data.whid);
+                        $('#deptid').val(data.deptid);
+                        $('#cusid').val(data.cusid);
+                        $('#memo').val(data.memo);
+                        renderForm();       //重新渲染表单
+                    }
+                });
+
+            }
+        }
+
+        table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,data:[]
+            ,toolbar: '#toolbarDemo'
+            ,url:"/stockoutss/listByStockoutId"
+            ,where: {stockid:$("#id").val()}
+            ,totalRow: true
+            ,cols: [[
+                {checkbox: true}
+                // ,{field:'checkbox',checkbox: true, LAY_CHECKED: true}
+                ,{field:'invname', title: '存货', sort: true, totalRowText: '合计'}
+                ,{field:'cpgg', title: '型号',edit:"text", sort: false}
+                ,{field:'inum', title: '数量', event: 'countMoney',edit:"text", totalRow: true}
+                ,{field:'unit1', title: '单位',edit:"text", sort: true}
+                ,{field:'iprice', title: '单价',edit:"text", sort: true}
+                ,{field:'imoney', title: '金额', sort: true, totalRow: true}
+                ,{fixed: 'right', title: '操作', width:178, align:'center', toolbar: '#barDemo'}
+            ]]
+            // ,done: function(res, curr, count){
+            //     var _table_box = $("#data").next().find(".layui-table-box");
+            //     _table_box.find("[data-field='checkbox']").hide();
+            // }
+        });
+
+        //监听工具条
+        table.on('tool(data)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    var oldData =  table.cache["data"];
+
+                    if(!oldData){
+                        oldData = [];
+                    }
+
+                    for (var i in oldData){
+                        var d = oldData[i];
+                        if (d.id == data.id){
+                            oldData.splice(i,1);
+                            break;
+                        }
+                    }
+                    tableIns.reload({
+                        data : oldData
+
+                    })
+
+                    layer.close(index);
+                });
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(data)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data;
+            switch(obj.event){
+                case 'batchdel':  //批量删除
+                    var oldData = table.cache["data"];
+                    var newData = [];
+                    if(!oldData || data.length == 0) {
+                        layer.msg("请选择要删除的行");
+                    }else{
+                        layer.confirm('真的批量删除行么', function (index) {
+                            for (var i = 0; i < oldData.length; i++) {
+                                var isdel = false;
+                                for (var a = 0; a < data.length; a++) {
+                                    if (data[a].id == oldData[i].id) {
+                                        isdel = true;
+                                    }
+                                }
+
+                                if (!isdel) {
+                                    newData.push(oldData[i]);
+                                }
+                            }
+                            tableIns.reload({
+                                data: newData
+                            });
+
+                            layer.close(index);
+                        });
+                    }
+                    break;
+            };
+        });
+
+        active = {
+            getCheckData: function(){ //保存
+                var data = table.cache.data;
+                add(data);
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听单元格编辑
+        table.on('edit(data)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            if(!matchNum(value)) layer.msg("请输入正确的数量");
+            var oldData =  table.cache["data"];
+            if(!oldData){
+                oldData = [];
+            }
+            for (var i in oldData){
+                var d = oldData[i];
+                if (d.id == data.id){
+					var money = d.iprice * d.inum;
+                    d.imoney = money.toFixed(2);
+                }
+            }
+
+            tableIns.reload({
+				url:"",
+                data : oldData
+            })
+        });
+    });
+
+    function add(data) {
+        $('#form').bootstrapValidator();
+        var bootstrapValidator = $("#form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(!bootstrapValidator.isValid()){
+            return;
+        }
+
+        var formdata = $("#form").serializeObject();
+        if(!data || data.length == 0){
+            layer.msg("请添加存货");
+            return;
+        }
+
+        for (var i=0;i<data.length;i++){
+            if(!data[i])
+                continue;
+
+            if(isNaN(data[i].inum)){
+                layer.msg("存货数量请输入数字");
+                return;
+            }else{
+                if(data[i].inum<=0){
+                    layer.msg("存货数量不能小于等于0");
+                    return
+                }
+            }
+        }
+        formdata.stockoutsList = data;
+
+        $.ajax({
+            type : 'put',
+            url : '/stockouts',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+            success : function(data) {
+                layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                    location.href = "stockoutList.html?ctype="+biztype;
+                });
+            }
+        });
+    }
+
+    function tianjia(){
+        layer.open({
+            type: 2,
+            title: '添加',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['1000px', '500px'],
+			content: '../inv/searchcurrstock.html?whid=' + $('#whid').val(),
+            end : function(){
+                var oldData =  table.cache["data"];
+                if(!oldData){
+                    oldData = [];
+                }
+                var newData = JSON.parse($("#shuzhi").val())
+                for(var i=0;i<newData.length;i++){
+                    var ishas = false;
+                    // for(var a=0;a<oldData.length;a++){
+                    //     if(oldData[a].invid == newData[i].id){
+                    //         ishas = true;
+                    //     }
+                    // }
+
+                    if(!ishas){
+                        // newData[i].invid = newData[i].id;
+						// newData[i].cpgg = newData[i].invstd;
+                        newData[i].inum = 0;
+                       newData[i].imoney = 0;
+                        oldData.push(newData[i]);
+                    }
+                }
+                tableIns.reload({
+					url:"",
+                    data : oldData
+                })
+            }
+        });
+    }
+
+    function getRenwu(){
+        layer.open({
+            type: 2,
+            title: '添加',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['80%', '80%'],
+            content: '../screnwu/scRenwuList.html?yanshou=1', //iframe的url
+            end : function(){
+                var newData = JSON.parse($("#shuzhi").val())
+                $("#ccode").val(newData.ccode);
+                tableIns.reload({where: {renwuid:newData.id}})
+                tableIns1.reload({where: {renwuid:newData.id}})
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

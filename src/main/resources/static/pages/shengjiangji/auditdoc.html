@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>layuiAdmin 主页示例模板一</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />-->
+</head>
+<body>
+<div class="layui-fluid">
+	<input type="hidden" id="flowid"/>
+	<input type="hidden" id="stepid"/>
+	<input type="hidden" id="material"/>
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md8">
+			<div class="layui-card">
+				<div class="layui-card-header">
+					升降机申请
+				</div>
+				<div class="layui-card-body">
+					<div class="layui-row layui-col-space10">
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>审批内容明细</div>
+								<div class='form-group'>
+
+									<div class='col-md-10'>
+										<label class='col-md-2 control-label'>所属站 </label>
+										<input class='form-control layui-input' placeholder='所属站' type='text' name='deptname' id='deptname' >
+									</div>
+
+									<div class='col-md-6'>
+										<label class='col-md-2 control-label'>申请人</label>
+										<input class='form-control layui-input' placeholder='申请人' type='text' name='creator' id='creator' >
+									</div>
+								</div>
+								<div class='form-group'>
+									<label class='col-md-2 control-label'>申请标题</label>
+									<div class='col-md-10'>
+										<input class='form-control layui-input' placeholder='申请标题' type='text' name='title' id='title' data-bv-notempty='true' data-bv-notempty-message='申请标题不能为空'>
+									</div>
+								</div>
+								<!--<div class='form-group'>-->
+								<!--<label class='col-md-2 control-label'>作者</label>-->
+								<!--<div class='col-md-10'>-->
+								<!--<input class='form-control' placeholder='作者' type='text' name='author' id='author' >-->
+								<!--</div>-->
+								<!--</div>-->
+								<!--<div class='form-group'>-->
+								<!--<label class='col-md-2 control-label'>内容摘要</label>-->
+								<!--<div class='col-md-10'>-->
+								<!--<input class='form-control' placeholder='内容摘要' type='text' name='brief' id='brief' >-->
+								<!--</div>-->
+								<!--</div>-->
+								<div class='form-group'>
+									<label class='col-md-2 control-label'>申请内容</label>
+									<div class='col-md-10'>
+										<textarea placeholder="请输入申请内容" class="layui-textarea" type='text' name='content' id='content' ></textarea>
+									</div>
+								</div>
+
+								<div class='form-group'>
+									<label class='col-md-2 control-label'>开始使用日期</label>
+									<div class='col-md-10'>
+										<input class='form-control layui-input' placeholder='日期1' type='text' name='ddate1' id='ddate1' >
+									</div>
+								</div>
+								<div class='form-group'>
+									<label class='col-md-2 control-label'>归还日期</label>
+									<div class='col-md-10'>
+										<input class='layui-input' placeholder='日期2' type='text' name='ddate2' id='ddate2' >
+									</div>
+								</div>
+								<!--<div class='form-group'>-->
+								<!--<label class='col-md-2 control-label'>部门编码</label>-->
+								<!--<div class='col-md-10'>-->
+								<!--<input class='form-control' placeholder='部门编码' type='text' name='deptid' id='deptid' >-->
+								<!--</div>-->
+								<!--</div>-->
+								<div class='form-group'>
+									<label class='col-md-2 control-label'>备注</label>
+									<div class='col-md-10'>
+										<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<!--<div class="layui-col-xs12 layui-col-sm12">-->
+							<!--<div class="layuiadmin-card-text">-->
+								<!--<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>报修照片</div>-->
+								<!--<div id="zhaopian"></div>-->
+								<!--&lt;!&ndash;<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>-->
+                                <!--<p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>&ndash;&gt;-->
+							<!--</div>-->
+						<!--</div>-->
+
+					</div>
+				</div>
+			</div>
+			<div class="layui-card">
+				<div class="layui-card-header">审批动态</div>
+				<div class="layui-card-body">
+					<dl class="layuiadmin-card-status" id="shenpidongtai">
+						<!--<dd>-->
+							<!--<div class="layui-status-img"><a href="javascript:;"><img src="../../layuiadmin/style/res/logo.png"></a></div>-->
+							<!--<div>-->
+								<!--<p>【收费部】 审批通过</p>-->
+                                <!--<p>审批意见：</p>-->
+                                <!--<p></p>-->
+                                <!--<span>2018-11-01 15:32:31</span>-->
+							<!--</div>-->
+						<!--</dd>-->
+
+					</dl>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4" id="divshenpi">
+			<div class="layui-card">
+				<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+					<input type="hidden" id="id" name="id">
+					<input type="hidden" id="bizid" name="bizid">
+
+					<div class="layui-card-header">审批操作</div>
+					<div class="layui-card-body">
+						<div class="layui-card-header" >
+							<button class="layui-btn layui-btn-normal" type="submit" onclick="update(1)">审批通过</button>
+							<button class="layui-btn layui-btn-danger" onclick="auditback()" >审批驳回</button>
+						</div>
+						<div class="layui-card-body layui-row layui-col-space10">
+
+							<div class="layui-col-md12">审批意见</div>
+							<div class="layui-col-md12">
+								<textarea id="neirong" name="neirong" placeholder="请输入审批意见" class="layui-textarea"></textarea>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script src="../../layuiadmin/layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/user.js"></script>
+	<script type="text/javascript">
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+
+//        showUserbyRole("userid",6);
+
+        var ids = [];
+
+       		layui.use(['layer','form','laydate','table'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+
+            initData();//提取维修单内容，并显示
+        });
+
+
+        var type = getUrlParam("type");
+//        console.log(type);
+        if(type !=""){
+            if(type=="1"){
+                $("#divshenpi").attr("style","display:none;");
+			}
+		}
+
+
+		function initData(){
+			var id = getUrlParam("id");
+            var bizid = getUrlParam("bizid");
+			console.log(bizid);
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/flowDocs/'+bizid,
+					async : false,
+					success : function(data) {
+					    console.log(data);
+                        $('#id').val(id);
+                        $('#bizid').val(bizid);
+                        $('#deptname').val(data.deptname);
+                        $('#creator').val(data.creator);
+                        $('#ddate1').val(data.ddate1);
+                        $('#ddate2').val(data.ddate2);
+                        $('#title').val(data.title);
+                        $('#content').val(data.content);
+                        $('#memo').val(data.memo);
+                        $('#flowid').val(data.flowid);
+
+
+                        shenpidongtai(bizid);	//提取审批动态
+
+
+					}
+				});
+			}
+		}
+
+		function update(send) {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+
+//            formdata.fileIds=ids;
+            formdata.send = send;
+//            console.log(formdata);
+			$.ajax({
+				type : 'put',
+				url : '/flowDocs/todo',
+				contentType: "application/json; charset=utf-8",
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("审批成功", {shift: -1, time: 1000}, function(){
+                        location.href = "/pages/todo/todoList.html";
+                    });
+				}
+			});
+		}
+        //显示审批动态
+        function shenpidongtai(id) {
+            $.ajax({
+                type : 'get',
+                url : '/todos/listbizid?bizid='+id +'&flowid=' +$('#flowid').val() ,
+                async : false,
+                success : function(data) {
+//                    console.log(data);
+                    var length = data.length;
+
+                    for (var i = 0; i < length; i++) {
+                        var html = "";
+
+                        html += "   <dd>";
+                        html += "			<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
+                        html += "			<div>";
+                        if(data[i].biztype = "同意"){
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:同意</p>";
+                        }else {
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
+                        }
+                        // html += "                        <p>审批意见：</p>";
+                        html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+                        html += "                        <span>" +data[i].updateTime + "</span>";
+                        html += "			</div>";
+                        html += "		</dd>";
+
+                        $("#shenpidongtai").append(html);
+
+                    }
+                }
+            });
+        }
+
+
+	</script>
+</body>
+</html>

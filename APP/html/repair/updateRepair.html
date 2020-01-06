@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/addphoto.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" style="display: none;"/>
+	<br>
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<!-- <button class="layui-btn" onclick="location.href='repairList.html'">返回</button> -->
+				<div class="demoTable" style="display: inline-block">
+					<button class="layui-btn"  data-type="getData">
+						<i class="fa fa-save"></i> 暂存
+					</button>
+					<button class="layui-btn"  data-type="getCheckData">
+						<i class="fa fa-save"></i> 提交
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>收费站</label>
+				<div class='col-md-2'>
+					<select id="deptid" name="deptid" class="form-control input-sm" lay-filter="ZhanChange"></select>
+				</div>
+
+				<label class='col-md-1 control-label'>巡检区域</label>
+				<div class='col-md-2'>
+					<select id="xjqyid" name="xjqyid" class="form-control input-sm"></select>
+				</div>
+
+				<!--<label class='col-md-1 control-label'>维护区域</label>-->
+				<!--<div class='col-md-2'>-->
+					<!--<select id="whqyid" name="whqyid" class="form-control input-sm"></select>-->
+				<!--</div>-->
+			</div>
+
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>系统分类</label>
+				<div class='col-md-2'>
+					<select id="xtid" name="xtid" class="form-control input-sm" lay-filter="xtflChange"></select>
+				</div>
+
+				<!--<label class='col-md-1 control-label'>设备类别</label>-->
+				<!--<div class='col-md-2'>-->
+					<!--<select id="lbid" name="lbid" class="form-control input-sm"></select>-->
+				<!--</div>-->
+
+				<label class='col-md-1 control-label'>设备ID</label>
+				<div class='col-md-2'>
+					<select id="eqpid" name="eqpid" class="form-control input-sm" lay-filter="SbChange"></select>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>故障原因</label>
+				<div class='col-md-5'>
+					<!--<input class='form-control' placeholder='故障原因' type='text' name='gzid' id='gzid' >-->
+					<select id="gzid" name="gzid" class="form-control input-sm" lay-filter="guzhangChange"></select>
+				</div>
+				<div class='col-md-1' id="xiangqing">
+				<button class="layui-btn layui-btn-xs layui-icon" title="详情" onclick="show()" style="width:89px;height: 39px;">&#xe65f;</button>
+				</div>
+			</div>
+			<div class='form-group' id="show" style="display: none;">
+				<label class='col-md-2 control-label'>故障名称</label>
+				<div class='col-md-5'>
+					<input class='form-control' placeholder='故障名称' type='text' name='gzmc' id='gzmc'  >
+				</div>
+			</div>
+
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>损坏情况说明</label>
+				<div class='col-md-5'>
+					<!--<input class='form-control' placeholder='损坏情况' type='text' name='description' id='description' >-->
+					<textarea placeholder="请输入内容" class="layui-textarea" type='text' name='description' id='description' ></textarea>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>日期</label>
+				<div class='col-md-2'>
+					<input class='form-control' placeholder='日期' type='text' name='bizdate' id='bizdate' >
+				</div>
+
+				<!--<label class='col-md-1 control-label'>维修类型</label>-->
+				<!--<div class='col-md-2'>-->
+					<!--&lt;!&ndash;<input class='form-control' placeholder='维修类型' type='text' name='biztype' id='biztype' >&ndash;&gt;-->
+					<!--<select class="form-control input-sm" name="biztype" id="biztype"></select>-->
+				<!--</div>-->
+			</div>
+			<div class='form-group'>
+				<div class='col-md-2'></div>
+				<div class='col-md-5'>
+					<button type="button" class="layui-btn" id="test2">图片上传</button>
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 88%">
+						<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list">
+
+						</div>
+					</blockquote>
+
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-5'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+
+
+	<!--<header style="height: 100%">-->
+		<!--<div align="left">-->
+			<!--<table style="width: 100%">-->
+				<!--<tr>-->
+					<!--<td>-->
+						<!--<form class="form-inline" onsubmit="return false">-->
+							<!--<div class="form-group">-->
+								<!--<button class="layui-btn layui-btn-sm" onclick="tianjia()">-->
+									<!--<i class="layui-icon">&#xe608;</i> 添加备品备件-->
+								<!--</button>-->
+							<!--</div>-->
+						<!--</form>-->
+					<!--</td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+	<!--</header>-->
+	<!--<hr style="height:3px;">-->
+
+	<!--<div>-->
+		<!--<div class="widget-body no-padding">-->
+			<!--<table class="layui-hide layui-table" id="data" lay-filter="demo" id="qiu_tab_head"></table>-->
+
+			<!--<script type="text/html" id="barDemo">-->
+				<!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+			<!--</script>-->
+		<!--</div>-->
+	<!--</div>-->
+</div>
+
+
+</div>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/zhan.js"></script>
+<!--<script type="text/javascript" src="../../js/common.js"></script>-->
+<script type="text/javascript" src="../../js/xjqy.js"></script>
+<script type="text/javascript" src="../../js/xtfl.js"></script>
+<script type="text/javascript" src="../../js/sblb.js"></script>
+<script type="text/javascript" src="../../js/equipment.js"></script>
+<script type="text/javascript" src="../../js/guzhangji.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function () {
+						var view = plus.webview.currentWebview(); 
+						var id = view.repairid;
+            initData(id);
+						mui.init({
+										//处理窗口关闭前的业务
+										beforeback: function() {	        
+												view.close();
+										}
+						});                     
+		});
+		
+        var pers = checkPermission();
+				
+        var isdeptid = false;
+        for (var i=0;i<pers.length;i++){
+            if (pers[i] == "sys:repair:querydept"){
+                isdeptid = true;
+            }
+        }
+
+        if (isdeptid){
+            $.ajax({
+                type : 'get',
+                url : server_url+'/users/current1',
+                success : function(data) {
+                    var select = $("#deptid");
+                    select.empty();
+                    select.append("<option value ='" + data.deptid + "'>" + data.deptname + "</option>");
+                    showXjqySelect("xjqyid", "xjqy", false, data.deptid);
+                    renderForm()
+                }
+            });
+        }else{
+            showZhanSelect("deptid", "zhan", false);
+        }
+
+        showXtflSelect("xtid", "xtfl", false);
+        // showDictSelect("biztype", "biztype1");
+        showEquipmentSelect("eqpid", "equipment", false, 2);
+
+        var ids = [];	//文件数组
+        var sum = 0;
+        var tableIns;
+        var table;
+
+	//var appStatus = showStepSelect("stepid", "1", true);
+
+		layui.use(['layer','form','laydate','table','upload'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#bizdate'
+                ,value: new Date()
+            });
+
+            form.on('select(SbChange)', function(data){
+                guzhang(data.value);
+            })
+
+            form.on('select(guzhangChange)', function () {
+                var  obj=document.getElementById("gzid");
+                for (i=0;i<obj.length;i++) {//下拉框的长度就是它的选项数.
+//                    console.log(obj.length);
+                    if (obj[i].selected== true ) {
+//                        var num=obj[i].value;//获取当前选择项的 值 .
+                        var text=obj[i].text;//获取当前选择项的文本.
+                        console.log(text);
+                        if(text=='其它'){
+                            document.getElementById("show").style.display='inline';
+                            document.getElementById("xiangqing").style.display='none';
+                        }
+                        else{
+                            document.getElementById("show").style.display='none';
+                            document.getElementById("xiangqing").style.display='inline';
+						}
+                    }
+                }
+                renderForm();
+            })
+
+//            form.on('select(xtflChange)', function (data) {
+//                //console.log("data.value" + data.value);
+//                showSblbSelect("lbid", "sblb", false, data.value);
+//                renderForm();
+//            })
+
+            form.on('select(ZhanChange)', function(data){
+
+                //console.log("data.value" + data.value);
+                showXjqySelect("xjqyid", "xjqy", false, data.value);
+                //   showWhqySelect("whqyid", "whqy", false, data.value);
+                renderForm();
+            })
+
+            table = layui.table;
+            tableIns = table.render({
+                elem: '#data'
+                ,cols: [[
+                {checkbox: true}
+                    ,{field:'checkbox',checkbox: true, LAY_CHECKED: true}
+                    ,{field:'invname', title: '备件', sort: true}
+                    ,{field:'inum', title: '数量', event: 'countMoney',edit:"text"}
+//                    ,{field:'iprice', title: '单价', sort: true}
+//                    ,{field:'imoney', title: '金额', sort: true}
+                    ,{fixed: 'right', title: '操作', width:178, align:'center', toolbar: '#barDemo'}
+                ]]
+                ,done: function(res, curr, count){
+                    var _table_box = $("#data").next().find(".layui-table-box");
+                    _table_box.find("[data-field='checkbox']").hide();
+                }
+            });
+
+
+            //监听工具条
+            table.on('tool(demo)', function(obj){
+                var data = obj.data;
+                if(obj.event === 'detail'){
+                    layer.msg('ID：'+ data.id + ' 的查看操作');
+                } else if(obj.event === 'del'){
+                    layer.confirm('真的删除行么', function(index){
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if(obj.event === 'edit') {
+                    layer.alert('编辑行：<br>' + JSON.stringify(data))
+                }
+//                } else if(obj.event === 'countMoney'){
+//                    layer.prompt({
+//                        formType: 2
+//                        ,title: '数量'
+//                        ,value: data.inum
+//                        ,edit:"text"
+////                    }, function(value, index){
+////                        if(isNaN(value)) {
+////                            layer.msg('数量请输入数字');
+////                        }else{
+//////                            var money = value * data.iprice
+////
+////                            layer.close(index);
+////
+////                            //这里一般是发送修改的Ajax请求
+////
+////                            //同步更新表格和缓存对应的值
+////                            obj.update({
+//////                                imoney: money,
+////                                inum:value
+////                            });
+////                        }
+//                    });
+//                }
+            });
+
+            active = {
+                getCheckData: function(){ //提交
+                    var checkStatus = table.checkStatus('data')
+                        ,data = checkStatus.data;
+                    add(data,1);
+                },
+								getData: function(){ //暂存
+										var checkStatus = table.checkStatus('data')
+												,data = checkStatus.data;
+										add(data,0);
+								}
+            };
+
+            $('.demoTable .layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+
+            //普通图片上传
+            var upload = layui.upload;
+            upload.render({
+                elem: '#test2'
+                ,url: server_url+'/files/'
+                ,multiple: true
+                ,before: function(obj){
+                    layer.msg('图片上传中...', {
+                        icon: 16,
+                        shade: 0.01,
+                        time: 0
+                    })
+                    obj.preview(function(index, file, result){
+//                        console.log(index);
+//                        console.log(file);
+//                        console.log(result);
+                        $('#uploader-list').append('<div id="" class="file-iteme">' +
+                            '<div class="handle"><span class="glyphicon glyphicon-trash"></span></div>' +
+                            '<img style="width: 220px;height: 180px;" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+                    });
+                }
+                ,done: function(res){
+
+                    ids.push(res.id);
+                    console.log($('#uploader-list img').last().attr("alt",res.id));
+
+                    console.log(res);
+
+                    sum++;
+                    layer.close(layer.msg());//关闭上传提示窗口
+                }
+            });
+            $(document).on("mouseenter mouseleave", ".file-iteme", function(event){
+                if(event.type === "mouseenter"){
+                    //鼠标悬浮
+                    $(this).children(".info").fadeIn("fast");
+                    $(this).children(".handle").fadeIn("fast");
+                }else if(event.type === "mouseleave") {
+                    //鼠标离开
+                    $(this).children(".info").hide();
+                    $(this).children(".handle").hide();
+                }
+            });
+            // 删除图片
+            $(document).on("click", ".file-iteme .handle", function(event){
+                // $(this).parent().remove();
+                console.log($(this).next().attr("alt"));
+                del( $(this).parent(), $(this).next().attr("alt") ); //删除对应的文件
+
+                sum--;
+                if(sum<0){
+                    sum=0;
+                }
+            });
+		});
+
+    function guzhang(value){
+			$.ajax({
+					type : 'get',
+					url : server_url+'/equipments/'+ value,
+					success : function(data) {
+							// showGuzhangjiSelect("gzid", "guzhangji", false, data.xtid);
+							showGuzhangjiSelect("gzid", "guzhangji", false, "", data.lbid);
+							renderForm();
+					}
+			});
+		}
+
+    function initData(id){
+        if(id != ""){
+            $.ajax({
+                type : 'get',
+                url : server_url+'/repairs/'+id,
+                async : false,
+                success : function(data) {
+                    sum=parseInt(data.descpic);
+//                        console.log(sum);
+                    $('#id').val(data.id);
+										guzhang(data.id)
+                    $('#deptid').val(data.deptid);
+                    showXjqySelect("xjqyid", "xjqy", false, data.deptid);
+                    $('#xjqyid').val(data.xjqyid);
+					          $('#xtid').val(data.xtid);
+//                        showSblbSelect("lbid", "sblb", false, data.xtid);
+//						$('#lbid').val(data.lbid);
+                    $('#eqpid').val(data.eqpid);
+                    $('#gzid').val(data.gzid);
+                    $('#gzmc').val(data.gzmc);
+                    $('#description').val(data.description);
+                    $('#bizdate').val(data.bizdate);
+                    $('#biztype').val(data.biztype);
+                    $('#descpic').val(data.descpic);
+                    $('#memo').val(data.memo);
+                    initFiles(id);
+										renderForm();       //重新渲染表单
+                }
+            });
+           
+        }
+    }
+
+        function del(obj,id){
+            layer.confirm('确定要删除吗？', {
+                btn : [ '确定', '取消' ]
+            }, function() {
+                console.log(id);
+                $.ajax({
+                    type : 'delete',
+                    url : server_url+'/files/'+id,
+                    success : function(data) {
+                        //example.ajax.reload();
+                        obj.remove();
+                        layer.msg("删除成功");
+                    }
+                });
+                layer.close(1);
+            });
+        }
+
+		function add(data ,send) {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+
+		    var formdata = $("#form").serializeObject();
+            formdata.repairsList = data;
+            formdata.descpic = sum;
+            formdata.biztype = 1;
+
+//            formdata.gzmc = $("#gzid").text();
+
+            formdata.fileIds=ids;
+            formdata.send = send;
+console.log(JSON.stringify(formdata));
+			$.ajax({
+				type : 'post',
+				url : server_url+'/repairs',
+				contentType: "application/json; charset=utf-8",
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        mui.plusReady(function () {
+                        				var view = plus.webview.currentWebview(); 
+                        				
+                        										view.close();                 
+                        });
+                    });
+				}
+			});
+		}
+
+        function tianjia(){
+            layer.open({
+                type: 2,
+                title: '添加',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['1000px', '500px'],
+                content: '../inv/searchInv1.html', //iframe的url
+                end : function(){
+                    var oldData =  table.cache["data"];
+                    if(!oldData){
+                        oldData = [];
+                    }
+                    var newData = JSON.parse($("#shuzhi").val())
+                    for(var i=0;i<newData.length;i++){
+                        newData[i].invid = newData[i].id
+                        newData[i].inum = 0;
+//                        newData[i].imoney = 0;
+                        oldData.push(newData[i]);
+                    }
+                    tableIns.reload({
+                        data : oldData
+                    })
+                }
+            });
+        }
+
+    //重新渲染表单
+    function renderForm(){
+        layui.use('form', function(){
+            var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+            form.render();
+        });
+    }
+
+    function show() {
+        layer.open({
+            type: 2,
+            title: "故障原因详情",
+            area: ['80%', '80%'],
+            maxmin: true,
+            shadeClose: true,
+            content: ['guzhang.html?id='+$('#gzid').val()]
+        });
+
+    }
+
+
+	</script>
+</body>
+</html>

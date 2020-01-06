@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../css/common.css">
+<style>
+    #flowstep{
+        margin:50px
+    }
+
+    .step{
+        display: inline-block;
+        position: relative;
+        width:200px
+    }
+
+    .arrow{
+        width:80px;
+        height:20px;
+        margin: auto;
+        position: absolute;
+        left:70px;
+        top:0;
+        bottom:0;
+        right:0
+    }
+
+    .step-info{
+        float:left
+    }
+
+    .step-info img{
+        width:70px;
+        height:70px;
+        border-radius: 100%;
+        margin:auto
+    }
+
+    .step-info div{
+        text-align: center;
+        font-size: 14px;
+        height:50px;
+        width:70px
+    }
+</style>
+
+</head>
+<body>
+    <div class="layui-fluid">
+        <div class="layui-card col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div>
+                <header style="height: 100%">
+                    <div align="left">
+	                    <table style="width: 100%">
+	                   		<tr>
+	                   			<td>
+		                   			<form class="form-inline" onsubmit="return false">
+										<div class="form-group">
+											流程名称：
+											<input id="flowname" type="text" class="form-control layui-input" placeholder="流程名称">
+											<button id="searchBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>搜索</button>
+										</div>
+									</form>
+	                   			</td>
+	                   			<td align="right">
+	                   				<button class="layui-btn layui-btn-sm" onclick="location.href='addFlow.html'">
+                                      <i class="layui-icon">&#xe608;</i> 添加
+                                    </button>
+	                   			</td>
+	                   		</tr> 
+	                    </table>
+					</div>
+                </header>
+                
+                <div>
+                    <div class="widget-body no-padding">
+                        <table class="layui-hide" id="data"></table>
+                    </div>
+                </div>
+
+                <div id="flowstep"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<!--<script type="text/javascript" src="../../js/my/mytab.js"></script>-->
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript">
+var pers = checkPermission();
+var userHeadImgUrl = getUserHeadImgUrl("headImgUrl");
+
+var tableIns;
+layui.use('table', function(){
+
+    var table = layui.table;
+    tableIns = table.render({
+        elem: '#data'
+        ,url:"/flows/layuiList"
+        ,where: {id:$("#id").val()}
+        ,page: true
+        ,request: {
+            pageName: 'offset' //页码的参数名称，默认：page
+        }
+        ,cols: [[
+            {field:'id', title: 'id', sort: true}
+            ,{field:'flowname', title: '流程'}
+            ,{field:'description', title: '描述'}
+            ,{field:'memo', title: '备注'}
+            ,{field:'caozuo', title: '操作',templet: function(d){
+                     var id = d.id;
+                     var href = "updateFlow.html?id=" + id;
+                     var edit = buttonEdit(href, "", pers);
+                     var del = buttonDel(id, "", pers);
+                     var step = "<a class='layui-btn layui-btn-xs' lay-href='pages/flow/flowstepList.html?id="+id+"' lay-id="+ id +" href=javascript:void(0)>流程定义</a>";
+                     return step + edit + del;
+            }}
+        ]]
+        ,done: function(res, curr, count){
+            $(document).on("click",".layui-table-body table.layui-table tbody tr", function () {
+                   var id = $(this).children("td[data-field='id']").text();
+                   getflowstep(id);
+            })
+        }
+    });
+});
+
+function getflowstep(id){
+    $.ajax({
+        type : 'get',
+        url : '/flowsteps/listStepsAndMember?flowid='+id,
+        success : function(data) {
+            var pro = window.location.protocol;
+            var host = window.location.host;
+            var domain = pro + "//" + host;
+
+            var html = "";
+            for(var i = 0;i<data.length;i++){
+                var step = data[i];
+                // console.log(step)
+                html += "<div class='step'>";
+                html +=    "<div class='step-info'>";
+//                if(step.flowmember){
+//                    var headImgUrl = userHeadImgUrl[step.flowmember.memid];
+//                    if(headImgUrl){
+//                        html +=        "<img src='"+domain + "/statics"+headImgUrl+"'>";
+//                    }else{
+//                        html +=        "<img src='../../img/avatars/sunny.png'>";
+//                    }
+//                    //html +=        "<img style='height:30px;display:block' src='../../img/dengdeng.png'>";
+//                }else{
+//                    html +=        "<img src='../../img/nomember.png'>";
+//                }
+                html +=        "<img src='../../img/tou128.png'>";
+                html +=        "<div>"+step.stepname+"</div>";
+                html +=    "</div>";
+
+                if(step.tofinish == 0)
+                      html +=    "<img class='arrow' src='../../img/steparrow.jpg'/>";
+
+                html += "</div>";
+            }
+            $("#flowstep").html(html);
+        }
+    });
+}
+
+layui.use('layer', function(){
+    var layer = layui.layer;
+});
+
+function del(id){
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/flows/'+id,
+            success : function(data) {
+                tableIns.reload()
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+$("#searchBt").click(function(){
+    tableIns.reload({where: {id:$("#id").val(),flowname:$("#flowname").val()}})
+});
+
+layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'console']);
+</script>

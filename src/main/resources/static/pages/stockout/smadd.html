@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+	<style type="text/css">
+		.layui-form-label{
+			width: 120px;
+		}
+		/*您可以将下列样式写入自己的样式表中*/
+		.childBody{padding: 0px;}
+
+		/*layui 元素样式改写*/
+		.layui-btn-sm{line-height: normal; font-size: 12.5px;}
+		.layui-table-view .layui-table-body{min-height: 256px;}
+		.layui-table-cell .layui-input.layui-unselect{height: 30px; line-height: 30px;}
+
+		/*设置 layui 表格中单元格内容溢出可见样式*/
+		.table-overlay .layui-table-view,
+		.table-overlay .layui-table-box,
+		/*.table-overlay .layui-table-body{overflow: visible;}*/
+		.table-overlay .layui-table-cell{height: auto; overflow: visible;}
+				/*文本对齐方式*/
+		.text-center{text-align: center;}
+		.edit-input{
+			position:absolute;left:0;top:0;width:100%;height:100%;padding:0 14px 1px;border-radius:0;box-shadow:1px 1px 1px rgba(0,0,0,.15)
+		}
+	</style>
+</head>
+<body class="childBody">
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" style="display: none;"/>
+	<input id="kehu" style="display: none;"/>
+	<input id="scrollTop" type="hidden"/>
+	<br>
+
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<button id="btnback" class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+				<button id="btnclose" class="layui-btn">关闭</button>
+				<div class="demoTable" style="display: inline-block">
+					<button class="layui-btn layui-btn-normal" id="tj"  data-type="getCheckData">
+						<i class="fa fa-save"></i> 保存
+					</button>
+				</div>
+<!--				<button class="layui-btn layui-btn-sm" id="printBt">打印</button>-->
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+		<input type="hidden" id="id" name="id">
+		<input type="hidden" id="status" name="status">
+		<input type="hidden" name="danwei" id="danwei">
+		<div class='layui-form-item'>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>制单日期</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='订单日期' type='text' name='ddate' id='ddate' >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label '>订单类型</label>
+				<div class='layui-input-inline'>
+					<select class="layui-input" name="xsddtype" id="xsddtype"></select>
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>客户</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='客户' type='text' name='ksname' id='ksname' value="其他" readonly onclick="tianjiaKh()">
+					<input class='layui-input' placeholder='客户ID' type='hidden' name='cusid' id='cusid' value="629">
+					<!--<select class="layui-input" name="cusid" id="cusid"></select>-->
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>总数量</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='总数量' type='text' name='inum' id='inum' >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>金额</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='金额' type='text' name='imoney' id='imoney' >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>应收金额</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='应收金额' type='text' name='itotal' id='itotal' >
+				</div>
+			</div>
+<!--			<div class='layui-inline'>-->
+<!--				<label class='layui-form-label'>税率</label>-->
+<!--				<div class='layui-input-inline'>-->
+<!--					<input class='layui-input' placeholder='税率' type='text' name='taxrate' id='taxrate' value="0">-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-inline'>-->
+<!--				<label class='layui-form-label'>税额</label>-->
+<!--				<div class='layui-input-inline'>-->
+<!--					<input class='layui-input' placeholder='税额' type='text' name='tax' id='tax' >-->
+<!--				</div>-->
+<!--			</div>-->
+
+			<div class='layui-inline'>
+				<label class='layui-form-label'>收款方式</label>
+				<div class='layui-input-inline'>
+					<select class="layui-input" name="fkfs" id="fkfs"></select>
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>欠款</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='欠款' type='text' name='yunfei' id='yunfei' value="" >
+				</div>
+			</div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>实收金额</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='实收金额' type='text' name='ssje' id='ssje' value="0" >
+				</div>
+			</div>
+			<input class='layui-input'  type='hidden' name='bussid' id='bussid' >
+			<div class='layui-inline'>
+				<label class='layui-form-label'>备注</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<br>
+	<form class="layui-form layui-table-tool" onsubmit="return false">
+		<div class='layui-inline'>
+			<label class='layui-form-label' style="width:70px">仓库</label>
+			<div class='layui-input-inline'>
+				<select class="layui-input" name="whid" id="whid" lay-filter="whid"></select>
+			</div>
+		</div>
+		<div class='layui-inline'>
+			<label class='layui-form-label' style="width:70px">品名</label>
+			<div class='layui-input-inline'>
+				<select class="layui-input" name="invname" id="invname" lay-filter="invid"></select>
+			</div>
+		</div>
+		<div class='layui-inline'>
+			<!--<label class='layui-form-label' style="width:0"></label>-->
+			<div class='layui-input-inline'>
+				<input id="jiajian" data-step="1" data-min="1" data-digit="0" class="alignment" data-edit="true" value="1"/>
+			</div>
+		</div>
+		<button class="layui-btn" onclick="tianjia1()">
+			<i class="layui-icon">&#xe608;</i> 添加
+		</button>
+		<button class="layui-btn" onclick="tianjia()">
+			<i class="layui-icon">&#xe608;</i> 选择品名
+		</button>
+		<button class="layui-btn" onclick="batchdel()">
+			<i class="layui-icon">&#xe640;</i> 批量删除
+		</button>
+		<!--<script type="text/html" id="toolbarDemo">-->
+		<!---->
+		<!--</script>-->
+	</form>
+	<div>
+		<div class="widget-body no-padding table-overlay" id="scrollDiv">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+
+			<script type="text/html" id="barDemo">
+				<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+			</script>
+		</div>
+	</div>
+</div>
+<script type="text/html" id="cpggTpl">
+	<a lay-event="cpggbrefore"></a><a lay-event="cpgg"></a><input class='layui-input yutons-input' type='text' name="cpgg" id='cpgg_{{d.LAY_TABLE_INDEX}}' value='{{d.cpgg?d.cpgg:""}}'>
+</script>
+<div id="test" style="display: none;"></div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/num-alignment.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript" src="../../js/customer.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript" src="../../js/inv.js"></script>
+<script type="text/javascript" src="../../js/bigdecimal/math.min.js"></script>
+<script type="text/javascript" src="../../js/bigdecimal/floatMath.js"></script>
+<script type="text/javascript">
+    // 加减数字初始化
+    alignmentFns.initialize();
+
+    showDictSelect("xsddtype", "smxsddtype");
+    showDictNameSelect("fkfs", "fktype",true);
+    var biztype = getUrlParam("ctype");
+    var xsddtype = getUrlParam("xsddtype");
+
+    if (xsddtype) $("#xsddtype").val(xsddtype)
+    if(biztype == "bj") {
+        showWarehouseByType("whid", "warehouse", false,"备件库");
+    }else if(biztype == "yl") {
+        showWarehouseByType("whid", "warehouse", false,"原料库");
+    }else if(biztype == "cp") {
+        showWarehouseByType("whid", "warehouse", false,"产品库","1");
+    }else if(biztype == "sm") {
+        var warehouseSelect = getWarehouseByType("warehouse","产品库");
+        var select = $("#whid");
+        select.append("<option value=''>请选择</option>");
+        var warehouse = [];
+        $.each(warehouseSelect, function(id, name) {
+        	if(name.indexOf("废品")==-1 && name.indexOf("包装")==-1 ){
+				select.append("<option value ='" + id + "'>" + name + "</option>");
+				warehouse.push({id:id,name:name})
+			}
+        });
+        $("#whid").val(10);
+    }else{
+        showWarehouseSelect("whid", "warehouse", false);
+    }
+
+	var id = getUrlParam("id");		//id不为空为编辑，为空是新增
+    var invdata ;
+    var whid = $("#whid").val();
+    invdata = getInvname(whid);
+
+	var danwei = getAllDict("danwei");
+
+    var select = $("#invname");
+    select.append("<option value=''>请选择</option>");
+    $.each(invdata, function(id, d) {
+        select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+    });
+
+	//准备视图对象
+	window.viewObj = {
+		typeData: invdata,
+		renderSelectOptions: function(data, settings){
+			settings =  settings || {};
+			var valueField = settings.valueField || 'value',
+					textField = settings.textField || 'text',
+					selectedValue = settings.selectedValue || "",
+                    dwMarkField = settings.dwMark || "";
+			var html = [];
+
+			for(var i=0, item; i < data.length; i++){
+				item = data[i];
+				html.push('<option value="');
+				html.push(item[valueField]);
+				html.push('" ');
+                if (item[dwMarkField])
+                    html.push('data-dwmark="'+item[dwMarkField]+'"');
+				if(selectedValue && item[valueField] == selectedValue ){
+					html.push(' selected="selected"');
+				}
+				html.push('>');
+				html.push(item[textField]);
+				html.push('</option>');
+			}
+			return html.join('');
+		}
+	};
+
+    var tableIns;
+    var table;
+
+    layui.use(['layer','form','laydate','table'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#ddate'
+            ,value: new Date()
+        });
+
+        table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,data:[]
+            // ,toolbar: '#toolbarDemo'
+			,page: false
+            ,height: 'full-300'
+			,limit: 10000
+            // ,even: false //开启隔行背景
+            // ,size: 'sm' //小尺寸的表格
+            ,totalRow: true
+            ,cols: [[
+                {checkbox: true}
+                ,{type:'numbers'}
+                ,{field: 'mxwhname', title: '仓库',width:150, templet: function(d){
+                        var options = viewObj.renderSelectOptions(warehouse, {valueField: "id", textField: "name", selectedValue: d.mxwhid});
+                        return '<a lay-event="whname"></a><select name="whname" data-id="'+d.LAY_TABLE_INDEX+'" lay-filter="whname"><option value="">请选择</option>' + options + '</select>';
+                    }}
+				,{field: 'invname', title: '品名',width:150, templet: function(d){
+						var options = viewObj.renderSelectOptions(getInvname(d.mxwhid), {valueField: "id", textField: "name", selectedValue: d.invname});
+
+						return '<a lay-event="invname"></a><select name="invname" id="invname_'+d.LAY_TABLE_INDEX+'"  data-id="'+d.LAY_TABLE_INDEX+'" lay-filter="invname"><option value="">请选择</option>' + options + '</select>';
+					}}
+				,{field:'cpgg', title: '规格',width:150,templet: '#cpggTpl',sort: false}
+				,{field:'c01', title: '打印规格',edit:"text"}
+
+				,{field:'jian', title: '件',edit:"text",totalRow: true}
+				,{field:'jianzhong', title: '单位重',edit:"text"}
+				,{field:'inum', title: '总数量', event: 'countMoney',edit:"text", totalRow: true}
+                ,{field:'danwei', title: '单位',templet: function(d){
+                        var options = viewObj.renderSelectOptions(danwei, {valueField: "k", textField: "val",dwMark:"dwmark", selectedValue: d.danwei});
+
+                        return '<a lay-event="danwei"></a><select name="danwei" id="danwei_'+d.LAY_TABLE_INDEX+'" lay-filter="danwei"><option value="">请选择</option>' + options + '</select>';
+                    }}
+				,{field:'iprice', title: '单价',edit:"text"}
+
+				,{field:'imoney', title: '金额', totalRow: true}
+				,{field:'ilen', title: '长度',edit:"text",totalRow: true}
+				,{field:'perlen', title: '单件长',edit:"text"}
+				,{field:'memo', title: '备注', edit:"text"}
+                ,{field:'', title: '码单',width:60, templet: function(d){
+                     return "<i class='layui-icon layui-icon-search' style='cursor: pointer'  lay-event='madan'></i> "
+					}}
+				,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemo'}
+            ]]
+            , done: function(res, curr, count){
+                var key1 ='inum';
+                var key2 ='imoney';
+                var e1="";
+                var e2="";
+                for(var i=0;i<res.data.length;i++){
+                    var data = res.data[i];
+                    if (data.status == 2 || data.status == 4){
+                        $("#data").next().find('.layui-table-box').find('.layui-table').find('tr[data-index="'+data.LAY_TABLE_INDEX+'"]').css("color","blue")
+                    }else if (data.status == 3){
+                        $("#data").next().find('.layui-table-box').find('.layui-table').find('tr[data-index="'+data.LAY_TABLE_INDEX+'"]').css("color","red")
+                    }
+                }
+                var status = $("#status").val();
+                if (status && (status == 2 || status == 3)){
+
+					for(var i=0;i<res.data.length;i++){
+					    var data = res.data[i];
+					    if(data.status != 3){
+					         if(data.inum) e1 = mathAdd(Number(e1),Number(data.inum));
+                             if(data.imoney) e2 = mathAdd(Number(e2),Number(data.imoney));
+						}
+					}
+				}else{
+                    e1=$("#data").next().find('.layui-table-total').find('td[data-field="'+ key1 +'"] div').text();
+                    e2=$("#data").next().find('.layui-table-total').find('td[data-field="'+ key2 +'"] div').text();
+				}
+                $("#inum").val(math.round(e1,3));
+                $("#imoney").val(math.round(e2,2));
+				$("#itotal").val($("#imoney").val());
+
+				layui.config({
+					base: '../../layuiadmin/yutons_sug/' //设置自定义插件路径:根据实际路径进行设置
+				}).use(['yutons_sug'], function() {
+					//创建yutons_sug搜索框提示插件||输入框提示插件实例
+					yutons_sug = layui.yutons_sug;
+					sessionStorage.setItem("url", encodeURI("/currstocks/listinvnamecpgg?cpgg="));
+
+					var oldData =  table.cache["data"];
+					if(!oldData){
+						oldData = [];
+					}
+					for (var i in oldData){
+						//初始化标准输入提示框
+						yutons_sug.render({
+							id: 'cpgg_'+oldData[i].LAY_TABLE_INDEX, //设置容器唯一id
+							type: 'sug', //设置输入框提示类型：sug-下拉框，sugTable-下拉表格
+							url: sessionStorage.getItem("url"), //设置异步数据接口,url为必填项,params为字段名
+                            brefore: function(optid){
+                                $("#"+optid).prevAll("a[lay-event='cpggbrefore']").trigger("click");
+                            }
+						});
+
+                        $("#cpgg_"+oldData[i].LAY_TABLE_INDEX).blur(function () {
+                            $(this).prev("a[lay-event='cpgg']").trigger("click");
+                        });
+					}
+				});
+
+                if ($('#scrollDiv').find(".layui-table-main") && $("#scrollTop").val()) $('#scrollDiv').find(".layui-table-main").scrollTop($("#scrollTop").val());
+
+                $('#scrollDiv').find(".layui-table-main").scroll(function(){
+                    $("#scrollTop").val($(this).scrollTop())
+                })
+            }
+        });
+
+		var cusid = getUrlParam("cusid");
+		if(cusid){
+			$.ajax({
+				type : 'get',
+				url : '/customers/'+cusid,
+				async : false,
+				success : function(data) {
+					$('#cusid').val(data.id);
+					$('#ksname').val(data.cname);
+					if(data.ppath.indexOf("4-129")>=0){
+						$('#xsddtype').val(2);
+					}else {
+						$('#xsddtype').val(3);
+					}
+					$('#btnback').hide();
+
+					renderForm();       //重新渲染表单
+				}
+			});
+		}
+
+		console.log(JSON.stringify(xsddtype))
+		initData_ddid();
+		function initData_ddid(){
+			var ddid = getUrlParam("ddid");
+			var whid = getUrlParam("whid");
+			var xsddtype = getUrlParam("xsddtype");
+
+			if(ddid != undefined  && ddid != ""){
+				$.ajax({
+					type : 'get',
+					url : '/xsDingdans/'+ddid,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#busstype').val(data.busstype);
+//                        $('#csource').val(data.csource);
+						$('#bussid').val(data.bussid);
+						$('#whid').val(data.whid);
+						$('#deptid').val(data.deptid);
+						$('#cusid').val(data.ksid);
+						$('#ksname').val(data.ksmc);
+						$('#ddate').val(data.ddate);
+						$('#xsddtype').val(data.xsddtype);
+						$('#inum').val(data.inum);
+						$('#imoney').val(data.imoney);
+						$('#taxrate').val(data.taxrate);
+						$('#tax').val(data.tax);
+						$('#status').val(data.status);
+						$('#yunfei').val(data.yunfei);
+						// $('#itotal').val(data.itotal);
+						$('#fkfs').val(data.fkfs);
+						$('#ssje').val(data.ssje);
+						$('#memo').val(data.memo);
+						renderForm();       //重新渲染表单
+					}
+				});
+
+				$.ajax({
+					type : 'get',
+					url : "/xsDingdanss/listByDingdanId?dingdanid="+ddid,
+					async : false,
+					success : function(data) {
+						for (var i in data.data){
+							data.data[i].mxwhid = whid
+							data.data[i].mxwhname = '地膜成品库'
+						}
+
+						tableIns.reload({
+							data: data.data
+
+						})
+
+					}
+				});
+			}
+		}
+
+		initData();
+		function initData(){
+			if(id){
+				$("#btnback").hide();
+                $.ajax({
+                    type : 'get',
+                    url : '/stockouts/'+id,
+                    async : false,
+                    success : function(data) {
+                        $('#id').val(data.id);
+                        $('#busstype').val(data.busstype);
+//                        $('#csource').val(data.csource);
+                        $('#bussid').val(data.bussid);
+                        $('#whid').val(data.whid);
+                        $('#deptid').val(data.deptid);
+                        $('#cusid').val(data.cusid);
+                        $('#ksname').val(data.cusname);
+                        $('#ddate').val(data.ddate);
+                        $('#xsddtype').val(data.xsddtype);
+                        $('#inum').val(data.inum);
+                        $('#imoney').val(data.imoney);
+                        $('#taxrate').val(data.taxrate);
+                        $('#tax').val(data.tax);
+                        $('#status').val(data.status);
+                        $('#yunfei').val(data.yunfei);
+                        // $('#itotal').val(data.itotal);
+                        $('#fkfs').val(data.fkfs);
+						$('#ssje').val(data.ssje);
+                        $('#memo').val(data.memo);
+                        renderForm();       //重新渲染表单
+                    }
+                });
+
+				$.ajax({
+					type : 'get',
+					url : "/stockoutss/listByStockoutId?stockid="+id,
+					async : false,
+					success : function(data) {
+						tableIns.reload({
+							data: data.data
+						})
+					}
+				});
+			}else {
+				$("#btnclose").hide();
+			}
+		}
+
+		//激活事件
+		var activeByType = function (type, arg) {
+			if(arguments.length === 2){
+				active[type] ? active[type].call(this, arg) : '';
+			}else{
+				active[type] ? active[type].call(this) : '';
+			}
+		};
+
+        //监听select下拉选中事件
+        form.on('select(whname)', function(data){
+            var elem = data.elem; //得到select原始DOM对象
+
+            //根据仓库找品名
+            if (data.value){
+                var id = $(elem).data("id");
+                var select = $("#invname_"+id);
+                select.html("");
+                select.append("<option value=''>请选择</option>");
+                $.each(getInvname(data.value), function(id, d) {
+                    select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+                });
+                renderForm()
+            }
+
+            $(elem).prev("a[lay-event='whname']").trigger("click");
+        });
+
+		//监听select下拉选中事件
+		form.on('select(invname)', function(data){
+			var elem = data.elem; //得到select原始DOM对象
+			$(elem).prev("a[lay-event='invname']").trigger("click");
+		});
+
+        //监听select下拉选中事件
+        form.on('select(danwei)', function(data){
+            var elem = data.elem; //得到select原始DOM对象
+            $(elem).prev("a[lay-event='danwei']").trigger("click");
+        });
+
+        //监听工具条
+        table.on('tool(data)', function(obj){
+			var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+
+			switch(event){
+                case "whname":
+                    var select = tr.find("select[name='whname']");
+                    var invname = tr.find("select[name='invname']");
+                    var dwselect = tr.find("select[name='danwei']");
+                    var ggselect = tr.find("input[name='cpgg']");
+                    if(select){
+                        var selectedVal = select.val();
+                        if(!selectedVal){
+                            layer.tips("请选择一个仓库", select.next('.layui-form-select'), { tips: [3, '#FF5722'] }); //吸附提示
+                        }
+                        changeDetail(obj,dwselect,selectedVal,invname.val(),ggselect.val())
+                    }
+                    break;
+				case "invname":
+                    var whname = tr.find("select[name='whname']");
+					var select = tr.find("select[name='invname']");
+                    var dwselect = tr.find("select[name='danwei']");
+                    var ggselect = tr.find("input[name='cpgg']");
+					if(select){
+						var invname = select.val();
+						if(!invname){
+							layer.tips("请选择一个品名", select.next('.layui-form-select'), { tips: [3, '#FF5722'] }); //吸附提示
+							return
+						}
+                        changeDetail(obj,dwselect,whname.val(),invname,ggselect.val())
+					}
+					break;
+                case "danwei":
+                    var select = tr.find("select[name='danwei']");
+                    if(select){
+                        var selectedVal = select.val();
+                        if(!selectedVal){
+                            layer.tips("请选择一个单位", select.next('.layui-form-select'), { tips: [3, '#FF5722'] }); //吸附提示
+                        }
+                        var dwmark = select.find("option:selected").data("dwmark");
+                        if (dwmark){
+                            $.extend(obj.data, {'danwei': selectedVal,'dwmark':dwmark});
+                        } else{
+                            $.extend(obj.data, {'danwei': selectedVal,'dwmark':""});
+                        }
+                        $.extend(obj.data, {'jian':"",'inum':"",'imoney':"",'ilen':""});
+                        obj.update(obj.data);
+                        var oldData =  table.cache["data"];
+                        tableIns.reload({
+                            data : oldData
+                        });
+                    }
+                    break;
+				case "cpgg":
+                    var whname = tr.find("select[name='whname']");
+                    var invname = tr.find("select[name='invname']");
+					var cpgg = tr.find("input[name='cpgg']");
+                    var dwselect = tr.find("select[name='danwei']");
+
+					if(cpgg) {
+					    var cpggVal = cpgg.val();
+                        changeDetail(obj,dwselect,whname.val(),invname.val(),cpggVal)
+					}
+					break;
+				//搜索产品规格带上品名
+                case "cpggbrefore":
+                    var invname = tr.find("select[name='invname']");
+                    sessionStorage.setItem("url", encodeURI("/currstocks/listinvnamecpgg?invname="+invname.val()+"&cpgg="));
+                    break;
+				case "del":
+				    var status = $("#status").val()
+				    if (data.status && status && status > 1){
+                          layer.msg("无法删除，请选择驳回");
+                          return
+					}
+					layer.confirm('真的删除行么', function (index) {
+						var oldData =  table.cache["data"];
+
+                        oldData.splice(obj.tr.data('index'),1);
+						tableIns.reload({
+							data : oldData
+
+						});
+
+						layer.close(index);
+					});
+					break;
+                case "madan":
+                    if(data.invid){
+                        if (data.invname == "PE盘管") {
+                            layer.open({
+                                type: 2,
+                                title: '码单查询',
+                                shadeClose: true,
+                                shade: 0.8,
+                                area: ['100%', '100%'],
+                                content: encodeURI('../scjiliang/searchMd.html?invname='+data.invname+'&cpgg='+data.cpgg+'&invid='+data.invid),
+                                end : function(){
+
+                                }
+                            });
+						}
+					}else{
+                        layer.msg("请先选择品名，规格")
+					}
+                    break;
+			}
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del') {
+
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(data)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data;
+            switch(obj.event){
+                case 'batchdel':  //批量删除
+
+                    break;
+					//添加空行
+				case 'tianjia1':
+
+					break;
+            }
+        });
+        active = {
+			updateRow: function(obj){
+				var oldData = table.cache["data"];
+				for(var i=0, row; i < oldData.length; i++){
+					row = oldData[i];
+
+					if(row.id == obj.id){
+						$.extend(oldData[i], obj);
+						return;
+					}
+				}
+				tableIns.reload({
+					data : oldData
+				});
+			},
+            getCheckData: function(){ //保存
+                var data = table.cache.data;
+                add(data);
+                $("#tj").attr("class","layui-btn layui-btn-sm layui-btn-radius layui-btn-disabled").removeAttr("data-type","getCheckData");
+
+            }
+
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听单元格编辑
+        table.on('edit(data)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            if(!matchNum(value)) layer.msg("请输入正确的数量");
+            var oldData =  table.cache["data"];
+            if(!oldData){
+                oldData = [];
+            }
+
+            for (var i in oldData){
+				var d = oldData[i];
+				formatData(d);
+				if (d.id == data.id){
+					if((field == "ilen" || field == "perlen") && (d.invname =="PE直管" ||d.invname =="PE100级给水管材" ||d.invname =="PE100级给水管材(2)")){
+					    var jian = d.ilen / d.perlen;
+						d.jian = Math.ceil(jian);
+						if(d.jian=="Infinity") d.jian =0;
+						var inum = mathMultiply(d.ilen,d.jianzhong);
+						d.inum = math.round(inum,3);
+						var money = 0;
+                        if (d.dwmark && d.dwmark == 1) {
+                            money = mathMultiply(d.iprice,d.jian);
+                        }else if (d.dwmark && d.dwmark == 2){
+                            money = mathMultiply(d.iprice,d.ilen);
+                        }else{
+                            money = mathMultiply(d.iprice,d.inum);
+                        }
+						d.imoney = math.round(money,2);
+						tableIns.reload({
+							data : oldData
+						})
+					}
+
+					if(field =="jian" || field =="jianzhong"){
+                        d.jianzhong = math.round(d.jianzhong,3);
+                        d.jian = math.round(d.jian);
+						var inum = math.round(mathMultiply(d.jian,d.jianzhong),3);
+                        var money = 0;
+                        if(d.invname =="PE直管" ||d.invname =="PE100级给水管材" ||d.invname =="PE100级给水管材(2)" ){
+                            var ilen = mathMultiply(d.jian,d.perlen);
+                            d.ilen = math.round(ilen);
+                            inum = math.round(mathMultiply(d.ilen,d.jianzhong),3);
+                        }
+                        if (d.dwmark && d.dwmark == 1) {
+                            if (!d.jianzhong){
+                                d.inum = d.jian;
+							}else{
+                                d.inum = inum;
+							}
+							money = mathMultiply(d.iprice,d.jian);
+                        }else if (d.dwmark && d.dwmark == 2){
+                            d.inum = inum
+                            money = mathMultiply(d.iprice,d.ilen);
+						}else{
+                            d.inum = inum;
+                            money = mathMultiply(d.iprice,d.inum);
+                        }
+
+						d.imoney = math.round(money,2);
+						tableIns.reload({
+							data : oldData
+						});
+
+					}
+					if(field =="inum" || field =="iprice"){
+					    d.iprice = math.round(d.iprice,2);
+                        d.inum = math.round(d.inum,3);
+                        var money = 0;
+                        if (d.dwmark && d.dwmark == 1) {
+                            money = mathMultiply(d.iprice,d.jian);
+                        }else if (d.dwmark && d.dwmark == 2){
+                            money = mathMultiply(d.iprice,d.ilen);
+                        }else{
+                            money = mathMultiply(d.iprice,d.inum);
+                        }
+						d.imoney = math.round(money,2);
+						tableIns.reload({
+							data : oldData
+						})
+					}
+				}
+			}
+
+        });
+
+        form.on('select(whid)', function(data){
+            var whid = data.value;
+            if(whid){
+                var select = $("#invname");
+                invdata = getInvname(whid);
+                select.html("");
+                select.append("<option value=''>请选择</option>");
+                $.each(invdata, function(id, d) {
+                    select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+                });
+                renderForm();
+            }
+        });
+
+        // form.on('select(invid)', function(data){
+        //     var invid = data.value;
+        //     if(invid){
+        //         $.ajax({
+        //             type : 'get',
+        //             url : '/chdas/'+invid,
+        //             async : false,
+        //             success : function(data) {
+        //                 if (data.unit1)
+        //                     $("#danwei").val(data.unit1)
+        //             }
+        //         });
+        //     }
+        // });
+    });
+
+    //变更明细仓库或品名或规格的值获取invid，单位，件，件重，总数量，单价，总金额
+    function changeDetail(obj,dwselect,whid,invname,cpgg){
+        var oldData =  table.cache["data"];
+        var inv = null;
+        var invid = "";
+        var printCpgg = "";
+        if (invname && whid){
+            $.ajax({
+                type : 'get',
+                url : encodeURI('/currstocks/getCurrByWhidInvnameCpgg?whid='+whid+'&invname='+invname+'&cpgg='+cpgg),
+                async : false,
+                success : function(data) {
+                    invid = data.invid;
+                }
+            });
+            if (invid)
+                inv = getInvById(invid);
+        }
+
+        var iprice = "";
+        var danwei = "";
+        var dwmark = "";
+        if (inv){
+            if (inv.id)  //invid
+                invid = inv.id;
+            if ($("#xsddtype").val() == 1){   //根据订单类型找价格
+                iprice = inv.iprice;
+            } else if ($("#xsddtype").val() == 2){
+                iprice = inv.icost;
+            } else if ($("#xsddtype").val() == 3){
+                iprice = inv.viprice;
+            }
+            if(inv.unit1) {    //单位
+                danwei = inv.unit1;
+                dwselect.val(inv.unit1);
+                if (dwselect.find("option:selected").data("dwmark"))
+                    dwmark = dwselect.find("option:selected").data("dwmark");
+                renderForm();
+            }
+			if (whid == 5) {
+			    if(inv.invname){
+			        if (inv.invname != "工程膜"){
+			            var cpggarr = cpgg.split("*");
+			            if (cpggarr){
+			                if (cpggarr[1]){
+			                    if (cpggarr[1] < 0.01){
+                                    cpggarr[1] = 0.01;
+                                    printCpgg = cpggarr.join("*");
+								}
+							}
+						}
+					}
+				}
+			}
+        }
+        if (obj.data.c01) printCpgg = obj.data.c01;
+		if (iprice) iprice = math.round(iprice,2);
+        $.extend(obj.data, {'invid':invid,'mxwhid':whid,'invname':invname,'cpgg': cpgg,'iprice':iprice,'danwei':danwei,'dwmark':dwmark,'jian':"",'inum':"",'imoney':"",'ilen':"",'c01':printCpgg});
+        if (whid && invid){
+            $.ajax({
+                type : 'get',
+                url : encodeURI('/currstocks/getCurrByWhidInvidCpgg?whid='+whid+'&invid='+invid+'&cpgg='+cpgg),
+                async : false,
+                success : function(data) {
+                    if (dwmark && dwmark == 1){
+                        $.extend(obj.data, {'jianzhong':data.jianzhong});
+					}else{
+                        $.extend(obj.data, {'jianzhong':data.jianzhong});
+						$.extend(obj.data, {'perlen':data.perlen});
+                        if(inv){
+                        	if(inv.invname =="PE直管"){
+								$.extend(obj.data, {'jianzhong':inv.c01});
+								$.extend(obj.data, {'perlen':inv.iweight});
+							}
+
+						}
+
+					}
+                    // {'jian':data.jian,'jianzhong':data.jianzhong,'inum': data.inum,'imoney':(data.inum*iprice).toFixed(2)}
+                    obj.update(obj.data);
+
+                    var oldData =  table.cache["data"];
+
+                    tableIns.reload({
+                        data : oldData
+                    });
+                }
+            });
+        }else{
+            obj.update({'invid':invid,'dwmark':"",'jian':"",'inum':"",'imoney':"",'ilen':"",'jianzhong':"",'iprice':"",'perlen':"",'c01':""});
+		}
+	}
+
+    //根据仓库获取品名
+	function getInvname(whid){
+	    var invdata = [];
+        if (whid) {
+            if (whid == 10){
+				var invdata0=[];
+				invdata0 =  getinvGroupInvname("3");
+				invdata.push({id:"安阳白膜",name:"安阳白膜"});
+				invdata.push({id:"双防膜",name:"双防膜"});
+				invdata.push({id:"上海塑料布",name:"上海塑料布"});
+				invdata.push({id:"彩条布",name:"彩条布"});
+				invdata.push({id:"钢丝管",name:"钢丝管"});
+				$.each(invdata0, function(i, d) {
+					if(d.id != "安阳白膜" && d.id !="双防膜" && d.id!="上海塑料布" && d.id!="彩条布" && d.id!="钢丝管"){
+						invdata.push({id:d.id,name:d.name});
+					}
+				});
+            } else if(whid == 5){
+				var invdata0=[];
+                invdata0 =  getinvGroupInvname("13");
+				invdata.push({id:"金贵白膜",name:"金贵白膜"});
+				invdata.push({id:"金贵白黑白",name:"金贵白黑白"});
+				invdata.push({id:"金贵精品白膜",name:"金贵精品白膜"});
+				invdata.push({id:"金贵黑膜精包装",name:"金贵黑膜精包装"});
+				invdata.push({id:"金贵黑膜蓝包装",name:"金贵黑膜蓝包装"});
+				invdata.push({id:"金贵黑银膜",name:"金贵黑银膜"});
+				// invdata.push({id:"70",name:"金贵白膜"});
+				// invdata.push({id:"130",name:"金贵白黑白"});
+				// invdata.push({id:"2829",name:"金贵精品白膜"});
+				// invdata.push({id:"725",name:"金贵黑膜精包装"});
+				// invdata.push({id:"2828",name:"金贵黑膜蓝包装"});
+				// invdata.push({id:"3046",name:"金贵黑银膜"});
+				$.each(invdata0, function(i, d) {
+					if(d.id != "金贵白膜" && d.id !="金贵白黑白" && d.id!="金贵精品白膜" && d.id!="金贵黑膜精包装" && d.id!="金贵黑膜蓝包装" && d.id!="金贵黑银膜"){
+						invdata.push({id:d.id,name:d.name});
+					}
+				});
+
+            } else if(whid == 6){
+            	var invdata0=[];
+                invdata0 =  getinvGroupInvname("15");
+                invdata.push({id:"PE盘管",name:"PE盘管"});
+				invdata.push({id:"PE直管",name:"PE直管"});
+				invdata.push({id:"PE水龙带",name:"PE水龙带"});
+				$.each(invdata0, function(i, d) {
+					if(d.id != "PE盘管" && d.id !="PE直管" && d.id!="PE水龙带"){
+						invdata.push({id:d.id,name:d.name});
+					}
+				});
+
+
+            }
+        }
+        return invdata;
+	}
+
+	//根据品名规格获取存货档案
+	function getInvByNameCpgg(invname,cpgg){
+	    var inv = null;
+        if (invname){
+            $.ajax({
+                type : 'get',
+                url : '/invs/getInvByNameCpgg?invname='+invname+'&cpgg='+cpgg,
+                async : false,
+                success : function(data) {
+                      inv = data;
+                }
+            });
+        }
+        return inv;
+	}
+
+    function add(data) {
+        $('#form').bootstrapValidator();
+        var bootstrapValidator = $("#form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(!bootstrapValidator.isValid()){
+            return;
+        }
+        var formdata = $("#form").serializeObject();
+		if(!data || data.length == 0){
+			layer.msg("请添加存货");
+			return;
+		}
+
+		for (var i=0;i<data.length;i++){
+			if(!data[i])
+				continue;
+
+			if(!matchNum(data[i].inum)){
+				layer.msg("请输入正确的数量");
+				return;
+			}else{
+				// if(data[i].inum<=0){
+				// 	layer.msg("存货数量不能小于等于0");
+				// 	return
+				// }
+			}
+			if (!data[i].invid){
+                layer.alert("第"+(Number(i)+1)+"行请选择正确的品名和规格。");
+                return;
+			}
+			data[i].zcjians = []
+		}
+
+        var html = checkImoney(data);
+		if (html){
+		    layer.alert(html);
+		    return;
+		}
+		formdata.ctype = "sm";
+		formdata.busstype = 1;
+        formdata.stockoutsList = data;
+
+		var posttype="post";
+		var url = '/stockouts?_=' + localStorage.getItem("token");   //?_=' +new Date().valueOf()
+		if (id){
+			posttype="put";
+			url = '/stockouts/updateNew';
+		}
+
+        $.ajax({
+            type : posttype,
+            url : url,
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+
+            success : function(data) {
+                layer.msg("保存成功", {shift: -1, time: 1000}, function(){
+                	if(posttype=="post"){
+                		if(getUrlParam("cusid")){
+							parent.layui.admin.events.closeThisTabs();
+						}else {
+							location.href = "smlist.html?ctype=sm";
+						}
+
+					}else {
+						$("#btnclose").trigger('click');
+					}
+
+                });
+            }
+        });
+    }
+
+    function checkImoney(data){
+          var html = ""
+          for (var i=0;i<data.length;i++){
+			  var d = data[i];
+			  if (!d.inum) d.inum = ""
+              if (!d.imoney) d.imoney = ""
+              if (!d.jian) d.jian = ""
+              if (!d.ilen) d.ilen = ""
+              var imoney = "";
+               var dwmark = ""
+               if (d) {
+                  if (d.danwei) {    //单位
+                      if (danwei) {
+                          for (var a=0;a<danwei.length;a++){
+                              if (danwei[a].k == d.danwei){
+                                  dwmark = danwei[a].dwmark
+                                  break
+                              }
+                          }
+                      }
+                  }
+                   if (dwmark && dwmark == 1) {
+                       imoney = mathMultiply(d.iprice,d.jian);
+                   }else if (dwmark && dwmark == 2){
+                       imoney = mathMultiply(d.iprice,d.ilen);
+                   }else{
+                       cinum = math.round(d.inum,3);
+                       imoney = mathMultiply(d.iprice,cinum);
+                   }
+                   if (imoney) imoney = math.round(imoney,2);
+                   if (math.compare(imoney,d.imoney) != 0){
+                       html += "第"+(Number(i)+1)+"行，金额计算有误，请核对数据！<br>";
+				   }
+               }
+		  }
+		  return html;
+	}
+
+    function batchdel(){
+        var oldData = table.cache["data"];
+        var newData = [];
+        var status = $("#status").val()
+        if (status && status > 1){
+            layer.msg("无法删除，请选择驳回");
+            return
+        }
+        if(!oldData || data.length == 0) {
+            layer.msg("请选择要删除的行");
+        }else{
+            layer.confirm('真的批量删除行么', function (index) {
+                for (var i = 0; i < oldData.length; i++) {
+                    if (!oldData[i].LAY_CHECKED || oldData[i].status == 2){
+                        newData.push(oldData[i]);
+                    }
+                }
+                tableIns.reload({
+                    data: newData
+                });
+
+                layer.close(index);
+            });
+        }
+	}
+
+    function tianjia(){
+        $("#shuzhi").val("[]");
+        layer.open({
+            type: 2,
+            title: '添加',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '80%'],
+            content: encodeURI('../currstock/searchCurrstock.html?ctype=cp&whid='+$("#whid").val()+'&invname='+$("#invname").val()),
+            end : function(){
+                var oldData =  table.cache["data"];
+
+                /* if(!oldData){
+                 oldData = [];
+                 }*/
+                var newData = JSON.parse($("#shuzhi").val())
+
+                for(var i=0;i<newData.length;i++){
+                    if(i==0){
+
+//                         $("#memo").val($("#memo").val() + "销售" +newData[i].invname + "等");
+                    }
+                    // var ishas = false;
+                    // for(var a=0;a<oldData.length;a++){
+                    //     if(oldData[a].invid == newData[i].invid){
+                    //         ishas = true;
+                    //     }
+                    // }
+					//
+                    // if(!ishas){
+					    var inv = getInvById(newData[i].invid);
+						var iprice = "";
+						if (inv){
+							if (inv.id)  //invid
+								invid = inv.id;
+							if ($("#xsddtype").val() == 1){   //根据订单类型找价格
+								iprice = inv.iprice;
+							} else if ($("#xsddtype").val() == 2){
+								iprice = inv.icost;
+							} else if ($("#xsddtype").val() == 3){
+								iprice = inv.viprice;
+							}
+						}
+						var dwmark = ""
+						if (inv) {
+							if (inv.unit1) {    //单位
+								if (danwei) {
+                                    for (var a=0;a<danwei.length;a++){
+                                        if (danwei[a].k == newData[i].danwei){
+                                            dwmark = danwei[a].dwmark
+                                            break
+										}
+                                    }
+                                }
+							}
+						}
+						var printCpgg = ""
+						if (newData[i].whid == 5) {
+							if(inv.invname){
+								if (inv.invname != "工程膜"){
+									var cpggarr = newData[i].cpgg.split("*");
+									if (cpggarr){
+										if (cpggarr[1]){
+											if (cpggarr[1] < 0.01){
+												cpggarr[1] = 0.01;
+												printCpgg = cpggarr.join("*");
+											}
+										}
+									}
+								}
+							}
+						}
+                        if (iprice) iprice = math.round(iprice,2)
+                        newData[i].mxwhid = newData[i].whid;
+                        newData[i].iprice = iprice;
+						newData[i].jian = "";
+						newData[i].inum = "";
+						newData[i].imoney = "";
+                        newData[i].dwmark = dwmark;
+                   		newData[i].c01 = printCpgg;
+                        oldData.push(newData[i]);
+
+                }
+                tableIns.reload({
+                    url:"",
+                    data : oldData
+                })
+            }
+        });
+    }
+
+    function tianjia1(){
+        var datas = [];
+        var tableData = table.cache["data"];
+        //不为空先遍历表格中数据在追加数据
+        if(tableData != null){
+            for(i=0;i<tableData.length;i++){
+                datas.push(tableData[i])
+            }
+        }
+
+        var invname = "";
+        if ($("#invname").val()){
+            invname = $("#invname").val();
+        }
+
+        var danwei = "";
+        if ($("#danwei").val()){
+            danwei = $("#danwei").val();
+        }
+        var whid = "";
+        if ($("#whid").val()){
+            whid = $("#whid").val();
+        }
+        var hangshu = $("#jiajian").val();
+
+        for (var i=0;i<hangshu;i++){
+            //初始,追加单行数据
+            datas.push({
+                id:new Date().valueOf() + i,
+                pid:'',
+                mxwhid:whid,
+                invid:'',
+                invname:invname,
+                cpgg:'',
+				perlen:'',
+                jian:'',
+                jianzhong:'',
+                inum:'',
+                danwei:danwei,
+                iprice:'',
+                imoney:'',
+                dwmark:'',
+                memo:'',
+				c01:''
+            });
+		}
+
+        table.reload("data",{
+            data:datas
+        });
+	}
+
+    function tianjiaKh(){
+        layer.open({
+            type: 2,
+            title: '添加客户',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['80%', '90%'],
+            content: '../customer/customerList.html?searchCus=true',
+            end : function(){
+                   var kehu = JSON.parse($("#kehu").val());
+                   $("#cusid").val(kehu.id);
+                   $("#ksname").val(kehu.cname);
+            }
+        });
+    }
+
+	$("#btnclose").click(function(){
+		//当你在iframe页面关闭自身时
+		var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+		parent.layer.close(index); //再执行关闭
+	});
+
+</script>
+</body>
+</html>

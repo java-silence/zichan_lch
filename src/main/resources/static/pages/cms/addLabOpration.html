@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Title -->
+	<title>运城学院数学与信息技术学院</title>
+
+	<!-- Google Fonts -->
+	<!-- <link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Great+Vibes' rel='stylesheet' type='text/css'> -->
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+
+	<!-- Stylesheets -->
+	<link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../../css/style.css" rel="stylesheet" type="text/css">
+
+	<!--[if IE 9]>
+	<link rel="stylesheet" href="../../css/ie9.css">
+	<![endif]-->
+
+	<!--[if lt IE 9]>
+	<link rel="stylesheet" href="../../css/ie.css">
+	<![endif]-->
+	<!--[if IE 7]>
+	<link rel="stylesheet" href="../../css/fontello-ie7.css">
+	<![endif]-->
+
+	<style type="text/css">
+		.no-fouc {display:none;}
+	</style>
+
+	<!-- jQuery -->
+	<script src="../../js/jquery-1.11.0.min.js"></script>
+	<script src="../../js/jquery-ui-1.10.4.min.js"></script>
+
+	<!-- Preloader -->
+	<script src="../../js/jquery.queryloader2.min.js"></script>
+
+	<script type="text/javascript">
+        $('html').addClass('no-fouc');
+
+        $(document).ready(function(){
+
+            $('html').show();
+
+            var window_w = $(window).width();
+            var window_h = $(window).height();
+            var window_s = $(window).scrollTop();
+
+            $("body").queryLoader2({
+                backgroundColor: '#f2f4f9',
+                barColor: '#63b2f5',
+                barHeight: 4,
+                percentage:false,
+                deepSearch:true,
+                minimumTime:1000,
+                onComplete: function(){
+
+                    $('.animate-onscroll').filter(function(index){
+
+                        return this.offsetTop < (window_s + window_h);
+
+                    }).each(function(index, value){
+
+                        var el = $(this);
+                        var el_y = $(this).offset().top;
+
+                        if((window_s) > el_y){
+                            $(el).addClass('animated fadeInDown').removeClass('animate-onscroll');
+                            setTimeout(function(){
+                                $(el).css('opacity','1').removeClass('animated fadeInDown');
+                            },2000);
+                        }
+
+                    });
+
+                }
+            });
+
+        });
+	</script>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+
+<body class="sticky-header-on tablet-sticky-header">
+
+<div id="fb-root"></div>
+<!-- Container -->
+<div class="container">
+
+	<!-- Header -->
+	<header id="header" class="animate-onscroll">
+		<!-- Main Header -->
+		<div id="main-header">
+			<div class="container">
+				<div class="row">
+					<!-- Logo -->
+					<div id="logo" class="col-lg-7 col-md-7 col-sm-7">
+						<img src="../../img/logo.png" alt="Logo" style="width:100%;height:100%">
+					</div>
+					<!-- /Logo -->
+				</div>
+			</div>
+		</div>
+		<!-- /Main Header -->
+	</header>
+	<!-- /Header -->
+	<section id="content" style="z-index: 999">
+		<!-- Section -->
+		<section class="section full-width-bg gray-bg">
+			<div class="row">
+				<div class="col-lg-9 col-md-9 col-sm-8 col-lg-push-3 col-md-push-3 col-sm-push-4">
+
+					<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+						<fieldset>
+							<div class='form-group'>
+								<label class='col-md-2 control-label'>实验室</label>
+								<div class='col-md-10'>
+									<!--学生修改：-->
+									<select id="labid" name="labid" class="form-control input-sm" disabled></select>
+									<!--<input class='form-control' placeholder='实验室ID' type='text' name='labid' id='labid' data-bv-notempty='true' data-bv-notempty-message='实验室ID不能为空'>-->
+								</div>
+							</div>
+							<div class='form-group' style="z-index: 999">
+								<!--学生修改：把单位改为系级-->
+								<label class='col-md-2 control-label'>院系</label>
+								<div class='col-md-10'>
+									<select id="deptid" name="deptid" class="form-control input-sm"></select>
+								</div>
+							</div>
+							<div class='form-group'>
+								<label class='col-md-2 control-label'>班级</label>
+								<div class='col-md-10'>
+									<input class='form-control' placeholder='班级' type='text' name='classname' id='classname' data-bv-notempty='true' data-bv-notempty-message='班级不能为空'>
+								</div>
+							</div>
+							<div class='form-group'>
+								<!--学生修改：把学生ID改为学号-->
+								<label class='col-md-2 control-label'>学号</label>
+								<div class='col-md-10'>
+									<input class='form-control' placeholder='学号' type='text' name='studentid' id='studentid'
+										    data-bv-notempty='true' data-bv-notempty-message='学生ID不能为空'>
+								</div>
+							</div>
+							<div class='form-group'>
+								<label class='col-md-2 control-label'>学生姓名</label>
+								<div class='col-md-10'>
+									<input class='form-control' placeholder='学生姓名' type='text' name='name' id='name' data-bv-notempty='true' data-bv-notempty-message='学生姓名不能为空'>
+								</div>
+							</div>
+							<!--<div class='form-group'>-->
+								<!--<label class='col-md-2 control-label'>登记日期</label>-->
+								<!--<div class='col-md-10'>-->
+									<!--<input class='form-control' placeholder='登记日期' type='text' name='operationdate' id='operationdate' data-bv-notempty='true' data-bv-notempty-message='日期不能为空'>-->
+								<!--</div>-->
+							<!--</div>-->
+							<div class='form-group'>
+								<label class='col-md-2 control-label'>实验内容</label>
+								<div class='col-md-10'>
+									<input class='form-control' placeholder='实验内容' type='text' name='labitem' id='labitem' >
+								</div>
+							</div>
+
+							<div class='form-group'>
+								<label class='col-md-2 control-label'>备注</label>
+								<div class='col-md-10'>
+									<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+								</div>
+							</div>
+
+
+							<div class="form-actions">
+								<div class="row" align="center">
+									<div class="col-md-12">
+
+										<button class="layui-btn" type="submit" onclick="add()">
+											<i class="fa fa-save"></i> 提交
+										</button>
+									</div>
+								</div>
+							</div>
+
+						</fieldset>
+					</form>
+				</div>
+
+			</div>
+		</section>
+		<!-- /Section -->
+
+	</section>
+
+	<!-- Footer -->
+	<footer id="footer">
+		<!-- Lower Footer -->
+		<div id="lower-footer">
+
+			<div class="row">
+
+				<div class="col-lg-4 col-md-4 col-sm-4 animate-onscroll">
+
+					<p class="copyright">© 2018 All Rights Reserved. <a href="http://www.itycu.com/" target="_blank" title="数信学院">数信学院</a></p>
+
+				</div>
+
+				<div class="col-lg-8 col-md-8 col-sm-8 animate-onscroll">
+
+				</div>
+
+			</div>
+
+		</div>
+		<!-- /Lower Footer -->
+	</footer>
+	<!-- /Footer -->
+</div>
+<!-- /Container -->
+
+<!-- JavaScript -->
+
+<!-- Bootstrap -->
+<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+
+<!-- Revolution Slider  -->
+<script type="text/javascript" src="../../js/revolution-slider/js/jquery.themepunch.plugins.min.js"></script>
+<script type="text/javascript" src="../../js/revolution-slider/js/jquery.themepunch.revolution.min.js"></script>
+
+<!-- Calendar -->
+<script type="text/javascript" src="../../js/responsive-calendar.min.js"></script>
+
+<!-- Raty -->
+<script type="text/javascript" src="../../js/jquery.raty.min.js"></script>
+
+<!-- Chosen -->
+<script type="text/javascript" src="../../js/chosen.jquery.min.js"></script>
+
+<!-- MixItUp -->
+<script type="text/javascript" src="../../js/jquery.mixitup.js"></script>
+
+<!-- CloudZoom -->
+<script type="text/javascript" src="../../js/zoomsl-3.0.min.js"></script>
+
+<!-- Main Script -->
+<script type="text/javascript" src="../../js/script.js"></script>
+
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../../js/jquery.placeholder.js"></script>
+<script type="text/javascript" src="../../js/script_ie.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../js/my/navigation.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<!--学生修改：添加实验室和教师下拉框的lab.js和user.js-->
+<script type="text/javascript" src="../../js/lab.js"></script>
+<script type="text/javascript" src="../../js/dept.js"></script>
+<script type="text/javascript">
+
+    //var appStatus = showStepSelect("stepid", "1", true);
+    //学生修改：添加实验室和教师下拉框
+    showLabSelect("labid", "lab", true);
+    showDeptSelect("deptid", "topdept", true);
+
+    $("#deptid").val(1);
+
+    //showUserSelect("teacherid", "teacher", true);
+
+    $("#labid").val(getUrlParam("id"));
+
+    layui.use(['layer','form','laydate'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+        //学生修改：添加日期事件
+//        var laydate = layui.laydate;
+//        laydate.render({
+//            elem: '#operationdate'
+//        });
+    });
+
+    function add() {
+
+        $("[disabled]").each(function() {//移除disable,后台方可取值
+            if (parseInt($(this).val()) != -1) {
+                $(this).attr("disabled", false);
+            }
+        });
+
+        $('#form').bootstrapValidator(
+
+		);
+        var bootstrapValidator = $("#form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(!bootstrapValidator.isValid()){
+            return;
+        }
+
+        var formdata = $("#form").serializeObject();
+
+        $.ajax({
+            type : 'post',
+            url : '/cms/labOprations',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+            success : function(data) {
+                layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                    location.href = "/pages/cms/show.html?id=189";
+                });
+            }
+        });
+    }
+
+</script>
+
+</body>
+
+</html>

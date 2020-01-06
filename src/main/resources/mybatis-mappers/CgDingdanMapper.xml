@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.CgDingdanDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id}
+			</if>
+			<if test="params.ccode != null and params.ccode != ''">
+				and t.ccode = #{params.ccode}
+			</if>
+			<if test="params.ddate != null and params.ddate != ''">
+				and t.ddate = #{params.ddate}
+			</if>
+			<if test="params.busstype != null and params.busstype != ''">
+				and t.busstype = #{params.busstype}
+			</if>
+			<if test="params.csource != null and params.csource != ''">
+				and csource = #{params.csource} 
+			</if>
+			<if test="params.bussid != null and params.bussid != ''">
+				and t.bussid = #{params.bussid}
+			</if>
+			<if test="params.jglx != null and params.jglx != ''">
+				and t.jglx = #{params.jglx}
+			</if>
+			<if test="params.fkfs != null and params.fkfs != ''">
+				and t.fkfs = #{params.fkfs}
+			</if>
+			<if test="params.whid != null and params.whid != ''">
+				and t.whid = #{params.whid}
+			</if>
+			<if test="params.deptid != null and params.deptid != ''">
+				and t.deptid = #{params.deptid}
+			</if>
+			<if test="params.userid != null and params.userid != ''">
+				and t.userid = #{params.userid}
+			</if>
+			<if test="params.ksid != null and params.ksid != ''">
+				and t.ksid = #{params.ksid}
+			</if>
+			<if test="params.inum != null and params.inum != ''">
+				and t.inum = #{params.inum}
+			</if>
+			<if test="params.taxrate != null and params.taxrate != ''">
+				and taxrate = #{params.taxrate} 
+			</if>
+			<if test="params.tax != null and params.tax != ''">
+				and t.tax = #{params.tax}
+			</if>
+			<if test="params.imoney != null and params.imoney != ''">
+				and t.imoney = #{params.imoney}
+			</if>
+			<if test="params.itotal != null and params.itotal != ''">
+				and t.itotal = #{params.itotal}
+			</if>
+			<if test="params.yfdj != null and params.yfdj != ''">
+				and t.yfdj = #{params.yfdj}
+			</if>
+			<if test="params.yfje != null and params.yfje != ''">
+				and t.yfje = #{params.yfje}
+			</if>
+			<if test="params.yffkid != null and params.yffkid != ''">
+				and t.yffkid = #{params.yffkid}
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and t.createby = #{params.createby}
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.createTime = #{params.createTime}
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and t.updateby = #{params.updateby}
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.updateTime = #{params.updateTime}
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and t.auditby = #{params.auditby}
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and t.auditTime = #{params.auditTime}
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status}
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del}
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and t.memo = #{params.memo}
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and t.ctype = #{params.ctype}
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and t.c01 = #{params.c01}
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and t.c02 = #{params.c02}
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and t.c03 = #{params.c03}
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and t.flowid = #{params.flowid}
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and t.stepid = #{params.stepid}
+			</if>
+			<if test="params.dhsl != null and params.dhsl != ''">
+				and t.dhsl = #{params.dhsl}
+			</if>
+			<if test="params.dhje != null and params.dhje != ''">
+				and t.dhje = #{params.dhje}
+			</if>
+			<if test="params.rksl != null and params.rksl != ''">
+				and t.rksl = #{params.rksl}
+			</if>
+			<if test="params.ykfp != null and params.ykfp != ''">
+				and t.ykfp = #{params.ykfp}
+			</if>
+			<if test="params.yfkje != null and params.yfkje != ''">
+				and t.yfkje = #{params.yfkje}
+			</if>
+			<if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
+				and ddate between #{params.sdate} and #{params.edate}
+			</if>
+			<if test="params.ksmc != null and params.ksmc != ''">
+				and t_vendor.cname like concat('%', #{params.ksmc}, '%')
+			</if>
+		</where>
+	</sql>
+
+	<select id="getById" resultType="CgDingdan">
+		select t.*
+		,t_creator.nickname as creator
+		,t_dept.deptname
+		,t_vendor.cname as ksmc
+		from cg_dingdan t
+		LEFT OUTER JOIN sys_user t_creator ON t.createby=t_creator.id
+		LEFT OUTER JOIN t_dept ON t.deptid=t_dept.id
+		LEFT OUTER JOIN t_vendor on t.ksid =t_vendor.id
+		where t.id = #{id}
+	</select>
+	<select id="count" resultType="int">
+		select count(1) from cg_dingdan t
+		LEFT OUTER JOIN t_vendor on t.ksid =t_vendor.id
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="CgDingdan">
+		select t.*,if(t.status=1,'已审','待审') as statusname ,t_dept.deptname,t_vendor.cname as ksmc
+		,t_creator.nickname as creator
+		from cg_dingdan t
+		LEFT OUTER JOIN sys_user t_creator ON t.createby=t_creator.id
+		LEFT OUTER JOIN t_dept on t.deptid=t_dept.id
+		LEFT OUTER JOIN t_vendor on t.ksid =t_vendor.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update cg_dingdan t
+		<set>
+			<if test="ccode != null">
+				ccode = #{ccode}, 
+			</if>
+			<if test="ddate != null">
+				ddate = #{ddate}, 
+			</if>
+			<if test="busstype != null">
+				busstype = #{busstype}, 
+			</if>
+			<if test="csource != null">
+				csource = #{csource}, 
+			</if>
+			<if test="bussid != null">
+				bussid = #{bussid}, 
+			</if>
+			<if test="jglx != null">
+				jglx = #{jglx}, 
+			</if>
+			<if test="fkfs != null">
+				fkfs = #{fkfs}, 
+			</if>
+			<if test="whid != null">
+				whid = #{whid}, 
+			</if>
+			<if test="deptid != null">
+				deptid = #{deptid}, 
+			</if>
+			<if test="userid != null">
+				userid = #{userid}, 
+			</if>
+			<if test="ksid != null">
+				ksid = #{ksid}, 
+			</if>
+			<if test="inum != null">
+				inum = #{inum}, 
+			</if>
+			<if test="taxrate != null">
+				taxrate = #{taxrate}, 
+			</if>
+			<if test="tax != null">
+				tax = #{tax}, 
+			</if>
+			<if test="imoney != null">
+				imoney = #{imoney}, 
+			</if>
+			<if test="itotal != null">
+				itotal = #{itotal}, 
+			</if>
+			<if test="yfdj != null">
+				yfdj = #{yfdj}, 
+			</if>
+			<if test="yfje != null">
+				yfje = #{yfje}, 
+			</if>
+			<if test="yffkid != null">
+				yffkid = #{yffkid}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="flowid != null">
+				flowid = #{flowid}, 
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid}, 
+			</if>
+			<if test="dhsl != null">
+				dhsl = #{dhsl}, 
+			</if>
+			<if test="dhje != null">
+				dhje = #{dhje}, 
+			</if>
+			<if test="rksl != null">
+				rksl = #{rksl}, 
+			</if>
+			<if test="ykfp != null">
+				ykfp = #{ykfp}, 
+			</if>
+			<if test="yfkje != null">
+				yfkje = #{yfkje}, 
+			</if>
+			<if test="clbm != null">
+				clbm = #{clbm},
+			</if>
+			<if test="telephone != null">
+				telephone = #{telephone},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

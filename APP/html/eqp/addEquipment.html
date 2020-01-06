@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+	
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>所属部门</label>
+				<div class='col-md-10'>
+					<select id="deptid" name="deptid"  class="form-control input-sm" ></select>
+				</div>
+			</div>
+
+			<div class='form-group'>
+						<label class='col-md-2 control-label'>设备名称</label>
+						<div class='col-md-10'>
+							<input class='form-control' placeholder='设备名称' type='text' name='cname' id='cname' >
+						</div>		
+			</div>
+			
+			<div class='form-group'>
+						<label class='col-md-2 control-label'>设备序列号</label>
+						<div class='col-md-10'>
+							<input class='form-control' placeholder='设备类型' type='text' name='serialno' id='serialno' >
+						</div>	
+			</div>
+			
+			<div class='form-group'>
+						<label class='col-md-2 control-label'>设备型号</label>
+						<div class='col-md-10'>
+							<input class='form-control' placeholder='设备类型' type='text' name='etype' id='etype' >
+						</div>	
+			</div>
+			
+			<div class='form-group'>
+					<label class='col-md-2 control-label'>设备类别</label>
+					<div class='col-md-10'>
+						<select id="lbid" name="lbid" class="form-control input-sm"></select>
+					</div>
+			</div>
+			
+			<div class='form-group'>									
+							<label class='col-md-2 control-label'>厂家</label>
+							<div class='col-md-10'>
+								<select id="factoryid" name="factoryid" class="form-control input-sm"></select>
+							</div>		
+			</div>
+			
+			<div class='form-group'>										
+							<label class='col-md-2 control-label'>品牌</label>
+							<div class='col-md-10'>
+								<input class='form-control' placeholder='品牌' type='text' name='pinpai' id='pinpai' >
+							</div>			
+			</div>
+			
+			<div class='form-group'>			
+						<label class='col-md-2 control-label'>创建时间</label>
+						<div class='col-md-10'>
+							<input class='form-control' placeholder='创建时间' type='text' name='buildtime' id='buildtime' >
+						</div>
+			</div>
+			
+			<div class='form-group'>
+							<label class='col-md-2 control-label'>技术支持电话</label>
+							<div class='col-md-10'>
+								<input class='form-control' placeholder='技术支持电话' type='text' name='techphone' id='techphone' >
+							</div>
+			</div>
+
+			<div class='form-group'>
+					<label class='col-md-2 control-label'>技术支持人员</label>
+					<div class='col-md-10'>
+						<input class='form-control' placeholder='技术支持人）' type='text' name='techname' id='techname' >
+					</div>
+			</div>
+
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>维护周期</label>
+				<div class='col-md-8'>
+					<select id="maintainperiod" name="maintainperiod" class="form-control input-sm"></select>
+					<!--<input class='form-control' placeholder='维护周期' type='text' name='maintainperiod' id='maintainperiod' >-->
+				</div>
+			</div>
+			
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>预计使用年限</label>
+				<div class='col-md-8'>
+					<input class='form-control' placeholder='预计使用年限' type='text' name='useperiod' id='useperiod' >
+				</div>
+			</div>
+			
+			
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>单价</label>
+				<div class='col-md-4'>
+					<input class='form-control' placeholder='单价' type='text' name='price' id='price' >
+				</div>				
+			</div>
+
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>安装单位</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='安装单位' type='text' name='anzhuang' id='anzhuang' >
+				</div>
+			</div>
+			
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-8'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+
+
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+					    <!-- <button class="layui-btn" onclick="location.href='equipmentList.html'">返回</button> -->
+						<button class="layui-btn" type="submit" onclick="add()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+    
+	<script src="../../js/mui.min.js"></script>
+    <script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<!--学生修改：添加实验室和教师下拉框的lab.js和user.js-->
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript" src="../../js/sblb.js"></script>
+	<script type="text/javascript" src="../../js/dept.js"></script>
+	<!-- <script type="text/javascript" src="../../js/cj.js"></script> -->
+
+	<script type="text/javascript">
+var token = JSON.parse(localStorage.getItem('$state')).token;
+
+var self = null;
+    mui.plusReady(function() {
+                self = plus.webview.currentWebview();
+            });
+//              showLabSelect("labid", "lab", true);
+// 	//var appStatus = showStepSelect("stepid", "1", true);
+
+		showDictSelect("maintainperiod","weihuzhouqi",false);
+		showDeptSelect("deptid", "dept", false);
+	    showSblbSelect("lbid", "sblb", true);
+		
+ // showCjSelect("factoryid", "cj", false);
+
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#buildtime'
+            });
+
+		});
+		
+		function add() {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+		    formdata.status = 20;		//正常设备
+          
+			$.ajax({
+				type : 'post',
+				url : server_url+'/equipments',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        self.close();  
+                    });
+				}
+			});
+		}
+
+
+    //重新渲染表单
+    function renderForm(){
+        layui.use('form', function(){
+            var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+            form.render();
+        });
+    }
+		
+	</script>
+</body>
+</html>

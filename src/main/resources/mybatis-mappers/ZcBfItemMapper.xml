@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcBfItemDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id} 
+			</if>
+			<if test="params.zcBfId != null and params.zcBfId != ''">
+				and t.zc_bf_id = #{params.zcBfId} 
+			</if>
+			<if test="params.zcId != null and params.zcId != ''">
+				and t.zc_id = #{params.zcId} 
+			</if>
+			<if test="params.applyUserId != null and params.applyUserId != ''">
+				and t.apply_user_id = #{params.applyUserId}
+			</if>
+			<if test="params.syDeptId != null and params.syDeptId != ''">
+				and t.sy_dept_id = #{params.syDeptId}
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != ''">
+				and t.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.cwbStatus != null and params.cwbStatus != ''">
+				and t.cwb_status = #{params.cwbStatus} 
+			</if>
+			<if test="params.shbStatus != null and params.shbStatus != ''">
+				and t.shb_status = #{params.shbStatus} 
+			</if>
+			<if test="params.fileName != null and params.fileName != ''">
+				and t.fileName = #{params.fileName}
+			</if>
+			<if test="params.fileUrl != null and params.fileUrl != ''">
+				and t.fileUrl = #{params.fileUrl}
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz} 
+			</if>
+            <if test="params.del != null and params.del != ''">
+                and t.del = #{params.del}
+            </if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.create_time = #{params.createTime} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime} 
+			</if>
+		
+		</where>
+	</sql>
+
+	<select id="getById" resultType="ZcBfItem">
+		select t.*
+		from zc_bf_item t
+		where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+		select count(1) from zc_bf_item t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="ZcBfItem">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_bf_item t
+		LEFT OUTER JOIN sys_user t_creator ON t.createby=t_creator.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<insert id="saves">
+		INSERT INTO
+		zc_bf_item
+		(zc_bf_id, zc_id, apply_user_id,sy_dept_id,gl_dept_id, cwb_status, shb_status, fileName, fileUrl, identifyContent, identifyFileName, identifyFileUrl,damagedFileName,damagedFileUrl,bz, create_time, update_time)
+		VALUES
+		<foreach collection="zcBfItemList" item="zcBfItem" separator=",">
+			(#{zcBfid}, #{zcBfItem.zcId},#{applyUserId} ,#{zcBfItem.syDeptId},#{zcBfItem.glDeptId}, #{zcBfItem.cwbStatus}, #{zcBfItem.shbStatus},#{zcBfItem.fileName},#{zcBfItem.fileUrl}, #{zcBfItem.identifyContent}, #{zcBfItem.identifyFileName}, #{zcBfItem.identifyFileUrl},#{zcBfItem.damagedFileName},#{zcBfItem.damagedFileUrl},#{zcBfItem.bz}, #{zcBfItem.createTime}, #{zcBfItem.updateTime})
+		</foreach>
+	</insert>
+
+	<update id="update">
+		update zc_bf_item t
+		<set>
+			<if test="zcBfId != null">
+				zc_bf_id = #{zcBfId}, 
+			</if>
+			<if test="zcId != null">
+				zc_id = #{zcId}, 
+			</if>
+            <if test="applyUserId != null">
+                apply_user_id = #{applyUserId},
+            </if>
+			<if test="cwbStatus != null">
+				cwb_status = #{cwbStatus}, 
+			</if>
+			<if test="shbStatus != null">
+				shb_status = #{shbStatus}, 
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="fileName != null">
+				fileName = #{fileName},
+			</if>
+			<if test="fileUrl != null">
+				fileUrl = #{fileUrl},
+			</if>
+			<if test="bz != null">
+				bz = #{bz}, 
+			</if>
+            <if test="del != null">
+                del = #{del},
+            </if>
+			<if test="createTime != null">
+				create_time = #{createTime}, 
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime}, 
+			</if>
+		</set>
+		where t.id = #{id}
+	</update>
+
+	<update id="updateStatus">
+		update zc_bf_item t set t.status = #{status} where t.zc_bf_id = #{bfid} and t.del = 0
+	</update>
+
+    <!--将审核部意见置空-->
+    <update id="updateShStatusNull">
+        update zc_bf_item t set t.shb_status = null where t.id = #{bfItemId}
+    </update>
+
+	<!--查询审核统计-->
+	<select id="countCheck" parameterType="string" resultType="int">
+		select count(id) from zc_bf_item t
+		<where>
+			<if test="type != null and type == 'shb'">
+				(t.shb_status is null or t.shb_status = 3)
+			</if>
+			<if test="type != null and type == 'cwb'">
+				t.cwb_status is null
+			</if>
+			and t.zc_bf_id = #{zcbfid} and t.del = 0
+		</where>
+	</select>
+
+	<!--批量更新资产报废子项状态-->
+	<update id="updateListStatus">
+		update zc_bf_item t
+		<set>
+			<if test="type != null and type == 'shb'">
+				t.shb_status = #{status},t.shUsername = #{username},t.shDeptname=#{deptname}
+			</if>
+			<if test="type != null and type == 'cwb'">
+				t.cwb_status = #{status},t.cwUsername = #{username},t.cwDeptname=#{deptname}
+			</if>
+			<if test="type != null and type == 'jujue'">
+				t.del = #{status},t.shb_status = 3,
+			</if>
+            <if test="type != null and type == 'status'">
+                t.status = #{status}
+            </if>
+		</set>
+		where t.id in
+		(
+            <foreach collection="bfItemIds" item="fileId" separator=",">
+                #{fileId}
+            </foreach>
+		)
+	</update>
+
+	<update id="updateZcBfCwitem">
+		update zc_bf_item t
+		set t.zcbfCwItemid = #{zcBfCwitemId}
+		where t.id in
+		(
+		<foreach collection="bfitemList" item="fileId" separator=",">
+			#{fileId}
+		</foreach>
+		)
+	</update>
+
+    <!--根据资产报废主表查询查询全部资产信息-->
+    <select id="listDetailByZcBfId" parameterType="long" resultType="map">
+		SELECT
+				t.id,
+				t.zc_bf_id zcbfid,
+				t.status,
+				t.fileName,
+				t.fileUrl,
+				t.identifyContent,
+				t.identifyFileName,
+				t.identifyFileUrl,
+				t.bz,
+				t.shb_status shbStatus,
+				t.cwb_status cwbStatus,
+				t.shUsername,
+				t.shDeptname,
+				t.cwUsername,
+				t.cwDeptname,
+				u1.nickname uname,
+				p3.deptname udeptname,
+				c.zc_codenum zcCodenum,
+				c.zc_name zcName,
+				g.name categoryName,
+				c.specification,
+				c.model,
+				c.unit,
+				c.use_status,
+                c.zc_from zcfrom,
+                c.card_num cardNum,
+                c.zcCategoryName,
+                DATE_FORMAT(c.start_use_time,'%Y-%m-%d %h:%m:%s') startusetime,
+                c.lave_time lavetime,
+                c.original_value originalvalue,
+                c.netvalue,
+                c.id zcId,
+                c.sy_dept_id syDeptId,
+                c.gl_dept_id glDeptId,
+                c.epcid,
+				u.nickname,
+				d1.deptname sydeptname,
+				d2.deptname gldeptname,
+				c.store_address storeaddress,
+				c.inspect_time inspecttime,
+				c.warrantyperiod
+		FROM
+				zc_bf_item t
+		LEFT JOIN v_zc_info c ON t.zc_id = c.id
+		LEFT JOIN t_dept d1 ON c.sy_dept_id = d1.id
+		LEFT JOIN t_dept d2 ON c.gl_dept_id = d2.id
+		LEFT JOIN sys_user u ON c.user_id = u.id
+		LEFT JOIN zc_category g ON c.zc_category_id = g.id
+		left join sys_user u1 on t.apply_user_id = u1.id
+		left join t_dept p3 on u1.deptid = p3.id
+		<where>
+			<if test="zcBfId != null and zcBfId != ''">
+				t.zc_bf_id = #{zcBfId}
+			</if>
+		</where>
+    </select>
+
+	<!--根据资产报废主表查询查询全部资产信息-->
+	<select id="listByItemIds" resultType="map">
+		SELECT
+		t.id,
+		t.zc_bf_id zcbfid,
+		t.status,
+		t.fileName,
+		t.fileUrl,
+		t.identifyContent,
+		t.identifyFileName,
+		t.identifyFileUrl,
+		t.bz,
+		t.shb_status shbStatus,
+		t.cwb_status cwbStatus,
+		t.shUsername,
+		t.shDeptname,
+		t.cwUsername,
+		t.cwDeptname,
+		u1.nickname uname,
+		p3.deptname udeptname,
+		c.zc_codenum zcCodenum,
+		c.zc_name zcName,
+		g.name categoryName,
+		c.specification,
+		c.model,
+		c.unit,
+		c.use_status,
+		c.zc_from zcfrom,
+		c.card_num cardNum,
+		c.zcCategoryName,
+		DATE_FORMAT(c.start_use_time,'%Y-%m-%d %h:%m:%s') startusetime,
+		c.lave_time lavetime,
+		c.original_value originalvalue,
+		c.netvalue,
+		c.id zcId,
+		c.sy_dept_id syDeptId,
+		c.gl_dept_id glDeptId,
+		c.epcid,
+		u.nickname,
+		d1.deptname sydeptname,
+		d2.deptname gldeptname,
+		c.store_address storeaddress,
+		c.inspect_time inspecttime,
+		c.warrantyperiod
+		FROM
+		zc_bf_item t
+		LEFT JOIN v_zc_info c ON t.zc_id = c.id
+		LEFT JOIN t_dept d1 ON c.sy_dept_id = d1.id
+		LEFT JOIN t_dept d2 ON c.gl_dept_id = d2.id
+		LEFT JOIN sys_user u ON c.user_id = u.id
+		LEFT JOIN zc_category g ON c.zc_category_id = g.id
+		left join sys_user u1 on t.apply_user_id = u1.id
+		left join t_dept p3 on u1.deptid = p3.id
+		where t.id in
+		(
+			<foreach collection="zcbfItemIds" item="fileId" separator=",">
+				#{fileId}
+			</foreach>
+		)
+	</select>
+
+    <!--根据待办查询资产报废子项-->
+	<select id="listDetailByFlowTodoIdNew" parameterType="long" resultType="hashmap">
+		SELECT
+				t.id,
+				t.status,
+				t.flow_todo_id flowTodoId,
+				t.flow_item_id flowItemId,
+				t.auditby,
+				t.sendby,
+				p.zc_bf_id zcbfid,
+				p.bz,
+				p.shb_status shbStatus,
+				p.cwb_status cwbStatus,
+				p.status itemStatus,
+				p.fileName,
+				p.fileUrl,
+				p.identifyContent,
+				p.identifyFileName,
+				p.identifyFileUrl,
+				p.damagedFileName,
+				p.damagedFileUrl,
+                p.del,
+				c.zc_codenum zcCodenum,
+				c.zc_name zcName,
+				g.name categoryName,
+                c.specification,
+                c.model,
+				c.epcid,
+                c.unit,
+                c.use_status,
+                DATE_FORMAT(c.start_use_time,'%Y-%m-%d %h:%m:%s') startusetime,
+                c.remainingperiod,
+                c.original_value originalvalue,
+                c.netvalue,
+				u.nickname,
+				d1.deptname sydeptname,
+				d2.deptname gldeptname,
+				c.store_address storeaddress,
+				c.inspect_time inspecttime,
+				c.warrantyperiod
+		FROM
+				flow_todo_item t
+		LEFT JOIN zc_bf_item p ON t.flow_item_id = p.id
+		LEFT JOIN zc_info c ON p.zc_id = c.id
+		LEFT JOIN t_dept d1 ON c.sy_dept_id = d1.id
+		LEFT JOIN t_dept d2 ON c.gl_dept_id = d2.id
+		LEFT JOIN sys_user u ON c.user_id = u.id
+		LEFT JOIN zc_category g ON c.zc_category_id = g.id
+		<where>
+			<if test="todoId != null and todoId != ''">
+				t.flow_todo_id = #{todoId}
+			</if>
+		</where>
+	</select>
+
+    <!--根据待办查询资产报废子项-->
+    <select id="listDetailByFlowTodoIdNewByType" resultType="hashmap">
+        SELECT
+        t.id,
+        t.status,
+        t.flow_todo_id flowTodoId,
+        t.flow_item_id flowItemId,
+        t.auditby,
+        t.sendby,
+        p.zc_bf_id zcbfid,
+        p.bz,
+        p.shb_status shbStatus,
+        p.cwb_status cwbStatus,
+        p.status itemStatus,
+		p.fileName,
+		p.fileUrl,
+		p.identifyContent,
+		p.identifyFileName,
+		p.identifyFileUrl,
+		p.damagedFileName,
+		p.damagedFileUrl,
+        p.del,
+		c.epcid,
+        c.zc_codenum zcCodenum,
+        c.zc_name zcName,
+        g.name categoryName,
+        c.specification,
+        c.model,
+        c.unit,
+        c.use_status,
+        DATE_FORMAT(c.start_use_time,'%Y-%m-%d %h:%m:%s') startusetime,
+        c.remainingperiod,
+        c.original_value originalvalue,
+        c.netvalue,
+        u.nickname,
+        d1.deptname sydeptname,
+        d2.deptname gldeptname,
+        c.store_address storeaddress,
+        c.inspect_time inspecttime,
+        c.warrantyperiod
+        FROM
+        flow_todo_item t
+        LEFT JOIN zc_bf_item p ON t.flow_item_id = p.id
+        LEFT JOIN zc_info c ON p.zc_id = c.id
+        LEFT JOIN t_dept d1 ON c.sy_dept_id = d1.id
+        LEFT JOIN t_dept d2 ON c.gl_dept_id = d2.id
+        LEFT JOIN sys_user u ON c.user_id = u.id
+        LEFT JOIN zc_category g ON c.zc_category_id = g.id
+        <where>
+            <if test="todoId != null and todoId != ''">
+                t.flow_todo_id = #{todoId}
+            </if>
+            <if test="type != null and type != ''">
+                and p.del = 0
+            </if>
+        </where>
+    </select>
+
+	<!--查询管理部门本年度的报废提交-->
+	<select id="countYearSubmit" parameterType="long" resultType="int">
+		SELECT count(id) FROM
+		(SELECT
+			id,zc_bf_id,sy_dept_id,gl_dept_id
+		FROM
+			zc_bf_item t
+		WHERE
+			YEAR(t.create_time) = YEAR(now()) and t.gl_dept_id = #{deptid} and t.del = 0
+		GROUP BY t.sy_dept_id) t
+	</select>
+
+    <!--根据ID集合查询完成-->
+    <select id="countByIds" resultType="int">
+        select count(1) from zc_bf_item t where (t.shb_status != 1 or t.shb_status is null ) and t.del = 0
+        and t.id in
+        (
+        <foreach collection="itemList" item="fileId" separator=",">
+            #{fileId}
+        </foreach>
+        )
+    </select>
+
+    <!--根据ID集合查询-->
+    <select id="listByIds" resultType="ZcBfItem">
+        select t.*,c.epcid,c.zc_name zcName from zc_bf_item t
+		left join zc_info c on c.id = zc_id
+        where t.id in
+        (
+        <foreach collection="zcbfItemIds" item="fileId" separator=",">
+            #{fileId}
+        </foreach>
+        )
+    </select>
+
+    <!--查询本年度已经提交的管使用部门-->
+    <select id="listSyDeptThisYear" resultType="ZcBfItem">
+        SELECT
+            t.zc_bf_id zcBfId,
+            t.sy_dept_id syDeptId,
+            t.gl_dept_id glDeptId
+        FROM
+        (SELECT
+            zc_bf_id,sy_dept_id,gl_dept_id
+        FROM
+            zc_bf_item t
+        WHERE
+            YEAR(t.create_time) = YEAR(now()) AND t.cwb_status = 1
+            and t.del = 0 and t.create_time &lt; #{updateTime}
+        GROUP BY t.sy_dept_id) t
+        where t.sy_dept_id in
+        (
+            <foreach collection="deptids" item="fileId" separator=",">
+                #{fileId}
+            </foreach>
+        )
+    </select>
+
+    <!--查询申请信息-->
+	<select id="listShenqing" parameterType="long" resultType="map">
+        SELECT
+            DATE_FORMAT(t.update_time,'%Y-%m-%d %H:%i:%s') updateTime,
+            u.nickname,
+            u.username,
+            p.deptname
+        FROM
+            zc_bf_item t
+        LEFT JOIN sys_user u ON u.id = t.apply_user_id
+        LEFT JOIN t_dept p ON p.id = t.sy_dept_id
+        WHERE t.zcbfCwItemid = #{zcbfCwItemId}
+	</select>
+
+	<update id="updateZcbfItemList">
+		update zc_bf_item set identifyFileName = #{name},identifyFileUrl = #{url}
+		where id in
+		(
+		<foreach collection="ids" item="fileId" separator=",">
+			#{fileId}
+		</foreach>
+		)
+	</update>
+
+    <!--查询申请信息-->
+    <select id="listShenqingByItemId" resultType="map">
+        SELECT
+            DATE_FORMAT(t.update_time,'%Y-%m-%d %H:%i:%s') updateTime,
+            u.nickname,
+            u.username,
+            p.deptname
+        FROM
+            zc_bf_item t
+        LEFT JOIN sys_user u ON u.id = t.apply_user_id
+        LEFT JOIN t_dept p ON p.id = t.sy_dept_id
+        where t.id in
+        (
+        <foreach collection="bfitemIds" item="fileId" separator=",">
+            #{fileId}
+        </foreach>
+        )
+    </select>
+
+</mapper>

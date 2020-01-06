@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<style type="text/css">
+	#neirong{
+		width: 100%;
+		height: 300px;
+		text-align: left;
+	}
+	h1{
+		font-weight: bold;
+		margin: 20px 0px 20px 0px;
+		text-align: center;
+	}
+	h3{
+		font-weight: bold;
+		margin: 10px 0px 10px 0px;
+	}
+	table{
+		margin: 0 auto;
+	}
+	table tr td{
+		margin: 0px;
+		padding: 0px;
+		text-align: center;
+		width: 100px;
+		height: 30px;
+	}
+	.qingshi{
+		height: 300px;
+	}
+	.biztype{
+		float: left;
+		margin: 0px 0px 0px 10px;
+		padding: 0px;
+	}
+	.agree{
+		float: left;
+	}
+	.nei{
+		height: 70px;
+	}
+	.neir{
+		height: 70px;
+		text-align: left;
+		float: left;
+	}
+</style>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<h1>维修申请单</h1>
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<input type="hidden" id="id" name="id">
+			<table border="1px" cellspacing="0" cellpadding="2" id="tab">
+				<tr>
+					<td>单位<br>(部门)</td>
+					<td><p id="danwei"></p></td>
+					<td>承办人<br>签字</td>
+					<td><p id="qianzi"></p></td>
+					<td>上报时间</td>
+					<td><p id="qsriqi"></p></td>
+				</tr>
+				<tr class="qingshi">
+					<td>维修<br>申请<br>内容</td>
+					<td colspan="5">
+						<h3 id="biaoti"></h3>
+						<p id="neirong"></p>
+					</td>
+				</tr>
+				<tr>
+					<td>附件</td>
+					<td colspan="5">
+						<table class="layui-table">
+							<tbody id="demoList"></tbody>
+						</table>
+					</td>
+				</tr>
+
+			</table>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript">
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+
+        var ids = [];
+        layui.use(['layer','form','laydate','upload'], function(){
+            var layer = layui.layer;
+            var form = layui.form;
+		});
+		
+		initData();
+		
+		function initData(){
+			var id = getUrlParam("id");
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/repairs/'+id,
+					async : false,
+					success : function(data) {
+						$('#id').val(data.id);
+						$('#biaoti').text(data.cname);
+						$('#neirong').text(data.description);
+
+						$('#qsriqi').text(data.bizdate);
+//						$('#jine').text(data.jine);
+//						$('#zhongda').val(data.zhongda);
+
+						//$('#status').val(data.status);
+
+						$('#memo').text(data.memo);
+						//$('#biztype').val(data.biztype);
+
+                        initFiles(id);		//调出并显示附件
+
+					}
+				});
+
+                $.ajax({
+                    type : 'get',
+                    url : '/todos/listbizid?bizid='+id,
+                    async : false,
+                    success : function(data) {
+                        var length = data.length;
+                        console.log(data);
+                        for (var i = 0; i < length; i++) {
+                            var html = "";
+                            html += "<tr>";
+                            html += "<td rowspan='2'>"+ data[i].senddeptname +"<br>("+data[i].sendname+")<br>"+ data[i].updateTime.substr(0,10) +"</td>";
+                            html += "<td colspan='5'>";
+							if(data[i].biztype = "同意"){
+                                html += "<p class='agree'>审批结果:同意</p>";
+							}else {
+                                html += "<p class='agree'>审批结果:拒绝</p>";
+							}
+							html += "</td>";
+                            html += "</tr>";
+                            html += "<tr class='nei'>";
+                            html += "<td colspan='5'>";
+                            if (data[i].neirong == null){
+                                html += "<span class='neir'>审批意见:</span><br>";
+							}else {
+                                html += "<span class='neir'>审批意见:" + data[i].neirong + "</span><br>";
+							}
+                            html += "<table class='layui-table'>";
+                            html += "<tbody id='demoList"+ data[i].auditby +"'></tbody>"
+                            html += "</table>";
+
+                            html += "</td>";
+                            html += "</tr>";
+
+                            $("#tab").append(html);
+
+                            initFilesH(data[i].auditby);
+                        }
+                    }
+                });
+			}
+		}
+
+        function initFiles(bizid) {
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype=1',
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#demoList');
+
+                        var preview ="<a target='_blank' href='https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Fwww.itycu.com%3A8090%2Fstatics"+data[i]['url'].replace(/\//g,"%2F")+"'>预览</a>"
+                        var tr = $(['<tr id="upload-'+ i +'">'
+                            ,'<td>'+ data[i]['filename'] +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>'+preview+'</td>'
+                            ,'<td>'
+                            ,'<a target="_blank" href="' + domain + '/statics' + data[i]['url'] +'">下载</a>'
+                        ,'</td>'
+                            ,'</tr>'].join(''));
+                        demoListView.append(tr);
+                    }
+                }
+            });
+        }
+
+        function initFilesH(bizid) {
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype=2',
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var c = "#demoList"+bizid;
+                        var demoListView = $(c);
+                        console.log(data[i]['url'].replace("/","%2F"));
+                        var preview ="<a target='_blank' href='https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Fwww.itycu.com%2Fwenyuan"+data[i]['url'].replace("/","%2F")+"'>预览</a>"
+                        var tr = $(['<tr id="upload-'+ i +'">'
+                            ,'<td>'+ data[i]['filename'] +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>'+preview+'</td>'
+                            ,'<td>'
+                            ,'<a target="_blank" href="' + domain + '/statics' + data[i]['url'] +'">下载</a>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+                        demoListView.append(tr);
+                    }
+                }
+            });
+        }
+
+	</script>
+</body>
+</html>

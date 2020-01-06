@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.FlowmemberDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and flowid = #{params.flowid} 
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and stepid = #{params.stepid} 
+			</if>
+			<if test="params.memid != null and params.memid != ''">
+				and memid = #{params.memid} 
+			</if>
+			<if test="params.memtype != null and params.memtype != ''">
+				and memtype = #{params.memtype} 
+			</if>
+			<if test="params.description != null and params.description != ''">
+				and description = #{params.description} 
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and createby = #{params.createby} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and updateby = #{params.updateby} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.biztype != null and params.biztype != ''">
+				and biztype = #{params.biztype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from flowmember t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="Flowmember">
+		select * from flowmember t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update flowmember t
+		<set>
+			<if test="flowid != null">
+				flowid = #{flowid}, 
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid}, 
+			</if>
+			<if test="memid != null">
+				memid = #{memid}, 
+			</if>
+			<if test="memtype != null">
+				memtype = #{memtype}, 
+			</if>
+			<if test="description != null">
+				description = #{description}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="biztype != null">
+				biztype = #{biztype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<insert id="insertFlowmember">
+		insert
+		into
+		flowmember
+		(flowid,stepid,memid)
+		values
+		(#{flowid},#{stepid},#{memid})
+	</insert>
+
+	<delete id="delFlowidAndStepid">
+		delete
+		from
+		flowmember
+		where
+		flowid = #{flowid}
+		and
+		stepid = #{stepid}
+	</delete>
+
+</mapper>

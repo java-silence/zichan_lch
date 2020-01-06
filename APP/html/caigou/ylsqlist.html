@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.title {
+				padding: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				background-color: #fff;
+			}
+			.nodata{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="top"></div>
+	    <form class="mui-input-group" onsubmit="return false" id="form">
+		    <div class="mui-input-row" id="formdiv">
+				<select type='text' style="width:40%;;" name='ksid' id='ksid'></select>
+				<button onclick="openAdd()" style="width:20%;border:0; float: right;"><span class="mui-icon mui-icon-plus"></span><span></span></button>
+				<button id="searchBt" style="width:20%;border:0;float: right;"><span class="mui-icon mui-icon-search"></span><span></span></button>
+		    </div>
+		</form>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<ul id="OA_task_1" class="mui-table-view mui-table-view-chevron"></ul>
+			<div id="nodata" class="nodata" style="height:40px;line-height:40px;text-align: center">没有数据了！</div>
+	    </div>
+	</body>	
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../js/my/permission.js"></script>
+	<script type="text/javascript" src="../../js/vendor.js"></script>
+</html>
+<script>
+	var pers ;
+			mui.plusReady(function () {
+				
+				showVenSelect("ksid", "vendor", true);
+				
+				pers = checkPermission();		//当前用户所有权限	
+					mui.init({
+						swipeBack: false,				
+						pullRefresh: {
+							container: '#pullrefresh',
+							down: {
+								callback: pulldownRefresh
+							},
+							up: {
+								auto:true,
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh
+							}
+						},					
+					});	
+			});	
+			
+			window.addEventListener('refresh', function(e) { 
+					location.reload();
+			});
+				
+	        var token = JSON.parse(localStorage.getItem('$state')).token;	
+		
+			var start = 1;
+			var length = 20;
+			function getData(type){				
+				mui.ajax(server_url+'/cgJihuas/list2?offset='+start+'&limit='+length+'&ksid='+ $("#ksid").val() +'&ctype=1&orderBy= order by createTime desc',{
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'token':token},
+					success:function(data){	
+						    liebiao(data)
+						
+							var table = $(".mui-table-view");
+							var cells = document.body.querySelectorAll('.mui-table-view-cell');
+							var html = '';
+							if(data.data.length != 0){
+								if(!$("#nodata").hasClass("nodata")){
+		                             $("#nodata").addClass("nodata");
+		                        }
+								
+								for (var i = 0; i<data.data.length ; i++) {
+									var todo = JSON.stringify(data.data[i]);
+									
+									html+='<li class="mui-table-view-cell mui-media">'+
+									            '<div class="mui-slider-right mui-disabled">';
+												
+												if(data.data[i].statusname == '暂存' || data.data[i].statusname == '驳回'){
+													html+='<a class="mui-btn mui-btn-red"  onclick="del('+data.data[i].id+',this)">删除</a>';
+												}
+											
+												if(data.data[i].statusname == '已审' && pers.indexOf("sys:ylsq:audit")>=0){
+													html+='<a class="mui-btn mui-btn-blue" onclick="opendd('+data.data[i].id+')">生成订单</a>'
+												}
+										
+									html +='</div>'+
+												'<a class="mui-navigate-right mui-slider-handle" onclick="edit('+data.data[i].id+')">'+
+													'<div class="mui-media-body">[' +data.data[i].creator +']' +data.data[i].memo+'-'+ data.data[i].ksmc +
+														'<p class="mui-ellipsis">'+data.data[i].deptname+ '-' + data.data[i].createTime + '-';
+												data.data[i].statusname 
+												if(data.data[i].statusname == '待审'){
+													html += '<font color="blue">'+data.data[i].statusname+'</font>';
+												}else if(data.data[i].statusname == '已审'){
+													html += '<font color="green">'+data.data[i].statusname+'</font>';
+													data.data[i].statusname ='<font color="green">已审</font>';
+												}else if(data.data[i].statusname == '驳回'){
+													html += '<font color="red">'+data.data[i].statusname+'</font>';
+												}else if(data.data[i].statusname == '已购'){
+														html += '<font color="orange">'+data.data[i].statusname+'</font>';
+												}
+												
+									html +=				'</p></div>'+
+												'</a>'+
+											'</li>';
+								}
+								
+								if(type == 'up'){
+									table.append(html);
+								}else{
+									table.html(html);
+								}
+								start += 1;
+								mui('#pullrefresh').pullRefresh().enablePullupToRefresh();
+							}else{
+								if($("#nodata").hasClass("nodata")){
+		                            $("#nodata").removeClass("nodata");
+								}
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+							}
+							
+							
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+
+						var msg = xhr.responseText;
+						var response = JSON.parse(msg);
+						alert(response.message);
+					}
+				});
+			}
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+                    start = 1;
+					getData("down");
+				}, 1000);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+					getData("up");
+				}, 1000);
+			}
+			
+			function edit(id){
+				mui.openWindow({
+								url: 'ylsqedit.html',
+								id: 'ylsqedit',
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"编辑采购申请"
+									}
+								},
+								waiting: {
+									autoShow: false
+								},	
+								extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+							        cgJihuaId:id
+							    },
+							});
+		    }
+			
+            function del(id,t){     
+            	mui.confirm('确认删除该条记录？',  '金贵塑料', ['确认','取消'], function(e) {
+	            		if(e.index==0){
+	            			$.ajax({
+						            type : 'delete',
+						            url : server_url+'/cgJihuas/'+id,
+						            headers:{'token':token},
+						            success : function(data) {
+						                $(t).parent().parent().remove();
+						            }
+						        });
+	            		}                                     
+					});
+					var btnArray = ['确认', '取消'];
+            }
+            
+            function openAdd(){
+            	mui.openWindow({
+								url: 'ylsqadd.html',
+								id: 'ylsqadd',
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"添加采购申请"
+									}
+								},
+								waiting: {
+									autoShow: false
+								}	
+							});
+            }
+			
+			function opendd(id){
+				mui.openWindow({
+								url: 'ylddadd.html',
+								id: 'ylddadd.html',
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"添加采购订单"
+									}
+								},
+								waiting: {
+									autoShow: false
+								},	
+								extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+									jhid:id
+								}
+							});
+			}
+			
+		    $("#searchBt").click(function(){
+				start = 1;
+				getData("down");
+			})
+			
+</script>

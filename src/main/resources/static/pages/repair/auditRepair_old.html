@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+
+	<style type="text/css">
+		#appneirong{
+			width: 100%;
+			height: 300px;
+			text-align: left;
+		}
+		#neirong{
+			resize: none;
+		}
+		h1{
+			font-weight: bold;
+			margin: 20px 0px 20px 0px;
+			text-align: center;
+		}
+		h3{
+			font-weight: bold;
+			margin: 10px 0px 10px 0px;
+		}
+		table{
+			margin: 0 auto;
+		}
+		table tr td{
+			margin: 0px;
+			padding: 0px;
+			text-align: center;
+			width: 120px;
+			height: 30px;
+		}
+		.qingshi,.neirong{
+			height: 300px;
+		}
+		#agrees{
+			margin: 0px;
+			margin-left: 10px;
+			padding: 0px;
+			float: left;
+		}
+		.boundary{
+			border-top: 1px solid #20b2aa;
+		}
+	</style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<h1>维修申请单</h1>
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+
+
+			<table border="1px" cellspacing="0" cellpadding="2">
+				<tr>
+					<td>单位<br>(部门)</td>
+					<td><p id="danwei"></p></td>
+					<td>报修人<br>签字</td>
+					<td><p id="qianzi"></p></td>
+					<td>上报时间</td>
+					<td><p id="riqi"></p></td>
+				</tr>
+				<tr class="qingshi">
+					<td>报修<br>内容</td>
+					<td colspan="5">
+						<h3 id="appbiaoti"></h3>
+						<p id="appneirong"></p>
+
+						<p id="appgzname"></p>
+					</td>
+				</tr>
+				<tr>
+					<td>附件</td>
+					<td colspan="5">
+						<table class="layui-table">
+							<tbody id="fileList0"></tbody>
+						</table>
+					</td>
+				</tr>
+				<tr class="boundary">
+					<td>审批结果</td>
+					<td colspan="5">
+						<div class="layui-input-block" id="biztype">
+							<input type="radio" name="biztype" id="biztype1" value="同意" title="同意" checked>
+							<input type="radio" name="biztype" id="biztype0" value="拒绝" title="拒绝">
+						</div>
+					</td>
+				</tr>
+				<tr class="neirong">
+					<td>审批内容</td>
+					<td colspan="5">
+						<textarea class='form-control' placeholder='请输入内容' type='text' name='neirong' id='neirong' data-bv-notempty='true' data-bv-notempty-message='内容不能为空' style="margin:0 auto;height: 300px;" ></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td><button type="button" class="layui-btn layui-btn-normal" id="testList">选择文件</button>
+						<button type="button" class="layui-btn" id="testListAction">开始上传</button></td>
+					<td colspan="5">
+						<div class='form-group'>
+							<div class='col-md-12'>
+								<div class="layui-upload-list" id="wen">
+									<table class="layui-table">
+										<thead>
+										<tr><th>文件名</th>
+											<th>状态</th>
+											<th></th>
+										</tr></thead>
+										<tbody id="demoList"></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+
+
+			<input type="hidden" id="id" name="id">
+			<input type="hidden" id="bizid" name="bizid">
+
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+						<br/>
+					    <button class="layui-btn" onclick="location.href='auditList.html'">返回</button>
+						<!--<button class="layui-btn" type="submit" onclick="update(0)">-->
+							<!--<i class="fa fa-save"></i> 暂存草稿-->
+						<!--</button>-->
+
+						<button class="layui-btn" type="submit" onclick="update(1)">
+							<i class="fa fa-save"></i> 审批
+						</button>
+
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+
+
+	<script type="text/javascript">
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+
+        var ids = [];
+
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+		});
+		
+		initData();
+
+
+		function initData(){
+			var id = getUrlParam("id");
+			console.log(id);
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/repairs/todo/'+id,
+					async : false,
+					success : function(data) {
+					    console.log(data);
+                        $('#id').val(data.todoid);
+
+                        $('#bizid').val(data.id);
+
+                        $('#danwei').text(data.deptname);
+                        $('#qianzi').text(data.createname);
+
+						$('#appbiaoti').text(data.cname);
+						$('#appneirong').text(data.description);
+                        $('#appgzname').text(data.gzname);
+						$('#biztype').val(data.biztype);
+						if(data.biztype=="拒绝"){
+console.log("拒绝");
+                            $('#biztype1').attr('checked','false');
+                            $('#biztype0').attr('checked','true');
+                        }else{
+                            console.log("同意");
+                            //$('#biztype1').attr('checked','true');
+                            //$('#biztype0').attr('checked','false');
+                        }
+
+
+                        inittodoFiles(id);	//调出本待办事宜审批人自己上传的附件
+					}
+				});
+			}
+		}
+
+        function inittodoFiles(bizid) {
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype=2',
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#demoList');
+                        var tr = $(['<tr id="upload-'+ i +'">'
+                            ,'<td>'+ data[i]['filename'] +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>已上传</td>'
+                            ,'<td>'
+                            ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete" id="'+ data[i]['id'] +'">删除</button>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+                        //删除
+
+                        tr.find('.demo-delete').on('click', function(){
+                            del( this.id ); //删除对应的文件
+                            tr.remove();
+                        });
+                        demoListView.append(tr);
+                    }
+                }
+            });
+        }
+
+        function del(id){
+            layer.confirm('确定要删除吗？', {
+                btn : [ '确定', '取消' ]
+            }, function() {
+                console.log(id);
+                $.ajax({
+                    type : 'delete',
+                    url : '/files/'+id,
+                    success : function(data) {
+                        //example.ajax.reload();
+                        layer.msg("删除成功");
+                    }
+                });
+                layer.close(1);
+            });
+        }
+
+		function update(send) {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+            formdata.fileIds=ids;
+            formdata.send = send;
+            console.log(formdata);
+			$.ajax({
+				type : 'put',
+				url : '/todos',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("审批成功", {shift: -1, time: 1000}, function(){
+                        location.href = "todoList.html";
+                    });
+				}
+			});
+		}
+
+
+        function initFiles(bizid) {
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype=1',
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#fileList0');
+                        console.log(data[i]['url'].replace("/","%2F"));
+                        var preview ="<a target='_blank' href='https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Fwww.itycu.com%3A8090%2Fstatics"+data[i]['url'].replace(/\//g,"%2F")+"'>预览</a>"
+                        var tr = $(['<tr id="upload-'+ i +'">'
+                            ,'<td>'+ data[i]['filename'] +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>'+preview+'</td>'
+                            ,'<td>'
+                            ,'<a target="_blank" href="' + domain + '/statics' + data[i]['url'] +'">下载</a>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+                        demoListView.append(tr);
+                    }
+                }
+            });
+        }
+
+        var ids = [];
+        layui.use(['layer','form','laydate','upload'], function(){
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#qsriqi'
+            });
+
+            var upload = layui.upload;
+            //多文件列表示例
+            var demoListView = $('#demoList')
+                ,uploadListIns = upload.render({
+                elem: '#testList'
+                ,url: '/files/'
+                ,accept: 'file'
+                ,multiple: true
+                ,auto: false
+                ,bindAction: '#testListAction'
+                ,data:{id:123,biztype:1}
+                ,choose: function(obj){
+                    var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                    //读取本地文件
+                    obj.preview(function(index, file, result){
+                        var tr = $(['<tr id="upload-'+ index +'">'
+                            ,'<td>'+ file.name +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>等待上传</td>'
+                            ,'<td>'
+                            ,'<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+                            ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+
+                        //单个重传
+                        tr.find('.demo-reload').on('click', function(){
+                            obj.upload(index, file);
+                        });
+
+                        //删除
+                        tr.find('.demo-delete').on('click', function(){
+                            delete files[index]; //删除对应的文件
+                            tr.remove();
+                            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                        });
+
+                        demoListView.append(tr);
+                    });
+                }
+                ,done: function(res, index, upload){
+
+                    ids.push(res.id);
+                    //console.log(res);
+                    //if(res.code == 0){ //上传成功
+                    var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tds.eq(1).html('<span style="color: #5FB878;">上传成功</span>');
+                    //tds.eq(2).html(''); //清空操作
+                    tds.eq(2).html(res.id);
+                    return delete this.files[index]; //删除文件队列已经上传成功的文件
+                    //}
+                    //this.error(index, upload);
+                }
+                ,error: function(index, upload){
+                    var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tds.eq(1).html('<span style="color: #FF5722;">上传失败</span>');
+                    tds.eq(2).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                }
+            });
+        });
+
+	</script>
+</body>
+</html>

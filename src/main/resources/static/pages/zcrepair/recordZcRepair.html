@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>表单列表</title>
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+</head>
+<style>
+    .eleTree{
+        width: 350px;
+        height: 500px;
+        border: 1px solid #ccc;
+        overflow: hidden;
+        display: inline-block;
+    }
+    .ele5{
+        height: auto;
+        width: 98%;
+        display: none;
+        position: absolute;
+        top:100%;
+        background-color: #fff;
+        z-index: 9999999999999;
+    }
+</style>
+</head>
+<body>
+<div class="layui-fluid" style="margin-top:15px">
+    <div class="layui-card">
+        <div class="layui-card-header">报修查询</div>
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:135px">
+            <div class="layui-form-item">
+                <form class="form-inline layui-inline" style="margin-top:15px" id="form" method="post" action="/zcRepairItems/export" onsubmit="return false" enctype="multipart/form-data">
+                    <input id="token" name="token" type="hidden" />
+                    <input id="repairStatus" name="repairStatus" value="2" type="hidden"/>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产追溯码</label>
+                            <div class="layui-input-block">
+                                <input id="epcid" name="epcid" type="text" class="layui-input" placeholder="资产追溯码">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产编码</label>
+                            <div class="layui-input-block">
+                                <input id="zcCodenum" name="zcCodenum" type="text" class="layui-input" placeholder="资产编码">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产名称</label>
+                            <div class="layui-input-block">
+                                <input id="zcName" name="zcName" type="text" class="layui-input" placeholder="资产名称">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="" style="float:left;text-align: right">开始报修时间</label>
+                            <div class="layui-input-block">
+                                <input id="repairStartTime" name="repairStartTime" type="text" class="form-control layui-input" placeholder="开始报修时间">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="" style="float:left;text-align: right">结束报修时间</label>
+                            <div class="layui-input-block">
+                                <input id="repairEndTime" name="repairEndTime" type="text" class="form-control layui-input" placeholder="结束报修时间">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">报修结果</label>
+                            <div class="layui-input-block">
+                                <select id="qrStatus" name="qrStatus">
+                                    <option value="">请选择</option>
+                                    <option value="1">合格</option>
+                                    <option value="2">不合格</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">管理部门</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" id="glDeptName" data-id=""  placeholder="请选择使用部门" readonly="" autocomplete="off">
+                                <div class="eleTree ele5" id="glDeptEleTree" lay-filter="glDeptEleTree"></div>
+                                <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产原值</label>
+                            <div class="layui-input-block">
+                                <input id="originalValue" name="originalValue" type="text" class="form-control layui-input" placeholder="资产原值">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产净值</label>
+                            <div class="layui-input-block">
+                                <input id="netvalue" name="netvalue" type="text" class="form-control layui-input" placeholder="资产净值">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+<!--                            <button class="layui-btn layuiadmin-btn-useradmin" data-type="add" onclick="location.href='addZcRepair.html'">添加</button>-->
+<!--                            <button id="printBt" class="layui-btn layui-btn-normal layuiadmin-btn-useradmin">打印</button>-->
+                            <button class="layui-btn layuiadmin-btn-useradmin" id="exportBt">导出</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-card-body">
+            <table class="layui-hide" id="data" lay-filter="data"></table>
+            <table class="layui-hide" id="datas" lay-filter="datas"></table>
+        </div>
+    </div>
+    <!--		</div>-->
+    <!--	</div>-->
+    <form action="" id="fileForm" method="post" style="display: none;"></form>
+    <script type="text/html" id="auditReItem">
+        <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+        <a class="layui-btn layui-btn-xs" lay-event="viewRepairs">维修信息查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="record">历史记录</a>
+    </script>
+</div>
+</body>
+</html>
+<div id="test" style="display: none;"></div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<script type="text/javascript" src="../../js/zcRepair.js"></script>
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript">
+    var pers = checkPermission();
+    //showStepSelect("stepid", "1", true);
+    //showDeptSelect("deptid", "dept", true);
+    //showUserSelect("createby", "user", true);
+    var processStatus = showDictSelect("status", "processStatus", true);
+    var pro = window.location.protocol;
+    var host = window.location.host;
+    var domain = pro + "//" + host;
+    var tableIns;
+    var zcRepairId;
+    layui.config({
+        base: '../../layuiadmin/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree/eleTree',
+    })
+    var el1,el2;
+    layui.use(['layer','form','laydate','table','eleTree'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#repairStartTime'
+        });
+        laydate.render({
+            elem: '#repairEndTime'
+        });
+        var table = layui.table;
+
+        //监听工具条
+        table.on('tool(datas)', function(obj){
+            var data = obj.data;
+            if (obj.event === 'viewRepairs') {
+                layer.open({
+                    type:1
+                    ,title: '资产维修信息'
+                    ,area: ['70%', '70%']
+                    ,content: zcRepairInfoView(data)
+                });
+            }else if(obj.event === 'viewFile'){
+                var extStart=data.frontPicsUrl.lastIndexOf(".");
+                var ext=data.frontPicsUrl.substring(extStart,data.frontPicsUrl.length).toUpperCase();
+                if(ext!=".BMP"&&ext!=".PNG"&&ext!=".GIF"&&ext!=".JPG"&&ext!=".JPEG"){
+                    layer.msg("附加预览限于bmp,png,gif,jpeg,jpg格式"); //检测允许的上传文件类型
+                    return false;
+                }
+                layer.open({
+                    type: 1
+                    , title: '查看附件'
+                    , content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.frontPicsUrl + '">'
+                    , area: ['80%', '80%']
+                    , end: function () {
+
+                    }
+                });
+            }else if(obj.event === 'download'){
+                if (data.frontPicsUrl) {
+                    // 下载
+                    var $form = $("#fileForm");
+                    var u = '/files/download?fileUrl='+data.frontPicsUrl+'&fileName='+data.frontPics;
+                    $form.attr("action",u);
+                    $form.submit();
+                }else{
+                    layer.msg("未上传附件！");
+                }
+            }else if(obj.event === 'record') {
+                layer.open({
+                    type: 2,
+                    title: '报修历史记录',
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['90%', '90%'],
+                    content: encodeURI('searchRecordZcRepair.html?zcId='+data.zcId),
+                    end : function(){
+
+                    }
+                });
+            }
+        });
+
+        tableIns = table.render({
+            elem: '#datas',
+            url:"/zcRepairItems/list2",
+            limit: 20,
+            limits: [20, 40, 50, 100, 200, 500, 1000, 2000],
+            totalRow: true,
+            toolbar: 'defaultX' ,
+            height: 'full-250',
+            even: true,
+            size: 'sm',
+            autoSort: false,
+            page: true ,
+            request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            },
+            where: {epcid:$('#epcid').val(),
+                    zcName: $('#zcName').val(),
+                    zcCodenum: $('#zcCodenum').val(),
+                    repairStartTime:$('#repairStartTime').val(),
+                    repairEndTime:$('#repairEndTime').val(),
+                    qrStatus:$('#qrStatus').val(),
+                    originalValue:$('#originalValue').val(),
+                    netvalue:$('#netvalue').val(),
+                    glDeptId:$('#glDeptId').val(),repairStatus:2},
+            cols: [[
+                // {checkbox: true}
+                {type:'numbers'}
+                ,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
+                ,{field:'applyDeptId',title:'申请部门ID', width:100, sort: true,hide:true}
+                ,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
+                ,{field:'epcid',title:'资产追溯码', width:150, sort: true}
+                ,{field:'zcCodenum',title:'资产编码', width:150, sort: true}
+                ,{field:'zcName',title:'资产名称', width:200, sort: true}
+                ,{field:'repairStartTime',title:'报修开始时间', width:190, sort: true}
+                ,{field:'repairEndTime',title:'报修结束时间', width:190, sort: true}
+                ,{field:'qrStatus',title:'报修结果', width:190, sort: true,templet:function(d){
+                         var qrStatus = "";
+                         if (d.qrStatus == 0){
+                             qrStatus = "不合格"
+                         } else if(d.qrStatus == 1){
+                             qrStatus = "合格"
+                         }
+                         return qrStatus;
+                    }}
+                ,{field:'glDeptName',title:'管理部门', width:200, sort: true}
+                ,{field:'cardNum',title:'卡片编号', width:150, sort: true}
+                ,{field:'zcFrom',title:'来源', width:200, sort: true}
+                ,{field:'startUseTime',title:'开始使用日期', width:200, sort: true}
+                ,{field:'useMonths',title:'到期期限', width:110, sort: true}
+                ,{field:'warrantyperiod',title:'保修期限', width:110, sort: true}
+                ,{field:'originalValue',title:'原值', width:110, sort: true}
+                ,{field:'netvalue',title:'净值', width:110, sort: true}
+                ,{field:'repairDes',title:'报修原因', width:110, sort: true,edit:"text"}
+
+                ,{field:'frontPicsUrl',title:'附件地址', width:110, sort: true,hide:true}
+                ,{field:'frontPics',title:'附件', width:120, fixed:'right',sort: true,templet:function(d){
+                        if(!d.frontPics) d.frontPics = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline;color:blue'>"+d.frontPics+"</a>";
+                    }}
+                ,{field:'caozuo',width:250, title: '操作',fixed:'right',align:'center', toolbar: '#auditReItem'}
+                // ,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemo'}
+            ]]
+        });
+        var eleTree = layui.eleTree;
+        if(!el1){
+            el1=eleTree.render({
+                elem: '#glDeptEleTree',
+                url:'/depts/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无管理部门",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+
+                }
+            });
+        }
+        if(!el2){
+            el2=eleTree.render({
+                elem: '#glDeptEleTree',
+                url:'/depts/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无管理部门",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+
+                }
+            });
+        }
+        $("#glDeptName").on("click",function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        eleTree.on("nodeClick(glDeptEleTree)",function(d) {
+            $('#glDeptName').trigger('change');
+            $("#glDeptName").val(d.data.currentData.name)
+            $("#glDeptId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $(document).on("click",function() {
+            $(".eleTree").hide();
+        })
+    });
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {epcid:$('#epcid').val(),
+                zcName: $('#zcName').val(),
+                zcCodenum: $('#zcCodenum').val(),
+                repairStartTime:$('#repairStartTime').val(),
+                repairEndTime:$('#repairEndTime').val(),
+                qrStatus:$('#qrStatus').val(),
+                originalValue:$('#originalValue').val(),
+                netvalue:$('#netvalue').val(),
+                glDeptId:$('#glDeptId').val(),repairStatus:2},page:{curr:1}})
+    });
+
+    function zcRepairInfoView(data){
+        formatData(data)
+        var html ='<form id="createInfoViewForm"><table class="layui-table">\n' +
+            '  <tbody>\n' +
+            '    <tr>\n' +
+            '      <td style="width: 20%;">资产追溯码</td>\n' +
+            '      <td style="width: 30%;">'+data.epcid+'</td>\n' +
+            '      <td style="width: 20%;">资产编码</td>\n' +
+            '      <td style="width: 30%;">'+data.zcCodenum+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td style="width: 20%;">资产名称</td>\n' +
+            '      <td style="width: 30%;">'+data.zcName+'</td>\n' +
+            '      <td style="width: 20%;">剩余期限</td>\n' +
+            '      <td style="width: 30%;">'+data.remainingperiod+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td style="width: 20%;">到期期限</td>\n' +
+            '      <td style="width: 30%;">'+data.useMonths+'</td>\n' +
+            '      <td style="width: 20%;">保修期限</td>\n' +
+            '      <td style="width: 30%;">'+data.warrantyperiod+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td colspan="2">'+data.repairMode+'</td>\n' +
+            '      <td colspan="2">'+data.deliverMode+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td>服务商名称</td>\n' +
+            '      <td>'+data.outCompany+'</td>\n' +
+            '      <td>地址</td>\n' +
+            '      <td>'+data.outAddress+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td>联系人</td>\n' +
+            '      <td>'+data.outUsername+'</td>\n' +
+            '      <td>电话</td>\n' +
+            '      <td>'+data.outPhone+'</td>\n' +
+            '    </tr>\n' +
+            '      <td>送修地址</td>\n' +
+            '      <td colspan="3">'+data.repairAddress+'</td>\n' +
+            '    </tr>\n' +
+
+            '      <td>维修结论</td>\n' +
+            '      <td>'
+        if(data.qrStatus == "0"){
+            html+=  '不合格\n'
+        }else if(data.qrStatus == "1"){
+            html+=  '合格\n'
+        }
+        html+='</td>\n' +
+            '      <td></td>\n' +
+            '      <td></td>\n' +
+            '    </tr>\n' +
+            '  </tbody>\n' +
+            '</table></form>'
+        return html;
+    }
+
+    //导出
+    $("#exportBt").click(function () {
+        $("#token").val(localStorage.getItem("token"))
+        $("#form").attr("onsubmit", "return true");
+        $("#form").submit();
+        $("#form").attr("onsubmit", "return false");
+    });
+</script>

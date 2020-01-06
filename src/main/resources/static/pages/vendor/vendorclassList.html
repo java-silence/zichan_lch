@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../css/treetable/jquery.treetable.css" />
+	<link rel="stylesheet" href="../../css/treetable/jquery.treetable.theme.default.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+</head>
+<body>
+<div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<header style="height: 100%">
+			<div align="left">
+				<table style="width: 100%">
+					<tr>
+						<td>
+						</td>
+						<td align="right">
+							<button class="layui-btn layui-btn-sm" onclick="location.href='addVendorclass.html'" >
+								<i class="layui-icon">&#xe608;</i> 添加
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</header>
+
+		<div>
+			<div class="widget-body no-padding">
+				<table id="dt-table" class="table table-striped table-bordered table-hover" style="width:100%">
+					<tr>
+						<th width="10%">供应商编码</th>
+						<th width="15%">供应商名称</th>
+						<!--<th width="15%">电话</th>
+                        <th>地址</th>-->
+						<th width="10%">备注</th>
+						<th>操作</th>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script src="../../js/libs/jquery.treetable.js"></script>
+<script type="text/javascript">
+    var pers = checkPermission();
+    initMenuList();
+    function initMenuList(){
+        $.ajax({
+            type : 'get',
+            url : '/vendorclasss/treelist',
+            contentType: "application/json; charset=utf-8",
+            async:false,
+            success : function(data) {
+                var length = data.length;
+
+                console.log(data)
+                for(var i=0; i<length; i++){
+                    var d = data[i];
+
+                    for(var a in d){
+                        if(!d[a]){
+                            d[a] = "";
+                        }
+                    }
+                    var tr = "<tr data-tt-id='" + d['id'] + "' data-tt-parent-id='" + d['pid'] + "'>";
+                    var td1 = "<td>" + d['ccode'] +"</td>";
+                    tr += td1;
+                    var tdcname = "<td>" + d['cname'] +"</td>";
+                    tr += tdcname;
+//				var href = "";
+//				if(d['href'] != null){
+//					href = d['href'];
+//				}
+					/*var td2 = "<td>" + d['phone'] +"</td>";
+					 tr += td2;*/
+
+//				var permission = d['permission'];
+//				if(permission == null){
+//					permission = "";
+//				}
+					/*
+					 var td3 = "<td>" + d['address'] +"</td>";
+					 tr += td3;*/
+
+//				var sort = d['sort'];
+//				if(sort == 0){
+//					sort = "";
+//				}
+
+                    var td4 = "<td>" + d['memo'] +"</td>";
+                    tr += td4;
+
+                    var id = d['id'];
+                    var href = "updateVendorclass.html?id=" + id;
+                    var edit = buttonEdit(href, "", pers);
+                    var del = buttonDel(id, "", pers);
+
+                    var btnadd = "<button class='layui-btn layui-btn-xs' title='添加下级分类' onclick='location.href=\"addVendorclass.html?pid="+ id +"\"'><i class='layui-icon'>&#xe61f;</i></button>";
+
+                    tr += "<td>" + btnadd +edit + del+"</td>";
+                    tr += "</tr>"
+
+                    $("#dt-table").append(tr);
+                }
+            }
+        });
+    }
+
+    layui.use('layer', function(){
+        var layer = layui.layer;
+    });
+
+    function del(id){
+        layer.confirm('确定要删除吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'delete',
+                url : '/vendorclasss/' + id,
+                success : function(data) {
+                    location.reload();
+                }
+            });
+        });
+    }
+
+    var option = {
+        expandable : true,
+        clickableNodeNames : true,
+        onNodeExpand : function() {
+            var d = this;
+        },
+        onNodeCollapse : function() {
+            var d = this;
+        }
+
+    };
+
+    $("#dt-table").treetable(option);
+</script>

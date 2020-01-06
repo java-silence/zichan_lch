@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+	<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-header" align="center" ><h1>添加客户分类</h1></div>
+		<div class="layui-card-body">
+			<form class="layui-form layui-form-pane" onsubmit="return false" id="form">
+
+
+
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>上级分类</label>
+					<div class='layui-input-block'>
+						<select  placeholder='上级分类' type='text' id="pid" name="pid">
+						</select>
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>客户编码</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='客户编码' type='text' name='ccode' id='ccode'
+							   lay-verify="required" lay-verType="tips">
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>客户名称</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='用户名称' type='text' name='cname' id='cname'
+							   lay-verify="required" lay-verType="tips">
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>备注</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo'
+						>
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>业务类型</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='业务类型' type='text' name='ctype' id='ctype'
+						>
+					</div>
+				</div>
+				<div class="form-actions">
+					<div class="row" align="center">
+						<div class="col-md-12">
+							<button class="layui-btn" onclick="location.href='customerclassList.html'">返回</button>
+							<button class="layui-btn" lay-submit lay-filter="tj" id="tj">
+								<i class="fa fa-save"></i> 保存
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>-->
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/customrclass.js"></script>
+<script type="text/javascript">
+
+
+    layui.use(['layer','form','laydate'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+
+        showcustomerclasssSelect("pid", "customerclass", false);
+
+        var pid = getUrlParam("pid");
+        console.log(pid)
+        if(pid != ""){$('#pid').val(pid);}
+
+        form.render('select', 'pid');
+
+        renderForm();
+
+
+
+
+        form.on('submit(tj)', function(data){
+
+            $("#tj").attr("class","layui-btn layui-btn-radius layui-btn-disabled").removeAttr("lay-filter","tj");
+
+            var formdata = $("#form").serializeObject();
+
+            $.ajax({
+                type : 'post',
+                url : '/customerclasss',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(formdata),
+                success : function(data) {
+                    layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "customerclassList.html";
+                    });
+                }
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        //重新渲染表单
+        function renderForm(){
+            layui.use('form', function(){
+                var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                form.render();
+            });
+        }
+
+
+
+    });
+
+</script>
+</body>
+</html>

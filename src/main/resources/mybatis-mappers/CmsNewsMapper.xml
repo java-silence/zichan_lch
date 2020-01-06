@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.CmsNewsDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.permissionId != null and params.permissionId != ''">
+				and permissionId = #{params.permissionId} 
+			</if>
+			<if test="params.title != null and params.title != ''">
+				and title LIKE #{params.title}
+			</if>
+			<if test="params.author != null and params.author != ''">
+				and author = #{params.author}
+			</if>
+			<if test="params.brief != null and params.brief != ''">
+				and brief = #{params.brief}
+			</if>
+			<if test="params.content != null and params.content != ''">
+				and content = #{params.content} 
+			</if>
+			<if test="params.img != null and params.img != ''">
+				and img = #{params.img} 
+			</if>
+			<if test="params.imgtype != null and params.imgtype != ''">
+				and img = #{params.imgtype}
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and createby = #{params.createby} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and updateby = #{params.updateby} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and auditby = #{params.auditby} 
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and auditTime = #{params.auditTime} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.biztype != null and params.biztype != ''">
+				and biztype = #{params.biztype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.hits != null and params.hits != ''">
+				and hits = #{params.hits} 
+			</if>
+			<if test="params.eventdate != null and params.eventdate != ''">
+				and eventdate = #{params.eventdate}
+			</if>
+			<if test="params.eventtime != null and params.eventtime != ''">
+				and eventtime = #{params.eventtime}
+			</if>
+			<if test="params.eventlocation != null and params.eventlocation != ''">
+				and eventlocation = #{params.eventlocation}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from cms_news t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="CmsNews">
+		select * from cms_news t
+		<include refid="where" />
+		order by eventdate desc
+		limit #{offset}, #{limit}
+
+	</select>
+
+	<update id="update">
+		update cms_news t
+		<set>
+			<if test="permissionId != null">
+				permissionId = #{permissionId}, 
+			</if>
+			<if test="title != null">
+				title = #{title}, 
+			</if>
+			<if test="author != null">
+				author = #{author}, 
+			</if>
+			<if test="brief != null">
+				brief = #{brief}, 
+			</if>
+			<if test="content != null">
+				content = #{content}, 
+			</if>
+			<if test="img != null">
+				img = #{img}, 
+			</if>
+			<if test="imgtype != null">
+				imgtype = #{imgtype},
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="biztype != null">
+				biztype = #{biztype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="hits != null">
+				hits = #{hits}, 
+			</if>
+			<if test="eventdate != null">
+				eventdate = #{eventdate},
+			</if>
+			<if test="eventtime != null">
+				eventtime = #{eventtime},
+			</if>
+			<if test="eventlocation != null">
+				eventlocation = #{eventlocation},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

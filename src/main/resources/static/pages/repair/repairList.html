@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/common.css">
+</head>
+<body>
+    <div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div>
+                <header style="height: 100%">
+                    <div align="left">
+	                    <table style="width: 100%">
+	                   		<tr>
+	                   			<td>
+		                   			<form class="form-inline" onsubmit="return false">
+										<div class="form-group">
+											部门：
+											<select id="deptid" name="deptid" class="form-control input-sm"></select>
+											维修类型：
+											<select id="biztype" name="biztype" class="form-control input-sm">
+												<option value="">请选择</option>
+												<option value="1">自修</option>
+												<option value="2">自修领料</option>
+												<option value="3">派修</option>
+											</select>
+											<!--<input id="deptname" type="text" class="form-control" placeholder="">-->
+											<button id="searchBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>搜索</button>
+										</div>
+									</form>
+	                   			</td>
+	                   			<td align="right">
+	                   				<button class="layui-btn layui-btn-sm" onclick="location.href='addRepair.html'">
+                                      <i class="layui-icon">&#xe608;</i> 添加
+                                    </button>
+	                   			</td>
+	                   		</tr> 
+	                    </table>
+					</div>
+                </header>
+                
+                <div>
+                    <div class="widget-body no-padding">
+                        <!--<table id="dt-table" class="table table-striped table-bordered table-hover" style="width:100%">-->
+                            <!--<thead>-->
+                                <!--<tr>-->
+                                <!--</tr>                       -->
+                                <!--<tr>-->
+									<!--<th>收费站</th>-->
+									<!--<th>巡检区域</th>-->
+									<!--<th>日期</th>-->
+									<!--<th>设备ID</th>-->
+									<!--<th>设备名称</th>-->
+									<!--<th>损坏情况</th>-->
+									<!--<th>损坏情况照片</th>-->
+									<!--<th>备注</th>-->
+									<!--<th>操作</th>-->
+                                <!--</tr>-->
+                            <!--</thead>-->
+                            <!--<tbody>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+
+						<table class="layui-hide" id="data" lay-filter="data"></table>
+
+						<table class="layui-hide" id="datas" lay-filter="datas"></table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/dept.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/xjqy.js"></script>-->
+     <!--这里注释掉俩个js-->
+<!--<script type="text/javascript" src="../../js/dict.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<script type="text/javascript">
+    showDeptSelect("deptid", "dept", false);
+
+    var type = getUrlParam("type");
+    if(type != ""){
+        $("#biztype").val(type);
+    }
+
+var pers = checkPermission();
+var tableIns;
+var tableIns2;
+layui.use('table', function(){
+    var table = layui.table;
+    tableIns = table.render({
+        elem: '#data'
+        ,url:"/repairs/layuiList"
+        ,toolbar: '#toolbar'
+        ,limit: 40
+        ,limits: [20,40,50,100,200,500,1000,2000]
+        ,height: 500
+        ,where: {deptid:$("#deptid").val(),biztype:$("#biztype").val(),orderBy : 'order by updateTime desc'}
+        ,page: true
+//        ,even: true //开启隔行背景
+        ,size: 'sm' //小尺寸的表格
+        ,autoSort: false
+        ,request: {
+            pageName: 'offset' //页码的参数名称，默认：page
+        }
+        ,cols: [[
+            {field:'id', title: 'ID', sort: true}
+//            ,{field:'ccode', title: '编码', sort: true}
+            ,{field:'cname', title: '设备', sort: true}
+//			,{field:'xtfl', title: '所属系统分类'}
+//            ,{field:'sblb', title: '所属设备类别'}
+            ,{field:'deptname', title: '所属部门', sort: true}
+//            ,{field:'whqy', title: '所属维护区域'}
+            ,{field:'bizdate', title: '申请日期', sort: true}
+            ,{field:'createname', title: '申请人', sort: true}
+            ,{field:'biztype1', title: '维修类型', sort: true}
+            ,{field:'stepname', title: '审批状态'}
+            ,{field:'caozuo', title: '操作',templet: function(d){
+                var id = d.id;
+                var href = "updateRepair.html?id=" + id;
+                var hrefview = "viewRepair.html?id=" + id;
+                var edit = buttonEdit(href, "", pers);
+                var del = buttonDel(id, "", pers);
+                if(d.status==0){
+                    var audit = buttonAudit(id,"sys:repair:audit",pers);
+                }else{
+                    var audit = buttonUnAudit(id,"sys:repair:audit",pers);
+                }
+                if(d.status>0){
+                    edit ="";
+                    del="";
+                }
+                var view = "<button class='layui-btn layui-btn-xs' title='查看' onclick='window.location=\"" + hrefview +"\"'><i class='layui-icon'>&#xe615;</i>查看</button>";
+
+                return edit + del + audit +view ;
+            }}
+        ]]
+//        ,done: function(res, curr, count){
+////            隐藏table的维修标识
+////            var _table_box = $("#data").next().find(".layui-table-box");
+////            _table_box.find("[data-field='id']").hide();
+//            $(document).on("click",".layui-table-body table.layui-table tbody tr", function () {
+//                var id = $(this).children("td[data-field='id']").text();
+//                tableIns2.reload({where: {repairid:id}})
+//            })
+//        }
+    });
+
+
+
+    tableIns2 = table.render({
+        elem: '#datas'
+        ,url:"/repairss/listByRepairId"
+        ,cols: [[
+            {field:'invname', title: '所需备品备件', sort: true}
+            ,{field:'inum', title: '数量', sort: true}
+//            ,{field:'iprice', title: '单价', sort: true}
+//            ,{field:'imoney', title: '金额', sort: true}
+            ,{field:'memo', title: '备注'}
+        ]]
+    });
+
+    //监听行单击事件（单击事件为：rowDouble）
+    table.on('row(data)', function(obj){
+
+        var data = obj.data;
+
+        var id = data.id;
+
+        tableIns2.reload({where: {repairid:id}})
+
+//        layer.alert(JSON.stringify(data), {
+//            title: '当前行数据：'
+//        });
+
+        //标注选中样式
+        obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+    });
+
+    //监听排序事件
+    table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        tableIns.reload({
+            initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+            ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                deptid:$("#deptid").val(),biztype:$("#biztype").val(),
+                orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+            }
+            ,page:{curr:1}
+        });
+    });
+
+
+});
+
+
+
+//layui.use('layer', function(){
+//    var layer = layui.layer;
+//});
+
+function del(id){
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/repairs/'+id,
+            success : function(data) {
+                tableIns.reload()
+                layer.msg("删除成功");
+            }
+        });
+        $.ajax({
+            type : 'delete',
+            url : '/repairss/'+id,
+            success : function(data) {
+                tableIns2.reload()
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+function audit(id){
+    layer.confirm('确定要审核吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+        $.ajax({
+            type : 'put',
+            url : '/repairs/audit/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("审核成功");
+            }
+        });
+
+        layer.close(1);
+    });
+}
+
+function unaudit(id){
+    layer.confirm('确定要弃审吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+        $.ajax({
+            type : 'put',
+            url : '/repairs/unaudit/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("弃审成功");
+            }
+        });
+
+        layer.close(1);
+    });
+}
+
+$("#searchBt").click(function(){
+    tableIns.reload({where: {deptid:$("#deptid").val(),biztype:$("#biztype").val(),orderBy : 'order by updateTime desc'},page:{curr:1}})
+});
+
+</script>

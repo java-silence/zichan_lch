@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcBfDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id} 
+			</if>
+			<if test="params.applyUserId != null and params.applyUserId != ''">
+				and t.apply_user_id = #{params.applyUserId} 
+			</if>
+			<if test="params.applyDeptId != null and params.applyDeptId != ''">
+				and t.apply_dept_id = #{params.applyDeptId} 
+			</if>
+			<if test="params.zcIds != null and params.zcIds != ''">
+				and t.zc_ids = #{params.zcIds} 
+			</if>
+			<if test="params.bfDes != null and params.bfDes != ''">
+				and t.bf_des = #{params.bfDes} 
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz} 
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and t.flowid = #{params.flowid} 
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and t.stepid = #{params.stepid} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del} 
+			</if>
+			<if test="params.createBy != null and params.createBy != ''">
+				and t.create_by = #{params.createBy} 
+			</if>
+			<if test="params.updateBy != null and params.updateBy != ''">
+				and t.update_by = #{params.updateBy} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.create_time = #{params.createTime} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime} 
+			</if>
+		
+		</where>
+	</sql>
+
+	<select id="getById" resultType="ZcBf">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_bf t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+		select count(1) from zc_bf t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="ZcBf">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_bf t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+    <select id="paramCount" resultType="int">
+        select count(1) from zc_bf t
+        left join sys_user u on t.apply_user_id = u.id
+        <where>
+            <if test="params.nickname != null and params.nickname != ''">
+                and u.nickname like concat('%',#{params.nickname},'%')
+            </if>
+        </where>
+    </select>
+
+	<select id="listZcbf" parameterType="map" resultType="map">
+		SELECT
+			t.id,
+			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') createtime,
+			t.bf_des bfdes,
+			t.bz,
+			t.status,
+			f.id flowid,
+			f.flowname,
+			s.id stepid,
+			s.stepname,
+			u.id userid,
+			u.nickname,
+			u.username,
+			d.id deptid,
+			d.deptname
+		FROM
+			zc_bf t
+		LEFT JOIN sys_user u ON t.apply_user_id = u.id
+		LEFT JOIN t_dept d ON t.apply_dept_id = d.id
+		LEFT JOIN flow f ON t.flowid = f.id
+		LEFT JOIN flowstep s ON t.stepid = s.id
+        <where>
+            <if test="params.nickname != null and params.nickname != ''">
+                and u.nickname like concat('%',#{params.nickname},'%')
+            </if>
+        </where>
+        ${params.orderBy}
+        limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update zc_bf t
+		<set>
+			<if test="applyUserId != null">
+				apply_user_id = #{applyUserId}, 
+			</if>
+			<if test="applyDeptId != null">
+				apply_dept_id = #{applyDeptId}, 
+			</if>
+			<if test="zcIds != null">
+				zc_ids = #{zcIds}, 
+			</if>
+			<if test="bfDes != null">
+				bf_des = #{bfDes}, 
+			</if>
+			<if test="bz != null">
+				bz = #{bz}, 
+			</if>
+			<if test="flowid != null">
+				flowid = #{flowid}, 
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy}, 
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy}, 
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime}, 
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime}, 
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+    <!--更新报废的状态-->
+	<update id="updateStatus">
+		update zc_bf t
+		<set>
+			<if test="params.status != null">
+				t.status = #{params.status},
+			</if>
+			<if test="params.stepid">
+				t.stepid = #{params.stepid}
+			</if>
+		</set>
+		where t.id = #{params.zcBfId} and del = 0
+	</update>
+
+	<!--批量资产报废状态-->
+	<update id="updateStatusList">
+		update zc_bf t
+		<set>
+			<if test="status != null">
+				t.status = #{status}
+			</if>
+		</set>
+		where t.id in
+		(
+		<foreach collection="zcbfIds" item="fileId" separator=",">
+			#{fileId}
+		</foreach>
+		)
+	</update>
+
+    <!--报废记录数量统计-->
+<!--	SELECT
+	count(t.id)
+	FROM
+	zc_info t
+	LEFT JOIN zc_bf_item b ON t.id = b.zc_id
+	LEFT JOIN zc_bf f ON b.zc_bf_id = f.id AND f.status = 2
+	WHERE t.bf = '1' AND b.del = 0-->
+    <select id="countListZcBfRecord" parameterType="map" resultType="int">
+		SELECT
+			count(t.id)
+		FROM
+		( SELECT t.id,t.zcbfCwItemid,t.apply_user_id,t.zc_id,t.create_time,t.update_time,t.zc_bf_id,t.bz,fileName,
+		fileUrl,identifyContent,identifyFileName,identifyFileUrl
+		FROM zc_bf_item t
+		WHERE t.cwb_status = 1 AND t.del = 0
+		GROUP BY t.zc_id ) t
+		LEFT JOIN zc_info z on t.zc_id = z.id
+		LEFT JOIN t_dept p1 ON z.sy_dept_id = p1.id
+		LEFT JOIN t_dept p2 ON z.gl_dept_id = p2.id
+		LEFT JOIN zc_bf b ON b.id = t.zc_bf_id
+		LEFT JOIN zc_bf_cwitem zcw ON zcw.id = t.zcbfCwItemid
+		left join  zc_category as ca on z.zc_category_id = ca.id
+		<where>
+			<if test="params.applyUserId != null and params.applyUserId != '' ">
+				t.apply_user_id = #{params.applyUserId}
+			</if>
+			<if test="params.codeNum != null and params.codeNum != '' ">
+				zcw.codeNum = #{params.codeNum}
+			</if>
+			<if test="params.zcCategoryId != null and params.zcCategoryId != ''">
+				and z.zc_category_id = #{params.zcCategoryId}
+			</if>
+			<if test="params.sdate != null and params.sdate != '' ">
+				and <![CDATA[ z.start_use_time >= #{params.sdate} ]]>
+			</if>
+			<if test="params.edate != null and params.edate != '' ">
+				and <![CDATA[ z.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != '' ">
+				and z.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.syDeptId != null and params.syDeptId != '' ">
+				and z.sy_dept_id = #{params.syDeptId}
+			</if>
+			<if test="params.zcName != null and params.zcName != ''">
+				and z.zc_name like concat('%',#{params.zcName},'%')
+			</if>
+			<if test="params.originalValue != null and params.originalValue != '' ">
+				and z.original_value = #{params.originalValue}
+			</if>
+			<if test="params.zcCodenum != null and params.zcCodenum != '' ">
+				and z.zc_codenum = #{params.zcCodenum}
+			</if>
+			<if test="params.epcid != null and params.epcid != '' ">
+				and z.epcid = #{params.epcid}
+			</if>
+		</where>
+    </select>
+
+	<!--查询报废说明-->
+	<select id="getZcBfDetail" parameterType="long" resultType="hashmap">
+        SELECT
+            z.id,
+            z.flowid,
+            z.stepid,
+            DATE_FORMAT(z.create_time,'%Y-%m-%d %H:%i:%s') createTime,
+            z.bf_des bfDes,
+            z.bz,
+            z.bf_category bfCategory,
+            if(z.status=0,"待办理","已办理") statusText,
+            z.status,
+            p.deptname,
+            u.nickname,
+            u.username
+        FROM
+            zc_bf z
+        LEFT JOIN sys_user u ON z.apply_user_id = u.id
+        LEFT JOIN t_dept p ON p.id = z.apply_dept_id
+        WHERE z.id = #{id}
+	</select>
+
+    <!--资产记录信息-->
+	<select id="listZcBfRecord" parameterType="map" resultType="map">
+		SELECT
+		zcw.codeNum,
+		z.epcid,
+		z.zc_codenum zcCodenum,
+		z.zc_name zcName,
+		ca.name ,
+		b.bf_des bfdes,
+		b.bz bfbz,
+		t.bz bfReason,
+		t.fileName,
+		t.fileUrl,
+		t.identifyContent,
+		t.identifyFileName,
+		t.identifyFileUrl,
+		DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') applyTime,
+		DATE_FORMAT(t.update_time,'%Y-%m-%d %H:%m') finishTime,
+		z.specification,
+		z.model,
+		p1.deptname sydeptname,
+		p2.deptname gldeptname,
+		z.store_address storeAddress,
+		z.inspect_time inspectTime,
+		z.warrantyperiod,
+		z.zc_from zcFrom,
+		z.original_value originalValue,
+		z.lj_zhejiu ljZhejiu,
+		z.bn_zhejiu bnZhejiu,
+		z.netvalue,
+		z.jzzb,
+		z.net,
+		z.net_residual_rate netResidualRate,
+		z.net_residual_value netResidualValue,
+		z.start_use_time startUseTime,
+		z.use_months usemonths,
+		z.have_count haveCount
+		FROM
+		( SELECT t.id,t.zcbfCwItemid,t.apply_user_id,t.zc_id,t.create_time,t.update_time,t.zc_bf_id,t.bz,fileName,
+		fileUrl,identifyContent,identifyFileName,identifyFileUrl
+		FROM zc_bf_item t
+		WHERE t.cwb_status = 1 AND t.del = 0
+		GROUP BY t.zc_id ) t
+		LEFT JOIN zc_info z on t.zc_id = z.id
+		LEFT JOIN t_dept p1 ON z.sy_dept_id = p1.id
+		LEFT JOIN t_dept p2 ON z.gl_dept_id = p2.id
+		LEFT JOIN zc_bf b ON b.id = t.zc_bf_id
+		LEFT JOIN zc_bf_cwitem zcw ON zcw.id = t.zcbfCwItemid
+		left join  zc_category as ca on z.zc_category_id = ca.id
+		<where>
+            <if test="params.applyUserId != null and params.applyUserId != '' ">
+                t.apply_user_id = #{params.applyUserId}
+            </if>
+			<if test="params.codeNum != null and params.codeNum != '' ">
+				zcw.codeNum = #{params.codeNum}
+			</if>
+			<if test="params.zcCategoryId != null and params.zcCategoryId != ''">
+				and z.zc_category_id = #{params.zcCategoryId}
+			</if>
+			<if test="params.sdate != null and params.sdate != '' ">
+				and <![CDATA[ z.start_use_time >= #{params.sdate} ]]>
+			</if>
+			<if test="params.edate != null and params.edate != '' ">
+				and <![CDATA[ z.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != '' ">
+				and z.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.syDeptId != null and params.syDeptId != '' ">
+				and z.sy_dept_id = #{params.syDeptId}
+			</if>
+			<if test="params.zcName != null and params.zcName != ''">
+				and z.zc_name like concat('%',#{params.zcName},'%')
+			</if>
+			<if test="params.originalValue != null and params.originalValue != '' ">
+				and z.original_value = #{params.originalValue}
+			</if>
+			<if test="params.zcCodenum != null and params.zcCodenum != '' ">
+				and z.zc_codenum = #{params.zcCodenum}
+			</if>
+			<if test="params.epcid != null and params.epcid != '' ">
+				and z.epcid = #{params.epcid}
+			</if>
+        </where>
+        ORDER BY t.zcbfCwItemid, t.create_time DESC
+		limit #{offset}, #{limit}
+	</select>
+
+	<!--查询本年度该商行的购买数-->
+	<select id="countByDeptThisYear" parameterType="string" resultType="int">
+        SELECT count(1) FROM zc_bf t WHERE YEAR(t.create_time) = YEAR(now()) AND t.deptCode LIKE concat(#{deptcode},'%')
+    </select>
+
+</mapper>

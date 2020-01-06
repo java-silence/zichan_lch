@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Insert title here</title>
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+	<link rel="stylesheet" href="../../css/common.css">
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-col-space15">
+		<div class="layui-col-md2">
+			<div class="layui-card">
+				<!--<input id="pid" name="pid" type="hidden">-->
+				<div class="layui-card-header">
+					<div align="center"><h3>分类</h3></div></div>
+						<div class="layui-card-body">
+							<!--<div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-normcol">-->
+							<div id="eleTree" lay-filter="eleTree"></div>
+				         </div>
+			</div>
+		</div>
+		<div class="layui-col-md10">
+			<div class="layui-card">
+				<div class="layui-card-header" >
+			<div class="layui-form-item">
+				<form class="form-inline " id="form" method="post" action="/chdas/export" onsubmit="return false" enctype="multipart/form-data" style="display: inline-block">
+					<input id="token" name="token" type="hidden" />
+					<input type="hidden" name="invcid" id="invcid">
+						<div class="layui-inline">
+							<label class="layui-form-label">品名</label>
+							<div class="layui-input-block">
+							<input id="invname" name="invname" type="text" class="form-control layui-input" placeholder="输入存货名称搜索">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">规格</label>
+							<div class="layui-input-block">
+								<input class="layui-input" name="invstd" id="invstd">
+							</div>
+						</div>
+				</form>
+				<div class="layui-inline">
+					<button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">搜索</button>
+					<button class="layui-btn layuiadmin-btn-useradmin" data-type="add" onclick='location.href="addChda.html?invcid="+ invcid + "&pname=" + pname + "&ppath=" + ppath+""'>添加</button>
+					<button class="layui-btn layuiadmin-btn-useradmin" id="exportBt">导出</button>
+					<!--<button class="layui-btn layuiadmin-btn-useradmin" id="printBt">打印</button>-->
+				</div>
+			   </div>
+				</div>
+		   <div class="layui-card-body">
+			<!--<div style="padding-bottom: 10px;"></div>-->
+			<script type="text/html" id="toolbar">
+				<div class="layui-btn-container">
+
+				</div>
+			</script>
+			<div class="layui-row">
+
+				<table class="layui-hide" id="data" lay-filter="data"></table>
+
+
+
+				<!--<div class=" layui-col-md-offset6">
+				<table class="layui-hide" id="data1" lay-filter="data1"></table>
+				</div>-->
+			   </div>
+			</div>
+		</div>
+	</div>
+
+	 </div>
+  </div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>-->
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/course.js"></script>-->
+<!--<script type="text/javascript" src="../../js/experiment.js"></script>-->
+<!--<script type="text/javascript" src="../../js/lab.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript">
+var pers = checkPermission();
+//showStepSelect("stepid", "1", true);
+//showDeptSelect("deptid", "dept", true);
+//showUserSelect("createby", "user", true);
+//UserSelect("teacherid", "user", true);
+   var tableIns;
+   var el;
+   var invcid,pname,ppath;
+
+
+     layui.config({
+          base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+        }).extend({
+		  eleTree: 'eleTree'
+        })
+
+    layui.use(['layer','form','laydate','table','eleTree'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/chdas/list2"
+            ,toolbar: '#toolbar'
+			,limit: 40
+			,limits: [20,40,50,100,200,500,1000,2000]
+            ,height:  'full-100'
+//        ,skin: 'line' //行边框风格
+//            ,even: true //开启隔行背景
+//        ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {invname:$('#invname').val(),invstd:$('#invstd').val(),id:$('#id').val()}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+                    // ,{field:'pid',title:'存货分类', width:100, sort: true,hide: true}
+					/*,{field:'xtid',title:'存货分类', width:100, sort: true}*/
+					/*,{field:'lbid',title:'设备类别', width:100, sort: true}*/
+					,{field:'invcode',title:'存货编码', width:120, sort: true}
+                    ,{field:'invname',title:'存货名称', width:150, sort: true}
+					// ,{field:'invcode',title:'存货编码', width:100, sort: true}
+					// ,{field:'invabbname',title:'存货简称', width:100, sort: true}
+					,{field:'invstd',title:'规格型号', width:100, sort: true}
+                    ,{field:'unit1',title:'单位', width:100, sort: true}
+					,{field:'invcname',title:'存货分类', width:100, sort: true}
+					/*,{field:'positionid',title:'货位', width:100, sort: true}*/
+
+					/*,{field:'ivolume',title:'单位体积', width:100, sort: true}*/
+					,{field:'iprice',title:'零售价', width:100, sort: true}
+					,{field:'viprice',title:'批发价', width:100, sort: true}
+					,{field:'icost',title:'配货价', width:100, sort: true}
+				,{field:'iweight',title:'长度', width:100, sort: true}
+					,{field:'c01',title:'米重', width:100, sort: true}
+					,{field:'c02',title:'件重', width:100, sort: true}
+				,{field:'c03',title:'包装', width:100, sort: true}
+					/*,{field:'lownum',title:'最低库存', width:100, sort: true}*/
+					/*,{field:'unit1',title:'主单位', width:100, sort: true}
+					,{field:'unit2',title:'辅单位', width:100, sort: true}*/
+					/*,{field:'pic',title:'产品照片', width:100, sort: true}
+					,{field:'barcode',title:'二维码', width:100, sort: true}*/
+					/*,{field:'bomid',title:'BOM清单', width:100, sort: true}*/
+					/*,{field:'tdesc',title:'故障描述', width:100, sort: true}*/
+					,{field:'memo',title:'备注', width:100, sort: true}
+					// ,{field:'ctype',title:'业务类型', width:100, sort: true}
+
+               /* ,{field:'creator',title:'制单人', width:100, sort: true}
+                ,{field:'auditor',title:'审核人', width:100, sort: true}*/
+                ,{field:'caozuo', title: '操作',fixed:'right', width:140,templet: function(d){
+                    var id = d.id;
+                    var href = "addChda.html?id=" + id;
+                    var edit = buttonEdit(href, "", pers);
+                    var del = buttonDel(id, "", pers);
+                    if(d.status==0){
+                       var audit = buttonAudit(id,"sys:Chda:audit",pers);
+                    }else{
+                       var audit = buttonUnAudit(id,"sys:Chda:audit",pers);
+                    }
+                    if(d.status>0){
+                        edit ="";
+                        del="";
+                    }
+                    return edit + del + audit  ;
+                }}
+            ]]
+
+        });
+
+//监听行单击事件（双击事件为：rowDouble）
+        table.on('row(data)', function(obj){
+            var data = obj.data;
+            id = data.id;
+            //标注选中样式
+            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+        });
+        table.on('checkbox(data)', function(obj){
+        })
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+					invname:$('#invname').val(),invstd:$('#invstd').val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+
+        var eleTree = layui.eleTree;
+
+        el = eleTree.render({
+            elem: '#eleTree',
+            url:'/chdas/eleTree',
+            request: {
+                name: "name",
+            },
+            emptText:"暂无组织架构",
+            highlightCurrent:true
+            // accordion:true,
+            // showCheckbox:true,
+            // checkOnClickNode:true,
+            // accordion:true
+        });
+
+        // 节点点击事件
+        eleTree.on("nodeClick(eleTree)",function(d) {
+            // console.log(d.data.currentData.id);    // 点击节点对于的数据
+			invcid = d.data.currentData.id;
+			pname = d.data.currentData.name;
+			ppath = d.data.currentData.ppath;
+			// console.log(pid1);
+            tableIns.reload({where: {ppath:d.data.currentData.ppath}})
+            if (invcid && invcid != "null") {
+                $("#invcid").val(invcid);
+			}else{
+                $("#invcid").val("");
+			}
+        })
+    });
+function del(id){
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/chdas/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+
+
+$("#searchBt").click(function(){
+    // console.log($('#invname').val())
+	tableIns.reload({where: {invname:$('#invname').val(),invstd:$('#invstd').val()},page:{curr:1}})
+});
+
+   renderForm();
+
+
+//重新渲染表单
+function renderForm(){
+    layui.use('form', function(){
+        var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+        form.render();
+    });
+}
+
+$("#exportBt").click(function(){
+    $("#token").val(localStorage.getItem("token"))
+    $("#form").attr("onsubmit", "return true");
+    $("#form").submit();
+    $("#form").attr("onsubmit", "return false");
+});
+</script>

@@ -1,0 +1,32 @@
+package {beanPackageName};
+
+{import}
+
+public class {beanName} extends BaseEntity<Long> {
+
+{filelds}
+
+	/**
+	 * 制单人（多表关联查询字段）
+	 */
+	private String creator;
+	/**
+	 * 部门名称（多表关联查询字段）
+	 */
+//	private String deptname;
+
+{getset}
+
+//	public String getDeptname() {
+//		return deptname;
+//	}
+//	public void setDeptname(String deptname) {
+//		this.deptname = deptname;
+//	}
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+}

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>资产报废列表-已完成</title>
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	    <!--<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
+	<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+	<style>
+		.eleTree{
+			width: 350px;
+			height: 500px;
+			border: 1px solid #ccc;
+			overflow: hidden;
+			display: inline-block;
+		}
+		.ele5{
+			height: auto;
+			width: 98%;
+			display: none;
+			position: absolute;
+			top:100%;
+			background-color: #fff;
+			z-index: 9999999999999;
+		}
+        .headTop{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid" >
+	<div class="layui-card">
+        <div class="layui-card-header headTop">处置查询</div>
+		<div class="layui-form  layuiadmin-card-header-auto" >
+			<div class="layui-form-item">
+				<form class="form-inline layui-inline" id="form" method="post" action="/zcBfs/listZcBfRecord/export" onsubmit="return false" enctype="multipart/form-data">
+					<input id="token" name="token" type="hidden" />
+                    <div class="layui-form-item self">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产追溯码</label>
+                            <div class="layui-input-inline">
+                                <input id="epcid" name="epcid" type="text" class="layui-input" placeholder="资产追溯码">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产编号</label>
+                            <div class="layui-input-inline">
+                                <input id="zcCodenum" name="zcCodenum" type="text" class="layui-input" placeholder="资产编号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产名称</label>
+                            <div class="layui-input-inline">
+                                <input id="zcName" name="zcName" type="text" class="layui-input" placeholder="资产名称">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产分类</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" type="text" id="zcCategoryName" data-id="" placeholder="请选择资产分类" readonly="" autocomplete="off">
+                                <div class="eleTree ele5" id="zcCategoryEleTree" lay-filter="zcCategoryEleTree"></div>
+                                <input class="layui-input" type="hidden" id="zcCategoryId" name="zcCategoryId">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item self">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">原价值</label>
+                            <div class="layui-input-inline">
+                                <input id="originalValue" name="originalValue" type="text" class="layui-input" placeholder="原价值">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">净值</label>
+                            <div class="layui-input-inline">
+                                <input id="netValue" name="netValue" type="text" class="layui-input" placeholder="净值">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">使用日期</label>
+                            <div class="layui-input-inline">
+                                <input id="sdate" name="sdate" type="text" class="form-control layui-input" placeholder="起始日期">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">至</label>
+                            <div class="layui-input-inline">
+                                <input id="edate" name="edate" type="text" class="form-control layui-input" placeholder="终止日期">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item self">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">处置单号</label>
+                            <div class="layui-input-inline">
+                                <input id="codeNum" name="codeNum" type="text" class="layui-input" placeholder="处置单号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">管理部门</label>
+                            <div class="layui-input-inline">
+                                <div  id="checkDept1" ></div>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">使用部门</label>
+                            <div class="layui-input-inline">
+                                <div  id="checkDept2" ></div>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                            <button class="layui-btn layuiadmin-btn-useradmin"  id="exportBt">
+                                导出数据
+                            </button>
+                        </div>
+                    </div>
+
+				</form>
+			</div>
+		</div>
+		<div class="layui-card-body tablebody">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/xm-select.js"></script>
+<script type="text/javascript">
+    var pers = checkPermission();
+    var tableIns;
+
+    layui.config({
+        base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree'
+    });
+    var el,el1,el2;
+    layui.use(['layer','form','laydate','table','eleTree'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#sdate'
+        });
+        laydate.render({
+            elem: '#edate'
+        });
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/zcBfs/listZcBfRecord"
+            ,limit: 20
+            ,limits: [20,40,50,100,200,500,1000,2000]
+            ,totalRow: true
+            ,toolbar: 'defaultX'
+            ,height:  'full-180'
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {zcName:$('#zcName').val(),zcCodenum:$('#zcCodenum').val(),sdate:$('#sdate').val(),edate:$('#edate').val(),zcCategoryId:$('#zcCategoryId').val(),originalValue:$('#originalValue').val(),glDeptId:$('#glDeptId').val(),syDeptId:$('#syDeptId').val()}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+                ,{field:'epcid',title:'资产追溯码', width:120, sort: true}
+                ,{field:'zcCodenum',title:'资产编码', width:130, sort: true}
+                ,{field:'codeNum',title:'处置单号', width:140, sort: true}
+                ,{field:'zcName',title:'资产名称', width:100, sort: true}
+                ,{field:'name',title:'资产分类', width:100, sort: true}
+                ,{field:'originalValue',title:'原价值', width:100, sort: true}
+                ,{field:'netvalue',title:'净值', width:100, sort: true}
+                ,{field:'applyTime',title:'报废申请日期', width:140, sort: true}
+                ,{field:'finishTime',title:'报废完成日期', width:140, sort: true}
+
+                ,{field:'bfdes',title:'报废描述', width:100, sort: true}
+                ,{field:'bfReason',title:'报废原因', width:380, sort: true}
+
+                ,{field:'specification',title:'规格', width:80, sort: true}
+                ,{field:'model',title:'型号', width:80, sort: true}
+                ,{field:'sydeptname',title:'使用部门', width:130, sort: true}
+                ,{field:'gldeptname',title:'管理部门', width:130, sort: true}
+                ,{field:'identifyFileUrl',title:'鉴定附件地址', width:120, sort: true,hide:true}
+                ,{field:'identifyContent',title:'鉴定意见', width:200, sort: true,edit:"text"}
+                ,{field:'identifyFileName',title:'鉴定附件', width:120, sort: true,templet:function(d){
+                        if(!d.identifyFileName) d.identifyFileName = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile1' style='text-decoration:underline'>"+d.identifyFileName+"</a>";
+                    }}
+                ,{field:'fileName',title:'处置附件', width:100, sort: true,templet:function(d){
+                        if(!d.fileName) d.fileName = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline'>"+d.fileName+"</a>";
+                    }}
+                ,{field:'fileUrl',title:'附件路径', width:100, hide: true}
+                ,{field:'storeAddress',title:'存放地点', width:100, sort: true}
+                ,{field:'inspectTime',title:'巡检周期', width:100, sort: true}
+                ,{field:'warrantyperiod',title:'保养周期', width:100, sort: true}
+                ,{field:'zcFrom',title:'资产来源', width:100, sort: true}
+
+                ,{field:'ljZhejiu',title:'累计折旧', width:100, sort: true}
+                ,{field:'bnZhejiu',title:'本年折旧', width:100, sort: true}
+
+                ,{field:'jzzb',title:'减值准备', width:100, sort: true}
+                ,{field:'net',title:'净额', width:100, sort: true}
+                ,{field:'netResidualRate',title:'净残值率', width:110, sort: true}
+                ,{field:'netResidualValue',title:'净残值', width:100, sort: true}
+                ,{field:'startUseTime',title:'开始使用日期', width:100, sort: true}
+                ,{field:'usemonths',title:'剩余月数', width:100, sort: true}
+                ,{field:'haveCount',title:'已计提数', width:100, sort: true}
+            ]]
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    zcName:$('#zcName').val(),zcCodenum:$('#zcCodenum').val(),sdate:$('#sdate').val(),edate:$('#edate').val(),zcCategoryId:$('#zcCategoryId').val(),originalValue:$('#originalValue').val(),glDeptId:$('#glDeptId').val(),syDeptId:$('#syDeptId').val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        var eleTree = layui.eleTree;
+        if(!el){
+            el=eleTree.render({
+                elem: '#zcCategoryEleTree',
+                url:'/zcCategorys/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无资产分类",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+
+                }
+            });
+        }
+        if(!el1){
+            el1=eleTree.render({
+                elem: '#glDeptEleTree',
+                url:'/depts/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无管理部门",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+
+                }
+            });
+        }
+        if(!el2){
+            el2=eleTree.render({
+                elem: '#syDeptEleTree',
+                url:'/depts/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无使用部门",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+
+                }
+            });
+        }
+        $("#zcCategoryName").on("click",function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        eleTree.on("nodeClick(zcCategoryEleTree)",function(d) {
+            $('#zcCategoryName').trigger('change');
+            $("#zcCategoryName").val(d.data.currentData.name)
+            $("#zcCategoryId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $("#glDeptName").on("click",function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        eleTree.on("nodeClick(glDeptEleTree)",function(d) {
+            $('#glDeptName').trigger('change');
+            $("#glDeptName").val(d.data.currentData.name)
+            $("#glDeptId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $("#syDeptName").on("click",function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        eleTree.on("nodeClick(syDeptEleTree)",function(d) {
+            $('#syDeptName').trigger('change');
+            $("#syDeptName").val(d.data.currentData.name)
+            $("#syDeptId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $(document).on("click",function() {
+            $(".eleTree").hide();
+        })
+
+        // xmlselect选择部门
+        $.ajax({
+            url : '/depts/xmSelectTree',
+            contentType: "application/json; charset=utf-8",
+            success : function(data) {
+                checkDeptselect1 = xmSelect.render({
+                    el: '#checkDept1',
+                    language: 'zn',
+                    icon: 'hidden',
+                    name: 'checkDeptId',
+                    radio: true,
+                    paging: true,
+                    pageSize: 6,
+                    prop: {
+                        value: 'id',
+                    },
+                    filterable: true,
+                    height: 'auto',
+                    data:data.data
+                })
+            }
+        });
+        // 部门选择
+        $.ajax({
+            url : '/depts/xmSelectTree',
+            contentType: "application/json; charset=utf-8",
+            success : function(data) {
+                checkDeptselect2 = xmSelect.render({
+                    el: '#checkDept2',
+                    language: 'zn',
+                    icon: 'hidden',
+                    name: 'checkDeptId',
+                    radio: true,
+                    paging: true,
+                    pageSize: 6,
+                    prop: {
+                        value: 'id',
+                    },
+                    filterable: true,
+                    height: 'auto',
+                    data:data.data
+                })
+            }
+        });
+    });
+
+    // 搜索点击
+    $("#searchBt").click(function(){
+        var glId = checkDeptselect1.getValue('valueStr');
+        var syId = checkDeptselect2.getValue('valueStr');
+        tableIns.reload({
+            where: {
+                zcName:$('#zcName').val(),
+                zcCodenum:$('#zcCodenum').val(),
+                epcid:$('#epcid').val(),
+                zcCategoryId:$('#zcCategoryId').val(),
+                originalValue:$('#originalValue').val(),
+                netValue:$('#netValue').val(),
+                sdate:$('#sdate').val(),
+                edate:$('#edate').val(),
+                glDeptId:glId,
+                syDeptId:syId,
+                codeNum:$('#codeNum').val()
+            },
+            page:{curr:1}
+        })
+    });
+
+    $("#exportBt").click(function () {
+        $("#token").val(localStorage.getItem("token"))
+        $("#form").attr("onsubmit", "return true");
+        $("#form").submit();
+        $("#form").attr("onsubmit", "return false");
+    });
+</script>

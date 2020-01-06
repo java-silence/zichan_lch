@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+		<style>
+			.layui-form-item{
+				margin:0
+			}
+			.bcbtn{
+				width:100%;
+				margin-top:20px
+			}
+		</style>
+	</head>
+	<body>
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<form class="layui-form layui-form-pane" onsubmit="return false" id="form">
+				<input type="hidden" id="id" name="id">
+				<input type="hidden" id="userid" name="userid">
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>标题</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='标题' type='text' name='title' id='title'>
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<label class='layui-form-label'>内容</label>
+					<div class='layui-input-block'>
+						<input class='layui-input' placeholder='内容' type='text' name='content' id='content'>
+					</div>
+				</div>
+			</form>
+			<button class="layui-btn bcbtn" onclick="add()">
+					<i class="fa fa-save"></i> 发送
+			</button>
+		</div>	
+	</div>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/properties.js" ></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../js/jq.js"></script>	
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+		<script type="text/javascript">
+		    var token = JSON.parse(localStorage.getItem('$state')).token;
+			var self = null;
+			mui.plusReady(function() {
+					self = plus.webview.currentWebview();
+					var id = self.userid;
+					$("#userid").val(id)
+									
+					mui.init({								
+							beforeback: function() {	        
+								self.close();
+							}
+					});	
+			});
+			
+					
+			layui.use(['layer', 'form', 'laydate', 'table'], function() {
+                var layer = layui.layer;
+                var form = layui.form;
+
+                var laydate = layui.laydate;
+            });
+			
+			
+			function add() {
+				var formdata = $("#form").serializeObject();
+
+				$.ajax({
+					type: 'post',
+					url: server_url+'/pushmsgs',
+					contentType: "application/json; charset=utf-8",
+					data: JSON.stringify(formdata),
+					headers:{'token':token},
+					success: function(data) {
+						mui.plusReady(function() {						 
+									var clist = plus.webview.getWebviewById("pushmsg/pushmsgList.html");
+									mui.fire(clist, 'refresh'); 	
+									layer.msg("发送成功", {shift: -1, time: 1000}, function(){
+											self.close();  
+									});
+						}) 
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

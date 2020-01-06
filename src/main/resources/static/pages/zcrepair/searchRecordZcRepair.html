@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>表单列表</title>
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-hide" id="datas" lay-filter="datas"></table>
+        </div>
+    </div>
+    <!--		</div>-->
+    <!--	</div>-->
+    <form action="" id="fileForm" method="post" style="display: none;"></form>
+    <script type="text/html" id="auditReItem">
+        <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+        <a class="layui-btn layui-btn-xs" lay-event="viewRepairs">维修信息查看</a>
+    </script>
+</div>
+</body>
+</html>
+<div id="test" style="display: none;"></div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript">
+    var pers = checkPermission();
+    var pro = window.location.protocol;
+    var host = window.location.host;
+    var domain = pro + "//" + host;
+    var tableIns;
+    layui.use(['layer','form','laydate','table'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#repairStartTime'
+        });
+        laydate.render({
+            elem: '#repairEndTime'
+        });
+        var table = layui.table;
+
+        //监听工具条
+        table.on('tool(datas)', function(obj){
+            var data = obj.data;
+            if (obj.event === 'viewRepairs') {
+                layer.open({
+                    type:1
+                    ,title: '资产维修信息'
+                    ,area: ['70%', '70%']
+                    ,content: zcRepairInfoView(data)
+                });
+            }else if(obj.event === 'viewFile'){
+                var extStart=data.frontPicsUrl.lastIndexOf(".");
+                var ext=data.frontPicsUrl.substring(extStart,data.frontPicsUrl.length).toUpperCase();
+                if(ext!=".BMP"&&ext!=".PNG"&&ext!=".GIF"&&ext!=".JPG"&&ext!=".JPEG"){
+                    layer.msg("附加预览限于bmp,png,gif,jpeg,jpg格式"); //检测允许的上传文件类型
+                    return false;
+                }
+                layer.open({
+                    type: 1
+                    , title: '查看附件'
+                    , content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.frontPicsUrl + '">'
+                    , area: ['80%', '80%']
+                    , end: function () {
+
+                    }
+                });
+            }else if(obj.event === 'download'){
+                if (data.frontPicsUrl) {
+                    // 下载
+                    var $form = $("#fileForm");
+                    var u = '/files/download?fileUrl='+data.frontPicsUrl+'&fileName='+data.frontPics;
+                    $form.attr("action",u);
+                    $form.submit();
+                }else{
+                    layer.msg("未上传附件！");
+                }
+            }
+        });
+
+        tableIns = table.render({
+            elem: '#datas',
+            url:"/zcRepairItems/list2",
+            limit: 20,
+            limits: [20, 40, 50, 100, 200, 500, 1000, 2000],
+            totalRow: true,
+            toolbar: 'defaultX' ,
+            height: 'full-60',
+            even: true,
+            size: 'sm',
+            autoSort: false,
+            page: true ,
+            request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            },
+            where: {zcId:getUrlParam("zcId"),repairStatus:2},
+            cols: [[
+                // {checkbox: true}
+                {type:'numbers'}
+                ,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
+                ,{field:'applyDeptId',title:'申请部门ID', width:100, sort: true,hide:true}
+                ,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
+                ,{field:'epcid',title:'资产追溯码', width:150, sort: true}
+                ,{field:'zcCodenum',title:'资产编码', width:150, sort: true}
+                ,{field:'zcName',title:'资产名称', width:200, sort: true}
+                ,{field:'repairStartTime',title:'报修开始时间', width:190, sort: true}
+                ,{field:'repairEndTime',title:'报修结束时间', width:190, sort: true}
+                ,{field:'qrStatus',title:'报修结果', width:190, sort: true,templet:function(d){
+                         var qrStatus = "";
+                         if (d.qrStatus == 0){
+                             qrStatus = "不合格"
+                         } else if(d.qrStatus == 1){
+                             qrStatus = "合格"
+                         }
+                         return qrStatus;
+                    }}
+                ,{field:'glDeptName',title:'管理部门', width:200, sort: true}
+                ,{field:'cardNum',title:'卡片编号', width:150, sort: true}
+                ,{field:'zcFrom',title:'来源', width:200, sort: true}
+                ,{field:'startUseTime',title:'开始使用日期', width:200, sort: true}
+                ,{field:'useMonths',title:'到期期限', width:110, sort: true}
+                ,{field:'warrantyperiod',title:'保修期限', width:110, sort: true}
+                ,{field:'originalValue',title:'原值', width:110, sort: true}
+                ,{field:'netvalue',title:'净值', width:110, sort: true}
+                ,{field:'repairDes',title:'报修原因', width:110, sort: true,edit:"text"}
+
+                ,{field:'frontPicsUrl',title:'附件地址', width:110, sort: true,hide:true}
+                ,{field:'frontPics',title:'附件', width:120, fixed:'right',sort: true,templet:function(d){
+                        if(!d.frontPics) d.frontPics = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline;color:blue'>"+d.frontPics+"</a>";
+                    }}
+                ,{field:'caozuo',width:250, title: '操作',fixed:'right',align:'center', toolbar: '#auditReItem'}
+                // ,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemo'}
+            ]]
+        });
+    });
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {epcid:$('#epcid').val(),
+                zcName: $('#zcName').val(),
+                zcCodenum: $('#zcCodenum').val(),
+                repairStartTime:$('#repairStartTime').val(),
+                repairEndTime:$('#repairEndTime').val(),
+                qrStatus:$('#qrStatus').val(),
+                originalValue:$('#originalValue').val(),
+                netvalue:$('#netvalue').val(),
+                glDeptId:$('#glDeptId').val(),repairStatus:2},page:{curr:1}})
+    });
+
+    function zcRepairInfoView(data){
+        formatData(data)
+        var html ='<form id="createInfoViewForm"><table class="layui-table">\n' +
+            '  <tbody>\n' +
+            '    <tr>\n' +
+            '      <td style="width: 20%;">资产追溯码</td>\n' +
+            '      <td style="width: 30%;">'+data.epcid+'</td>\n' +
+            '      <td style="width: 20%;">资产编码</td>\n' +
+            '      <td style="width: 30%;">'+data.zcCodenum+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td style="width: 20%;">资产名称</td>\n' +
+            '      <td style="width: 30%;">'+data.zcName+'</td>\n' +
+            '      <td style="width: 20%;">剩余期限</td>\n' +
+            '      <td style="width: 30%;">'+data.remainingperiod+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td style="width: 20%;">到期期限</td>\n' +
+            '      <td style="width: 30%;">'+data.useMonths+'</td>\n' +
+            '      <td style="width: 20%;">保修期限</td>\n' +
+            '      <td style="width: 30%;">'+data.warrantyperiod+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td colspan="2">'+data.repairMode+'</td>\n' +
+            '      <td colspan="2">'+data.deliverMode+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td>服务商名称</td>\n' +
+            '      <td>'+data.outCompany+'</td>\n' +
+            '      <td>地址</td>\n' +
+            '      <td>'+data.outAddress+'</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '      <td>联系人</td>\n' +
+            '      <td>'+data.outUsername+'</td>\n' +
+            '      <td>电话</td>\n' +
+            '      <td>'+data.outPhone+'</td>\n' +
+            '    </tr>\n' +
+            '      <td>送修地址</td>\n' +
+            '      <td colspan="3">'+data.repairAddress+'</td>\n' +
+            '    </tr>\n' +
+
+            '      <td>维修结论</td>\n' +
+            '      <td>'
+        if(data.qrStatus == "0"){
+            html+=  '不合格\n'
+        }else if(data.qrStatus == "1"){
+            html+=  '合格\n'
+        }
+        html+='</td>\n' +
+            '      <td></td>\n' +
+            '      <td></td>\n' +
+            '    </tr>\n' +
+            '  </tbody>\n' +
+            '</table></form>'
+        return html;
+    }
+</script>

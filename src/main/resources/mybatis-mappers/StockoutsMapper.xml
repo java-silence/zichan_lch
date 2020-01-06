@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.StockoutsDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.pid != null and params.pid != ''">
+				and pid = #{params.pid} 
+			</if>
+			<if test="params.invid != null and params.invid != ''">
+				and invid = #{params.invid} 
+			</if>
+			<if test="params.ilen != null and params.ilen != ''">
+				and ilen = #{params.ilen}
+			</if>
+			<if test="params.inum != null and params.inum != ''">
+				and inum = #{params.inum} 
+			</if>
+			<if test="params.iprice != null and params.iprice != ''">
+				and iprice = #{params.iprice} 
+			</if>
+			<if test="params.discount != null and params.discount != ''">
+				and discount = #{params.discount} 
+			</if>
+			<if test="params.taxrate != null and params.taxrate != ''">
+				and taxrate = #{params.taxrate} 
+			</if>
+			<if test="params.itax != null and params.itax != ''">
+				and itax = #{params.itax} 
+			</if>
+			<if test="params.imoney != null and params.imoney != ''">
+				and imoney = #{params.imoney} 
+			</if>
+			<if test="params.cbatch != null and params.cbatch != ''">
+				and cbatch = #{params.cbatch} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and ctype = #{params.ctype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.whid != null and params.whid != ''">
+				and (whid = #{params.whid} or mxwhid = #{params.whid} )
+			</if>
+			<if test="params.invname != null and params.invname != ''">
+				and invname like concat('%', #{params.invname}, '%')
+			</if>
+			<if test="params.cpgg != null and params.cpgg != ''">
+				and cpgg like concat('%', #{params.cpgg}, '%')
+			</if>
+			<if test="params.smcpgg != null and params.smcpgg != ''">
+				and cpgg like concat('%', #{params.smcpgg}, '%')
+			</if>
+			<if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
+				and ddate between #{params.sdate} and #{params.edate}
+			</if>
+			<if test="params.cusid != null and params.cusid != ''">
+				and cusid = #{params.cusid}
+			</if>
+			<if test="params.outctype != null and params.outctype != ''">
+				and outctype = #{params.outctype}
+			</if>
+			<if test="params.mxwhid != null and params.mxwhid != ''">
+				and mxwhid = #{params.mxwhid}
+			</if>
+			<if test="params.clbm != null and params.clbm != ''">
+				and clbm = #{params.clbm}
+			</if>
+			<if test="params.sminvname != null and params.sminvname != ''">
+				and invname = #{params.sminvname}
+			</if>
+			<if test="params.soutStatus != null and params.soutStatus != ''">
+				and (soutStatus = #{params.soutStatus} or status =#{params.soutStatus})
+			</if>
+			<if test="params.ddate != null and params.ddate != ''">
+				and ddate = #{params.ddate}
+			</if>
+			<if test="params.cusname != null and params.cusname != ''">
+				and cusname like concat('%', #{params.cusname}, '%')
+			</if>
+			<if test="params.xianluClass != null and params.xianluClass.size > 0">
+				and cid in
+				<foreach collection="params.xianluClass" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+			</if>
+			<if test="params.dxstatus != null and params.dxstatus != ''">
+				and status in (${params.dxstatus})
+			</if>
+			<if test="params.cmonth != null and params.cmonth != ''">
+				and DATE_FORMAT(ddate,'%Y-%m')  = #{params.cmonth}
+			</if>
+			<if test="params.outbusstype != null and params.outbusstype != ''">
+				and outbusstype = #{params.outbusstype}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from
+		<choose>
+			<when test="params.groupby != null and params.groupby !=''">
+				(select cusname,ddate,whname,cpgg,invname,invid from v_kc_stockouts t
+				<include refid="where" />
+				group by ${params.groupby}) t
+			</when>
+			<otherwise>
+				v_kc_stockouts t
+				<include refid="where" />
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="list" resultType="com.itycu.server.dto.StockoutsVO">
+		select
+		<choose>
+			<when test="params.groupby != null and params.groupby !=''">
+				cusname,ddate,whname,cpgg,invname,invid,sum(jian) jian,sum(inum) inum,sum(imoney) imoney
+			</when>
+			<otherwise>
+				*
+			</otherwise>
+		</choose>
+		from v_kc_stockouts t
+		<include refid="where" />
+		<if test="params.groupby != null and params.groupby != ''">
+			group by ${params.groupby}
+		</if>
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<select id="counthz" resultType="int">
+		select count(1) from (select IFNULL(xianlu,cusname) cusname,invname,cpgg,sum(jian) jian,sum(inum) inum,sum(ilen) ilen,sum(imoney) imoney from v_kc_stockouts t <include refid="where" />
+		group by IFNULL(xianlu,cusname),invname,cpgg) t
+	</select>
+
+	<select id="listhz" resultType="com.itycu.server.dto.StockoutsVO">
+		SELECT IFNULL(xianlu,cusname) cusname,invname,cpgg,sum(jian) jian,sum(inum) inum,sum(ilen) ilen,sum(imoney) imoney from v_kc_stockouts t
+		<include refid="where" />
+		GROUP BY IFNULL(xianlu,cusname),invname,cpgg
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<select id="listByCondition" resultType="com.itycu.server.dto.StockoutsVO">
+		select
+		<choose>
+			<when test="params.groupby != null and params.groupby !=''">
+				whname,cpgg,invname,invid,sum(jian) jian,sum(inum) inum,sum(imoney) imoney
+			</when>
+			<otherwise>
+				*
+			</otherwise>
+		</choose>
+		from v_kc_stockouts t
+		<include refid="where" />
+		<if test="params.groupby != null and params.groupby != ''">
+			group by ${params.groupby}
+		</if>
+		${params.orderBy}
+	</select>
+
+	<select id="listByConditionhz" resultType="com.itycu.server.dto.StockoutsVO">
+		SELECT IFNULL(xianlu,cusname) cusname,invname,cpgg,sum(jian) jian,sum(inum) inum from v_kc_stockouts t
+		<include refid="where" />
+		GROUP BY IFNULL(xianlu,cusname),invname,cpgg
+	</select>
+
+	<select id="getByStockIds" resultType="com.itycu.server.dto.StockoutsVO">
+		select * from v_kc_stockouts t where t.pid in (
+		<foreach collection="stockids" item="stockid" separator=",">
+			#{stockid}
+		</foreach>
+		)
+        order by cusid,mxwhid,invname,cpgg
+	</select>
+
+	<insert id="saves">
+		INSERT INTO
+		kc_stockouts
+		(pid, invid,cpgg, danwei,ilen,perlen,jian,jianzhong,inum, iprice, discount, taxrate, itax, imoney, cbatch, status, del, memo, ctype, c01, c02, c03,mxwhid,zhuangcheid)
+		VALUES
+		<foreach collection="stockoutsList" item="stockouts" separator=",">
+			(#{stockoutid}, #{stockouts.invid}, #{stockouts.cpgg},  #{stockouts.danwei},#{stockouts.ilen},#{stockouts.perlen},#{stockouts.jian},#{stockouts.jianzhong}, #{stockouts.inum}, #{stockouts.iprice}, #{stockouts.discount}, #{stockouts.taxrate}, #{stockouts.itax}, #{stockouts.imoney}, #{stockouts.cbatch}, #{stockouts.status}, '0', #{stockouts.memo}, #{stockouts.ctype}, #{stockouts.c01}, #{stockouts.c02}, #{stockouts.c03}, #{stockouts.mxwhid}, #{stockouts.zhuangcheid})
+		</foreach>
+	</insert>
+
+	<insert id="savesRepair">
+		INSERT INTO
+		kc_stockouts
+		(pid, invid, ilen,inum, iprice, discount, taxrate, itax, imoney, cbatch, status, del, memo, ctype, c01, c02, c03)
+		VALUES
+		<foreach collection="repairsList" item="repairs" separator=",">
+			(#{stockoutid}, #{repairs.invid}, #{repairs.ilen}, #{repairs.inum}, #{repairs.iprice}, #{repairs.discount}, #{repairs.taxrate}, #{repairs.itax}, #{repairs.imoney}, #{repairs.cbatch}, #{repairs.status}, #{repairs.del}, #{repairs.memo}, #{repairs.ctype}, #{repairs.c01}, #{repairs.c02}, #{repairs.c03})
+		</foreach>
+	</insert>
+
+	<insert id="savesLingliao">
+		INSERT INTO
+		kc_stockouts
+		(pid, invid, ilen,inum, iprice, discount, taxrate, itax, imoney, cbatch, status, del, memo, ctype, c01, c02, c03,zhuangcheid)
+		VALUES
+		<foreach collection="lingliaosList" item="lingliaos" separator=",">
+			(#{stockoutid}, #{lingliaos.invid}, #{lingliaos.ilen}, #{lingliaos.inum}, #{lingliaos.iprice}, #{lingliaos.discount}, #{lingliaos.taxrate}, #{lingliaos.itax}, #{lingliaos.imoney}, #{lingliaos.cbatch}, #{lingliaos.status}, #{lingliaos.del}, #{lingliaos.memo}, #{lingliaos.ctype}, #{lingliaos.c01}, #{lingliaos.c02}, #{lingliaos.c03}, #{lingliaos.zhuangcheid})
+		</foreach>
+	</insert>
+
+	<update id="update">
+		update kc_stockouts t
+		<set>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="invid != null">
+				invid = #{invid}, 
+			</if>
+			<if test="cpgg != null">
+				cpgg = #{cpgg},
+			</if>
+			<if test="ilen != null">
+				ilen = #{ilen},
+			</if>
+			<if test="perlen != null">
+				perlen = #{perlen},
+			</if>
+			<if test="inum != null">
+				inum = #{inum}, 
+			</if>
+			<if test="iprice != null">
+				iprice = #{iprice}, 
+			</if>
+			<if test="discount != null">
+				discount = #{discount}, 
+			</if>
+			<if test="taxrate != null">
+				taxrate = #{taxrate}, 
+			</if>
+			<if test="itax != null">
+				itax = #{itax}, 
+			</if>
+			<if test="imoney != null">
+				imoney = #{imoney}, 
+			</if>
+			<if test="cbatch != null">
+				cbatch = #{cbatch}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+
+			<if test="costprice != null">
+				costprice = #{costprice},
+			</if>
+			<if test="costmoney != null">
+				costmoney = #{costmoney},
+			</if>
+			<if test="profit != null">
+				profit = #{profit},
+			</if>
+			<if test="danwei != null">
+				danwei = #{danwei},
+			</if>
+			<if test="jian != null">
+				jian = #{jian},
+			</if>
+			<if test="jianzhong != null">
+				jianzhong = #{jianzhong},
+			</if>
+			<if test="mxwhid != null">
+				mxwhid = #{mxwhid},
+			</if>
+			<if test="zhuangcheid != null">
+				zhuangcheid = #{zhuangcheid},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<update id="updates">
+		update kc_stockouts t
+		<set>
+			<if test="stockouts.pid != null">
+				pid = #{stockouts.pid},
+			</if>
+			<if test="stockouts.invid != null">
+				invid = #{stockouts.invid},
+			</if>
+			<if test="stockouts.ilen != null">
+				ilen = #{stockouts.ilen},
+			</if>
+			<if test="stockouts.inum != null">
+				inum = #{stockouts.inum},
+			</if>
+			<if test="stockouts.iprice != null">
+				iprice = #{stockouts.iprice},
+			</if>
+			<if test="stockouts.discount != null">
+				discount = #{stockouts.discount},
+			</if>
+			<if test="stockouts.taxrate != null">
+				taxrate = #{stockouts.taxrate},
+			</if>
+			<if test="stockouts.itax != null">
+				itax = #{stockouts.itax},
+			</if>
+			<if test="stockouts.imoney != null">
+				imoney = #{stockouts.imoney},
+			</if>
+			<if test="stockouts.cbatch != null">
+				cbatch = #{stockouts.cbatch},
+			</if>
+			<if test="stockouts.status != null">
+				status = #{stockouts.status},
+			</if>
+			<if test="stockouts.del != null">
+				del = #{stockouts.del},
+			</if>
+			<if test="stockouts.memo != null">
+				memo = #{stockouts.memo},
+			</if>
+			<if test="stockouts.ctype != null">
+				ctype = #{stockouts.ctype},
+			</if>
+			<if test="stockouts.c01 != null">
+				c01 = #{stockouts.c01},
+			</if>
+			<if test="stockouts.c02 != null">
+				c02 = #{stockouts.c02},
+			</if>
+			<if test="stockouts.c03 != null">
+				c03 = #{stockouts.c03},
+			</if>
+
+			<if test="stockouts.costprice != null">
+				costprice = #{stockouts.costprice},
+			</if>
+			<if test="stockouts.costmoney != null">
+				costmoney = #{stockouts.costmoney},
+			</if>
+			<if test="stockouts.profit != null">
+				profit = #{stockouts.profit},
+			</if>
+			<if test="stockouts.zhuangcheid != null">
+				zhuangcheid = #{stockouts.zhuangcheid},
+			</if>
+		</set>
+
+		where t.id in (
+		<foreach collection="stockoutsIds" item="stockoutsId" separator=",">
+			#{stockoutsId}
+		</foreach>
+		)
+	</update>
+
+</mapper>
+
+
+<!--		&#45;&#45; 				and ddate between #{params.sdate} and DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d')-->

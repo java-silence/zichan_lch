@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.StockoutDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.ccode != null and params.ccode != ''">
+				and ccode = #{params.ccode} 
+			</if>
+			<if test="params.ddate != null and params.ddate != ''">
+				and ddate = #{params.ddate} 
+			</if>
+			<if test="params.busstype != null and params.busstype != ''">
+				and busstype = #{params.busstype} 
+			</if>
+			<if test="params.csource != null and params.csource != ''">
+				and csource = #{params.csource} 
+			</if>
+			<if test="params.bussid != null and params.bussid != ''">
+				and bussid = #{params.bussid} 
+			</if>
+			<if test="params.whid != null and params.whid != ''">
+				and whid = #{params.whid} 
+			</if>
+			<if test="params.deptid != null and params.deptid != ''">
+				and deptid = #{params.deptid} 
+			</if>
+			<if test="params.whuserid != null and params.whuserid != ''">
+				and whuserid = #{params.whuserid} 
+			</if>
+			<if test="params.whid2 != null and params.whid2 != ''">
+				and whid2 = #{params.whid2} 
+			</if>
+			<if test="params.deptid2 != null and params.deptid2 != ''">
+				and deptid2 = #{params.deptid2} 
+			</if>
+			<if test="params.whuserid2 != null and params.whuserid2 != ''">
+				and whuserid2 = #{params.whuserid2} 
+			</if>
+			<if test="params.userid != null and params.userid != ''">
+				and userid = #{params.userid} 
+			</if>
+			<if test="params.userid2 != null and params.userid2 != ''">
+				and userid2 = #{params.userid2} 
+			</if>
+			<if test="params.cusid != null and params.cusid != ''">
+				and cusid = #{params.cusid} 
+			</if>
+			<if test="params.venid != null and params.venid != ''">
+				and venid = #{params.venid} 
+			</if>
+			<if test="params.orderid != null and params.orderid != ''">
+				and orderid = #{params.orderid} 
+			</if>
+			<if test="params.invoice != null and params.invoice != ''">
+				and invoice = #{params.invoice} 
+			</if>
+			<if test="params.taxrate != null and params.taxrate != ''">
+				and taxrate = #{params.taxrate} 
+			</if>
+			<if test="params.imoney != null and params.imoney != ''">
+				and imoney = #{params.imoney} 
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and createby = #{params.createby} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and updateby = #{params.updateby} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and auditby = #{params.auditby} 
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and auditTime = #{params.auditTime} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and ctype = #{params.ctype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.invid != null and params.invid != ''">
+				and invid = #{params.invid} 
+			</if>
+			<if test="params.inum != null and params.inum != ''">
+				and inum = #{params.inum} 
+			</if>
+			<if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
+				and ddate between #{params.sdate} and #{params.edate}
+			</if>
+			<if test="params.xsddtype != null and params.xsddtype != ''">
+				and xsddtype = #{params.xsddtype}
+			</if>
+			<if test="params.cusname != null and params.cusname != ''">
+				and cusname like concat('%', #{params.cusname}, '%')
+			</if>
+			<if test="params.xianluClass != null and params.xianluClass.size > 0">
+				and cid in
+				<foreach collection="params.xianluClass" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+			</if>
+			<if test="params.xianluid != null and params.xianluid != ''">
+				and xianluid in (${params.xianluid})
+			</if>
+			<if test="params.dxstatus != null and params.dxstatus != ''">
+				and status in (${params.dxstatus})
+			</if>
+			<if test="params.zcddate != null and params.zcddate != ''">
+				and zcddate = #{params.zcddate}
+			</if>
+			<if test="params.zcclbm != null and params.zcclbm != ''">
+				and zcclbm = #{params.zcclbm}
+			</if>
+			<if test="params.gcjzid != null and params.gcjzid != ''">
+				and (gcid = #{params.gcjzid} or jzid = #{params.gcjzid})
+			</if>
+			<if test="params.zhuangcheid != null and params.zhuangcheid != ''">
+				and zhuangcheid = #{params.zhuangcheid}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from v_kc_stockout t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="com.itycu.server.dto.StockoutVO">
+		select * from v_kc_stockout t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update kc_stockout t
+		<set>
+			<if test="ccode != null">
+				ccode = #{ccode}, 
+			</if>
+			<if test="ddate != null">
+				ddate = #{ddate}, 
+			</if>
+			<if test="busstype != null">
+				busstype = #{busstype}, 
+			</if>
+			<if test="csource != null">
+				csource = #{csource}, 
+			</if>
+			<if test="bussid != null">
+				bussid = #{bussid}, 
+			</if>
+			<if test="whid != null">
+				whid = #{whid}, 
+			</if>
+			<if test="deptid != null">
+				deptid = #{deptid}, 
+			</if>
+			<if test="whuserid != null">
+				whuserid = #{whuserid}, 
+			</if>
+			<if test="whid2 != null">
+				whid2 = #{whid2}, 
+			</if>
+			<if test="deptid2 != null">
+				deptid2 = #{deptid2}, 
+			</if>
+			<if test="whuserid2 != null">
+				whuserid2 = #{whuserid2}, 
+			</if>
+			<if test="userid != null">
+				userid = #{userid}, 
+			</if>
+			<if test="userid2 != null">
+				userid2 = #{userid2}, 
+			</if>
+			<if test="cusid != null">
+				cusid = #{cusid}, 
+			</if>
+			<if test="venid != null">
+				venid = #{venid}, 
+			</if>
+			<if test="orderid != null">
+				orderid = #{orderid}, 
+			</if>
+			<if test="invoice != null">
+				invoice = #{invoice}, 
+			</if>
+			<if test="taxrate != null">
+				taxrate = #{taxrate}, 
+			</if>
+			<if test="imoney != null">
+				imoney = #{imoney}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="invid != null">
+				invid = #{invid}, 
+			</if>
+			<if test="inum != null">
+				inum = #{inum}, 
+			</if>
+			<if test="zhuangcheid != null">
+				zhuangcheid = #{zhuangcheid},
+			</if>
+			<if test="xsddtype != null">
+				xsddtype = #{xsddtype},
+			</if>
+			<if test="tax != null">
+				tax = #{tax},
+			</if>
+			<if test="itotal != null">
+				itotal = #{itotal},
+			</if>
+			<if test="fkfs != null">
+				fkfs = #{fkfs},
+			</if>
+			<if test="clbm != null">
+				clbm = #{clbm},
+			</if>
+			<if test="yunfei != null">
+				yunfei = #{yunfei},
+			</if>
+
+			<if test="yfdj != null">
+				yfdj = #{yfdj},
+			</if>
+			<if test="ssje != null">
+				ssje = #{ssje},
+			</if>
+			<if test="discount != null">
+				discount = #{discount},
+			</if>
+			<if test="n01 != null">
+				n01 = #{n01},
+			</if>
+			<if test="n02 != null">
+				n02 = #{n02},
+			</if>
+			<if test="n03 != null">
+				n03 = #{n03},
+			</if>
+			<if test="lat != null">
+				lat = #{lat},
+			</if>
+			<if test="lng != null">
+				lng = #{lng},
+			</if>
+			<if test="sksj != null">
+				sksj = #{sksj},
+			</if>
+			<if test="thje != null">
+				thje = #{thje},
+			</if>
+			<if test="duoxiao != null">
+				duoxiao = #{duoxiao},
+			</if>
+			<if test="kouyufu != null">
+				kouyufu = #{kouyufu},
+			</if>
+			<if test="printstatus != null">
+				printstatus = #{printstatus},
+			</if>
+			<if test="xianjin != null">
+				xianjin = #{xianjin},
+			</if>
+			<if test="weixin != null">
+				weixin = #{weixin},
+			</if>
+			<if test="zhifubao != null">
+				zhifubao = #{zhifubao},
+			</if>
+			<if test="shouzhang != null">
+				shouzhang = #{shouzhang},
+			</if>
+			<if test="qiankuan != null">
+				qiankuan = #{qiankuan},
+			</if>
+			<if test="shaofu != null">
+				shaofu = #{shaofu},
+			</if>
+			<if test="flowid != null">
+				flowid = #{flowid},
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<update id="updates">
+		update kc_stockout t
+		<set>
+			<if test="stockout.ccode != null">
+				ccode = #{stockout.ccode},
+			</if>
+			<if test="stockout.ddate != null">
+				ddate = #{stockout.ddate},
+			</if>
+			<if test="stockout.busstype != null">
+				busstype = #{stockout.busstype},
+			</if>
+			<if test="stockout.csource != null">
+				csource = #{stockout.csource},
+			</if>
+			<if test="stockout.bussid != null">
+				bussid = #{stockout.bussid},
+			</if>
+			<if test="stockout.whid != null">
+				whid = #{stockout.whid},
+			</if>
+			<if test="stockout.deptid != null">
+				deptid = #{stockout.deptid},
+			</if>
+			<if test="stockout.whuserid != null">
+				whuserid = #{stockout.whuserid},
+			</if>
+			<if test="stockout.whid2 != null">
+				whid2 = #{stockout.whid2},
+			</if>
+			<if test="stockout.deptid2 != null">
+				deptid2 = #{stockout.deptid2},
+			</if>
+			<if test="stockout.whuserid2 != null">
+				whuserid2 = #{stockout.whuserid2},
+			</if>
+			<if test="stockout.userid != null">
+				userid = #{stockout.userid},
+			</if>
+			<if test="stockout.userid2 != null">
+				userid2 = #{stockout.userid2},
+			</if>
+			<if test="stockout.cusid != null">
+				cusid = #{stockout.cusid},
+			</if>
+			<if test="stockout.venid != null">
+				venid = #{stockout.venid},
+			</if>
+			<if test="stockout.orderid != null">
+				orderid = #{stockout.orderid},
+			</if>
+			<if test="stockout.invoice != null">
+				invoice = #{stockout.invoice},
+			</if>
+			<if test="stockout.taxrate != null">
+				taxrate = #{stockout.taxrate},
+			</if>
+			<if test="stockout.imoney != null">
+				imoney = #{stockout.imoney},
+			</if>
+			<if test="stockout.createby != null">
+				createby = #{stockout.createby},
+			</if>
+			<if test="stockout.updateby != null">
+				updateby = #{stockout.updateby},
+			</if>
+			<if test="stockout.updateTime != null">
+				updateTime = #{stockout.updateTime},
+			</if>
+			<if test="stockout.auditby != null">
+				auditby = #{stockout.auditby},
+			</if>
+			<if test="stockout.auditTime != null">
+				auditTime = #{stockout.auditTime},
+			</if>
+			<if test="stockout.status != null">
+				status = #{stockout.status},
+			</if>
+			<if test="stockout.del != null">
+				del = #{stockout.del},
+			</if>
+			<if test="stockout.memo != null">
+				memo = #{stockout.memo},
+			</if>
+			<if test="stockout.ctype != null">
+				ctype = #{stockout.ctype},
+			</if>
+			<if test="stockout.c01 != null">
+				c01 = #{stockout.c01},
+			</if>
+			<if test="stockout.c02 != null">
+				c02 = #{stockout.c02},
+			</if>
+			<if test="stockout.c03 != null">
+				c03 = #{stockout.c03},
+			</if>
+			<if test="stockout.invid != null">
+				invid = #{stockout.invid},
+			</if>
+			<if test="stockout.inum != null">
+				inum = #{stockout.inum},
+			</if>
+			<if test="stockout.jian != null">
+				jian = #{stockout.jian},
+			</if>
+			<if test="stockout.zhuangcheid != null">
+				zhuangcheid = #{stockout.zhuangcheid},
+			</if>
+			<if test="stockout.xsddtype != null">
+				xsddtype = #{stockout.xsddtype},
+			</if>
+			<if test="stockout.tax != null">
+				tax = #{stockout.tax},
+			</if>
+			<if test="stockout.itotal != null">
+				itotal = #{stockout.itotal},
+			</if>
+			<if test="stockout.fkfs != null">
+				fkfs = #{stockout.fkfs},
+			</if>
+			<if test="stockout.clbm != null">
+				clbm = #{stockout.clbm},
+			</if>
+			<if test="stockout.yunfei != null">
+				yunfei = #{stockout.yunfei},
+			</if>
+
+			<if test="stockout.yfdj != null">
+				yfdj = #{stockout.yfdj},
+			</if>
+			<if test="stockout.ssje != null">
+				ssje = #{stockout.ssje},
+			</if>
+			<if test="stockout.discount != null">
+				discount = #{stockout.discount},
+			</if>
+			<if test="stockout.n01 != null">
+				n01 = #{stockout.n01},
+			</if>
+			<if test="stockout.n02 != null">
+				n02 = #{stockout.n02},
+			</if>
+			<if test="stockout.n03 != null">
+				n03 = #{stockout.n03},
+			</if>
+			<if test="stockout.lat != null">
+				lat = #{stockout.lat},
+			</if>
+			<if test="stockout.lng != null">
+				lng = #{stockout.lng},
+			</if>
+			<if test="stockout.sksj != null">
+				sksj = #{stockout.sksj},
+			</if>
+			<if test="stockout.thje != null">
+				thje = #{stockout.thje},
+			</if>
+			<if test="stockout.printstatus != null">
+				printstatus = #{stockout.printstatus},
+			</if>
+			<if test="stockout.xianjin != null">
+				xianjin = #{stockout.xianjin},
+			</if>
+			<if test="stockout.weixin != null">
+				weixin = #{stockout.weixin},
+			</if>
+			<if test="stockout.zhifubao != null">
+				zhifubao = #{stockout.zhifubao},
+			</if>
+			<if test="stockout.shouzhang != null">
+				shouzhang = #{stockout.shouzhang},
+			</if>
+			<if test="stockout.qiankuan != null">
+				qiankuan = #{stockout.qiankuan},
+			</if>
+			<if test="stockout.shaofu != null">
+				shaofu = #{stockout.shaofu},
+			</if>
+			<if test="stockout.stepid != null">
+				stepid = #{stockout.stepid},
+			</if>
+		</set>
+
+		where t.id in (
+		<foreach collection="stockoutIds" item="stockoutId" separator=",">
+			#{stockoutId}
+		</foreach>
+		)
+	</update>
+
+</mapper>
+
+<!--		and ddate between #{params.sdate} and DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d')-->

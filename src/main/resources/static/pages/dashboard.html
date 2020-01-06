@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all"/>
+    <link rel="stylesheet" href="../layui/css/global.css" media="all"/>
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../css/dataTables.bootstrap.min.css">-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">待办事宜</div>
+                <div class="layui-card-body">
+                    <div class="layui-carousel" lay-anim="" lay-indicator="inside" lay-arrow="none"
+                         style="width: 98%; height:320px;">
+                        <table class="layui-table" lay-even="" lay-skin="line">
+                            <colgroup>
+                                <col>
+                                <col width="120">
+                                <col width="120">
+                            </colgroup>
+                            <tbody id="todoList">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">跟踪事宜</div>
+                <div class="layui-card-body">
+                    <!--                    <div class="layui-carousel layadmin-carousel layadmin-shortcut" lay-anim="" lay-indicator="inside"-->
+                    <!--                         lay-arrow="none" style="width: 98%; height: 220px;">-->
+                    <div class="layui-carousel" lay-anim="" lay-indicator="inside" lay-arrow="none"
+                         style="width: 98%; height: 320px;">
+                        <table class="layui-table" lay-even="" lay-skin="line">
+                            <colgroup>
+                                <col>
+                                <col width="120">
+                                <col width="120">
+                            </colgroup>
+                            <tbody id="trackList">
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15" >
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">本月采购</div>
+                <div class="layui-card-body">
+                <table class="layui-hide" lay-even="" lay-skin="line" id="CaigouTable">
+                </table>
+                </div>
+            </div>
+         </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">本月调配</div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" lay-even="" lay-skin="line" id="DiaoPeiTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">本月报修</div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" lay-even="" lay-skin="line" id="BaoXiuTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">本月处置</div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" lay-even="" lay-skin="line"  id="baofeiTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="layui-row layui-col-space15" style="display: none">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">待巡检资产列表</div>
+                <div class="layui-card-body">
+                    <!--                    <div class="layui-carousel layadmin-carousel layadmin-shortcut" lay-anim="" lay-indicator="inside"-->
+                    <!--                         lay-arrow="none" style="width: 98%; height:320px;">-->
+                    <div class="layui-carousel" lay-anim="" lay-indicator="inside" lay-arrow="none"
+                         style="width: 98%; height: 300px;">
+                        <table class="layui-table" lay-even="" lay-skin="line">
+                            <thead>
+                            <td>巡检部门</td>
+                            <td>巡检时间</td>
+                            <td>巡检人</td>
+                            <td>备注</td>
+                            <td>制单人</td>
+                            <td>制单时间</td>
+                            </thead>
+                            <tbody id="tab">
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">到期资产列表</div>
+                <div class="layui-card-body">
+                    <!--                    <div class="layui-carousel layadmin-carousel layadmin-shortcut" lay-anim="" lay-indicator="inside"-->
+                    <!--                         lay-arrow="none" style="width: 98%; height: 320px;">-->
+                    <div class="layui-carousel" lay-anim="" lay-indicator="inside" lay-arrow="none"
+                         style="width: 98%; height: 300px;">
+                        <!--<iframe src="bar.html" style="width: 100%; height: 210px;border: none"> </iframe>-->
+                        <table class="layui-table" lay-even="" lay-skin="line">
+                            <thead>
+                            <td>资产编号</td>
+                            <td>资产名称</td>
+                            <td>资产分类</td>
+                            <td>规格</td>
+                            <td>管理部门</td>
+                            <td>使用状态</td>
+                            <td>使用部门</td>
+                            </thead>
+                            <tbody id="zcDaoQiLieBiao">
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../js/jq.js"></script>
+<script type="text/javascript" src="../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript">
+
+    initTodoList($('#todoList'), 0);
+    initTodoList($('#trackList'), 1);
+
+    function initTodoList(obj, type) {
+        $.ajax({
+            type: 'get',
+            // url: '/todos/listvo?type=' + type + '&limit=5',
+            url: "/todos/listbyuser?draw=1&columns%5B0%5D%5Bdata%5D=biaoti&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=sendby&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=status&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=false&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&order%5B0%5D%5Bcolumn%5D=0&order%5B0%5D%5Bdir%5D=asc&start=0&length=5&search%5Bvalue%5D=&search%5Bregex%5D=false&biaoti=&status=" + type + "&_=1575514986880",
+            async: false,
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                var select = $("#deptid");
+                var tr;
+                var length = data.data.length;
+                if (length > 0) {
+                    for (var i = 0; i < length; i++) {
+                        var d = data.data[i];
+                        tr = $(['<tr>'
+                            , '<td><a lay-href="pages/' + d['url'] + '?id=' + d['id'] + '&bizid=' + d['bizid'] + '&flowid=' + d['flowid'] + '&type=' + type + '" lay-id="' + d['id'] + '" href="javascript:void(0)">' + d['biaoti'] + '</a></td>'
+                            , '<td width="180px">' + d['sendname'] + '</td>'
+                            , '<td>' + d['createTime'].substr(0, 10) + '</td>'
+                            , '</tr>'].join(''));
+                        obj.append(tr);
+                    }
+                } else {
+
+                    tr = $(['<tr>'
+                        , '<td>' + '<p></p>' + '</td>'
+                        , '<td>' + '<p></p>' + '</td>'
+                        , '<td>' + '<p>暂无数据</p>' + '</td>'
+                        , '<td>' + '<p></p>' + '</td>'
+                        , '<td>' + '<p></p>' + '</td>'
+                        , '</tr>'].join(''));
+                    obj.append(tr);
+                }
+            }
+        });
+    }
+
+
+    // $.ajax({
+    //     type : 'get',
+    //     url : '/notices/listnew',
+    //     async : false,
+    //     success : function(data) {
+    //         var length = data.length;
+    //         for (var i = 0; i < length; i++) {
+    //             var html = "";
+    //             html += "<tr>";
+    //             html += "<td><a lay-href='pages/notice/detail.html?id="+ data[i].id +"' lay-id='11' href='javascript:void(0)'>"+ data[i].title +"</td>";
+    //             html += "<td>"+ data[i].createTime.substring(0,data[i].createTime.length-8) +"</td>";
+    //             $("#tab").append(html);
+    //         }
+    //     }
+    // });
+
+    $.ajax({
+        type: 'get',
+        url: '/zcInspects/list2?offset=1&limit=5',
+        async: false,
+        success: function (data) {
+            console.log(data);
+            var tr;
+            var length = data.data.length;
+            var checkTime;
+            if (length > 0) {
+                for (var i = 0; i < length; i++) {
+                    var d = data.data[i];
+                    if (d.checkTime) {
+                        checkTime = d.checkTime
+                    } else {
+                        checkTime = "";
+                    }
+                    tr = $(['<tr>'
+                        , '<td>' + d['checkDeptName'] + '</td>'
+                        , '<td>' + checkTime + '</td>'
+                        , '<td>' + d['checkUsername'] + '</td>'
+                        , '<td>' + d['bz'] + '</td>'
+                        , '<td>' + d['creator'] + '</td>'
+                        , '<td>' + d['createTime'] + '</td>'
+                        , '</tr>'].join(''));
+                    $("#tab").append(tr);
+                }
+            } else {
+                tr = $(['<tr>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p>暂无数据</p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '</tr>'].join(''));
+                $("#tab").append(tr);
+            }
+
+        }
+    });
+
+
+    //到期资产列表
+    $.ajax({
+        type: 'get',
+        url: '/zcInfos/layuiList?offset=1&limit=5&daoqi=90',
+        async: false,
+        success: function (data) {
+            var length = data.data.length;
+            if (length > 0) {
+                var tr;
+                for (var i = 0; i < length; i++) {
+                    var d = data.data[i];
+                    tr = $(['<tr>'
+                        , '<td>' + d['zcCodenum'] + '</td>'
+                        , '<td>' + d['zcName'] + '</td>'
+                        , '<td>' + d['zcCategoryName'] + '</td>'
+                        , '<td>' + d['model'] + '</td>'
+                        , '<td>' + d['glDeptName'] + '</td>'
+                        , '<td>' + d['useStatusName'] + '</td>'
+                        , '<td>' + d['syDeptName'] + '</td>'
+                        , '</tr>'].join(''));
+                    $("#zcDaoQiLieBiao").append(tr);
+                }
+            } else {
+                tr = $(['<tr>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p>暂无数据</p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '<td>' + "<p></p>" + '</td>'
+                    , '</tr>'].join(''));
+                $("#zcDaoQiLieBiao").append(tr);
+            }
+        }
+    });
+
+
+    layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'console']);
+//采购
+    caigouCount();
+    function caigouCount() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#CaigouTable'
+                , height: 300
+                , url: "/index/queryBuyData?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    //{field: 'buyCompany', title: '采购单位',align: 'center',},
+                    {field: 'countTotal', title: '采购单总数'}
+                    , {field: 'dateTime', title: '采购时间'}
+                    , {field: 'wanCheng', title: '已完成'}
+                    , {field: 'weiWanCheng', title: '未完成'}
+                    //, {field: 'statusText', title: '采购结果'}
+                ]]
+            });
+        });
+    }
+    //调配
+    diaoPeiCount();
+    function diaoPeiCount() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#DiaoPeiTable'
+                , height: 300
+                , url: "/index/queryDiaoPei?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    //{field: 'diaoPeiCompany', title: '调配单位',align: 'center',},
+                    {field: 'countTotal', title: '调配单总数'}
+                    , {field: 'dateTime', title: '调配时间'}
+                    , {field: 'wanCheng', title: '已完成'}
+                    , {field: 'weiWanCheng', title: '未完成'}
+                ]]
+            });
+        });
+    }
+  //报修
+    repair();
+    function repair() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#BaoXiuTable'
+                , height: 300
+                , url: "/index/queryBaoXiu?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    //{field: 'repairCompany', title: '报修单位',align: 'center',},
+                    {field: 'countTotal', title: '报修单总数' }
+                    , {field: 'dateTime', title: '报修时间'}
+                    , {field: 'wanCheng', title: '已完成'}
+                    , {field: 'weiWanCheng', title: '未完成'}
+                    //, {field: 'statusText', title: '报修结果',  width:100}
+                ]]
+            });
+        });
+    }
+//处置
+    baoFeiCount();
+    function baoFeiCount() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#baofeiTable'
+                , height: 300
+                , url: "/index/queryChuZhi?v=" + new Date().getDate()
+                // , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'countTotal', title: '处置单总数'}
+                    , {field: 'baofeiTime', title: '处置时间'}
+                    , {field: 'wanCheng', title: '已完成'}
+                    , {field: 'weiWanCheng', title: '未完成'}
+                ]]
+            });
+        });
+    }
+
+</script>
+
+</body>
+</html>

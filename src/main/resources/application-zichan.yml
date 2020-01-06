@@ -1,0 +1,79 @@
+spring:
+  datasource:
+    dynamic:
+      druid:
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1
+        testWhileIdle: true
+        testOnBorrow: true
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        filters: stat,wall
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+        stat-view-servlet:
+        allow: 127.0.0.1
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://123.56.66.231:3306/yqzichan?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+          username: root
+          password: juan2437001
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    joda-date-time-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  mvc:
+    servlet:
+      load-on-startup: 1
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    username:
+    password:
+    protocol: smtp
+    test-connection: false
+#    properties:
+#      mail.smtp.auth: true
+mybatis:
+  type-aliases-package: com.itycu.server.model
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+files:
+  path: ${file-path:d:/files}
+#  path: ${file-path:/usr/local/files/zichan/}
+web:
+  upload-path: d:/files
+#  upload-path: /usr/local/files/zichan/
+logging:
+  config: classpath:logback-admin.xml
+log:
+  level:
+    root: info
+    my: debug
+  file: logs/admin-server.log
+  maxsize: 30MB
+token:
+  expire:
+    seconds: 7200000
+  jwtSecret: (XIAO:)_$^11244^%$_(WEI:)_@@++--(LAO:)_++++_.sds_(SHI:)

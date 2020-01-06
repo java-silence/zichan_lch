@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Insert title here</title>
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/common.css">
+</head>
+<body>
+<div class="layui-fluid">
+	<div class="layui-col-space15">
+		<div class="layui-col-md2">
+			<div class="layui-card">
+				<!--<input id="pid" name="pid" type="hidden">-->
+				<div class="layui-card-header">
+					<div align="center"><h3>供应商分类</h3></div></div>
+				<div class="layui-card-body">
+					<!--<div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-normcol">-->
+					<div id="eleTree" lay-filter="eleTree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md10">
+			<div class="layui-card">
+				<div class="layui-card-header" >
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">供应商名称</label>
+							<div class="layui-input-block">
+								<input id="cname" type="text" class="form-control layui-input" placeholder="输入供应商名称搜索">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">搜索</button>
+							<button class="layui-btn layuiadmin-btn-useradmin" onclick="add()" >添加</button>
+						</div>
+					</div>
+				</div>
+				<div class="layui-card-body">
+					<!--<div style="padding-bottom: 10px;"></div>-->
+					<script type="text/html" id="toolbar">
+						<div class="layui-btn-container">
+
+						</div>
+					</script>
+					<div class="layui-row">
+
+						<table class="layui-hide" id="data" lay-filter="data"></table>
+
+
+
+						<!--<div class=" layui-col-md-offset6">
+                        <table class="layui-hide" id="data1" lay-filter="data1"></table>
+                        </div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>-->
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/course.js"></script>-->
+<!--<script type="text/javascript" src="../../js/experiment.js"></script>-->
+<!--<script type="text/javascript" src="../../js/lab.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript">
+var pers = checkPermission();
+// var biztype = getUrlParam("ctype");
+//showStepSelect("stepid", "1", true);
+//showDeptSelect("deptid", "dept", true);
+//showUserSelect("createby", "user", true);
+//UserSelect("teacherid", "user", true);
+var tableIns;
+var el;
+var pid1;
+
+layui.config({
+    base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+}).extend({
+    eleTree: 'eleTree'
+})
+
+    layui.use(['layer','form','laydate','table','eleTree'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/vendors/list2"
+            ,limit: 20 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+            ,height:  'full-100'
+//        ,skin: 'line' //行边框风格
+            ,even: true //开启隔行背景
+//        ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {id:$('#id').val(),orderBy:"order by createTime desc"}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+					// ,{field:'ccode',title:'编码', width:200, sort: true}
+                    // ,{field:'classname',title:'分类', width:100, sort: true}
+					,{field:'cname',title:'名称', width:200, sort: true}
+                	,{field:'venperson',title:'联系人', width:100, sort: true}
+                	,{field:'venphone',title:'电话', width:125, sort: true}
+					// ,{field:'abbname',title:'简称', width:200, sort: true}
+					,{field:'venaddress',title:'地址', width:200, sort: true}
+					// ,{field:'venpostcode',title:'邮编', width:100, sort: true}
+					// ,{field:'venregcode',title:'企业代码', width:200, sort: true}
+					// ,{field:'venbank',title:'银行', width:200, sort: true}
+					// ,{field:'venaccount',title:'账号', width:200, sort: true}
+					// ,{field:'devdate',title:'开发日期', width:100, sort: true}
+					// ,{field:'venfax',title:'传真', width:100, sort: true}
+					 ,{field:'venemail',title:'邮箱', width:160, sort: true}
+					// ,{field:'legalperson',title:'法人', width:100, sort: true}
+//					,{field:'pic',title:'照片', width:100, sort: true}
+//					,{field:'barcode',title:'二维码', width:100, sort: true}
+// 					,{field:'tdesc',title:'描述', width:100, sort: true}
+//                     ,{field:'creator',title:'制单人', width:100, sort: true}
+					,{field:'memo',title:'备注', width:180, sort: true}
+					/*,{field:'ctype',title:'业务类型', width:100, sort: true}*/
+
+               /* ,{field:'creator',title:'制单人', width:100, sort: true}
+                ,{field:'auditor',title:'审核人', width:100, sort: true}*/
+                ,{field:'caozuo', title: '操作',fixed:'right', width:110,templet: function(d){
+                    var id = d.id;
+                    var href = "addVendor.html?id=" + id;
+                    var edit = buttonEdit(href, "", pers);
+                    var del = buttonDel(id, "", pers);
+                    if(d.status==0){
+                       var audit = buttonAudit(id,"sys:Vendor:audit",pers);
+                    }else{
+                       var audit = buttonUnAudit(id,"sys:Vendor:audit",pers);
+                    }
+                    if(d.status>0){
+                        edit ="";
+                        del="";
+                    }
+                    return edit + del + audit  ;
+                }}
+            ]]
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    cname:$('#cname').val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        var eleTree = layui.eleTree;
+
+        el = eleTree.render({
+            elem: '#eleTree',
+            url:'/vendors/eleTree',
+            request: {
+                name: "name",
+            },
+            emptText:"暂无组织架构",
+            highlightCurrent:true
+            // accordion:true,
+            // showCheckbox:true,
+            // checkOnClickNode:true,
+            // accordion:true
+        });
+
+        // 节点点击事件
+        eleTree.on("nodeClick(eleTree)",function(d) {
+            // console.log(d.data.currentData.id);    // 点击节点对于的数据
+            pid1 = d.data.currentData.id;
+            // console.log(pid1)
+            tableIns.reload({where: {cid:d.data.currentData.id,cname:$('#cname').val(),orderBy:"order by createTime desc"}})
+
+        })
+
+        //form.on('select(deptChange)', function(data){
+        //    showClassSelect("classid", "class", true, data.value);
+        //    renderForm()
+        //})
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('row(data)', function(obj){
+
+            var data = obj.data;
+
+            var id = data.id;
+
+            //标注选中样式
+            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+
+            if (getUrlParam("searchVen")){
+                parent.$('#gongyingshang').val(JSON.stringify(data));
+                //当你在iframe页面关闭自身时
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            }
+        });
+    });
+function del(id){
+    event.stopPropagation();
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/vendors/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+
+$("#searchBt").click(function(){
+	tableIns.reload({where: {cname:$('#cname').val(),orderBy:"order by createTime desc"},page:{curr:1}})
+});
+
+function add() {
+    location.href="addVendor.html?pid="+pid1;
+}
+</script>

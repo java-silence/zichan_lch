@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Insert title here</title>
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <!--<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
+    <link rel="stylesheet" href="../../css/common.css">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <!--				<div class="layui-inline">-->
+                <!--					<label class="layui-form-label">部门</label>-->
+                <!--					<div class="layui-input-block">-->
+                <!--						<select id="deptid" name="deptid" class="form-control input-sm"></select>-->
+                <!--					</div>-->
+                <!--				</div>-->
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <div class="layui-input-block">
+                        <input class='form-control layui-input' placeholder='开始时间' type='text' name='ddate' id='ddate' >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <div class="layui-input-block">
+                        <input class='form-control layui-input' placeholder='结束时间' type='text' name='edate' id='edate' >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="print">
+                        打印
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space30" id="test">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header"></div>
+                <div class="layui-card-body">
+                    <div class="layui-carousel" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 98%; height: 220px;">
+                        <table class="layui-table" lay-even="" lay-skin="line">
+                            <tbody>
+                                <tr><td style="width:30%">生产成品：</td><td id="sccp"></td></tr>
+                                <tr><td>生产废品：</td><td id="scfp"></td></tr>
+                                <tr><td>故障废品：</td><td id="gzfp"></td></tr>
+                                <tr><td>生产废品率：</td><td id="scfpl"></td></tr>
+                                <tr><td>正转废：</td><td id="zzf"></td></tr>
+                                <tr><td>发货总计：</td><td id="fhzj"></td></tr>
+                                <tr><td>总计废品率：</td><td id="zjfpl"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">退回废品</div>
+                <div class="layui-card-body">
+                    <div class="layui-carousel layadmin-carousel layadmin-shortcut" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 98%; height: 220px;">
+                        <table class="layui-table" lay-even="" lay-skin="line">
+                            <tbody id="thfp">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>-->
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/course.js"></script>-->
+<!--<script type="text/javascript" src="../../js/experiment.js"></script>-->
+<!--<script type="text/javascript" src="../../js/lab.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<script type="text/javascript" src="../../js/dept.js"></script>
+<script type="text/javascript" src="../../js/bigdecimal/math.min.js"></script>
+<script type="text/javascript" src="../../js/bigdecimal/floatMath.js"></script>
+<script type="text/javascript">
+    var pers = checkPermission();
+    var id;
+
+    layui.use(['layer','form','laydate','table'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#ddate'
+            ,value: new Date()
+        });
+        laydate.render({
+            elem: '#edate'
+            ,value: new Date()
+        });
+    });
+
+    $("#searchBt").click(function(){
+        // tableIns.reload({where: {sdate:$("#ddate").val(),edate:$("#edate").val(),ctype:"pe"},page:{curr:1}})
+        if($("#ddate").val() && $("#edate").val()){
+            $.ajax({
+                type : 'get',
+                url : '/tongJi/peTongji?sdate='+$("#ddate").val()+'&edate='+$("#edate").val(),
+                async : false,
+                success : function(datas) {
+                    $("#sccp").html(datas.scfp.bbcl);
+                    $("#scfp").html(datas.scfp.feipin);
+                    $("#gzfp").html(datas.scfp.gzfeipin);
+                    $("#scfpl").html(math.round(datas.scfp.feipinlv*100,1) +"%");
+                    $("#zzf").html(datas.zzf);
+                    $("#fhzj").html(datas.fhzj);
+                    console.log(datas.thfp)
+                    var thfpInum = 0;
+                    for(var cusname in datas.thfp) {
+                        var d = datas.thfp[cusname];
+                        var tr = $(['<tr>'
+                            , '<td>' + cusname +'</td>'
+                            , '<td>' + d + '</td>'
+                            , '</tr>'].join(''));
+                        $("#thfp").append(tr);
+                        if (d) thfpInum = mathAdd(thfpInum,d)
+                    }
+                    $("#thfp").append($(['<tr>'
+                        , '<td>合计</td>'
+                        , '<td>' + math.round(thfpInum,3) + '</td>'
+                        , '</tr>'].join('')));
+                    $("#zjfpl").html(math.round(mathDivide(mathAdd(mathAdd(datas.scfp.feipin,datas.scfp.gzfeipin),thfpInum),datas.scfp.bbcl)*100,1) +"%");
+                }
+            });
+        }else{
+            layer.msg("请选择开始时间和结束时间！")
+        }
+    });
+
+    $("#print").click(function(){
+        $("#test").print({
+            //Use Global styles
+            globalStyles : false,
+            //Add link with attrbute media=print
+            mediaPrint : false,
+            //Print in a hidden iframe
+            iframe : false,
+            //Don't print this
+            noPrintSelector : ".avoid-this",
+            //Add this at top
+            prepend : "",
+            //Add this on bottom
+            append : "",
+            //Log to console when printing is done via a deffered callback
+            deferred: $.Deferred().done(function() {}),
+            stylesheet:'../../layuiadmin/layui/css/layui.css'
+        });
+    })
+</script>

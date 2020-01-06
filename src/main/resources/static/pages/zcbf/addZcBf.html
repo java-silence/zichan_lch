@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+    <style>
+        #test1{
+            display: none;
+        }
+        .miaoshu{
+            width: 500px !important;
+        }
+        select.selectdept{
+            height: 28px;
+            width: 133px;
+            margin-left: -6px;
+            z-index: 1010;
+            display: block;
+        }
+        .selectBz{
+            display: none;
+            position: fixed!important;
+            left: inherit!important;
+            top: inherit!important;
+            padding: 5px 0;
+            z-index: 899;
+            min-width: auto !important;
+            border: 1px solid #d2d2d2;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
+            box-sizing: border-box
+        }
+        .layui-table-cell{
+            overflow: inherit!important;
+        }
+        .bbb input{
+            height: 38px!important;
+        }
+        input.layui-input.layui-unselect {
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" type="hidden"/>
+	<input id="scrollTop" type="hidden"/>
+	<br>
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<!--<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>-->
+<!--				<button class="layui-btn" type="submit" onclick="add()"><i class="fa fa-save"></i>暂存</button>-->
+				<button class="layui-btn" type="submit" onclick="addAndCommit()"><i class="fa fa-save"></i>保存并提交</button>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+        <input id="type" name="type" type="hidden" />
+		<div class='layui-form-item'>
+            <div class='layui-inline'>
+                <label class='layui-form-label'><span class="layui-badge-dot" style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>处置类型</label>
+                <div class='layui-input-inline bbb'>
+                    <select name='bfCategory' id='bfCategory'>
+                        <option value="">-请选择-</option>
+                        <option value="1">报废</option>
+                        <option value="2">捐赠</option>
+                        <option value="3">出售</option>
+                    </select>
+                </div>
+            </div>
+			<div class='layui-inline'>
+				<label class='layui-form-label'>处置描述</label>
+				<div class='layui-input-inline'>
+					<input class='layui-input miaoshu' placeholder='处置描述' type='text' name='bfDes' id='bfDes' >
+				</div>
+			</div>
+			<!--<div class='layui-inline'>-->
+				<!--<label class='layui-form-label'>备注信息</label>-->
+				<!--<div class='layui-input-inline'>-->
+					<!--<input class='layui-input' placeholder='备注信息' type='text' name='bz' id='bz' >-->
+				<!--</div>-->
+			<!--</div>-->
+		</div>
+	</form>
+	<br>
+	<form class="layui-form layui-table-tool" onsubmit="return false">
+		<button class="layui-btn" onclick="tianjia()">
+			<i class="layui-icon">&#xe608;</i> 添加
+		</button>
+		<button class="layui-btn" onclick="batchdel()">
+			<i class="layui-icon">&#xe640;</i> 批量删除
+		</button>
+	</form>
+	<div>
+		<div class="widget-body no-padding table-overlay" id="scrollDiv">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+		</div>
+	</div>
+</div>
+<!--每个上传附件-->
+<div class='layui-inline'>
+    <button type="button" class="layui-btn" id="test1" ></button>
+    <input type="hidden" name="fileUrl" id="fileUrl"/>
+    <input type="hidden" name="fileName" id="fileName"/>
+</div>
+<!--每个上传附件-->
+
+<!--操作工具-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-warm layui-btn-xs up_route_btn2" data-value="{{d.id}}">报损报告</a>
+    <a class="layui-btn layui-btn-xs up_route_btn" data-value="{{d.id}}">处置附件</a>
+<!--    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="view">预览</a>-->
+</script>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript">
+	var tableIns;
+	var table;
+	var pro = window.location.protocol;
+	var host = window.location.host;
+	var domain = pro + "//" + host;
+	layui.use(['layer','form','laydate','table','upload'], function(){
+		var layer = layui.layer;
+		var form = layui.form;
+		table = layui.table;
+        var upload = layui.upload;
+        //----------
+		tableIns = table.render({
+			elem: '#data'
+			,data:[]
+			,page: false
+			,height: 'full-300'
+			,limit: 10000
+			,totalRow: true
+			,cols: [[
+				{checkbox: true}
+				//,{type:'numbers'}
+				,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
+				,{field:'syDeptId',title:'使用部门ID', width:100, sort: true,hide:true}
+				,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
+                // ,{field:'cardNum',title:'卡片编号', width:150, sort: true}
+                ,{field:'epcid',title:'资产追溯码', width:150, sort: true}
+                ,{field:'zcCodenum',title:'资产编码', width:100, sort: true}
+                ,{field:'zcName',title:'资产名称', width:150, sort: true}
+                // ,{field:'zc_coding',title:'资产编号', width:150, sort: true}
+                ,{field:'glDeptName',title:'管理部门', width:150, sort: true}
+                ,{field:'syDeptName',title:'使用部门', width:150, sort: true}
+				// ,{field:'zcFrom',title:'来源', width:100, sort: true}
+				,{field:'startUseTime',title:'开始使用日期', width:110, sort: true}
+				,{field:'remainingperiod',title:'剩余期限', width:100, sort: true}
+				,{field:'originalValue',title:'原价值', width:100, sort: true}
+				,{field:'netvalue',title:'净值', width:100, sort: true}
+                //,{field:'identifyFileUrl',title:'鉴定附件地址', width:120, sort: true,hide:true}
+                //,{field:'identifyContent',title:'鉴定意见', width:200, sort: true,edit:"text"}
+                // ,{field:'identifyFileName',title:'鉴定附件', width:120, sort: true,templet:function(d){
+                //         if(!d.identifyFileName) d.identifyFileName = "";
+                //         return "<a href='javascript:void(0)' lay-event='viewFile1' style='text-decoration:underline'>"+d.identifyFileName+"</a>";
+                //     }}
+                ,{field:'damagedFileUrl',title:'报损报告地址', width:120, sort: true,hide:true}
+                ,{field:'damagedFileName',title:'报损报告', width:120, sort: true,templet:function(d){
+                        if(!d.damagedFileName) d.damagedFileName = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile1' style='text-decoration:underline'>"+d.damagedFileName+"</a>";
+                    }}
+                ,{field:'fileUrl',title:'附件', width:120, sort: true,hide:true}
+                ,{field:'bz',title:'处置原因', width:200, sort: true,templet: function (d) {
+                        var html = '<select name="bz" lay-filter="testSelect"  data-value="' + d.bz + '" >\n' +
+                            '<option value="">请选择</option>\n'
+                        html += " <option value='超过使用年限，继续使用存在重大安全隐患。'>超过使用年限，继续使用存在重大安全隐患。</option>";
+                        html += " <option value='主要部件或结构损坏，无法修复。'>主要部件或结构损坏，无法修复。</option>";
+                        html += " <option value='可以修复，但修复成本高于或超过同等性能设备的重置加制50%。'>可以修复，但修复成本高于或超过同等性能设备的重置加制50%。</option>";
+                        html += " <option value='不能满足最低使用要求，失去其本来功能。'>不能满足最低使用要求，失去其本来功能。</option>";
+                        html += " <option value='因工艺改进或更新需要，而更换后不再具有使用价值。'>因工艺改进或更新需要，而更换后不再具有使用价值。</option>";
+                        html += " <option value='予以更换、拆卸后不再具有使用价值。'>予以更换、拆卸后不再具有使用价值。</option>";
+                        html += " <option value='结构陈旧、精度严重丧失，无法通过改造和修复达到使用目的。'>结构陈旧、精度严重丧失，无法通过改造和修复达到使用目的。</option>";
+                        html += " <option value='现行法律、法规对固定资产报废的强制性规定。'>现行法律、法规对固定资产报废的强制性规定。</option>";
+                        html += '</select >';
+                        return html;
+                    }}
+                ,{field:'fileName',title:'处置附件', width:120, sort: true,templet:function(d){
+                        if(!d.fileName) d.fileName = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline'>"+d.fileName+"</a>";
+                    }}
+				,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}
+			]]
+			, done: function(res, curr, count){
+				if ($('#scrollDiv').find(".layui-table-main") && $("#scrollTop").val())
+                    $('#scrollDiv').find(".layui-table-main").scrollTop($("#scrollTop").val());
+
+                $('#scrollDiv').find(".layui-table-main").scroll(function(){
+                    $("#scrollTop").val($(this).scrollTop())
+                })
+				var tableId = this.id;
+				var tableElem = this.elem;
+				// table render出来实际显示的table组件
+				var tableViewElem = tableElem.next();
+				upload.render({
+					elem: tableViewElem.find('.up_route_btn') //绑定元素
+                    ,accept: 'file|images' //允许上传的文件类型
+                    ,exts: 'jpg|png|jpeg|pdf'
+					,url: '/files' //上传接口
+					,done: function(res, index, upload){
+						var url = res.url;
+						layer.msg("上传成功");
+						// 上传图片-----------------------------
+						table.cache[tableId][this.item.closest("tr").data('index')]["fileName"] = res.filename;
+						table.cache[tableId][this.item.closest("tr").data('index')]["fileUrl"] = url
+						table.reload(tableId,{data:table.cache[tableId]});
+					}
+				});
+                upload.render({
+                    elem: tableViewElem.find('.up_route_btn1') //绑定元素
+                    ,accept: 'file|images' //允许上传的文件类型
+                    ,exts: 'jpg|png|jpeg|pdf'
+                    ,url: '/files' //上传接口
+                    ,done: function(res, index, upload){
+                        var url = res.url;
+                        layer.msg("上传成功");
+                        // 上传图片-----------------------------
+                        table.cache[tableId][this.item.closest("tr").data('index')]["identifyFileName"] = res.filename;
+                        table.cache[tableId][this.item.closest("tr").data('index')]["identifyFileUrl"] = url
+                        table.reload(tableId,{data:table.cache[tableId]});
+                    }
+                });
+                upload.render({
+                    elem: tableViewElem.find('.up_route_btn2') //绑定元素
+                    ,accept: 'file|images' //允许上传的文件类型
+                    ,exts: 'jpg|png|jpeg|pdf'
+                    ,url: '/files' //上传接口
+                    ,done: function(res, index, upload){
+                        var url = res.url;
+                        layer.msg("上传成功");
+                        // 上传图片-----------------------------
+                        table.cache[tableId][this.item.closest("tr").data('index')]["damagedFileName"] = res.filename;
+                        table.cache[tableId][this.item.closest("tr").data('index')]["damagedFileUrl"] = url
+                        table.reload(tableId,{data:table.cache[tableId]});
+                    }
+                });
+
+                //根据已有的值回填修理项目下拉框
+                // layui.each($("select[name='bz']", ""), function (index, item) {
+                //     var elem = $(item);
+                //     elem.val(elem.data('value'));
+                // });
+
+                //form.render('select');
+                //$('select').next().each(function(index,item){
+                    // $(item).find('dl').addClass('selectBz'); //添加样式
+                //});
+			}
+		});
+
+        // 监听修改update到表格中
+        form.on('select(testSelect)', function (data) {
+            console.log(data+"------------------------------");
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            var tableData = table.cache['data'];
+            // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
+            tableData[trElem.data('index')][elem.attr('name')] = data.value;
+            // 其他的操作看需求 TODO
+        });
+
+		//监听工具条
+		table.on('tool(data)', function(obj){
+			var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+			switch(event){
+				case "del":
+					layer.confirm('真的删除行么', function (index) {
+						var oldData =  table.cache["data"];
+						oldData.splice(obj.tr.data('index'),1);
+						tableIns.reload({
+							url:"",
+							data : oldData
+						});
+						layer.close(index);
+					});
+					break;
+                case "view":
+                    alert("预览");
+                    break;
+				case "viewFile":
+					layer.open({
+						type: 1
+						, title: '查看附件'
+						, content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.fileUrl + '">'
+						, area: ['80%', '80%']
+						, end: function () {
+
+						}
+					});
+					break;
+                case "viewFile1":
+                    layer.open({
+                        type: 1
+                        , title: '查看附件'
+                        , content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.damagedFileUrl + '">'
+                        , area: ['80%', '80%']
+                        , end: function () {
+
+                        }
+                    });
+                    break;
+			}
+		});
+	});
+
+	function add() {
+		var formdata = $("#form").serializeObject();
+		var data =  table.cache["data"];
+		if(!data || data.length == 0){
+			layer.msg("请添加资产");
+			return;
+		}
+		var bfCategory = $('#bfCategory').val();
+        if(!bfCategory || bfCategory == null){
+            layer.msg("请选择处置类型");
+            return;
+        }
+		formdata.zcBfItemList = data;
+		$.ajax({
+			type : 'post',
+			url : '/zcBfs',
+			contentType: "application/json; charset=utf-8",
+			data : JSON.stringify(formdata),
+			success : function(data) {
+			    if (data.code == 0){
+                    layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "addZcBf.html";
+                    });
+				}else {
+                    layer.msg(data.msg, {shift: -1, time: 4000});
+                }
+			}
+		});
+	}
+
+	// 保存并提交
+    function addAndCommit(){
+	    $('#type').val("1");
+        add();
+        $('#type').val("");
+    }
+
+	function tianjia(){
+		$("#shuzhi").val("[]");
+		layer.open({
+			type: 2,
+			title: '添加资产信息',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['90%', '90%'],
+			content: encodeURI('../zcinfo/bfsearchZcInfo.html'),
+			end : function(){
+				var oldData =  table.cache["data"];
+				var newData = JSON.parse($("#shuzhi").val())
+                //if (!checkRepeat(oldData,newData)){
+                    if (newData && newData.length > 0) {
+                        $.each(newData, function (index, item) {
+                            item.zcId = item.id;
+                            item.bz = "";
+                            if (!checkRepeat(oldData,item)) {
+                                oldData.push(item);
+                            }
+                        })
+
+                        tableIns.reload({
+                            url:"",
+                            data : oldData
+                        })
+                    }
+                //}
+			}
+		});
+	}
+
+	// 判断报废子单是否重复
+    function checkRepeat(array,item) {
+	    //var id = item[0].id;
+	    var id = item.id;
+        for (var i = 0; i < array.length; i++) {
+            if (array[i].id == id){
+                return true;
+            }
+        }
+        return false;
+    }
+
+	//批量删除
+	function batchdel(){
+		var oldData = table.cache["data"];
+		var newData = [];
+		if(!oldData || data.length == 0) {
+			layer.msg("请选择要删除的行");
+		}else{
+			layer.confirm('确定批量删除行么', function (index) {
+				for (var i = 0; i < oldData.length; i++) {
+					if (!oldData[i].LAY_CHECKED){
+						newData.push(oldData[i]);
+					}
+				}
+				tableIns.reload({
+					url:"",
+					data: newData
+				});
+				layer.close(index);
+			});
+		}
+	}
+</script>
+</body>
+</html>

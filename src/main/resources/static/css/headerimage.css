@@ -1,0 +1,77 @@
+.image {
+    background-color: #0a80e6;
+    background-repeat: no-repeat;
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 80px;
+    display: block;
+    position: relative;
+}
+
+.name_title {
+    display: block;
+    margin-top: auto;
+    margin-left: 150px;
+    text-align: left;
+    font-size: 30px;
+    color: white;
+
+}
+
+.icon{
+    width: 20px;
+    height: 20px;
+}
+
+.use_info {
+    font-size: 20px;
+    color: white;
+    float: right;
+    margin-bottom: 30px;
+    margin-right: 20px;
+    margin-top:10px;
+}
+
+._blank {
+    line-height: 10px;
+    font-size: 5px;
+    color: #0a80e6;
+}
+
+.logo {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    height: 60px;
+    width: 60px;
+    margin-left: 30px;
+    float: left;
+}
+
+
+.layui-header {
+    margin-top: 80px;
+}
+
+.layui-side {
+    margin-top: 80px;
+}
+
+.layadmin-body-shade {
+    margin-top: 80px;
+}
+
+.layadmin-pagetabs {
+    margin-top: 80px;
+}
+
+.layui-body {
+    margin-top: 80px;
+}
+
+.layui-logo {
+    margin-top: 80px;
+}
+
+.system_menu {
+    margin-left: -25px;
+}

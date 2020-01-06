@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcBuyDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id} 
+			</if>
+			<if test="params.companyName != null and params.companyName != ''">
+				and t.company_name = #{params.companyName} 
+			</if>
+			<if test="params.sy_dept_id != null and params.sy_dept_id != ''">
+				and t.sy_dept_id = #{params.syDeptId} 
+			</if>
+			<if test="params.apply_time != null and params.apply_time != ''">
+				and t.apply_time = #{params.applyTime} 
+			</if>
+			<if test="params.apply_user_id != null and params.apply_user_id != ''">
+				and t.apply_user_id = #{params.applyUserId} 
+			</if>
+			<if test="params.gl_dept_id != null and params.gl_dept_id != ''">
+				and t.gl_dept_id = #{params.glDeptId} 
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and t.flowid = #{params.flowid} 
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and t.stepid = #{params.stepid} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del} 
+			</if>
+			<if test="params.create_by != null and params.create_by != ''">
+				and t.create_by = #{params.createBy} 
+			</if>
+			<if test="params.update_by != null and params.update_by != ''">
+				and t.update_by = #{params.updateBy} 
+			</if>
+			<if test="params.create_time != null and params.create_time != ''">
+				and t.create_time = #{params.createTime} 
+			</if>
+			<if test="params.update_time != null and params.update_time != ''">
+				and t.update_time = #{params.updateTime} 
+			</if>
+		
+		</where>
+	</sql>
+
+	<select id="getById" resultType="ZcBuy">
+		select t.* from zc_buy t where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+        SELECT count(1) FROM zc_buy t LEFT JOIN sys_user u ON t.apply_user_id = u.id
+        <where>
+            <if test="params.nickname != null and params.nickname != ''">
+                u.nickname like concat('%',#{params.nickname},'%')
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and t.status = #{params.status}
+            </if>
+        </where>
+	</select>
+
+	<select id="list" resultType="ZcBuy">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_buy t
+		LEFT OUTER JOIN sys_user t_creator ON t.createby=t_creator.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update zc_buy t
+		<set>
+			<if test="companyName != null">
+				company_name = #{companyName}, 
+			</if>
+			<if test="syDeptId != null">
+				sy_dept_id = #{syDeptId}, 
+			</if>
+			<if test="applyTime != null">
+				apply_time = #{applyTime}, 
+			</if>
+			<if test="applyUserId != null">
+				apply_user_id = #{applyUserId}, 
+			</if>
+			<if test="glDeptId != null">
+				gl_dept_id = #{glDeptId}, 
+			</if>
+			<if test="flowid != null">
+				flowid = #{flowid}, 
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="fileName != null">
+				fileName = #{fileName},
+			</if>
+			<if test="fileUrl != null">
+				fileUrl = #{fileUrl},
+			</if>
+            <if test="bz != null">
+                bz = #{bz},
+            </if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy}, 
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy}, 
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime}, 
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime}, 
+			</if>
+
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<!--更新购买主单的状态-->
+	<update id="updateStatus">
+		update zc_buy t
+		<set>
+			<if test="params.status != null">
+				t.status = #{params.status},
+			</if>
+			<if test="params.stepid">
+				t.stepid = #{params.stepid}
+			</if>
+		</set>
+		where t.id = #{params.zcBuyId} and del = 0
+	</update>
+
+    <!--根据条件查询购买列表-->
+    <select id="listZcBuy" parameterType="map" resultType="map">
+        SELECT
+            t.id,
+            t.company_name companyName,
+            t.bz,
+            t.status,
+			t.fileName,
+			t.fileUrl,
+            DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%i:%s') createTime,
+            p.deptname,
+            u.nickname,
+			f.flowname,
+			s.stepname
+        FROM zc_buy t
+        LEFT JOIN t_dept p on p.id = t.sy_dept_id
+        LEFT JOIN sys_user u on u.id = t.apply_user_id
+		LEFT JOIN flow f on f.id = t.flowid
+		LEFT JOIN flowstep s on s.id = t.stepid
+        <where>
+            <if test="params.nickname != null and params.nickname != ''">
+                and u.nickname like concat('%',#{params.nickname},'%')
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and t.status = #{params.status}
+            </if>
+        </where>
+        order by t.create_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+	<!--根据ID查询购买信息-->
+	<select id="getZcBuyDetail" parameterType="long" resultType="map">
+		SELECT
+			t.id,
+			t.company_name companyName,
+			t.bz,
+			t.status,
+			t.flowid,
+			t.stepid,
+			t.fileName,
+			t.fileUrl,
+			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%i:%s') createTime,
+			p.deptname,
+			u.nickname,
+			u.username
+		FROM zc_buy t
+		LEFT JOIN t_dept p on p.id = t.sy_dept_id
+		LEFT JOIN sys_user u on u.id = t.apply_user_id
+		WHERE t.id = #{buyId}
+	</select>
+
+    <!--查询本年度该商行的购买数-->
+	<select id="countByDeptThisYear" parameterType="string" resultType="int">
+        SELECT count(1) FROM zc_buy t WHERE YEAR(t.create_time) = YEAR(now()) AND t.deptCode LIKE concat(#{deptcode},'%')
+    </select>
+
+    <!--统计购买子项-->
+	<select id="countByZcBuyId" parameterType="long" resultType="int">
+        SELECT SUM(t.num) FROM zc_buy_item t WHERE t.zc_buy_id = #{zcBuyId} and t.cwb_status = 1 and t.del = 0
+    </select>
+
+</mapper>

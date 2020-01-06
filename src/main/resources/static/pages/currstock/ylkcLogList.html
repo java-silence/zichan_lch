@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>表单列表</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<!--<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/common.css">
+</head>
+<body>
+
+<div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="main">
+		<div>
+			<header style="height: 100%">
+				<div align="left">
+					<table style="width: 100%">
+						<tr>
+							<td style="height:50px">
+								<input id="kehu" type="hidden" />
+								<form class="form-inline " id="form" method="post" action="/kcLogs/export" onsubmit="return false" enctype="multipart/form-data">
+									<input id="token" name="token" type="hidden" />
+									<div class="form-group">
+                                        <span id="qitaCus">
+                                            客户：
+                                            <select id="cusid" name="cusid" class="form-control" style="width:200px"></select>
+                                        </span>
+										<span style="display: none" id="smCus">
+                                            客户：
+                                            <input class='form-control' placeholder='客户' type='text' style="width:100px" name='cusname' id='cusname'>
+                                        </span>
+										<span>
+                                            仓库：
+                                            <select id="whid" name="whid" class="form-control" lay-filter="whid"></select>
+                                        </span>
+										<span id="qitaCurr">
+                                            存货：
+                                             <input class='form-control' placeholder='存货' type='text' style="width:100px" name='invname' id='invname' >
+                                        </span>
+										<span style="display: none" id="smCurr">
+                                            存货：
+                                            <select id="invid" name="sminvname" class="form-control" lay-filter="inv"></select>
+                                        </span>
+										<span id="qitagg">
+                                            规格：
+                                            <input class='form-control' placeholder='规格' type='text' style="width:100px" name='cpgg' id='cpgg' >
+                                        </span>
+										<span style="display: none" id="smgg">
+                                            规格：
+                                            <div style="display: inline-block;"><input class='form-control' placeholder='规格' type='text' style="width:100px" name='smcpgg' id='smcpgg' ></div>
+                                        </span>
+										<!--<div class="layui-inline">-->
+										<!--<label class="layui-form-label">状态</label>-->
+										<!--<div class="layui-input-block">-->
+										<!--<select id="status" name="status" class="form-control input-sm"></select>-->
+										<!--</div>-->
+										<!--</div>-->
+										<span>
+                                            开始日期：
+                                            <input class='form-control' placeholder='开始时间' style="width:100px" type='text' name='sdate' id='sdate' >
+                                        </span>
+										<span>
+                                            结束日期：
+                                            <input class='form-control' placeholder='结束时间' style="width:100px" type='text' name='edate' id='edate' >
+                                        </span>
+										<button class="layui-btn layuiadmin-btn-useradmin layui-btn-sm" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+											<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>搜索
+										</button>
+										<button class="layui-btn layuiadmin-btn-useradmin layui-btn-sm" id="collectBt">
+											汇总
+										</button>
+										<button class="layui-btn layuiadmin-btn-useradmin layui-btn-sm" id="exportBt">
+											导出
+										</button>
+									</div>
+								</form>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</header>
+
+			<div>
+				<div class="widget-body no-padding">
+					<table class="layui-hide" id="data" lay-filter="data"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/inv.js"></script>
+<script type="text/javascript" src="../../js/customer.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript">
+var pers = checkPermission();
+var pers = checkPermission();
+
+var ctype = getUrlParam("ctype");
+if(ctype == "bj") {
+    showWarehouseByType("whid", "warehouse", false,"备件库");
+}else if(ctype == "yl") {
+    showWarehouseByType("whid", "warehouse", false,"原料库");
+}else if(ctype == "yldept") {
+    showWarehouseByType("whid", "warehouse", false,"原料库","1");
+}else if(ctype == "cp") {
+    showWarehouseByType("whid", "warehouse", false,"产品库","1");
+}else if(ctype == "cpview") {
+    showWarehouseByType("whid", "warehouse", false,"产品库","0");
+}else if(ctype == "sm") {
+    showWarehouseByType("whid", "warehouse", false,"产品库","0");
+    $("#whid").val(10);
+    $("#qitaCus").hide();
+    $("#smCus").show();
+    $("#qitaCurr").hide();
+    $("#smCurr").show();
+    $("#qitagg").hide();
+    $("#smgg").show();
+    // $("#smcpgg").append("<option value=''>请选择</option>");
+    var select = $("#invid");
+    var whid = $("#whid").val();
+    var invdata = getInvname(whid);
+    select.append("<option value=''>请选择</option>");
+    $.each(invdata, function(id, d) {
+        select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+    });
+
+    layui.config({
+        base: '../../layuiadmin/yutons_sug/' //设置自定义插件路径:根据实际路径进行设置
+    }).use(['yutons_sug'], function() {
+        //创建yutons_sug搜索框提示插件||输入框提示插件实例
+        yutons_sug = layui.yutons_sug;
+
+        //初始化标准输入提示框
+        yutons_sug.render({
+            id: 'smcpgg', //设置容器唯一id
+            type: 'sug', //设置输入框提示类型：sug-下拉框，sugTable-下拉表格
+            url: sessionStorage.getItem("url"), //设置异步数据接口,url为必填项,params为字段名
+            brefore: function(optid){
+                sessionStorage.setItem("url", "/invs/listcpgg?invname="+$("#invid").val()+"&cpgg=");
+            }
+        });
+        $("#sugItem").css({"z-index":"99999999"})
+    });
+}else{
+    showWarehouseSelect("whid", "warehouse", false);
+}
+showDictSelect("status", "bjstatus",true);
+showDictSelect("type", "kctype",undefined);
+showCusSelect("cusid", "customer", true);
+
+   var tableIns;
+
+    layui.use(['layer','form','laydate','table'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        laydate.render({
+            elem: '#sdate',
+            type: 'date',
+            value: year +'-'+ month +'-'+ '01'
+        });
+        laydate.render({
+            elem: '#edate'
+            ,value: new Date()
+        });
+        initParams()
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/kcLogs/list2"
+			,limit: 40
+			,limits: [20,40,50,100,200,500,1000,2000]
+			,totalRow: true
+			,toolbar: true
+            ,height:  'full-120'
+//          ,skin: 'line' //行边框风格
+//             ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+			,where: {cusname:$('#cusname').val(),cusid:$('#cusid').val(),whid:$('#whid').val(),sminvname:$("#invid").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),smcpgg:$("#smcpgg").val(),orderBy:"order by invname,cpgg,createTime ASC"}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+//					,{field:'cusname',title:'客户', width:150, sort: true}
+					,{field:'invname',title:'品名', width:200, sort: true}
+//					,{field:'cpgg',title:'规格', width:150, sort: true}
+				,{field:'csource',title:'业务来源', width:150, sort: true}
+//					,{field:'jian0',title:'期初件', width:100, sort: true, totalRow: true}
+//				,{field:'jian1',title:'入件', width:100, sort: true, totalRow: true}
+//				,{field:'jian2',title:'出件', width:100, sort: true, totalRow: true}
+//				,{field:'jian4',title:'期末件', width:100, sort: true, totalRow: true}
+					,{field:'inum0',title:'期初数量', width:100, sort: true, totalRow: true}
+				,{field:'inum1',title:'入数量', width:100, sort: true, totalRow: true}
+				,{field:'inum2',title:'出数量', width:100, sort: true, totalRow: true}
+				,{field:'inum4',title:'期末数量', width:100, sort: true, totalRow: true}
+//					,{field:'ilen0',title:'期初长度', width:100, sort: true, totalRow: true}
+//				,{field:'ilen1',title:'入长度', width:100, sort: true, totalRow: true}
+//				,{field:'ilen2',title:'出长度', width:100, sort: true, totalRow: true}
+//				,{field:'ilen4',title:'期末长度', width:100, sort: true, totalRow: true}
+					,{field:'iprice0',title:'期初单价', width:100, sort: true, totalRow: true}
+					,{field:'imoney0',title:'期初金额', width:100, sort: true, totalRow: true}
+//					,{field:'iprice1',title:'入库单价', width:100, sort: true, totalRow: true}
+//					,{field:'imoney1',title:'入库金额', width:100, sort: true, totalRow: true}
+//					,{field:'iprice2',title:'出库单价', width:100, sort: true, totalRow: true}
+//					,{field:'imoney2',title:'出库金额', width:100, sort: true, totalRow: true}
+					,{field:'iprice4',title:'期末单价', width:100, sort: true, totalRow: true}
+					,{field:'imoney4',title:'期末金额', width:100, sort: true, totalRow: true}
+//				,{field:'jianzhong',title:'单件重', width:100, sort: true}
+//				,{field:'perlen',title:'单件长度', width:100, sort: true}
+				,{field:'ctype',title:'操作类型', width:100, sort: true}
+				,{field:'bussid',title:'业务单号', width:100, sort: true}
+
+//				,{field:'danwei',title:'单位', width:100, sort: true}
+					,{field:'memo',title:'备注', width:100, sort: true}
+					,{field:'creator',title:'制单人', width:100, sort: true}
+                    ,{field:'ddate',title:'业务日期', width:100, sort: true}
+				,{field:'createTime',title:'操作时间', width:150, sort: true}
+//					,{field:'whname',title:'仓库名称', width:100, sort: true}
+//					,{field:'deptname',title:'部门名称', width:100, sort: true}
+
+//              ,{field:'deptname',title:'部门', width:100, sort: true}
+//                ,{field:'auditor',title:'审核人', width:100, sort: true}
+            ]]
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    cusname:$('#cusname').val(),cusid:$('#cusid').val(),whid:$('#whid').val(),sminvname:$("#invid").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),smcpgg:$("#smcpgg").val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('row(data)', function(obj){
+            //标注选中样式
+            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+        });
+
+
+		$("#whid").change(function(){
+			var whid = $(this).val();
+			var select = $("#invid");
+			select.html("");
+			if(whid){
+				invdata = getInvname(whid);
+				select.append("<option value=''>请选择</option>");
+				$.each(invdata, function(id, d) {
+					select.append("<option value ='" + d.id + "'>" + d.name + "</option>");
+				});
+			}
+			renderForm()
+		});
+
+        //form.on('select(deptChange)', function(data){
+        //    showClassSelect("classid", "class", true, data.value);
+        //    renderForm()
+        //})
+    });
+function del(id){
+	layer.confirm('确定要删除吗？', {
+        btn : [ '确定', '取消' ]
+    }, function() {
+    	$.ajax({
+            type : 'delete',
+            url : '/kcLogs/'+id,
+            success : function(data) {
+                $('#searchBt').trigger('click');
+                layer.msg("删除成功");
+            }
+        });
+        
+        layer.close(1);
+    });
+}
+
+    function audit(id){
+        layer.confirm('确定要审核吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/kcLogs/audit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function unaudit(id){
+        layer.confirm('确定要弃审吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/kcLogs/unaudit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("弃审成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+$("#searchBt").click(function(){
+	tableIns.reload({where: {cusname:$('#cusname').val(),cusid:$('#cusid').val(),whid:$('#whid').val(),sminvname:$("#invid").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),smcpgg:$("#smcpgg").val(),orderBy:"order by invname,cpgg,createTime ASC"},page:{curr:1}})
+});
+
+//根据仓库获取品名
+function getInvname(whid){
+    var invdata = []
+    if (whid) {
+        if (whid == 10){
+            invdata =  getinvGroupInvname("3");
+        } else if(whid == 5){
+            invdata =  getinvGroupInvname("13");
+        } else if(whid == 6){
+            invdata =  getinvGroupInvname("15");
+        }
+    }
+    return invdata;
+}
+
+function initParams(){
+    // $("#cusid").val(getUrlParam("cusid"))
+    $("#cusname").val(decodeURI(getUrlParam("cusname")))
+    $("#whid").val(getUrlParam("whid"))
+    $("#invname").val(decodeURI(getUrlParam("invname")))
+    $("#invid").val(decodeURI(getUrlParam("sminvname")))
+    $("#cpgg").val(decodeURI(getUrlParam("cpgg")))
+    $("#smcpgg").val(decodeURI(getUrlParam("smcpgg")))
+    $("#sdate").val(getUrlParam("sdate"))
+    $("#edate").val(getUrlParam("edate"))
+}
+
+$("#exportBt").click(function(){
+    $("#token").val(localStorage.getItem("token"))
+    $("#form").attr("onsubmit", "return true");
+    $("#form").submit();
+    $("#form").attr("onsubmit", "return false");
+});
+
+$("#collectBt").click(function(){
+    tableIns.reload({url:"/kcLogs/list2",where: {cusname:$('#cusname').val(),cusid:$('#cusid').val(),whid:$('#whid').val(),sminvname:$("#invid").val(),sdate:$("#sdate").val(),edate:$("#edate").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),smcpgg:$("#smcpgg").val(),orderBy:"order by invname,cpgg",groupby:"invid,invname,cpgg,jianzhong,perlen"},page:{curr:1}})
+})
+</script>

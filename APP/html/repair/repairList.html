@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.title {
+				padding: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				background-color: #fff;
+			}
+			.nodata{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<!-- <div onclick="openAdd()">添加</div> -->
+			<ul id="OA_task_1" class="mui-table-view mui-table-view-chevron"></ul>
+			<div id="nodata" class="nodata" style="height:40px;line-height:40px;text-align: center">没有数据了！</div>
+			</div>
+	    </div>
+	</body>	
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+</html>
+<script>
+			mui.plusReady(function () {
+					var view = plus.webview.currentWebview();  
+					
+					mui.init({
+						swipeBack: false,				
+						pullRefresh: {
+							container: '#pullrefresh',
+							down: {
+								callback: pulldownRefresh
+							},
+							up: {
+								auto:true,
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh
+							}
+						},
+						beforeback: function() {	        
+								view.close();
+						}
+					});	
+			});	
+				
+	        var token = JSON.parse(localStorage.getItem('$state')).token;	
+		
+			var start = 1;
+			var length = 20;
+			function getData(type){	
+				mui.ajax(server_url+'/repairs/layuiList?offset='+start+'&limit='+length+'&orderBy=order by createTime desc',{
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'token':token},
+					success:function(data){	
+						  liebiao(data)
+						  
+							var table = $(".mui-table-view");
+							var cells = document.body.querySelectorAll('.mui-table-view-cell');
+							var html = '';
+							if(data.data.length != 0){
+								if(!$("#nodata").hasClass("nodata")){
+		                             $("#nodata").addClass("nodata");
+		                        }
+								
+								for (var i = 0; i<data.data.length ; i++) {
+									var todo = JSON.stringify(data.data[i])
+									html+='<li class="mui-table-view-cell mui-media">'
+												if (data.data[i].status == 1){
+													html+='<div class="mui-slider-right mui-disabled">'+
+															'<a class="mui-btn mui-btn-blue" onclick="lingdan('+data.data[i].id+')">领料</a>'+
+															'<a class="mui-btn mui-btn-red" onclick="tuiliao('+data.data[i].id+')">退料</a>'+
+														'</div>'	
+												}
+	
+												html+='<a class="mui-navigate-right mui-slider-handle" data-status="'+data.data[i].status+'" data-id="'+data.data[i].id+'" data-flowid="'+data.data[i].flowid+'"  onclick="edit(this)">'+
+													'<img class="mui-media-object mui-pull-left" src="../../images/qq.png">'+
+													'<div class="mui-media-body">'+data.data[i].deptname+'-'+data.data[i].cname+''	
+																	if (data.data[i].gzname){
+																		html+='-'+data.data[i].gzname
+																	}else{
+																		if(data.data[i].gzmc){
+																			html+='-'+data.data[i].gzmc
+																		}		
+																	}
+											html+='<p class="mui-ellipsis"> '+data.data[i].createname+'-'+data.data[i].createname+'-'+data.data[i].stepname+'-'+data.data[i].createTime+'</p>'+
+													'</div>'+
+												'</a>'+
+											'</li>'
+								}
+								
+							
+								start += 1;
+								mui('#pullrefresh').pullRefresh().enablePullupToRefresh();
+							}else{
+								if($("#nodata").hasClass("nodata")){
+		                            $("#nodata").removeClass("nodata");
+								}
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+							}
+							if(type == 'up'){
+								table.append(html);
+							}else{
+								table.html(html);
+							}
+							
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+
+						var msg = xhr.responseText;
+						var response = JSON.parse(msg);
+						alert(response.message);
+					}
+				});
+			}
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+                    start = 1;
+					getData("down");
+				}, 1000);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+					getData("up");
+				}, 1000);
+			}
+			
+			function edit(repair){
+				var id = $(repair).data("id");
+				var status = $(repair).data("status");
+
+				var url = 'updateRepair.html';
+				if(status == 1){
+					url = 'viewRepair.html';
+				}
+				mui.openWindow({
+								url: url,
+								id: url,
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"维修单"
+									}
+								},
+								waiting: {
+									autoShow: false
+								},	
+								extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+							        repairid:id,
+											flowid:$(repair).data("flowid")
+							    },
+							});
+		    }
+			
+			function lingdan(id){
+
+							mui.openWindow({
+											url: "../lingliao/addLingliao.html",
+											id: 'addLingliao',
+											preload: true,
+											show: {
+												aniShow: 'pop-in'
+											},
+											styles: {
+												popGesture: 'hide',
+												titleNView: {
+													autoBackButton: true,										
+													titleText:"领料单"
+												}
+											},
+											waiting: {
+												autoShow: false
+											},	
+											extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+										        repairid:id
+										    },
+										});
+					    }
+							
+						function tuiliao(id){
+						
+													mui.openWindow({
+																	url: "../stockin/addStockin.html",
+																	id: 'addStockin',
+																	preload: true,
+																	show: {
+																		aniShow: 'pop-in'
+																	},
+																	styles: {
+																		popGesture: 'hide',
+																		titleNView: {
+																			autoBackButton: true,										
+																			titleText:"入库单"
+																		}
+																	},
+																	waiting: {
+																		autoShow: false
+																	},	
+																	extras: { //新窗口的额外扩展参数,可用来处理页面间传值
+																        repairid:id
+																    },
+																});
+											    }	
+			
+            function del(id,t){            	
+            	mui.confirm('确认删除该条记录？',  '金贵塑料', ['确认','取消'], function(e) {
+	            		if(e.index==0){
+	            			$.ajax({
+						            type : 'delete',
+						            url : server_url+'/repairs/'+id,
+						            headers:{'token':token},
+						            success : function(data) {
+						                $(t).parent().remove();
+						            }
+						        });
+	            		}                                     
+					});
+					var btnArray = ['确认', '取消'];
+            }
+            
+            function openAdd(){
+            	mui.openWindow({
+								url: 'addRepair.html',
+								id: 'addRepair',
+								preload: true,
+								show: {
+									aniShow: 'pop-in'
+								},
+								styles: {
+									popGesture: 'hide',
+									titleNView: {
+										autoBackButton: true,										
+										titleText:"添加维修管理"
+									}
+								},
+								waiting: {
+									autoShow: false
+								}	
+							});
+            }
+</script>

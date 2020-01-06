@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/common.css">
+</head>
+<body>
+<div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div>
+			<header style="height: 100%">
+				<div align="left">
+					<table style="width: 100%">
+						<tr>
+							<td>
+								<form class="form-inline" onsubmit="return false">
+									<input  type="hidden" id="stockins"/>
+									<div class="form-group">
+										日期：
+										<input id="ddate" type="text" class="form-control" style="width:100px" placeholder="起始日期">
+										-
+										<input id="edate" type="text" class="form-control" style="width:100px" placeholder="终止日期">
+										客户：
+										<input class='form-control' placeholder='客户'  style="width:100px"  type='text' name='cusname' id='cusname' >
+
+										出库类型：
+										<select class="form-control input-sm" name="busstype" id="busstype"></select>
+										仓库：
+										<select id="whid" name="whid" class="form-control input-sm"></select>
+										<button id="searchBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>搜索</button>
+										<button id="printBt" class="layui-btn layui-btn-sm"><i class="layui-icon layui-icon-print"></i>打印</button>
+										<button id="printFhBt" class="layui-btn layui-btn-sm"><i class="layui-icon layui-icon-print"></i>打印发货单</button>
+										<button class="layui-btn layui-btn-sm" data-type="add" onclick="add()">
+											<i class="layui-icon">&#xe608;</i> 添加
+										</button>
+										<button class="layui-btn layui-btn-sm" data-type="paiche" id="btnpaiche">派车</button>
+									</div>
+								</form>
+								<form class="form-inline " id="form" method="post" action="/stockouts/exportDzd" onsubmit="return false" enctype="multipart/form-data">
+									<input id="token" name="token" type="hidden" />
+									日期：
+									<input id="dzsdate" name="sdate" type="text" class="form-control" style="width:100px" placeholder="起始日期">
+									-
+									<input id="dzedate" name="edate" type="text" class="form-control" style="width:100px" placeholder="终止日期">
+									客户：
+									<select id="cusid" name="cusid" class="form-control" style="width:100px"></select>
+									<button class="layui-btn layui-btn-sm" id="btndzd">导出对账单</button>
+								</form>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</header>
+
+			<div>
+				<div class="widget-body no-padding">
+					<table class="layui-hide" id="data" lay-filter="data"></table>
+
+					<table class="layui-hide" id="datas" lay-filter="datas"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="test" style="display: none;"></div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/warehouse.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+<script type="text/javascript" src="../../js/customer.js"></script>
+<script type="text/javascript">
+	var pers = checkPermission();
+	var id;
+	//var appStatus = showStepSelect("stepid", "1", true);
+	//var showDept = showDeptSelect("deptid", "dept", true);
+	//var showUser = showUserSelect("createby", "user", true);
+	showDictSelect("busstype", "stockouttype",true);
+	// showWarehouseSelect("whid", "warehouse", false);
+	showCusSelect("cusid", "customer", true);
+	var ctype = getUrlParam("ctype");
+	var ck = getUrlParam("ck");
+	if(ck){
+		if(ck=="dmfl"){
+			$("#whid").append("<option value='12'>地膜辅料库</option>");
+		}
+	}else {
+		// console.log(biztype);
+		if (ctype == "bj") {
+			showWarehouseByType("whid", "warehouse", true, "备件库");
+		} else if (ctype == "yl") {
+			showWarehouseByType("whid", "warehouse", true, "原料库");
+		} else if (ctype == "cp") {
+			showWarehouseByType("whid", "warehouse", true, "产品库", "1");
+		} else if (ctype == "sm") {
+			showWarehouseByType("whid", "warehouse", true, "商贸库");
+		} else {
+			showWarehouseSelect("whid", "warehouse", true);
+		}
+	}
+	var tableIns;
+	var tableIns2;
+	layui.use(['table','laydate','element'], function(){
+		var element = layui.element;
+		var table = layui.table;
+		var laydate = layui.laydate;
+		laydate.render({
+			elem: '#ddate'
+		});
+		laydate.render({
+			elem: '#edate'
+		});
+        laydate.render({
+            elem: '#dzsdate'
+        });
+        laydate.render({
+            elem: '#dzedate'
+        });
+		laydate.render({
+			elem: '#cmonth',
+			type:'month'
+		});
+		tableIns = table.render({
+			elem: '#data'
+			,url:"/stockouts/layuiList"
+			,toolbar: '#toolbar'
+			,limit: 40
+			,limits: [20,40,50,100,200,500,1000,2000]
+			,height: 500
+			,where: {sdate:$("#ddate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),whid:$("#whid").val(),ctype:ctype,busstype:$("#busstype").val(),orderBy:"order by ddate desc"}
+
+			,page: true
+			,autoSort:false
+			,request: {
+				pageName: 'offset' //页码的参数名称，默认：page
+			}
+			,cols: [[
+
+				// ,{field:'ccode', title: '编码', sort: true}
+				{field:'ctype1', title: '出库类型', sort: true}
+				// ,{field:'bussid', title: '对应出库单号'}
+				,{field:'ddate', title: '出库日期',width:120, sort: true}
+				,{field:'deptname', title: '部门',width:100, sort: true}
+				,{field:'whname', title: '仓库',width:100, sort: true}
+				,{field:'cusname', title: '客户',width:220, sort: true}
+				,{field:'stepname', title: '派车状态',width:100, sort: true}
+				,{field:'zcclbm', title: '车辆',width:100, sort: true}
+				,{field:'yunfei', title: '运费',width:100, sort: true}
+				,{field:'memo', title: '备注'}
+				,{field:'creator', title: '库管', sort: true}
+				,{field:'createTime', title: '制单日期',width:200, sort: true}
+//            ,{field:'csource', title: '单据来源'}
+				,{field:'caozuo', title: '操作',fixed:'right',templet: function(d){
+						var id = d.id;
+						var href = "addStockout.html?id=" + id+ "&ctype="+getUrlParam("ctype");
+						var edit = buttonEdit(href, "", pers);
+						var del = buttonDel(id, "", pers);
+						if(d.status==0){
+							var audit = buttonAudit(id,"",pers);
+						}else{
+							var audit = buttonUnAudit(id,"",pers);
+						}
+						if(d.status>0){
+							edit ="";
+							del="";
+						}
+						return edit + del + audit ;
+					}}
+				,{field:'id', hide:true}
+			]]
+		});
+
+		//监听行单击事件（双击事件为：rowDouble）
+		table.on('row(data)', function(obj){
+			var data = obj.data;
+			id = data.id;
+			tableIns2.reload({where: {stockid:id}});
+			//标注选中样式
+			obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+		});
+
+		//监听排序事件
+		table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			tableIns.reload({
+				initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+				,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+					sdate:$("#ddate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),whid:$("#whid").val(),ctype:ctype,busstype:$("#busstype").val(),
+					orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+				}
+				,page:{curr:1}
+			});
+		});
+
+		tableIns2 = table.render({
+			elem: '#datas'
+			,url:"/stockoutss/listByStockoutId"
+			,page: false
+			,limit: 10000
+			,totalRow: true
+			,cols: [[
+				{field:'mxwhname', title: '仓库', sort: true}
+				,{field:'invname', title: '品名', sort: true}
+				,{field:'cpgg', title: '规格', sort: true}
+				,{field:'danwei', title: '单位', sort: true}
+				,{field:'jian', title: '件', sort: true, totalRow: true}
+				,{field:'jianzhong', title: '单件重', sort: true}
+				,{field:'inum', title: '数量', sort: true, totalRow: true}
+				,{field:'iprice', title: '单价', sort: true}
+				,{field:'imoney', title: '金额', sort: true, totalRow: true}
+				,{field:'memo', title: '备注'}
+			]]
+		});
+	});
+
+	function del(id){
+		layer.confirm('确定要删除吗？', {
+			btn : [ '确定', '取消' ]
+		}, function() {
+			$.ajax({
+				type : 'delete',
+				url : '/stockouts/'+id,
+				success : function(data) {
+					tableIns.reload()
+					layer.msg("删除成功");
+				}
+			});
+
+			$.ajax({
+				type : 'delete',
+				url : '/stockoutss/'+id,
+				success : function(data) {
+					tableIns2.reload()
+					layer.msg("删除成功");
+				}
+			});
+
+			layer.close(1);
+		});
+	}
+
+	function audit(id){
+		layer.confirm('确定要审核吗？', {
+			btn : [ '确定', '取消' ]
+		}, function() {
+			$.ajax({
+				type : 'put',
+				url : '/stockouts/audit/'+id,
+				success : function(data) {
+					$('#searchBt').trigger('click');
+					layer.msg("审核成功");
+				}
+			});
+
+			layer.close(1);
+		});
+	}
+
+	$("#printBt").click(function(){
+		console.log(id);
+		$.ajax({
+			type : 'get',
+			url : '/stockouts/' + id ,
+			success : function(data) {
+
+				var html = "";
+
+				if(data.cusname==undefined){
+					data.cusname ="";
+				}
+
+				html += "<div style='text-align: center;font-size: 35px;font-family: 宋体;margin-bottom: 10px;font-weight: 900'>山西金贵塑料制造有限公司出库单</div>";
+				var money = 0;
+				html += "<table class='print-bztable'>" +
+						"<tr><td style='border:none; text-align: left;' colspan='3'>单位："+data.cusname+"</td>" +
+						"<td style='border:none' colspan='3'>仓库："+data.whname+"</td>" +
+						"<td style='border:none;text-align: right' colspan='3'>制单日期："+data.createTime+"</td></tr>" +
+						"<tr><th style='border-left: 1px solid #000;width:60px'>编号</th><th style='width: 150px'>存货</th><th style='width: 150px'>规格</th><th style='width: 60px;'>单位</th><th style='width: 100px'>数量</th><th style='width: 60px;'>单价</th><th>金额</th><th>附注</th></tr>";
+
+				$.ajax({
+					type : 'get',
+					url : "/stockoutss/listByStockoutId?stockid="+id,
+					async : false,
+					success : function(datas) {
+
+						for (var i=0;i<datas.data.length;i++){
+							formatData(datas.data[i])
+							var bianhao=i+1;
+							console.log("len:" + datas.data.length);
+							html += "<tr>"+"<td style='border-left: 1px solid #000;'>"+bianhao+"</td>" + "<td>"+datas.data[i].invname+"</td><td>"+datas.data[i].cpgg+"</td><td>"+datas.data[i].danwei+"</td><td>"+datas.data[i].inum+"</td><td>"+datas.data[i].iprice+"</td><td>"+datas.data[i].imoney+"</td>" + "<td>"+datas.data[i].memo+"</td>" +
+									"</tr>";
+
+							money += Number(datas.data[i].imoney);
+
+
+						}
+					}
+				});
+
+
+				html += "<tr><td style='border-left: 1px solid #000;'></td><td>合计</td><td colspan='4'>"+DX(money.toFixed(2))+"</td><td>"+money.toFixed(2)+"</td><td></td></tr>"
+				html += "<tr><td style='border:none' colspan='3'>验收人："+data.creator+"</td><td style='border:none;' colspan='2'></td><td style='border:none;' colspan='2'>制单人：</td></tr>"
+				html += "</table>";
+				html = html.replace("null","").replace("null","").replace("null","").replace("null","").replace("undefined","").replace("undefined","");
+
+				$("#test").print({
+					//Use Global styles
+					globalStyles : false,
+					//Add link with attrbute media=print
+					mediaPrint : false,
+					//Print in a hidden iframe
+					iframe : false,
+					//Don't print this
+					noPrintSelector : ".avoid-this",
+					//Add this at top
+					prepend : html,
+					//Add this on bottom
+					append : "",
+					//Log to console when printing is done via a deffered callback
+					deferred: $.Deferred().done(function() { console.log('Printing done', arguments); }),
+					stylesheet:'../../css/fahuoprint.css'
+				});
+			}
+		});
+	});
+
+
+	function unaudit(id){
+		layer.confirm('确定要弃审吗？', {
+			btn : [ '确定', '取消' ]
+		}, function() {
+			$.ajax({
+				type : 'put',
+				url : '/stockouts/unaudit/'+id,
+				success : function(data) {
+					$('#searchBt').trigger('click');
+					layer.msg("弃审成功");
+				}
+			});
+
+			layer.close(1);
+		});
+	}
+
+	$("#searchBt").click(function(){
+		tableIns.reload({where: {sdate:$("#ddate").val(),edate:$("#edate").val(),cusname:$("#cusname").val(),whid:$("#whid").val(),ctype:ctype,busstype:$("#busstype").val(),orderBy:"order by ddate desc"},page:{curr:1}})
+	});
+
+	function add(){
+		location.href="addStockout.html?ctype="+getUrlParam("ctype") + "&ck="+getUrlParam("ck");
+	}
+
+	$("#printFhBt").click(function(){
+		console.log(id);
+		$.ajax({
+			type : 'get',
+			url : '/stockouts/' + id ,
+			success : function(data) {
+				formatData(data)
+				var html = "";
+				var jian = "";
+				var inum = "";
+				var imoney = "";
+				var pihao = "";
+				var neirong = "";
+				var xsddcode = "";
+
+				if(data.cusname==undefined){
+					data.cusname ="";
+				}
+
+				$.ajax({
+					type : 'get',
+					url : "/scJiliangs/listFhid?fhid="+id,
+					async : false,
+					success : function(datas) {
+						for (var inv in datas){
+							// var data = datas[inv];
+							var xiaojijian = "";
+							var iprice = "";
+							var allinum = "";
+							var allimoney = "";
+							var tuopani = 0
+							for(var tp in datas[inv]){
+								var data = datas[inv][tp];
+								xiaojijian = Number(xiaojijian)+Number(data.length)
+								var cishu = data.length / 10;
+								var jiliangi = 0;
+								while (cishu > 0){
+									var gongjin = "";
+									var mishu = ""
+									if (data.length / 10 == cishu && tuopani == 0) {
+										gongjin += "<tr><td style='border-left: 1px solid #000;'>"+data[0].invname+"</td><td>"+data[0].cpgg+"</td>"
+										if (data[0].invcode){
+											mishu += "<tr><td style='border-left: 1px solid #000;'>"+data[0].invcode+"</td><td>米数</td>"
+										} else{
+											mishu += "<tr><td style='border-left: 1px solid #000;'></td><td>米数</td>"
+										}
+									}else{
+										gongjin += "<tr><td style='border-left: 1px solid #000;'></td><td></td>"
+										mishu += "<tr><td style='border-left: 1px solid #000;'></td><td>米数</td>"
+									}
+
+									var inumtotal = "";
+									var ilentotal = "";
+									for(var i=0;i<10;i++){
+										var jiliang = data[jiliangi]
+										if (jiliang){
+											formatData(jiliang)
+											gongjin += "<td style='font-size: 21px'>"+jiliang.inum+"</td>";
+											mishu += "<td style='font-style:italic'>"+jiliang.ilen+"</td>";
+											inumtotal = (Number(inumtotal)+Number(jiliang.inum)).toFixed(2)
+											ilentotal = Number(ilentotal)+Number(jiliang.ilen)
+											if (jiliang.iprice){
+												iprice = jiliang.iprice;
+											}
+											if (jiliang.cbatch){
+												pihao = jiliang.cbatch;
+											}
+											if (jiliang.xsddcode){
+												xsddcode = jiliang.xsddcode;
+											}
+										}else{
+											gongjin += "<td></td>";
+											mishu += "<td></td>";
+										}
+										jiliangi ++;
+									}
+									gongjin += "<td style='font-size: 21px'>"+inumtotal+"</td></tr>";
+									mishu += "<td style='font-style:italic'>"+ilentotal+"</td></tr>";
+									neirong += gongjin + mishu;
+									allinum = (Number(allinum)+Number(inumtotal)).toFixed(2)
+									cishu --;
+								}
+								tuopani++;
+							}
+							allimoney = (Number(iprice)*Number(allinum)).toFixed(2)
+							neirong += "<tr style='font-size:22px;'><td style='border-left: 1px solid #000;'></td><td>小计：</td><td colspan='2'>"+xiaojijian+"件</td><td colspan='3'>"+allinum+"kg</td><td colspan='3'>单价："+iprice+"</td><td colspan='3'>金额："+allimoney+"元</td></tr>"
+							jian = Number(xiaojijian) + Number(jian);
+							inum = (Number(allinum)+Number(inum)).toFixed(2)
+							imoney = (Number(allimoney)+Number(imoney)).toFixed(2)
+						}
+					}
+				});
+
+				html += "<h1 style='text-align: center'>山西金贵塑料制造有限公司销售码单</h1>";
+				html += "<table class='print-table' style='font-family:黑体;font-weight:900'>" +
+						"<tr><td style='border-right: none;text-align: left;' colspan=4'>客户名称："+data.cusname+"</td>" +
+						"<td style='border-right: none;text-align: left' colspan='3'>日期："+new Date().getFullYear() + "-" +((new Date().getMonth()+1)<10?"0":"")+(new Date().getMonth()+1)+"-"+(new Date().getDate()<10?"0":"")+new Date().getDate()+"</td>" +
+						"<td style='border-right: none;text-align: left' colspan='3'>订单编码："+xsddcode+"</td>" +
+						"<td style='border-right: none;text-align: right' colspan='3'>批号："+pihao+"</td></tr>"+
+						"<tr><td style='border-left: 1px solid #000;'>产品名称</td><td>规格/重量</td><td class='print-td'>1</td><td class='print-td'>2</td><td class='print-td'>3</td><td class='print-td'>4</td><td class='print-td'>5</td class='print-td'><td class='print-td'>6</td><td class='print-td'>7</td>" +
+						"<td class='print-td'>8</td><td class='print-td'>9</td><td class='print-td'>10</td><td>小计</td></tr>"
+
+				html += neirong;
+
+				html += "<tr style='font-size:22px;'><td style='border-left: 1px solid #000;'>合计：</td><td colspan='2'>"+jian+"件</td><td colspan='4'>"+inum+"kg</td><td colspan='6'>货款合计："+imoney+"元</td></tr>"
+				html +="<tr><td style='border:none;text-align: left' colspan='3'>保管：" +data.creator+ "</td>" +
+						"<td style='border:none;text-align: left' colspan='3'>审核：</td>" +
+						"<td style='border:none;text-align: left' colspan='3'>送货人：</td>" +
+						"<td style='border:none;text-align: right' colspan='3'>收货人签字：</td><td style='border:none;text-align: right'></td></tr>"
+				html +="<tr><td style='border:none;text-align: left'></td></tr>"
+				html +="<tr><td style='border:none;text-align: left' >备注：</td>" +
+						"<td style='border:none;text-align: left' colspan='2'>1.车辆卫生清洁：</td>" +
+						"<td style='border:none;text-align: left' colspan='2'>2.车辆状况良好</td>" +
+						"<td style='border:none;text-align: right' colspan='4'>3.保证货物完好无损防晒防淋雨</td><td style='border:none;text-align: right'></td></tr>"
+				html +="<tr><td style='border:none;text-align: left' ></td>" +
+						"<td style='border:none;text-align: left' colspan='2'></td>" +
+						"<td style='border:none;text-align: left' colspan='2'></td>" +
+						"<td style='border:none;text-align: right' font-size: 35px; colspan='8'>务必于  月  日前送达</td><td style='border:none;text-align: right'></td></tr>"
+				html += "</table>";
+				html = html.replace("null","").replace("null","").replace("null","").replace("null","").replace("undefined","").replace("undefined","");
+
+				$("#test").print({
+					//Use Global styles
+					globalStyles : false,
+					//Add link with attrbute media=print
+					mediaPrint : false,
+					//Print in a hidden iframe
+					iframe : false,
+					//Don't print this
+					noPrintSelector : ".avoid-this",
+					//Add this at top
+					prepend : html,
+					//Add this on bottom
+					append : "",
+					//Log to console when printing is done via a deffered callback
+					deferred: $.Deferred().done(function() { console.log('Printing done', arguments); }),
+					stylesheet:'../../css/fahuoprint.css'
+				});
+			}
+		});
+	});
+
+	$("#btnpaiche").click(function () {
+		if(id== null || id== "" ){
+			layer.msg("请选择销售订单")
+		}
+		else{
+			window.parent.layui.index.openTabsPage('pages/xspaiche/addXsPaiche.html?fhid='+ id +'&ctype=cp', '派车')
+		}
+	});
+	$("#btndzd").click(function(){
+		if (!$("#dzsdate").val() || !$("#dzedate").val()){
+			layer.msg("请选择起始和终止日期")
+			return
+		}
+		if (!$("#cusid").val()){
+			layer.msg("请选择客户")
+			return
+		}
+		$("#token").val(localStorage.getItem("token"))
+		$("#form").attr("onsubmit", "return true");
+		$("#form").submit();
+		$("#form").attr("onsubmit", "return false");
+	});
+</script>

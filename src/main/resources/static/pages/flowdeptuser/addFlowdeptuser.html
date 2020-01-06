@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+	<link rel="stylesheet" href="../../layuiadmin/formSelects/formSelects-v4.css">
+<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+<style>
+	.eleTree{
+		width: 350px;
+		height: 500px;
+		border: 1px solid #ccc;
+		overflow: hidden;
+		display: inline-block;
+	}
+	.ele5{
+		height: auto;
+		width: 98%;
+		display: none;
+		position: absolute;
+		top:100%;
+		background-color: #fff;
+		z-index: 100;
+	}
+    form#form {
+        margin-top: 50px;
+    }
+</style>
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<div class="form-group">
+				<label class="col-md-2 control-label">部门名称</label>
+				<div class="col-md-8">
+					<!--<select id="deptid" name="deptid" class="form-control input-sm"></select>-->
+					<input class="form-control" type="text" id="deptid" name="deptid" data-id=""  placeholder="请选择部门" readonly="" autocomplete="off">
+					<div class="eleTree ele5" lay-filter="eleTree"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">人员姓名</label>
+				<div class="col-md-8">
+					<select class="form-control" type="text" id="userid" name="userid" data-id="" placeholder="请选择工作人员" readonly="" autocomplete="off" >
+                        <option value =''>--请选择部门人员--</option>
+					</select>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-8'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-10">
+					    <button class="btn btn-primary" onclick="location.href='flowdeptuserList.html'">返回</button>
+						<button class="btn btn-primary" type="submit" onclick="add()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../js/my/roles/role.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../layuiadmin/formSelects/formSelects-v4.min.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+    <script type="text/javascript" src="../../js/dept.js"></script>
+<!--<script type="text/javascript" src="../../js/gongzibz.js"></script>-->
+	<script type="text/javascript">
+        layui.config({
+            base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+        }).extend({
+            eleTree: 'eleTree'
+        });
+        var el;
+        showRoleSelect("roles", "roles", false);
+        // showGongzibzSelect("ctype","gongzibz",true);
+        var formSelects = layui.formSelects;
+        formSelects.render("roles")
+
+		layui.use(['layer','laydate','eleTree'], function(){
+		    var layer = layui.layer;
+		    var laydate = layui.laydate;
+		    laydate.render({
+	           elem: '#birthday'
+	        });
+            var eleTree = layui.eleTree;
+
+            if(!el){
+                el=eleTree.render({
+                    elem: '.eleTree',
+                    url:'/depts/eleTree',
+                    request: {
+                        name: "name",
+                    },
+                    emptText:"暂无组织架构",
+                    // defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true,
+					done:function(res){
+                        var data = res.data;
+                        for(var i=0;i<data.length;i++){
+                            if (data[i].id == deptid){
+                                $("#deptid").data("id",data[i].id);
+                                $("#deptid").val(data[i].name);
+							}
+						}
+					}
+                });
+            }
+            $("#deptid").on("click",function (e) {
+                e.stopPropagation();
+                $(".eleTree").toggle();
+            })
+
+            eleTree.on("nodeClick(eleTree)",function(d) {
+                $('#deptid').trigger('change');
+                var deptid = d.data.currentData.id;
+                $("#deptid").val(d.data.currentData.name)
+                $("#deptid").data("id",d.data.currentData.id);
+                $(".eleTree").hide();
+                if (deptid == null || deptid == ''){
+                    return;
+                }
+                $.ajax({
+                    type : 'get',
+                    url : '/users/listbydept?deptid=' + deptid,
+                    async : false,
+                    success : function(data) {
+                        var select = $("#userid");
+                        $("#userid").empty();
+                        select.append("<option value=''>--请选择部门人员--</option>");
+                        $.each(data, function(i, d) {
+                            select.append("<option value ='" + d.id + "'>" + d.nickname + "</option>");
+                        });
+                    }
+                });
+            })
+            $(document).on("click",function() {
+                $(".eleTree").hide();
+            })
+		});
+
+		showDictSelect("sex", "sex");
+        showDeptSelect("deptid", "dept", false);
+		var flowstep_id = getUrlParam("flowstep_id");
+	
+		$('#form').bootstrapValidator();
+		
+		function add() {
+            var formdata = $("#form").serializeObject();
+            var id = $("#id").val();
+            var deptid = $("#deptid").data("id");
+            var userid = $("#userid").val();
+            var bz = $("#memo").val();
+            formdata.id = id;
+            formdata.deptid = deptid;
+            formdata.userid = userid;
+            if ( deptid == null || deptid == '' ){
+                layer.msg('部门信息不能为空');
+                return;
+            }
+            if ( userid == null || userid == '' ){
+                layer.msg('人员信息不能为空');
+                return;
+            }
+			$.ajax({
+				type : 'post',
+                url : '/flowDeptUsers/updateFlowDeptUser?flowstep_id='+flowstep_id+'&userid='+userid+'&deptid='+deptid+'&memo='+bz,
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "flowdeptuserList.html";
+                    });
+				}
+			});
+		}
+
+        //重新渲染表单
+        function renderForm(){
+            layui.use('form', function(){
+                var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                form.render();
+            });
+        }
+		
+	</script>
+</body>
+</html>

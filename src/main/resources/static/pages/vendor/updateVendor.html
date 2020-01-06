@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+	<link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+	<style>
+		.layui-form-label{
+			width: 120px;
+		}
+		.eleTree{
+			width: 350px;
+			height: 500px;
+			border: 1px solid #ccc;
+			overflow: hidden;
+			display: inline-block;
+		}
+		.ele5{
+			height: auto;
+			width: 98%;
+			display: none;
+			position: absolute;
+			top:100%;
+			background-color: #fff;
+			z-index: 100;
+		}
+	</style>
+</head>
+<body>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-header" align="center" ><h1>供应商档案</h1></div>
+		<div class="layui-card-body">
+
+			<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+				<input type="hidden" id="id" name="id">
+				<div class='layui-form-item'>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>供应商分类</label>
+						<div class='layui-input-inline'>
+							<!--<select placeholder='存货分类' type='text' name='pid' id='pid' lay-verify="required"
+                                    lay-verType="tips">
+                            </select>-->
+							<input class="layui-input" type="text" id="cid" name="cid" data-id=""  placeholder="请选择供应商分类" readonly="" autocomplete="off">
+							<div class="eleTree ele5" lay-filter="eleTree"></div>
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>供应商编码</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='供应商编码' type='text' name='ccode' id='ccode' lay-verify="required" lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>供应商名称</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='供应商名称' type='text' name='cname' id='cname' lay-verify="required" lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>供应商简称</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='供应商简称' type='text' name='abbname' id='abbname' lay-verType="tips">
+						</div>
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>地址</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='地址' type='text' name='venaddress' id='venaddress'  lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>邮编</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='邮编' type='text' name='venpostcode' id='venpostcode' lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>注册码</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='注册码' type='text' name='venregcode' id='venregcode' lay-verify="number" lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>银行</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='银行' type='text' name='venbank' id='venbank' lay-verType="tips" >
+						</div>
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>账号</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='账号' type='text' name='venaccount' id='venaccount' lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>联系人</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='联系人' type='text' name='venperson' id='venperson'  lay-verType="tips">
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>电话</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='电话' type='text' name='venphone' id='venphone' lay-verify="number" >
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>传真</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='传真' type='text' name='venfax' id='venfax' >
+						</div>
+					</div>
+				</div>
+				<div class='layui-form-item'>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>邮箱</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='邮箱' type='text' name='venemail' id='venemail'  >
+						</div>
+					</div>
+					<div class='layui-inline'>
+						<label class='layui-form-label'>法人</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='法人' type='text' name='legalperson' id='legalperson'>
+						</div>
+					</div>
+					<!--					<div class='layui-form-item'>-->
+					<!--						<label class='layui-form-label'>描述</label>-->
+					<!--						<div class='layui-input-block'>-->
+					<!--							<input class='layui-input' placeholder='描述' type='text' name='tdesc' id='tdesc' >-->
+					<!--						</div>-->
+					<!--					</div>-->
+					<div class='layui-inline'>
+						<label class='layui-form-label'>备注</label>
+						<div class='layui-input-inline'>
+							<input class='layui-input' placeholder='备注' type='text' name='memo' id='memo' >
+						</div>
+					</div>
+				</div>
+				<div class="form-actions">
+					<div class="row" align="center">
+						<div class="col-md-12">
+							<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+							<button class="layui-btn" lay-submit  lay-filter="tj" id="tj">
+								<i class="fa fa-save"></i> 保存
+							</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/vendorclass.js"></script>
+<!--<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>-->
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript">
+
+    var biztype = getUrlParam("ctype");
+
+    // console.log(pid)
+
+    layui.config({
+        base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree'
+    });
+
+
+    var el;
+    layui.use(['layer','form','laydate','eleTree'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate =layui.laydate;
+
+        laydate.render({
+            elem: '#devdate' //指定元素
+        });
+
+
+        var eleTree = layui.eleTree;
+
+        $("#cid").on("click",function (e) {
+            e.stopPropagation();
+            $(".eleTree").toggle();
+        });
+
+        eleTree.on("nodeClick(eleTree)",function(d) {
+            $('#cid').trigger('change');
+            $("#cid").val(d.data.currentData.name)
+            $("#cid").data("id",d.data.currentData.id);
+            $(".eleTree").hide();
+        });
+        $(document).on("click",function() {
+            $(".eleTree").hide();
+        });
+
+        initData();
+
+        function initData(){
+            var id = getUrlParam("id");
+            if(id){
+                $.ajax({
+                    type : 'get',
+                    url : '/vendors/'+id,
+                    async : false,
+                    success : function(data) {
+                        $('#id').val(data.id);
+                        $('#ccode').val(data.ccode);
+                        $('#cname').val(data.cname);
+                        $('#abbname').val(data.abbname);
+                        var cid = data.cid
+                        if(!el){
+                            el=eleTree.render({
+                                elem: '.eleTree',
+                                url:'/vendors/eleTree',
+                                request: {
+                                    name: "name",
+                                },
+                                emptText:"暂无供货商分类",
+                                // defaultExpandAll: true,
+                                expandOnClickNode: false,
+                                highlightCurrent: true,
+                                done:function(res){
+                                    var data = res.data;
+                                    // console.log(data)
+                                    for(var i=0;i<data.length;i++){
+                                        if (data[i].id == cid){
+                                            $("#cid").data("id",data[i].id);
+                                            $("#cid").val(data[i].name);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        $('#id').val(data.id);
+                        $('#venaddress').val(data.venaddress);
+                        $('#venpostcode').val(data.venpostcode);
+                        $('#venregcode').val(data.venregcode);
+                        $('#venbank').val(data.venbank);
+                        $('#venaccount').val(data.venaccount);
+                        $('#devdate').val(data.devdate);
+                        $('#venperson').val(data.venperson);
+                        $('#venphone').val(data.venphone);
+                        $('#venfax').val(data.venfax);
+                        $('#venemail').val(data.venemail);
+                        $('#legalperson').val(data.legalperson);
+                        $('#pic').val(data.pic);
+                        $('#barcode').val(data.barcode);
+                        $('#tdesc').val(data.tdesc);
+                        $('#memo').val(data.memo);
+                        $('#ctype').val(data.ctype);
+
+                        renderForm();       //重新渲染表单
+                    }
+                });
+
+            }
+        }
+
+        form.on('submit(tj)', function(data){
+
+            $("#tj").attr("class","layui-btn layui-btn-radius layui-btn-disabled").removeAttr("lay-filter","tj");
+
+            var formdata = $("#form").serializeObject();
+            formdata.cid = $("#cid").data("id");
+            formdata.ctype = biztype
+            console.log(formdata);
+            $.ajax({
+                type : 'put',
+                url : '/vendors',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(formdata),
+                success : function(data) {
+                    layer.msg("修改成功", {shift: -1, time: 1000}, function(){
+                        location.href = "vendorList.html?ctype="+biztype;
+                    });
+                }
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+
+        //重新渲染表单
+        function renderForm(){
+            layui.use('form', function(){
+                var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                form.render();
+            });
+        }
+
+
+    });
+
+
+</script>
+</body>
+</html>
+

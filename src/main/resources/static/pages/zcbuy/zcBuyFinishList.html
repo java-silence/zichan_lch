@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>表单列表</title>
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<!--<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
+    <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
+    <style>
+        .eleTree{
+            width: 350px;
+            height: 500px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .ele5{
+            height: auto;
+            width: 98%;
+            display: none;
+            position: absolute;
+            top:100%;
+            background-color: #fff;
+            z-index: 9999999999999;
+        }
+        .headTop{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+        <div class="layui-card-header headTop">购买查询</div>
+		<div class="layui-form  layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <form class="form-inline layui-inline" id="form" method="post" action="/zcBuys/export" onsubmit="return false" enctype="multipart/form-data">
+                    <input id="token" name="token" type="hidden" />
+                    <div class="layui-form-item self">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">购买单号</label>
+                            <div class="layui-input-inline">
+                                <input id="buyNum" name="buyNum" type="text" class="layui-input" placeholder="购买单号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资产名称</label>
+                            <div class="layui-input-inline">
+                                <input id="name" name="name" type="text" class="layui-input" placeholder="资产名称">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">规格型号</label>
+                            <div class="layui-input-inline">
+                                <input id="model" name="model" type="text" class="layui-input" placeholder="规格型号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">产品品牌</label>
+                            <div class="layui-input-inline">
+                                <input id="brand" name="brand" type="text" class="layui-input" placeholder="产品品牌">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item self">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">采购单价</label>
+                            <div class="layui-input-inline">
+                                <input id="price" name="price" type="text" class="layui-input" placeholder="采购单价">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">供应商名称</label>
+                            <div class="layui-input-inline">
+                                <input id="supplierName" name="supplierName" type="text" class="layui-input" placeholder="供应商名称">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >申请日期</label>
+                            <div class="layui-input-inline">
+                                <input id="sdate" name="sdate" type="text" class="form-control layui-input" placeholder="起始日期">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">至</label>
+                            <div class="layui-input-inline">
+                                <input id="edate" name="edate" type="text" class="form-control layui-input" placeholder="终止日期">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item self">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用途</label>
+                            <div class="layui-input-inline">
+                                <input id="useDes" name="useDes" type="text" class="layui-input" placeholder="用途">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">管理部门</label>
+                            <div class="layui-input-inline">
+                                <div  id="checkDept1" ></div>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">申请部门</label>
+                            <div class="layui-input-inline">
+                                <div  id="checkDept2" ></div>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                            <button class="layui-btn layuiadmin-btn-useradmin" id="exportBt">
+                                导出数据
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+		</div>
+		<div class="layui-card-body tablebody">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/xm-select.js"></script>
+<script type="text/javascript">
+
+    var pers = checkPermission();
+    var processStatus = showDictSelect("status", "processStatus", true);
+    var tableIns;
+    layui.config({
+        base: '../../layuiadmin/eleTree/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).extend({
+        eleTree: 'eleTree'
+    });
+    var el,el1,el2;
+    layui.use(['layer','form','laydate','table','eleTree'], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var eleTree = layui.eleTree;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#sdate'
+        });
+        laydate.render({
+            elem: '#edate'
+        });
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/zcBuyItems/layuiList"
+            ,limit: 15
+            ,limits: [20,40,50,100,200,500,1000,2000]
+            ,totalRow: true
+            ,toolbar: 'defaultX'
+            ,height:  'full-180'
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {
+
+            }
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {type:'numbers',title:'序号'}
+                ,{field:'id',hide: true}
+                ,{field:'zcBuyId',hide: true}
+                ,{field:'buyNum',title:'购买单号', width:140, sort: true}
+                ,{field:'name',title:'资产名称', width:130, sort: true}
+                ,{field:'model',title:'规格型号', width:140, sort: true}
+                ,{field:'unit',title:'单位', width:100, sort: true,edit:'text'}
+                ,{field:'brand',title:'产品品牌', width:100, sort: true}
+                ,{field:'price',title:'采购单价', width:100, sort: true}
+                ,{field:'num',title:'采购数量', width:100, sort: true}
+                ,{field:'totalPrice',title:'采购总价', width:100, sort: true}
+                ,{field:'supplierName',title:'供应商名称', width:100, sort: true}
+                ,{field:'useDes',title:'用途', width:100, sort: true}
+                ,{field:'sydeptname',title:'申请部门', width:120, sort: true}
+                ,{field:'gldeptname',title:'管理部门', width:100, sort: true}
+                ,{field:'applyNickname',title:'申请人', width:120, sort: true}
+                ,{field:'username',title:'申请账号', width:120, sort: true}
+                ,{field:'applyTime',title:'申请时间', width:150, sort: true}
+                ,{field:'finishTime',title:'完成时间', width:150, sort: true}
+                ,{field:'zcBz',title:'备注', width:100, sort: true}
+            ]]
+            ,done: function(res, curr, count){
+
+            }
+        });
+
+        if(!el){
+            el=eleTree.render({
+                elem: '#zcCategoryEleTree',
+                url:'/zcCategorys/eleTree',
+                request: {
+                    name: "name",
+                },
+                emptText:"暂无资产分类",
+                // defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done:function(res){
+
+                }
+            });
+        }
+        $("#zcCategoryName").on("click",function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        eleTree.on("nodeClick(zcCategoryEleTree)",function(d) {
+            $('#zcCategoryName').trigger('change');
+            $("#zcCategoryName").val(d.data.currentData.name)
+            $("#zcCategoryId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $(document).on("click",function() {
+            $(".eleTree").hide();
+        })
+        // xmlselect选择部门
+        $.ajax({
+            url : '/depts/xmSelectTree',
+            contentType: "application/json; charset=utf-8",
+            success : function(data) {
+                checkDeptselect1 = xmSelect.render({
+                    el: '#checkDept1',
+                    language: 'zn',
+                    icon: 'hidden',
+                    name: 'checkDeptId',
+                    radio: true,
+                    paging: true,
+                    pageSize: 6,
+                    prop: {
+                        value: 'id',
+                    },
+                    filterable: true,
+                    height: 'auto',
+                    data:data.data
+                })
+            }
+        });
+        // 部门选择
+        $.ajax({
+            url : '/depts/xmSelectTree',
+            contentType: "application/json; charset=utf-8",
+            success : function(data) {
+                checkDeptselect2 = xmSelect.render({
+                    el: '#checkDept2',
+                    language: 'zn',
+                    icon: 'hidden',
+                    name: 'checkDeptId',
+                    radio: true,
+                    paging: true,
+                    pageSize: 6,
+                    prop: {
+                        value: 'id',
+                    },
+                    filterable: true,
+                    height: 'auto',
+                    data:data.data
+                })
+            }
+        });
+    });
+
+    // 删除报废主信息
+    function del(id){
+        layer.confirm('确定要删除吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'delete',
+                url : '/zcBfs/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("删除成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    // 删除报废子信息
+    function delItem(data){
+        var da = data.split("_");
+        var id = da[0];
+        var zcbfid = da[1];
+        layer.confirm('确定要删除吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'get',
+                url : '/zcBfItems/delItem/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    tableIns2.reload({where: {zcBfId:zcbfid}});
+                    layer.msg("删除成功");
+                }
+            });
+            layer.close(1);
+        });
+    }
+
+    // 资产恢复正常
+    function huifuZcInfo(data) {
+        var da = data.split("_");
+        var id = da[0];
+        var zcbfid = da[1];
+        layer.confirm('确定恢复正常？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'get',
+                url : '/zcBfItems/huifu/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    tableIns2.reload({where: {zcBfId:zcbfid}});
+                    layer.msg("资产恢复正常");
+                }
+            });
+            layer.close(1);
+        });
+    }
+
+    // 流程启动
+    function startProcess(id){
+        layer.confirm('确定启动该报废流程？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'get',
+                url : '/zcBfs/startBfProcess/'+id,
+                success : function(data) {
+                    if (data.code == "1"){
+                        $('#searchBt').trigger('click');
+                        layer.msg("流程启动成功");
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            layer.close(1);
+        });
+    }
+
+    // 拒绝后再次提交报废子项
+    function startItemProcess(data){
+        var da = data.split("_");
+        var id = da[0];
+        var zcbfid = da[1];
+        var bz = da[2];
+        layer.confirm('确定再次启动该报废流程？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'post',
+                url : '/zcBfItems/startItemProcess',
+                dataType: 'json',
+                data:{
+                    id : id,
+                    bz : bz
+                },
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    tableIns2.reload({where: {zcBfId:zcbfid}});
+                    layer.msg("流程启动成功");
+                }
+            });
+            layer.close(1);
+        });
+    }
+
+    function audit(id){
+        layer.confirm('确定要审核吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/zcBfs/audit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function unaudit(id){
+        layer.confirm('确定要弃审吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/zcBfs/unaudit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("弃审成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    $("#searchBt").click(function(){
+        var glId = checkDeptselect1.getValue('valueStr');
+        var syId = checkDeptselect2.getValue('valueStr');
+        tableIns.reload({
+            where: {
+                name:$('#name').val(),
+                model:$('#model').val(),
+                brand:$('#brand').val(),
+                price:$('#price').val(),
+                supplierName:$('#supplierName').val(),
+                useDes:$('#useDes').val(),
+                sdate:$('#sdate').val(),
+                edate:$('#edate').val(),
+                glDeptId:glId,
+                syDeptId:syId,
+                buyNum:$('#buyNum').val()
+            },
+            page:{curr:1}})
+    });
+
+    // 导出数据
+    $("#exportBt").click(function () {
+        $("#token").val(localStorage.getItem("token"))
+        $("#form").attr("onsubmit", "return true");
+        $("#form").submit();
+        $("#form").attr("onsubmit", "return false");
+    });
+
+</script>

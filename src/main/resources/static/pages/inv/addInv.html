@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>存货代码</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='存货代码' type='text' name='invcode' id='invcode' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>存货名称</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='存货名称' type='text' name='invname' id='invname' data-bv-notempty="true"
+						   data-bv-notempty-message="存货名称 不能为空">
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>存货简称</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='存货简称' type='text' name='invabbname' id='invabbname' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>规格型号</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='规格型号' type='text' name='invstd' id='invstd' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>存货分类编码</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='存货分类编码' type='text' name='invcid' id='invcid' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>货位</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='货位' type='text' name='positionid' id='positionid' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>单位重量</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='单位重量' type='text' name='iweight' id='iweight' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>单位体积</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='单位体积' type='text' name='ivolume' id='ivolume' >
+				</div>
+			</div>
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>价格</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='价格' type='text' name='iprice' id='iprice' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>会员价</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='会员价' type='text' name='viprice' id='viprice' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>成本</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='成本' type='text' name='icost' id='icost' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>安全库存</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='安全库存' type='text' name='safenum' id='safenum' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>最高库存</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='最高库存' type='text' name='topnum' id='topnum' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>最低库存</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='最低库存' type='text' name='lownum' id='lownum' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>主单位</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='主单位' type='text' name='unit1' id='unit1' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>辅单位</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='辅单位' type='text' name='unit2' id='unit2' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>产品照片</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='产品照片' type='text' name='pic' id='pic' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>二维码</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='二维码' type='text' name='barcode' id='barcode' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>BOM清单</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='BOM清单' type='text' name='bomid' id='bomid' >-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>物品描述</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='故障描述' type='text' name='tdesc' id='tdesc' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>业务类型</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input class='form-control' placeholder='业务类型' type='text' name='ctype' id='ctype' >-->
+				<!--</div>-->
+			<!--</div>-->
+
+
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+					    <button class="layui-btn" onclick="location.href='invList.html'">返回</button>
+						<button class="layui-btn" type="submit" onclick="add()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+
+	//var appStatus = showStepSelect("stepid", "1", true);
+
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+		});
+		
+		function add() {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+
+			$.ajax({
+				type : 'post',
+				url : '/invs',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "invList.html";
+                    });
+				}
+			});
+		}
+		
+	</script>
+</body>
+</html>

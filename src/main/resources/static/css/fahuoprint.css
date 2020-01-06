@@ -1,0 +1,183 @@
+.print-table td{
+     border-right: 1px solid #000;
+     border-bottom: 1px solid #000;
+     height:25px;
+     padding:0;
+     margin: 0;
+ }
+.print-table {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    width:1000px;
+    font-size: 18px;
+}
+.print-table .print-td{
+    width:70px
+}
+
+.print-table th{
+    border-right: 1px solid #000;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    /*height:25px*/
+}
+
+.print-table .print-md{
+    width:100%;
+    border-spacing: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.print-table .print-md td{
+    border-right: 1px solid #000;
+    border-bottom:none;
+    height:25px;
+    width:10%;
+    padding: 0;
+    margin: 0;
+}
+
+.print-table ul{
+    list-style:none;
+    width:1000px;
+    height:25px;
+    padding:0;
+    margin:0
+}
+
+.print-table li{
+    float:left;
+    width:350px;
+    height:25px;
+}
+
+.print-table .print-lian{
+    line-height: 4px;
+    height:6px
+}
+
+.print-yltable {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    font-size: 21px;
+    font-family:黑体;
+    width:100%;
+    font-weight:900
+}
+
+.print-yltable td{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    height:33px
+}
+
+.print-yltable th{
+    border-right: 1px solid #000;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    /*height:25px*/
+}
+
+.print-smtable td{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    height:25px
+}
+.print-smtable {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    width:1000px;
+    font-size: 21px;
+}
+.print-smtable .print-td{
+    width:70px
+}
+
+.print-pctable td{
+     border-right: 1px solid #000;
+     border-bottom: 1px solid #000;
+     height:40px
+ }
+.print-pctable {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    width:1000px;
+    font-size: 24px;
+}
+.print-pctable .print-td{
+    width:70px
+}
+
+.print-zctable td{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    height:28px
+}
+.print-zctable {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    width:1000px;
+    font-size: 20px;
+}
+.print-zctable .print-td{
+    width:70px
+}
+
+.print-bztable td{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    height:30px;
+    padding:0;
+    margin: 0;
+}
+.print-bztable {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    width:990px;
+    font-size: 20px;
+}
+.print-bztable th{
+    border-right: 1px solid #000;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    /*height:25px*/
+}
+
+.print-zctable td{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    height:50px;
+    padding:0;
+    margin: 0;
+}
+.print-zctable {
+    text-align: center;
+    border-spacing: 0;/*去掉单元格间隙*/
+    width:100%;
+    font-size: 18px;
+}
+
+.print-zctable .qianzi{
+    border-right: 0;
+    border-bottom: 0;
+    height:50px;
+    padding:0;
+    margin: 0;
+    text-align: left;
+    font-family: 华文行楷, STXingkai;
+    font-size: 15px;
+}
+
+.print-zctable .songti{
+    font-family: 宋体, STXingkai;
+    font-size: 15px;
+}
+
+.zctitle{
+    text-align: center;
+    font-size: 25px;
+    font-family: 宋体;
+    margin-bottom: 10px;
+    font-weight: 900
+}

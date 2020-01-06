@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcInfoDao">
+
+    <sql id="where">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and t.id = #{params.id}
+            </if>
+            <if test="params.selfCodenum != null and params.selfCodenum != ''">
+                and t.self_codenum = #{params.selfCodenum}
+            </if>
+            <if test="params.zcCodenum != null and params.zcCodenum != ''">
+                and t.zc_codenum = #{params.zcCodenum}
+            </if>
+            <if test="params.cardNum != null and params.cardNum != ''">
+                and t.card_num = #{params.cardNum}
+            </if>
+            <if test="params.zcName != null and params.zcName != ''">
+                and t.zc_name like concat('%', #{params.zcName}, '%')
+            </if>
+            <if test="params.zcCategoryId != null and params.zcCategoryId != ''">
+                and t.zc_category_id = #{params.zcCategoryId}
+            </if>
+            <if test="params.specification != null and params.specification != ''">
+                and t.specification = #{params.specification}
+            </if>
+            <if test="params.model != null and params.model != ''">
+                and t.model = #{params.model}
+            </if>
+            <if test="params.factory != null and params.factory != ''">
+                and t.factory = #{params.factory}
+            </if>
+            <if test="params.brand != null and params.brand != ''">
+                and t.brand = #{params.brand}
+            </if>
+            <if test="params.supportName != null and params.supportName != ''">
+                and t.support_name = #{params.supportName}
+            </if>
+            <if test="params.supportPhone != null and params.supportPhone != ''">
+                and t.support_phone = #{params.supportPhone}
+            </if>
+            <if test="params.installationFactory != null and params.installationFactory != ''">
+                and t.installation_factory = #{params.installationFactory}
+            </if>
+            <if test="params.depreciationTime != null and params.depreciationTime != ''">
+                and t.depreciation_time = #{params.depreciationTime}
+            </if>
+            <if test="params.jcz != null and params.jcz != ''">
+                and t.jcz = #{params.jcz}
+            </if>
+            <if test="params.stockTime != null and params.stockTime != ''">
+                and t.stock_time = #{params.stockTime}
+            </if>
+            <if test="params.unit != null and params.unit != ''">
+                and t.unit = #{params.unit}
+            </if>
+            <if test="params.zcFrom != null and params.zcFrom != ''">
+                and t.zc_from = #{params.zcFrom}
+            </if>
+            <if test="params.useStatus != null and params.useStatus != ''">
+                and t.use_status = #{params.useStatus}
+            </if>
+            <if test="params.accountentryStatus != null and params.accountentryStatus != ''">
+                and t.accountentry_status = #{params.accountentryStatus}
+            </if>
+            <if test="params.accountentryTime != null and params.accountentryTime != ''">
+                and t.accountentry_time = #{params.accountentryTime}
+            </if>
+            <if test="params.accountantNum != null and params.accountantNum != ''">
+                and t.accountant_num = #{params.accountantNum}
+            </if>
+            <if test="params.originalValue != null and params.originalValue != ''">
+                and t.original_value = #{params.originalValue}
+            </if>
+            <if test="params.cardStatus != null and params.cardStatus != ''">
+                and t.card_status = #{params.cardStatus}
+            </if>
+            <if test="params.cardTime != null and params.cardTime != ''">
+                and t.card_time = #{params.cardTime}
+            </if>
+            <if test="params.responsible != null and params.responsible != ''">
+                and t.responsible = #{params.responsible}
+            </if>
+            <if test="params.glDeptId != null and params.glDeptId != ''">
+                and t.gl_dept_id = #{params.glDeptId}
+            </if>
+            <if test="params.syDeptId != null and params.syDeptId != ''">
+                and t.sy_dept_id = #{params.syDeptId}
+            </if>
+            <if test="params.syName != null and params.syName != ''">
+                and t.sy_name = #{params.syName}
+            </if>
+            <if test="params.storeAddress != null and params.storeAddress != ''">
+                and t.store_address = #{params.storeAddress}
+            </if>
+            <if test="params.startUseTime != null and params.startUseTime != ''">
+                and t.start_use_time = #{params.startUseTime}
+            </if>
+            <if test="params.predictYears != null and params.predictYears != ''">
+                and t.predict_years = #{params.predictYears}
+            </if>
+            <if test="params.maintainCycle != null and params.maintainCycle != ''">
+                and t.maintain_cycle = #{params.maintainCycle}
+            </if>
+            <if test="params.laveTime != null and params.laveTime != ''">
+                and t.lave_time = #{params.laveTime}
+            </if>
+            <if test="params.maintainDeadline != null and params.maintainDeadline != ''">
+                and t.maintain_deadline = #{params.maintainDeadline}
+            </if>
+            <if test="params.lastMaintainTime != null and params.lastMaintainTime != ''">
+                and t.last_maintain_time = #{params.lastMaintainTime}
+            </if>
+            <if test="params.ljZhejiu != null and params.ljZhejiu != ''">
+                and t.lj_zhejiu = #{params.ljZhejiu}
+            </if>
+            <if test="params.bnZhejiu != null and params.bnZhejiu != ''">
+                and t.bn_zhejiu = #{params.bnZhejiu}
+            </if>
+            <if test="params.netvalue != null and params.netvalue != ''">
+                and t.netvalue = #{params.netvalue}
+            </if>
+            <if test="params.jzzb != null and params.jzzb != ''">
+                and t.jzzb = #{params.jzzb}
+            </if>
+            <if test="params.net != null and params.net != ''">
+                and t.net = #{params.net}
+            </if>
+            <if test="params.netResidualRate != null and params.netResidualRate != ''">
+                and t.net_residual_rate = #{params.netResidualRate}
+            </if>
+            <if test="params.netResidualValue != null and params.netResidualValue != ''">
+                and t.net_residual_value = #{params.netResidualValue}
+            </if>
+            <if test="params.useMonths != null and params.useMonths != ''">
+                and t.use_months = #{params.useMonths}
+            </if>
+            <if test="params.haveCount != null and params.haveCount != ''">
+                and t.have_count = #{params.haveCount}
+            </if>
+            <if test="params.remainingperiod != null and params.remainingperiod != ''">
+                and t.remainingperiod = #{params.remainingperiod}
+            </if>
+            <if test="params.cname != null and params.cname != ''">
+                and t.cname = #{params.cname}
+            </if>
+            <if test="params.venperson != null and params.venperson != ''">
+                and t.venperson = #{params.venperson}
+            </if>
+            <if test="params.venphone != null and params.venphone != ''">
+                and t.venphone = #{params.venphone}
+            </if>
+            <if test="params.venaddress != null and params.venaddress != ''">
+                and t.venaddress = #{params.venaddress}
+            </if>
+            <if test="params.warrantyperiod != null and params.warrantyperiod != ''">
+                and t.warrantyperiod = #{params.warrantyperiod}
+            </if>
+            <if test="params.del != null and params.del != ''">
+                and t.del = #{params.del}
+            </if>
+            <if test="params.bf != null and params.bf != ''">
+                and t.bf = #{params.bf}
+            </if>
+            <if test="params.bz != null and params.bz != ''">
+                and t.bz = #{params.bz}
+            </if>
+            <if test="params.c01 != null and params.c01 != ''">
+                and t.c01 = #{params.c01}
+            </if>
+            <if test="params.c02 != null and params.c02 != ''">
+                and t.c02 = #{params.c02}
+            </if>
+            <if test="params.c03 != null and params.c03 != ''">
+                and t.c03 = #{params.c03}
+            </if>
+            <if test="params.createBy != null and params.createBy != ''">
+                and t.create_by = #{params.createBy}
+            </if>
+            <if test="params.updateBy != null and params.updateBy != ''">
+                and t.update_by = #{params.updateBy}
+            </if>
+            <if test="params.createTime != null and params.createTime != ''">
+                and t.create_time = #{params.createTime}
+            </if>
+            <if test="params.updateTime != null and params.updateTime != ''">
+                and t.update_time = #{params.updateTime}
+            </if>
+            <if test="params.dynamicCondition != null and params.dynamicCondition != ''">
+                ${params.dynamicCondition}
+            </if>
+            <if test="params.daoqi != null and params.daoqi != ''">
+                and <![CDATA[ (use_months*30)-timestampdiff(DAY,start_use_time,now()) <= #{params.daoqi} ]]>
+                and <![CDATA[ (use_months*30)-timestampdiff(DAY,start_use_time,now()) > 0 ]]>
+            </if>
+            <if test="params.linbao != null and params.linbao != ''">
+                and <![CDATA[ (warrantyperiod*30)-timestampdiff(DAY,start_use_time,now()) <= #{params.daoqi} ]]>
+                and <![CDATA[ (warrantyperiod*30)-timestampdiff(DAY,start_use_time,now()) > 0 ]]>
+<!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) <= #{params.linbao} ]]>-->
+<!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) > 0 ]]>-->
+            </if>
+            <if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
+                and
+                <![CDATA[ t.start_use_time >= #{params.sdate} and t.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+            </if>
+            <if test="params.catCode != null and params.catCode != ''">
+                and t.cat_code like concat('',#{params.catCode},'%')
+            </if>
+            <if test="params.daixunjian != null and params.daixunjian != ''">
+                and (FLOOR(timestampdiff(DAY,start_use_time,now())/inspect_time) =
+                timestampdiff(DAY,start_use_time,now())/inspect_time) = 1 and inspect_time is not null and
+                timestampdiff(DAY,start_use_time,now()) > 0
+            </if>
+            <if test="params.epcid != null and params.epcid != ''">
+                and t.epcid = #{params.epcid}
+            </if>
+            <if test="params.zcCoding != null and params.zcCoding != ''">
+                and t.zc_coding = #{params.zcCoding}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getById" resultType="com.itycu.server.dto.ZcInfoDto">
+		select t.*
+		,t_creator.nickname as creator
+		from v_zc_info t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		where t.id = #{id}
+	</select>
+
+    <select id="count" resultType="int">
+        select count(1) from v_zc_info t
+        <include refid="where"/>
+    </select>
+
+    <select id="list" resultType="com.itycu.server.dto.ZcInfoDto">
+        select t.*
+        ,t_creator.nickname as creator
+        from v_zc_info t
+        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        <include refid="where"/>
+        ${params.orderBy}
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="listByCondition" resultType="com.itycu.server.dto.ZcInfoDto">
+        select t.*
+        ,t_creator.nickname as creator
+        from v_zc_info t
+        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        <include refid="where"/>
+    </select>
+
+    <insert id="saves">
+        insert into zc_info
+        (self_codenum, zc_codenum, zc_name, zc_category_id, specification, model, factory, brand, support_name,
+        support_phone, installation_factory,
+        depreciation_time, jcz, stock_time, unit, zc_from, use_status, accountentry_status, accountentry_time,
+        accountant_num, original_value,
+        card_status, card_time, responsible, gl_dept_id, sy_dept_id, sy_name, store_address, start_use_time,
+        predict_years, maintain_cycle,
+        lave_time, maintain_deadline, last_maintain_time, lj_zhejiu, bn_zhejiu, netvalue, jzzb, net, net_residual_rate,
+        net_residual_value,
+        use_months, have_count, remainingperiod, cname, venperson, venphone, venaddress, warrantyperiod, del, bf, bz,
+        c01, c02, c03, create_by,
+        update_by, create_time, update_time,card_num,inspect_time,epcid,zc_coding) values
+        <foreach collection="list" item="zcInfo" separator=",">
+            (#{zcInfo.selfCodenum}, #{zcInfo.zcCodenum}, #{zcInfo.zcName}, #{zcInfo.zcCategoryId},
+            #{zcInfo.specification}, #{zcInfo.model}, #{zcInfo.factory},
+            #{zcInfo.brand}, #{zcInfo.supportName}, #{zcInfo.supportPhone}, #{zcInfo.installationFactory},
+            #{zcInfo.depreciationTime}, #{zcInfo.jcz},
+            #{zcInfo.stockTime}, #{zcInfo.unit}, #{zcInfo.zcFrom}, #{zcInfo.useStatus}, #{zcInfo.accountentryStatus},
+            #{zcInfo.accountentryTime},
+            #{zcInfo.accountantNum}, #{zcInfo.originalValue}, #{zcInfo.cardStatus}, #{zcInfo.cardTime},
+            #{zcInfo.responsible}, #{zcInfo.glDeptId},
+            #{zcInfo.syDeptId}, #{zcInfo.syName}, #{zcInfo.storeAddress}, #{zcInfo.startUseTime},
+            #{zcInfo.predictYears}, #{zcInfo.maintainCycle},
+            #{zcInfo.laveTime}, #{zcInfo.maintainDeadline}, #{zcInfo.lastMaintainTime}, #{zcInfo.ljZhejiu},
+            #{zcInfo.bnZhejiu}, #{zcInfo.netvalue},
+            #{zcInfo.jzzb}, #{zcInfo.net}, #{zcInfo.netResidualRate}, #{zcInfo.netResidualValue}, #{zcInfo.useMonths},
+            #{zcInfo.haveCount},
+            #{zcInfo.remainingperiod}, #{zcInfo.cname}, #{zcInfo.venperson}, #{zcInfo.venphone}, #{zcInfo.venaddress},
+            #{zcInfo.warrantyperiod},
+            #{zcInfo.del}, #{zcInfo.bf}, #{zcInfo.bz}, #{zcInfo.c01}, #{zcInfo.c02}, #{zcInfo.c03}, #{zcInfo.createBy},
+            #{zcInfo.updateBy},
+            #{zcInfo.createTime},
+            #{zcInfo.updateTime},#{zcInfo.cardNum},#{zcInfo.inspectTime},#{zcInfo.epcid},#{zcInfo.zcCoding})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update zc_info t
+        <set>
+            <if test="selfCodenum != null">
+                self_codenum = #{selfCodenum},
+            </if>
+            <if test="zcCodenum != null">
+                zc_codenum = #{zcCodenum},
+            </if>
+            <if test="zcName != null">
+                zc_name = #{zcName},
+            </if>
+            <if test="zcCategoryId != null">
+                zc_category_id = #{zcCategoryId},
+            </if>
+            <if test="specification != null">
+                specification = #{specification},
+            </if>
+            <if test="model != null">
+                model = #{model},
+            </if>
+            <if test="factory != null">
+                factory = #{factory},
+            </if>
+            <if test="brand != null">
+                brand = #{brand},
+            </if>
+            <if test="supportName != null">
+                support_name = #{supportName},
+            </if>
+            <if test="supportPhone != null">
+                support_phone = #{supportPhone},
+            </if>
+            <if test="installationFactory != null">
+                installation_factory = #{installationFactory},
+            </if>
+            <if test="depreciationTime != null">
+                depreciation_time = #{depreciationTime},
+            </if>
+            <if test="jcz != null">
+                jcz = #{jcz},
+            </if>
+            <if test="stockTime != null">
+                stock_time = #{stockTime},
+            </if>
+            <if test="unit != null">
+                unit = #{unit},
+            </if>
+            <if test="zcFrom != null">
+                zc_from = #{zcFrom},
+            </if>
+            <if test="useStatus != null">
+                use_status = #{useStatus},
+            </if>
+            <if test="accountentryStatus != null">
+                accountentry_status = #{accountentryStatus},
+            </if>
+            <if test="accountentryTime != null">
+                accountentry_time = #{accountentryTime},
+            </if>
+            <if test="accountantNum != null">
+                accountant_num = #{accountantNum},
+            </if>
+            <if test="originalValue != null">
+                original_value = #{originalValue},
+            </if>
+            <if test="cardStatus != null">
+                card_status = #{cardStatus},
+            </if>
+            <if test="cardTime != null">
+                card_time = #{cardTime},
+            </if>
+            <if test="responsible != null">
+                responsible = #{responsible},
+            </if>
+            <if test="glDeptId != null">
+                gl_dept_id = #{glDeptId},
+            </if>
+            <if test="syDeptId != null">
+                sy_dept_id = #{syDeptId},
+            </if>
+            <if test="syName != null">
+                sy_name = #{syName},
+            </if>
+            <if test="storeAddress != null">
+                store_address = #{storeAddress},
+            </if>
+            <if test="startUseTime != null">
+                start_use_time = #{startUseTime},
+            </if>
+            <if test="predictYears != null">
+                predict_years = #{predictYears},
+            </if>
+            <if test="maintainCycle != null">
+                maintain_cycle = #{maintainCycle},
+            </if>
+            <if test="laveTime != null">
+                lave_time = #{laveTime},
+            </if>
+            <if test="maintainDeadline != null">
+                maintain_deadline = #{maintainDeadline},
+            </if>
+            <if test="lastMaintainTime != null">
+                last_maintain_time = #{lastMaintainTime},
+            </if>
+            <if test="ljZhejiu != null">
+                lj_zhejiu = #{ljZhejiu},
+            </if>
+            <if test="bnZhejiu != null">
+                bn_zhejiu = #{bnZhejiu},
+            </if>
+            <if test="netvalue != null">
+                netvalue = #{netvalue},
+            </if>
+            <if test="jzzb != null">
+                jzzb = #{jzzb},
+            </if>
+            <if test="net != null">
+                net = #{net},
+            </if>
+            <if test="netResidualRate != null">
+                net_residual_rate = #{netResidualRate},
+            </if>
+            <if test="netResidualValue != null">
+                net_residual_value = #{netResidualValue},
+            </if>
+            <if test="useMonths != null">
+                use_months = #{useMonths},
+            </if>
+            <if test="haveCount != null">
+                have_count = #{haveCount},
+            </if>
+            <if test="remainingperiod != null">
+                remainingperiod = #{remainingperiod},
+            </if>
+            <if test="cname != null">
+                cname = #{cname},
+            </if>
+            <if test="venperson != null">
+                venperson = #{venperson},
+            </if>
+            <if test="venphone != null">
+                venphone = #{venphone},
+            </if>
+            <if test="venaddress != null">
+                venaddress = #{venaddress},
+            </if>
+            <if test="warrantyperiod != null">
+                warrantyperiod = #{warrantyperiod},
+            </if>
+            <if test="del != null">
+                del = #{del},
+            </if>
+            <if test="bf != null">
+                bf = #{bf},
+            </if>
+            <if test="bz != null">
+                bz = #{bz},
+            </if>
+            <if test="c01 != null">
+                c01 = #{c01},
+            </if>
+            <if test="c02 != null">
+                c02 = #{c02},
+            </if>
+            <if test="c03 != null">
+                c03 = #{c03},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="cardNum != null">
+                card_num = #{cardNum},
+            </if>
+            <if test="inspectTime != null">
+                inspect_time = #{inspectTime},
+            </if>
+            <if test="inspectTime != null">
+                inspect_time = #{inspectTime},
+            </if>
+            <if test="epcid != null">
+                epcid = #{epcid},
+            </if>
+            <if test="zcCoding != null">
+                zc_coding = #{zcCoding},
+            </if>
+        </set>
+
+        where t.id = #{id}
+    </update>
+
+    <!--批量更新资产的状态-->
+    <update id="updateStatusList">
+        update zc_info t set t.use_status = #{status} where t.id in
+        (
+        <foreach collection="zcids" item="fileId" separator=",">
+            #{fileId}
+        </foreach>
+        )
+    </update>
+
+    <!--批量更新资产的状态-->
+    <update id="updateBfStatusList">
+        update zc_info t set t.use_status = #{status},t.bf = '1' where t.id in
+        (
+        <foreach collection="zcids" item="fileId" separator=",">
+            #{fileId}
+        </foreach>
+        )
+    </update>
+
+    <select id="queryCwbZcInfoList" resultType="com.itycu.server.dto.ZcInfoDto">
+		select b.* from t_dept as a
+		left join zc_info as b on a.id = b.sy_dept_id
+		where a.pid = #{params.pid}  and b.sy_dept_id = #{params.syDeptId}
+		AND b.del =#{params.del}
+		AND b.bf = #{params.bf}
+	</select>
+
+
+    <!-- 查询其他部门下面的资产信息表	-->
+    <select id="queryOtherZcInfoList" resultType="com.itycu.server.dto.ZcInfoDto">
+		SELECT
+			c.*
+		FROM
+			zc_info AS c
+			left join t_dept as d
+			on c.gl_dept_id = d.id
+		where
+			 c.sy_dept_id =  #{params.syDeptId}
+		AND c.del = 0
+		AND c.bf = 0
+		and d.c03 = #{params.deptType}
+	</select>
+
+
+    <select id="querySyDeptZcList" resultType="com.itycu.server.dto.ZcInfoDto">
+		select b.* from t_dept as a
+		left join zc_info as b on a.id = b.sy_dept_id
+		where  b.sy_dept_id = #{params.syDeptId}
+		AND b.del =#{params.del}
+		AND b.bf = #{params.bf}
+	</select>
+
+    <!--根据使用部门统计资产数-->
+    <select id="countByDeptId" resultType="int" parameterType="long">
+        select count(1) from zc_info where sy_dept_id = #{syDeptId}
+    </select>
+
+</mapper>

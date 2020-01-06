@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcCheckDao">
+
+    <sql id="where">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and t.id = #{params.id}
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and t.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.deptName != null and params.deptName != ''">
+                and d.deptName = #{params.deptName}
+            </if>
+            <if test="params.checkUserId != null and params.checkUserId != ''">
+                and t.check_user_id = #{params.checkUserId}
+            </if>
+            <if test="params.checkTime != null and params.checkTime != ''">
+                and t.check_time = #{params.checkTime}
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and t.status= #{params.status}
+            </if>
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and t.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.del != null and params.del != ''">
+                and t.del = #{params.del}
+            </if>
+            <if test="params.bz != null and params.bz != ''">
+                and t.bz = #{params.bz}
+            </if>
+            <if test="params.createBy != null and params.createBy != ''">
+                and t.create_by = #{params.createBy}
+            </if>
+            <if test="params.updateBy != null and params.updateBy != ''">
+                and t.update_by = #{params.updateBy}
+            </if>
+            <if test="params.createTime != null and params.createTime != ''">
+                and t.create_time = #{params.createTime}
+            </if>
+            <if test="params.updateTime != null and params.updateTime != ''">
+                and t.update_time = #{params.updateTime}
+            </if>
+
+        </where>
+    </sql>
+
+    <select id="getById" resultType="com.itycu.server.model.ZcCheck">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_check t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		where t.id = #{id}
+	</select>
+
+    <select id="count" resultType="int">
+        select count(1) from zc_check t
+        <include refid="where"/>
+    </select>
+
+    <select id="list" resultType="com.itycu.server.model.ZcCheck">
+        select t.*,d.deptName as checkDeptName,t_creator.nickname as creator
+        from zc_check t
+        left join t_dept d on d.id=t.check_dept_id
+        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        <include refid="where"/>
+        ${params.orderBy}
+        limit #{offset}, #{limit}
+    </select>
+
+    <update id="update">
+        update zc_check
+        <trim prefix="set" suffixOverrides=",">
+            <if test="zcCheck.checkDeptId != null">
+                check_dept_id = #{zcCheck.checkDeptId},
+            </if>
+            <if test="zcCheck.checkUserId != null">
+                check_user_id = #{zcCheck.checkUserId},
+            </if>
+            <if test="zcCheck.checkTime != null">
+                check_time = #{zcCheck.checkTime},
+            </if>
+            <if test="zcCheck.status != null">
+                status = #{zcCheck.status},
+            </if>
+            <if test="zcCheck.result != null">
+                result = #{zcCheck.result},
+            </if>
+            <if test="zcCheck.del != null">
+                del = #{zcCheck.del},
+            </if>
+            <if test="zcCheck.bz != null">
+                bz = #{zcCheck.bz},
+            </if>
+            <if test="zcCheck.createBy != null">
+                create_by = #{zcCheck.createBy},
+            </if>
+            <if test="zcCheck.updateBy != null">
+                update_by = #{zcCheck.updateBy},
+            </if>
+            <if test="zcCheck.createTime != null">
+                create_time = #{zcCheck.createTime},
+            </if>
+            <if test="zcCheck.updateTime != null">
+                update_time = #{zcCheck.updateTime},
+            </if>
+            <if test="zcCheck.reCheck != null">
+                re_check = #{zcCheck.reCheck},
+            </if>
+        </trim>
+
+        where id = #{zcCheck.id}
+    </update>
+
+
+    <select id="queryManagerDeptIds" resultType="com.itycu.server.model.ZcCheck">
+        <if test="params.deptType=='cwb'">
+            -- 财务部
+            select
+            b.deptname AS creator,
+            e.deptname AS checkDeptName ,
+            d. `id`,
+            d. `check_dept_id`  as checkDeptId,
+            d. `check_user_id` as checkUserId ,
+            d. `check_time` as checkTime ,
+            d. `total` ,
+            d.`status` ,
+            d.`result`,
+            d. `del` ,
+            d.`bz` ,
+            d.`create_by` as createBy,
+            d.`update_by`  as updateBy,
+            d.`create_time`  as createTime,
+            d.`update_time` as updateTime,
+            d.`check_times` as  checkTimes,
+            d. `re_check` as reCheck,
+            d.`bh`,
+            d.`profit`
+            FROM t_dept AS b
+            LEFT JOIN sys_user as c ON b.id = c.deptid
+            LEFT JOIN zc_check AS d ON c.id = d.create_by
+            LEFT JOIN t_dept AS e ON d.check_dept_id = e.id
+            WHERE b.pid = #{params.pid}
+            and d.create_by is not null
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and d.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and d.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and d.del = #{params.del}
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and d.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and d.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and d.profit = #{params.profit}
+            </if>
+            ${params.orderBy}
+            limit #{offset}, #{limit}
+        </if>
+
+
+        <if test="params.deptType=='bwb' or params.deptType=='zhb' or params.deptType=='kjb' or params.deptType == 'kjb'">
+            -- 其他的四个部门
+            ( SELECT
+            b.deptname AS creator,
+            e.deptname AS checkDeptName,
+            d. `id`,
+            d. `check_dept_id`  as checkDeptId,
+            d. `check_user_id` as checkUserId ,
+            d. `check_time` as checkTime ,
+            d. `total` ,
+            d.`status` ,
+            d.`result`,
+            d. `del` ,
+            d.`bz` ,
+            d.`create_by` as createBy,
+            d.`update_by`  as updateBy,
+            d.`create_time`  as createTime,
+            d.`update_time` as updateTime,
+            d.`check_times` as  checkTimes,
+            d. `re_check` as reCheck,
+            d.`bh`,
+            d.`profit`
+            FROM t_dept AS b
+            LEFT JOIN sys_user as c ON b.id = c.deptid
+            LEFT JOIN zc_check AS d ON c.id = d.create_by
+            LEFT JOIN t_dept AS e ON d.check_dept_id = e.id
+
+            WHERE b.pid = #{params.pid}
+            and d.create_by is not null
+            and b.c03 = #{params.deptType}
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and d.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and d.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and d.del = #{params.del}
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and d.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and d.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and d.profit = #{params.profit}
+            </if>
+            ${params.orderBy}
+            limit #{offset}, #{limit}
+            )
+            UNION
+            (select
+            d.deptname AS creator,
+            b.deptname AS checkDeptName,
+            a. `id`,
+            a. `check_dept_id`  as checkDeptId,
+            a. `check_user_id` as checkUserId ,
+            a. `check_time` as checkTime ,
+            a. `total` ,
+            a.`status` ,
+            a.`result`,
+            a. `del` ,
+            a.`bz` ,
+            a.`create_by` as createBy,
+            a.`update_by`  as updateBy,
+            a.`create_time`  as createTime,
+            a.`update_time` as updateTime,
+            a.`check_times` as  checkTimes,
+            a. `re_check` as reCheck,
+            a.`bh`,
+            a.`profit`
+            from zc_check as a LEFT JOIN
+            t_dept as b on a.check_dept_id = b.id
+            left join sys_user as c on a.create_by = c.id
+            left join t_dept as d on c.deptid = d.id
+            where b.id = #{params.deptId}
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and a.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and a.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and a.del = #{params.del}
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and a.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and a.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and a.profit = #{params.profit}
+            </if>
+            ${params.orderBy}
+            limit #{offset}, #{limit}
+            )
+
+        </if>
+        <if test="params.deptType==null or params.deptType==''">
+            -- 其他部门或者是支行
+            select
+            d.deptname AS creator ,
+            b.deptname AS checkDeptName,
+            a. `id`,
+            a. `check_dept_id`  as checkDeptId,
+            a. `check_user_id` as checkUserId ,
+            a. `check_time` as checkTime ,
+            a. `total` ,
+            a.`status` ,
+            a.`result`,
+            a. `del` ,
+            a.`bz` ,
+            a.`create_by` as createBy,
+            a.`update_by`  as updateBy,
+            a.`create_time`  as createTime,
+            a.`update_time` as updateTime,
+            a.`check_times` as  checkTimes,
+            a. `re_check` as reCheck,
+            a.`bh`,
+            a.`profit`
+            from zc_check as a LEFT JOIN
+            t_dept as b on a.check_dept_id = b.id
+            left join sys_user as c on a.create_by = c.id
+            left join t_dept as d on c.deptid = d.id
+            where b.id = #{params.deptId}
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and a.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and a.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and a.del = #{params.del}
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and a.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and a.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and a.profit = #{params.profit}
+            </if>
+            ${params.orderBy}
+            limit #{offset}, #{limit}
+
+        </if>
+
+    </select>
+
+
+    <select id="queryCountManagerDeptIds" resultType="java.lang.Integer">
+        <if test="params.deptType=='cwb'">
+            -- 财务部
+            SELECT
+            count(1)
+            FROM t_dept AS b
+            LEFT JOIN sys_user as c ON b.id = c.deptid
+            LEFT JOIN zc_check AS d ON c.id = d.create_by
+            LEFT JOIN t_dept AS e ON d.check_dept_id = e.id
+
+            WHERE b.pid = #{params.pid}
+            and d.create_by is not null
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and d.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and d.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and d.del = #{params.del}
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and d.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and d.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and d.profit = #{params.profit}
+            </if>
+        </if>
+        <if test="params.deptType=='bwb' or params.deptType=='zhb' or params.deptType=='kjb' or params.deptType == 'kjb'">
+            -- 其他的四个部门
+            SELECT COUNT(1) FROM ((
+            SELECT
+            b.deptname AS checkDeptName,
+            e.deptname AS creator,
+            d.*
+            FROM t_dept AS b
+            LEFT JOIN sys_user as c ON b.id = c.deptid
+            LEFT JOIN zc_check AS d ON c.id = d.create_by
+            LEFT JOIN t_dept AS e ON d.check_dept_id = e.id
+
+            WHERE b.pid = #{params.pid}
+            and d.create_by is not null
+            and b.c03 = #{params.deptType}
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and d.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and d.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.del!=null">
+                and d.del = #{params.del}
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and d.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and d.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and d.profit = #{params.profit}
+            </if>
+            )
+
+            UNION
+
+
+            (select
+            d.deptname AS checkDeptName,
+            b.deptname AS creator,
+            a.*
+            from zc_check as a LEFT JOIN
+            t_dept as b on a.check_dept_id = b.id
+            left join sys_user as c on a.create_by = c.id
+            left join t_dept as d on c.deptid = d.id
+
+            where b.id = #{params.deptId}
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and a.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and a.del = #{params.del}
+            </if>
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and a.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and a.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and a.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and a.profit = #{params.profit}
+            </if>
+            )) AS result
+
+        </if>
+        <if test="params.deptType == null or params.deptType==''">
+            select
+            count(1)
+            from zc_check as a LEFT JOIN
+            t_dept as b on a.check_dept_id = b.id
+            left join sys_user as c on a.create_by = c.id
+            left join t_dept as d on c.deptid = d.id
+
+            where b.id = #{params.deptId}
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and a.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.del!=null">
+                and a.del = #{params.del}
+            </if>
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and a.status in
+                <foreach collection="params.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
+                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+            </if>
+            <if test="params.syDept!=null and params.syDept!=''">
+                and a.check_dept_id = #{params.syDept}
+            </if>
+            <if test="params.glDept!=null and params.glDept!=''">
+                and a.create_by = #{params.glDept}
+            </if>
+            <if test="params.type!=null and params.type!=''">
+                and a.profit = #{params.profit}
+            </if>
+        </if>
+    </select>
+
+
+    <update id="updateZcStatus">
+        update zc_check set status = #{status}
+        where id = #{zcCheckId}
+    </update>
+
+
+    <update id="updateItemStatus">
+        update zc_check_item set result = 2 , finish_time = now()
+        where id in
+        <foreach collection="list" item="item" close=")" open="(" separator=",">
+            #{item}
+        </foreach>
+
+    </update>
+
+
+    <insert id="insertReal">
+         insert  into zc_check_again (old_check_id,new_check_id,create_time)
+         values  (#{oldId},#{newId},now())
+    </insert>
+
+
+    <select id="queryOldCheckId" resultType="java.lang.Integer">
+        select  old_check_id FROM
+        zc_check_again WHERE new_check_id = #{zcCheckId}
+    </select>
+
+
+    <update id="deleteZcCheck">
+        update zc_check set del = 1
+        where check_dept_id = #{zcCheckId}
+    </update>
+
+    <select id="queryZcCheckCount" resultType="int">
+        SELECT
+            count( * )
+        FROM
+            zc_check AS a
+            LEFT JOIN t_dept AS b ON a.check_dept_id = b.id
+        WHERE
+            YEAR ( a.create_time ) = YEAR ( NOW( ) )
+            AND a.del = 0
+        AND b.jx = #{jx}
+    </select>
+
+
+    <select id="queryZcCheckOperator" resultType="java.lang.String">
+        SELECT
+            b.nickname
+        FROM
+            `zc_check` AS a
+            LEFT JOIN sys_user AS b ON a.check_dept_id = b.deptid
+        WHERE
+            a.id = #{zcCheckId}
+            limit 1
+    </select>
+
+
+    <update id="updateZcCheckBh">
+        update zc_check set bh = #{bh}
+        where id = #{zcCheckId}
+    </update>
+
+    <select id="getNormalItem" resultType="int">
+        select count(1)  from
+        zc_check_item where
+        zc_check_id = #{id}
+        and result = 1
+    </select>
+
+
+    <select id="getTotalZcItem" resultType="int">
+        select count(1)  from
+        zc_check_item where
+        zc_check_id = #{id}
+    </select>
+
+    <select id="getAccountName" resultType="java.lang.String">
+        SELECT
+        b.username
+    FROM
+        zc_check AS a
+        LEFT JOIN sys_user  AS b ON a.check_dept_id = b.deptid
+    WHERE
+        a.check_dept_id = #{id}
+    limit 1
+    </select>
+
+    <update id="updateZcCheck">
+        update zc_check set  profit = #{profit}
+        where id = #{zcCheckId}
+    </update>
+
+    <insert id="batchZcItem">
+        INSERT INTO `zc_check_item` ( `zc_check_id`, `zc_id`, `result`, `del`, `finish_time`, `re_check`, `profit` )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.zcCheckId},
+            #{item.zcId},
+            1,
+            0,
+            now(),
+            #{item.reCheck},
+            1
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="getByEpcId" resultType="com.itycu.server.dto.ZcInfoDto">
+        select  * from zc_info as a where a.epcid= #{epcId}
+        limit 1
+    </select>
+
+
+
+
+    <select id="queryPandianUserName" resultType="java.lang.String">
+        SELECT b.nickname FROM zc_check
+        AS a left join sys_user as b on a.check_user_id = b.id
+        where a.check_user_id = #{checkUserId} and a.id = #{id}
+        limit 1
+    </select>
+
+
+    <select id="queryPanYinZcList" resultType="com.itycu.server.model.ZcItemDeptCountInfo">
+        SELECT
+            c.deptname as  deptname,
+            count(b.sy_dept_id) as diffCount
+        FROM
+            zc_check_item AS a
+            LEFT JOIN zc_info AS b ON a.zc_id = b.id
+            left join t_dept as c on b.sy_dept_id = c.id
+        WHERE
+            profit = 1
+            AND zc_check_id = #{id}
+        GROUP BY
+            b.sy_dept_id
+    </select>
+
+
+</mapper>

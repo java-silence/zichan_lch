@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Insert title here</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="../../layui/css/layui.css" media="all" />
+    <style>
+        .mytable .layui-table-cell{
+            height:auto;
+            overflow:visible;
+            text-overflow:inherit;
+            white-space:normal;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div>
+            <header style="height: 100%">
+                <div align="left">
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <form class="form-inline" onsubmit="return false">
+                                    <div class="form-group">
+                                        id：
+                                        <input id="id" type="text" class="form-control" placeholder="id">
+                                        <button id="searchBt" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </header>
+
+            <div>
+                <div class='col-md-2'>
+                    <ul id="demo" style="display: inline-block;"></ul>
+                </div>
+                <div class='col-md-10'>
+                    <table class="layui-hide" id="data"></table>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="row" align="center">
+                    <div class="col-md-12">
+                        <div class="layui-btn-group demoTable">
+                            <button class="layui-btn  layui-btn-sm" data-type="getCheckData">
+                                <i class="layui-icon">&#xe608;</i> 保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<!--<script type="text/javascript" src="../../js/dict.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<script type="text/javascript">
+    var pers = checkPermission();
+    //var appStatus = showStepSelect("stepid", "1", true);
+    //var showDept = showDeptSelect("deptid", "dept", true);
+    //var showUser = showUserSelect("createby", "user", true);
+
+    var tableIns;
+    layui.use(['table','tree'], function(){
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/invs/layuiList"
+            ,where: {id:$("#id").val()}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'checkbox',checkbox: true} //其它参数在此省略
+                ,{field:'invcode', title: '存货代码', sort: false}
+                ,{field:'invname', title: '存货名称', sort: true}
+                ,{field:'iprice', title: '价格', sort: true}
+                ,{field:'memo', title: '备注'}
+            ]]
+            ,done: function(res, curr, count){
+                $(document).on("click",".layui-table-body table.layui-table tbody tr", function () {
+                    var id = $(this).children("td[data-field='id']").text();
+                });
+
+
+                $("td[data-field='invname']").each(function(){
+                    $(this).find(".layui-table-cell").removeClass('layui-table-cell');
+                });
+
+
+            }
+        });
+
+        $.ajax({
+            type : 'get',
+            url : '/invclasss/getInvClassTree',
+            success : function(data) {
+                layui.tree({
+                    elem: '#demo' //传入元素选择器
+                    ,click: function(node){
+                        tableIns.reload({where: {invcid:node.id}})
+                    }
+                    ,nodes: data
+                });
+            }
+        });
+
+        active = {
+            getCheckData: function(){ //保存
+                var checkStatus = table.checkStatus('data')
+                    ,data = checkStatus.data;
+                parent.$('#shuzhi').val(JSON.stringify(data));
+                //当你在iframe页面关闭自身时
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {id:$("#id").val()}})
+    });
+
+</script>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.title {
+				padding: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				background-color: #fff;
+			}
+			 .radio_inline{
+                display: inline-block;
+                width: 65%;
+                font-size:15px
+            }
+            .radio_inline label{
+
+                width: 47%;
+                padding-left: 40px;
+                padding-right: 40px;
+            }
+            .radio_inline input[type=radio]{
+                width: 15%;             
+                right: auto;
+            }
+		</style>
+	</head>
+	<script src="../js/mui.min.js"></script>
+	<script type="text/javascript" src="../js/properties.js" ></script>
+	<script type="text/javascript" src="../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../js/common.js" ></script>
+	<body>
+		<form class="mui-input-group">
+		    <div class="mui-input-row">
+		        <label>标题</label>
+		        <input id="biaoti" type="text">
+		    </div>
+		    <div class="mui-input-row">
+		        <label>审批结果</label>
+		        <span class="radio_inline mui-radio">
+                            <input name="radio1" type="radio" checked value="1">
+                            <label for="radio_man">同意</label>
+                            <input name="radio1" type="radio" value="0">     
+                            <label for="radio_woman">拒绝</label>        
+                </span>   
+		    </div>
+		    <div class="mui-input-row"  style="height:auto">
+		        <label>审批内容</label>
+		        <textarea rows="5" placeholder='请输入内容' type='text' name='neirong' id='neirong'></textarea>
+		    </div>
+		</form>
+	</body>
+</html>
+<script>
+	var id = getUrlParam('id');
+
+    initData()
+
+	function initData(){
+		token = JSON.parse(localStorage.getItem('$state')).token;
+				mui.ajax(server_url+'/todos/'+id,{
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'token':token},
+					success:function(data){	
+							$('#biaoti').val(data.biaoti)
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+
+						var msg = xhr.responseText;
+						var response = JSON.parse(msg);
+						alert(response.message);
+					}
+				});	
+	}
+</script>

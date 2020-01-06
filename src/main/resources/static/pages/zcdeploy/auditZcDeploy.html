@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>资产调配审核页面</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />-->
+    <style>
+        .bfmx p{
+            margin-left: 15px;
+        }
+        #test{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-fluid">
+    <div id="test"></div>
+	<input type="hidden" id="flowid"/>
+	<input type="hidden" id="stepid"/>
+	<input type="hidden" id="material"/>
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md8">
+			<div class="layui-card">
+				<div class="layui-card-header" id="title">资产调配申请单</div>
+				<div class="layui-card-body">
+					<div class="layui-row layui-col-space10">
+                        <!--调配的主信息-->
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text bfmx">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>调配调配单明细</div>
+								<p class="layui-text-center" id="deployMx">调配明细</p>
+								<!--<p class="layui-text-bottom" id="backDeptName">调配后部门</p>-->
+								<!--p<p class="layui-text-bottom" id="deployBz">调配备注</p>-->
+							</div>
+						</div>
+                        <!--资产调配设备详细信息-->
+						<div class="layui-col-xs12 layui-col-sm12">
+							<div class="layuiadmin-card-text">
+								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>调配资产信息</div>
+								<table class="layui-hide" id="datas" lay-filter="datas"></table>
+								<script type="text/html" id="barDemo">
+									<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+								</script>
+								<!--<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>
+                                <p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>-->
+							</div>
+						</div>
+                        <!--照片信息-->
+						<!--<div class="layui-col-xs12 layui-col-sm12">-->
+							<!--<div class="layuiadmin-card-text">-->
+								<!--<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>报修照片</div>-->
+								<!--<div id="zhaopian"></div>-->
+								<!--&lt;!&ndash;<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>-->
+                                <!--<p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>&ndash;&gt;-->
+							<!--</div>-->
+						<!--</div>-->
+					</div>
+				</div>
+			</div>
+            <!--审批动态信息-->
+			<div class="layui-card">
+				<div class="layui-card-header">审批动态</div>
+				<div class="layui-card-body">
+					<dl class="layuiadmin-card-status" id="shenpidongtai"></dl>
+				</div>
+			</div>
+		</div>
+        <!--审批操作-->
+		<div class="layui-col-md4">
+			<div class="layui-card">
+				<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+					<input type="hidden" id="id" name="id">
+					<input type="hidden" id="bizid" name="bizid">
+
+					<div class="layui-card-header">审批操作</div>
+					<div class="layui-card-body">
+						<div class="layui-card-header" >
+							<button class="layui-btn" type="submit" onclick="submitProcess()" >确认调配</button>
+							<!--<button class="layui-btn layui-btn-warm" onclick="submitProcess()" >审批拒绝</button>-->
+							<!--<button class="layui-btn layui-btn-danger" onclick="submitProcess()" >审批驳回</button>-->
+						</div>
+						<div class="layui-card-body layui-row layui-col-space10">
+							<div class="layui-col-md12">审批意见</div>
+							<div class="layui-col-md12">
+								<textarea id="neirong" name="neirong" placeholder="请输入审批意见" class="layui-textarea"></textarea>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <script type="text/html" id="auditBfItem">
+        {{# if(d.status == 0 && d.itemStatus != 3 && d.shbStatus != 3 ) { }}
+            <a class="layui-btn layui-btn-xs" lay-event="auditAgree">同意</a>
+            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="auditRefuse">拒绝</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="auditBack">驳回</a>
+        {{# } }}
+        {{# if(d.itemStatus == 3 ) { }}
+            <a class="layui-btn layui-btn-xs" lay-event="cwbf">调配</a>
+            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="cwzc">正常</a>
+        {{# } }}
+        {{# if( d.status == 0 && d.shbStatus == 3 ) { }}
+        <a class="layui-btn layui-btn-xs" lay-event="zctj">再次提交</a>
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="zcsc">删除</a>
+        {{# } }}
+        {{# if(d.status > 0 ) { }}
+            <button class='layui-btn layui-btn-xs' title='已提交,暂无操作'><i class='layui-icon'>&#x1005;</i></button>
+        {{# } }}
+    </script>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script src="../../layuiadmin/layui/layui.js"></script>
+    <script type="text/javascript" src="../../js/my/permission.js"></script>
+	<script type="text/javascript" src="../../js/user.js"></script>
+    <script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
+	<script type="text/javascript">
+
+        var pers = checkPermission();
+        var pro = window.location.protocol;
+        var host = window.location.host;
+        var domain = pro + "//" + host;
+        var todoId = getUrlParam("id");
+        var deployId = getUrlParam("bizid");
+        // 查询角色信息
+        // showUserbyRole("userid",6);
+        var table;
+        var ids = [];
+        var tableIns2;
+		layui.use(['layer','form','laydate','table'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+            table = layui.table;
+            tableIns2 = table.render({
+                 elem: '#datas'
+                ,data:[]
+                ,url:"/zcDeployItems/listByZcDeployIdNew?todoId="+todoId
+                //,height: 'full-200'
+                ,cols: [[
+                    {field:'checkbox',title: '序号',checkbox: true}
+                    ,{field:'id', hide: true}
+                    ,{field:'flowTodoId', hide: true}
+                    ,{field:'flowItemId', hide: true}
+                    ,{field:'itemStatus', hide: true}
+                    ,{field:'zcCodenum',title:'编号', hide:true,width:150, sort: true}
+                    ,{field:'zcName',title:'名称', width:200, sort: true}
+                    ,{field:'gldeptname',title:'管理部门', width:150, sort: true}
+                    ,{field:'frontdeptname',title:'调出部门', width:150, sort: true}
+                    ,{field:'backdeptname',title:'调入部门', width:150, sort: true}
+                    ,{field:'categoryName',title:'资产类别', width:100, sort: true}
+                    ,{field:'startusetime',title:'开始使用日期', width:110, sort: true}
+                    ,{field:'remainingperiod',title:'剩余期限', width:100, sort: true}
+                    ,{field:'originalvalue',title:'原价值', width:100, sort: true}
+                    ,{field:'netvalue',title:'净值', width:100, sort: true}
+                    ,{field:'bz',title:'调配备注', width:200, sort: true,edit:"text"}
+                    // ,{field:'status',title:'状态', align:'center',width:100, fixed:'right',sort: true,templet: function(d){
+                    //         var status = "";
+                    //         if (d.status == 0 ){
+                    //             status = "<span style='color: red'>待处理</span>";
+                    //         }else if (d.status == 1 && d.itemStatus != 3 && d.shbStatus !=3 ){
+                    //             status = "<span style='color: #009688'>同意</span>";
+                    //         }else if (d.status == 2 && d.itemStatus != 3 && d.shbStatus !=3 ){
+                    //             status = "<span style='color: #FFB800;'>拒绝</span>";
+                    //         }else if (d.status == 3 && d.itemStatus != 3 && d.shbStatus !=3){
+                    //             status = "<span style='color: #FF5722'>驳回</span>";
+                    //         }else if (d.status == 1 && d.itemStatus==3){
+                    //             status = "<span style='color: #009688'>调配</span>";
+                    //         }else if (d.status == 2 && d.itemStatus==3){
+                    //             status = "<span style='color: #FFB800'>正常</span>";
+                    //         }else if (d.status == 1 && d.shbStatus==3){
+                    //             status = "<span style='color: #009688'>再次提交</span>";
+                    //         }else if (d.status == 2 && d.shbStatus==3){
+                    //             status = "<span style='color: #FFB800'>删除</span>";
+                    //         }
+                    //         return status;
+                    //     }}
+                    // ,{field:'caozuo',width:180, title: '操作',fixed:'right',align:'center', toolbar: '#auditBfItem'}
+                ]]
+            });
+
+            //监听工具条
+            table.on('tool(datas)', function(obj){
+                var data = obj.data;
+                if (obj.event === 'auditAgree') {
+                    obj.update({
+                        status: 1
+                    });
+                }else if(obj.event === 'auditRefuse'){
+                    obj.update({
+                        status: 2
+                    });
+                }else if(obj.event === 'auditBack'){
+                    obj.update({
+                        status: 3
+                    });
+                }else if(obj.event === 'cwbf'){
+                    obj.update({
+                        status: 1
+                    });
+                }else if(obj.event === 'cwzc'){
+                    obj.update({
+                        status: 2
+                    });
+                }else if(obj.event === 'zctj'){
+                    obj.update({
+                        status: 1
+                    });
+                }else if(obj.event === 'zcsc'){
+                    obj.update({
+                        status: 2
+                    });
+                }else if(obj.event === 'detail'){
+                    layer.msg('ID：'+ data.id + ' 的查看操作');
+                } else if(obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        $.ajax({
+                            type : 'delete',
+                            url : '/repairss/'+data.id,
+                            success : function(data) {
+                                obj.del();
+                                layer.msg('删除成功');
+                            }
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+            initData();//提取维修单内容，并显示
+        });
+
+		// 初始化调配主信息
+		function initData(){
+			var id = getUrlParam("id");
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : '/zcDeploys/getZcDeployDetail?deployId='+deployId,
+					async : false,
+					success : function(data) {
+                        var data = data.data;
+                        $('#deployMx').text("申请人:" + data.nickname + "  申请部门：" + data.uDeptName + "  申请时间："+data.createTime);
+                        // 调配后部门 调配说明
+                        //$('#backDeptName').text("调出后部门:" + data.backDeptName);
+                        $('#deployBz').text("调配备注:" + data.description);
+                        $('#flowid').val(data.flowid);
+                        $('#stepid').val(data.stepid);
+                        shenpidongtai(data.id,data.flowid);	//提取审批动态
+                        initbxFiles(data.id,data.biztype);	//调出本待办事宜审批人自己上传的附件
+					}
+				});
+			}
+		}
+
+		function getBeijian(flowid,stepid,repairid,material){
+            if($('#flowid').val()==1 && $('#stepid').val()==3){
+                tableIns2.reload({
+                    url:"/repairss/listByRepairId?repairid="+repairid
+                    ,cols: [[
+                        {field:'id', title: '序号', sort: true}
+                        ,{field:'invname', title: '备件名称', sort: true}
+                        ,{field:'', title: '状态',templet: function(d){
+                                if(!material){
+                                    return "未出库";
+                                }
+                                if (material == 1){
+                                    return "已出库";
+                                }
+                            }}
+                        ,{field:'caozuo', title: '操作', align:'center', toolbar: '#barDemo'}
+                    ]]
+                })
+            }else{
+                tableIns2.reload({
+                    url:"/repairss/listByRepairId?repairid="+repairid
+                    ,cols: [[
+                        {field:'id', title: '序号', sort: true}
+                        ,{field:'invname', title: '备件名称', sort: true}
+                        ,{field:'', title: '状态',templet: function(d){
+                                if(!material){
+                                    return "未出库";
+                                }
+                                if (material == 1){
+                                    return "已出库";
+                                }
+                            }}
+                        ,{field:'caozuo', title: '操作', align:'center'}
+                    ]]
+                })
+			}
+		}
+
+		function initbxFiles(bizid,biztype){
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype='+biztype,
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#zhaopian');
+                        demoListView.append('<div id="" class="file-iteme">' +
+                            '<div class="handle"><span class="glyphicon glyphicon-trash"></span></div>' +
+                            '<img style="width: 220px;height: 180px;" src="' + domain + '/statics'+ data[i].url +'" alt="'+ data[i].filename +'" class="layui-upload-img">')
+                    }
+                }
+            });
+		}
+
+        function inittodoFiles(bizid) {
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype=2',
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#demoList');
+                        var tr = $(['<tr id="upload-'+ i +'">'
+                            ,'<td>'+ data[i]['filename'] +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>已上传</td>'
+                            ,'<td>'
+                            ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete" id="'+ data[i]['id'] +'">删除</button>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+                        //删除
+
+                        tr.find('.demo-delete').on('click', function(){
+                            del( this.id ); //删除对应的文件
+                            tr.remove();
+                        });
+                        demoListView.append(tr);
+                    }
+                }
+            });
+        }
+
+        // 审核提交
+		function submitProcess() {
+
+            var formdata = $("#form").serializeObject();
+            var data =  table.cache["datas"];
+            formdata.deployId = deployId;
+            formdata.todoId = todoId;
+            formdata.itemStatus = data[0].itemStatus;
+            formdata.flowTodoItems = data;
+            layer.confirm('确定该资产调配?', function (index) {
+                $.ajax({
+                    type : 'post',
+                    url : '/zcDeploys/check',
+                    contentType: "application/json; charset=utf-8",
+                    data : JSON.stringify(formdata),
+                    success : function(data) {
+                        debugger
+                        if (data.code == 0){
+                            if (data.status == 4){
+                                printHtml();
+                            }
+                            location.href = "/pages/todo/todoList.html";
+						} else if(data.code == 1){
+                            layer.msg("审核失败", {shift: -1, time: 1000}, function(){});
+						}
+                    }
+                });
+                layer.close(index);
+            });
+		}
+
+        function initFiles(bizid) {
+            $.ajax({
+                type : 'get',
+                url : '/files?bizid=' + bizid + '&biztype=1',
+                success : function(data) {
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        var demoListView = $('#zhaopian');
+                        console.log(data[i]['url'].replace("/","%2F"));
+                        var preview ="<a target='_blank' href='https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Fwww.itycu.com%3A8090%2Fstatics"+data[i]['url'].replace(/\//g,"%2F")+"'>预览</a>"
+                        var tr = $(['<tr id="upload-'+ i +'">'
+                            ,'<td>'+ data[i]['filename'] +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>'+preview+'</td>'
+                            ,'<td>'
+                            ,'<a target="_blank" href="' + domain + '/statics' + data[i]['url'] +'">下载</a>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+                        demoListView.append(tr);
+                    }
+                }
+            });
+        }
+
+        var ids = [];
+        layui.use(['layer','form','laydate','upload'], function(){
+            var layer = layui.layer;
+            var form = layui.form;
+//            var laydate = layui.laydate;
+//            laydate.render({
+//                elem: '#qsriqi'
+//            });
+
+            var upload = layui.upload;
+            //多文件列表示例
+            var demoListView = $('#demoList')
+                ,uploadListIns = upload.render({
+                elem: '#testList'
+                ,url: '/files/'
+                ,accept: 'file'
+                ,multiple: true
+                ,auto: false
+                ,bindAction: '#testListAction'
+                ,data:{id:123,biztype:1}
+                ,choose: function(obj){
+                    var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                    //读取本地文件
+                    obj.preview(function(index, file, result){
+                        var tr = $(['<tr id="upload-'+ index +'">'
+                            ,'<td>'+ file.name +'</td>'
+                            //,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                            ,'<td>等待上传</td>'
+                            ,'<td>'
+                            ,'<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+                            ,'<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+                            ,'</td>'
+                            ,'</tr>'].join(''));
+
+                        //单个重传
+                        tr.find('.demo-reload').on('click', function(){
+                            obj.upload(index, file);
+                        });
+
+                        //删除
+                        tr.find('.demo-delete').on('click', function(){
+                            delete files[index]; //删除对应的文件
+                            tr.remove();
+                            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                        });
+
+                        demoListView.append(tr);
+                    });
+                }
+                ,done: function(res, index, upload){
+
+                    ids.push(res.id);
+                    //console.log(res);
+                    //if(res.code == 0){ //上传成功
+                    var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tds.eq(1).html('<span style="color: #5FB878;">上传成功</span>');
+                    //tds.eq(2).html(''); //清空操作
+                    tds.eq(2).html(res.id);
+                    return delete this.files[index]; //删除文件队列已经上传成功的文件
+                    //}
+                    //this.error(index, upload);
+                }
+                ,error: function(index, upload){
+                    var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tds.eq(1).html('<span style="color: #FF5722;">上传失败</span>');
+                    tds.eq(2).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                }
+            });
+        });
+
+        // 打印调配单
+        function printHtml(){
+            if (!deployId){
+                layer.msg('请选择调配单');
+                return
+            }
+
+            var prhtml = "";
+            $.ajax({
+                type : 'get',
+                url : '/zcDeploys/' + deployId ,
+                async : false,
+                success : function(data) {
+                    var deploy = data.zcDeploy;
+                    var shenqing = data.shenqing;
+                    var diaoru = data.diaoru;
+                    var diaochu = data.diaochu;
+                    var shenhe = data.shenhe;
+                    var pdeptName = data.pdeptName;
+                    if (pdeptName == null || pdeptName == ''){
+                        pdeptName = "垣曲农村商业银行";
+                    }
+                    formatData(data);
+                    prhtml += "<div class='zctitle'>"+pdeptName+"实物资产调配单</div>"+
+                        "<table class='print-zctable'><tr><td style='border:none;font-size: 20px;text-align: left' colspan='6'>调配单号："+ deploy.deployNum +"</td>" +
+                        "<td style='border:none;font-size: 20px;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
+                        "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产追溯码</td>" +
+                        "<td style='border-top: 1px solid #000;'>资产编码</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
+                        "<td style='border-top: 1px solid #000;'>原值（元）</td>" +
+                        "<td style='border-top: 1px solid #000;'>调出部门</td><td style='border-top: 1px solid #000;'>调入部门</td>" +
+                        "<td style='border-top: 1px solid #000;'>调拨原因</td></tr>";
+                    $.ajax({
+                        type : 'get',
+                        url : "/zcDeployItems/listByZcDeployId?zcDeployId="+deployId+"&cw=2",
+                        async : false,
+                        success : function(datas) {
+                            console.log(datas)
+                            for (var i=0;i<datas.data.length;i++){
+                                var d = datas.data[i];
+                                var fu = d.frontUsername;
+                                var bu = d.backUsername;
+                                var ep = d.epcid
+                                formatData(d);
+                                if (fu == null){
+                                    fu = "";
+                                }
+                                if (bu == null){
+                                    bu = "";
+                                }
+                                if (ep == null){
+                                    ep = "";
+                                }
+                                prhtml += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td><td>"+d.originalvalue+"</td>" +
+                                    "<td>"+ d.sydeptname +"</td><td>"+ d.backdeptname +"</td><td>"+d.bz+"</td></tr>";
+                            }
+                        }
+                    });
+                    prhtml += "</table>"
+
+                    prhtml += "</table>"
+                    prhtml += "<div style='margin: 5px 3px'>资产调配审批流程：</div>"
+
+                    prhtml += "<table class='print-zctable'>";
+                    prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >发起部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >发起人员：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='2'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+
+                    if (diaochu.length > 0){
+                        if (diaochu.length == 1){
+                            var da = diaochu[0];
+                            prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调出部门：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                        }else {
+                            for (var i = 0; i < diaochu.length; i++) {
+                                var da = diaochu[i];
+                                prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调出部门"+(i+1)+"：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                            }
+                        }
+                    }
+                    if (diaoru.length > 0){
+                        if (diaoru.length == 1){
+                            var da = diaoru[0];
+                            prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调入部门：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                        } else {
+                            for (var i = 0; i < diaoru.length; i++) {
+                                var da = diaoru[i];
+                                prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调入部门"+(i+1)+"：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                            }
+                        }
+                    }
+                    if (shenhe.length > 0){
+                        var da = shenhe[0];
+                        prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >审核部门：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                    }
+
+                    prhtml += "</table>"
+
+                }
+            });
+
+            $("#test").print({
+                //Use Global styles
+                globalStyles : false,
+                //Add link with attrbute media=print
+                mediaPrint : false,
+                //Print in a hidden iframe
+                iframe : false,
+                //Don't print this
+                noPrintSelector : ".avoid-this",
+                //Add this at top
+                prepend : prhtml,
+                //Add this on bottom
+                append : "",
+                //Log to console when printing is done via a deffered callback
+                deferred: $.Deferred().done(function() {}),
+                stylesheet:'../../css/fahuoprint.css'
+            });
+        }
+
+        //显示审批动态
+        function shenpidongtai(bizid,flowid) {
+            console.log(bizid);
+            console.log(flowid);
+            $.ajax({
+                type : 'get',
+                url : '/todos/listbizid?bizid='+bizid+'&flowid=' + flowid,
+                async : false,
+                success : function(data) {
+                    var length = data.length;
+                    console.log(id + "abc" + data);
+                    for (var i = 0; i < length; i++) {
+                        var html = "";
+
+                        html += "   <dd>";
+                        html += "			<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
+                        html += "			<div>";
+                        if(data[i].biztype = "同意"){
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:同意</p>";
+                        }else {
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
+                        }
+                        // html += "                        <p>审批意见：</p>";
+                        html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+                        html += "                        <span>" +data[i].updateTime + "</span>";
+                        html += "			</div>";
+                        html += "		</dd>";
+
+                        $("#shenpidongtai").append(html);
+
+                    }
+                }
+            });
+        }
+
+
+	</script>
+</body>
+</html>

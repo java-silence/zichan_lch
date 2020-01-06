@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>智慧城市建设管理信息系统</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+		<link rel="stylesheet" type="text/css" href="css/code.css" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css"/>
+	</head>
+	<body style="background: #f8f8f8;">
+		<header class="pc_header">
+			<div class="top_wrap">
+				<div class="top_heart">
+					<div class="top_heart_left">您好,欢迎使用智慧城市建设管理信息系统</div>
+					<div class="top_heart_right">
+						<span class="user ss" id="nickname"></span>
+						<span class="out ss"><a href="javascript:;" onclick="logout()">[退出]</a></span>
+						<span class="ss xx"><a href="pages/notice/noticePubList.html"><img src="img/xx.png"/></a></span>
+					</div>
+				</div>
+			</div>
+			<!--logo-->
+			<div class="logo_wrap">
+				<div class="logo_heart">
+					<div class="logo">
+						<a href=""><img src="img/logo.png" /></a>
+					</div>
+					<div class="search_right">
+						<form action="" method="post">
+							<input type="text" name="" id="search_txt" value="" class="search_txt" />
+							<input type="submit" value="" class="subs" />
+						</form>
+					</div>
+				</div>
+			</div>
+			<!--一级导航-->
+			<div class="menu_wrap">
+				<div class="menu_heart">
+					<ul class="layui-nav" style="background: #077ec2;" id="menutop">
+					</ul>
+				</div>
+			</div>
+		</header>
+		<header class="m_header">
+			<div class="header">
+				<a href="" class="logo2"><img src="img/logo2.png" alt=""></a>
+				<a href="pages/notice/noticePubList.html" class="user-icon"><span>信息中心</span></a>
+				<div id="dl-menu" class="dl-menuwrapper">
+					<button id="dl-menu-button">Open Menu</button>
+					<ul class="dl-menu" id="m_menu">
+					</ul>
+				</div>
+			</div>
+			<!--帐号信息-->
+			<div class="account">
+				<div class="hao"><span id="m_nickname"></span></div>
+				<a href="javascript:;" onclick="logout()" class="outlat">退出</a>
+			</div>
+			<!--logo-->
+			<div class="logo_wrap2">
+				<div class="logo_heart2">
+					<div class="search_right2">
+						<form action="" method="post">
+							<input type="text" name="" id="" value="" class="search_txt2" />
+							<input type="submit" value="" class="subs2" />
+						</form>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<div class="content_heart">
+			<div class="layui-row layui-col-space15">
+
+				<div class="content_left layui-col-md2 layui-col-xs12 layui-col-sm12 con_right ">
+					<ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo" style="margin-right: 10px;" id="menuleft">
+
+					</ul>
+				</div>
+
+				<div class="content_right layui-col-md10 layui-col-xs12 layui-col-sm12 ">
+					<div class="content_right_top layui-col-md12 layui-col-xs12 layui-col-sm12">
+						<div class="content_right_top_1">统计报表</div>
+						<div class="mcright">
+							<img src="img/baobiao.png" />
+						</div>
+					</div>
+					<div class="content_right_top_2 layui-col-space30  layui-col-md12 layui-col-xs12 layui-col-sm12">
+						<!--待办事项-->
+
+						<div class="content_right_top_2_left layui-col-md6 layui-col-xs12 layui-col-sm12">
+							<div class="content_right_top_1">待办事项</div>
+							<div class="content_right_top_2_left_bg">
+								<ul class="content_right_top_2_left_bg_ul">
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+									<li>
+										<a href="" class="cc">智慧城市新定位，美好生活新未来智慧城</a>
+										<div class="ccat">
+											<a href="">[处理]</a>
+											<a href="">[删除]</a>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<!--通知公告-->
+						<div class="content_right_top_2_left3 layui-col-md6 layui-col-xs12 layui-col-sm12">
+							<div class="content_right_top_1">通知公告</div>
+							<div class="content_right_top_2_left_bg3">
+								<ul class="content_right_top_2_left_bg_ul">
+									<li>
+										<a href="">单志广：智慧城市建设难度被低估 应“反四...</a>
+
+									</li>
+									<li>
+										<a href="">杜平：中国智慧城市建设现状与趋势</a>
+
+									</li>
+									<li>
+										<a href="">美国“智慧城市-智慧增长商业发展代表团”...</a>
+
+									</li>
+									<li>
+										<a href="">智慧城市新定位，美好生活新未来智慧城</a>
+
+									</li>
+									<li>
+										<a href="">单志广：智慧城市建设难度被低估 应“反四...</a>
+
+									</li>
+									<li>
+										<a href="">智慧城市新定位，美好生活新未来智慧城</a>
+
+									</li>
+									<li>
+										<a href="">美国“智慧城市-智慧增长商业发展代表团”...</a>
+
+									</li>
+									<li>
+										<a href="">智慧城市新定位，美好生活新未来智慧城</a>
+
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<div id="foot"></div>
+	</body>
+	<script src="js/libs/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="layuiadmin/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/my/form.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="js/my/modernizr.custom.js"></script>
+	<script type="text/javascript" src="js/my/jquery.dlmenu.js"></script>
+	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/navigation.js"></script>
+</html>

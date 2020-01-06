@@ -1,0 +1,40 @@
+/*清除样式*/
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form, 
+fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0;} 
+table { border-collapse:collapse; border-spacing:0; } 
+fieldset,img { border:0 none; display:block;} 
+address,caption,cite,code,dfn,em,i,u,b,th,var { font-style:normal; font-weight:normal; }
+input,textarea{outline:0 none; border:0;border:none;} 
+ol,ul { list-style:none; } 
+caption,th { text-align:left;} 
+h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:normal;} 					
+a{text-decoration:none;}
+a:hover{ text-decoration: underline; color: #b90005; }
+.clearfix:after{height:0;content:" ";display:block; overflow:hidden;clear:both;}
+.clearfix{zoom:1;}
+body{font-family: "Microsoft Yahei",arial,'微软雅黑','宋体';
+   max-width: 640px; min-width: 320px; margin: 0 auto;
+}
+
+/*banner轮播*/
+/*.focus span {width: 10px;height: 10px;margin-right: 5px;border-radius: 50%;background: #666;font-size: 0}*/
+/*.focus span.current {background: #fff}*/
+
+
+/*查询信息*/
+.info_wrap{ width: 96%;min-height: 120px; position: relative; margin: 0 auto;margin-top: 40px; background: url(../img/tianhai/xx_bg.jpg) no-repeat left top; background-size: 100% 100%; }
+.query{ width: 50%;height: 45px;background: url(../img/tianhai/xx_bg_top.png) no-repeat left top;background-size: 100% 100%; position: absolute;top: -17px;left: 25%; text-align: center;line-height: 45px;font-size: 18px;font-weight: bold;color: #fff; }
+.query_text{ width: 88%; margin: 0 auto;font-size: 16px;color: #000;line-height: 24px; padding: 40px 0 20px 0;}
+
+
+/*分类链接*/
+.classification{ overflow: hidden; margin-top: 20px; }
+.classification_left{ float: left; width: 38%;}
+.classification_left .pict{position: relative; text-align: center; float: left;width: 46%;margin-left: 4%; margin-top: 4%; }
+.classification_left .pict .pict_text{ width: 100%; text-align: center;color: #fff; position: absolute;bottom: 11%; font-size: 16px; }
+.classification_right{ float: right; width: 60%; }
+.classification_right .scat{ position: relative;  margin-right: 4%; margin-top: 3%; }
+.classification_right .scat .scat_text{ position: absolute;  color: #fff;font-size: 16px; right: 11%; bottom: 20%; }
+.classification_right .scc{ margin-top: 7%; }
+.classification_right .scd .scat_text{ left: 11%; }

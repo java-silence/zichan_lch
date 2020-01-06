@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<input id="shuzhi" type="hidden"/>
+    <input id="scrollTop" type="hidden"/>
+    <input id="scrollLeft" type="hidden"/>
+	<br>
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+<!--				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>-->
+<!--				<button class="layui-btn" type="submit" onclick="addAndSava()"><i class="fa fa-save"></i>保存</button>-->
+				<button class="layui-btn" type="submit" onclick="addAndCommit()"><i class="fa fa-save"></i>保存并提交</button>
+			</div>
+		</div>
+	</div>
+	<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+		<input id="type" name="type" type="hidden" />
+		<input id="id" name="id" type="hidden" />
+<!--		<div class='layui-form-item'>-->
+<!--			<div class='layui-inline'>-->
+<!--				<label class='layui-form-label'>报修描述</label>-->
+<!--				<div class='layui-input-inline'>-->
+<!--					<input class='layui-input' placeholder='报修描述' type='text' name='repairDes' id='repairDes'>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-inline'>-->
+<!--				<label class='layui-form-label'>备注信息</label>-->
+<!--				<div class='layui-input-inline'>-->
+<!--					<input class='layui-input' placeholder='备注信息' type='text' name='bz' id='bz' >-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+	</form>
+	<br>
+	<form class="layui-form layui-table-tool" onsubmit="return false">
+		<button class="layui-btn" onclick="tianjia()">
+			<i class="layui-icon">&#xe608;</i> 添加
+		</button>
+		<button class="layui-btn" onclick="batchdel()">
+			<i class="layui-icon">&#xe640;</i> 批量删除
+		</button>
+	</form>
+	<div>
+		<div class="widget-body no-padding table-overlay" id="scrollDiv">
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+
+			<script type="text/html" id="barDemo">
+				<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+				<a class="layui-btn layui-btn-xs up_route_btn">上传</a>
+			</script>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript">
+	var id = getUrlParam("id");		//id不为空为编辑，为空是新增
+	var tableIns;
+	var table;
+    var pro = window.location.protocol;
+    var host = window.location.host;
+    var domain = pro + "//" + host;
+	layui.use(['layer','form','laydate','table','upload'], function(){
+		var layer = layui.layer;
+		var form = layui.form;
+		table = layui.table;
+        var upload = layui.upload;
+		tableIns = table.render({
+			elem: '#data'
+			,data:[]
+			,page: false
+			,height: 'full-180'
+			,limit: 10000
+			,totalRow: true
+			,cols: [[
+				{checkbox: true}
+				,{type:'numbers'}
+				,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
+				,{field:'applyDeptId',title:'申请部门ID', width:100, sort: true,hide:true}
+				,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
+
+				,{field:'epcid',title:'资产追溯码', width:150, sort: true}
+				// ,{field:'cardNum',title:'卡片编号', width:150, sort: true}
+				,{field:'zcCodenum',title:'资产编码', width:150, sort: true}
+				,{field:'zcName',title:'资产名称', width:200, sort: true}
+				,{field:'zcFrom',title:'来源', width:200, sort: true}
+				,{field:'glDeptName',title:'管理部门', width:200, sort: true}
+				,{field:'startUseTime',title:'开始使用日期', width:200, sort: true}
+				,{field:'useMonths',title:'到期期限', width:110, sort: true}
+				,{field:'warrantyperiod',title:'保修期限', width:110, sort: true}
+				,{field:'originalValue',title:'原值', width:110, sort: true}
+				,{field:'netvalue',title:'净值', width:110, sort: true}
+				,{field:'repairDes',title:'报修原因', width:110, sort: true,edit:"text"}
+                ,{field:'frontPicsUrl',title:'附件地址', width:110, sort: true,hide:true}
+                ,{field:'frontPics',title:'附件', width:120, fixed:'right',sort: true,templet:function(d){
+                        if(!d.frontPics) d.frontPics = "";
+                        return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline;color:blue'>"+d.frontPics+"</a>";
+                    }}
+				,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemo'}
+			]]
+			, done: function(res, curr, count){
+                if ($('#scrollDiv').find(".layui-table-main") && $("#scrollTop").val()) $('#scrollDiv').find(".layui-table-main").scrollTop($("#scrollTop").val());
+                if ($('#scrollDiv').find(".layui-table-main") && $("#scrollLeft").val()) $('#scrollDiv').find(".layui-table-main").scrollLeft($("#scrollLeft").val());
+
+                $('#scrollDiv').find(".layui-table-main").scroll(function(){
+                    $("#scrollTop").val($(this).scrollTop())
+                    $("#scrollLeft").val($(this).scrollLeft())
+                })
+				var tableId = this.id;
+				var tableElem = this.elem;
+				// table render出来实际显示的table组件
+				var tableViewElem = tableElem.next();
+				upload.render({
+					elem: tableViewElem.find('.up_route_btn') //绑定元素
+					,accept: 'file' //允许上传的文件类型
+					,url: '/files' //上传接口
+					,done: function(res, index, upload){
+						var url = res.url;
+						layer.msg("上传成功");
+						// 上传图片-----------------------------
+						table.cache[tableId][this.item.closest("tr").data('index')]["frontPics"] = res.filename;
+						table.cache[tableId][this.item.closest("tr").data('index')]["frontPicsUrl"] = url
+						table.reload(tableId,{data:table.cache[tableId]});
+					}
+				});
+			}
+		});
+
+		initData();
+
+		//监听工具条
+		table.on('tool(data)', function(obj){
+			var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+
+			switch(event){
+				case "del":
+					layer.confirm('真的删除行么', function (index) {
+						var oldData =  table.cache["data"];
+
+						oldData.splice(obj.tr.data('index'),1);
+						tableIns.reload({
+							url:"",
+							data : oldData
+						});
+
+						layer.close(index);
+					});
+					break;
+                case "viewFile":
+                    layer.open({
+                        type: 1
+                        , title: '查看附件'
+                        , content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.frontPicsUrl + '">'
+                        , area: ['80%', '80%']
+                        , end: function () {
+
+                        }
+                    });
+                    break;
+			}
+		});
+	});
+
+	function initData(){
+		if(id){
+			$.ajax({
+				type : 'get',
+				url : '/zcInspects/'+id,
+				async : false,
+				success : function(data) {
+					$('#id').val(data.id);
+					$('#zcId').val(data.zcId);
+					$('#days').val(data.days);
+					$('#lastCheckTime').val(data.lastCheckTime);
+					$('#bz').val(data.bz);
+					$('#createBy').val(data.createBy);
+					$('#updateBy').val(data.updateBy);
+					$('#checkTime').val(data.checkTime);
+					$('#checkUserId').val(data.checkUserId);
+					$('#checkUsername').val(data.checkUsername);
+					$('#code').val(data.code);
+					$('#checkDeptId').val(data.checkDeptId);
+					$('#checkDeptName').val(data.checkDeptName);
+					renderForm();       //重新渲染表单
+				}
+			});
+
+			$.ajax({
+				type : 'get',
+				url : "/zcInspectRecords/listByZcInReId?zcInReId="+id,
+				async : false,
+				success : function(data) {
+					tableIns.reload({
+						url:"",
+						data: data.data
+					})
+				}
+			});
+		}
+	}
+
+	function add() {
+		var formdata = $("#form").serializeObject();
+		var data =  table.cache["data"];
+		if(!data || data.length == 0){
+			layer.msg("请添加资产");
+			return;
+		}
+
+		formdata.zcRepairItemList = data;
+
+		var posttype="post";
+		if (id){
+			posttype="put";
+		}
+		$.ajax({
+			type : posttype,
+			url : '/zcRepairs',
+			contentType: "application/json; charset=utf-8",
+			data : JSON.stringify(formdata),
+			success : function(data) {
+				layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+					location.href = "addZcRepair.html";
+				});
+			}
+		});
+	}
+
+	// 保存并提交
+	function addAndCommit(){
+		$('#type').val("1");
+		add();
+	}
+
+	// 保存
+	function addAndSava(){
+		$('#type').val("0");
+		add();
+	}
+
+	function tianjia(){
+		$("#shuzhi").val("[]");
+		layer.open({
+			type: 2,
+			title: '添加资产档案',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['95%', '95%'],
+			content: encodeURI('../zcinfo/searchReZcInfo.html'),
+			end : function(){
+				var oldData =  table.cache["data"];
+				var newData = JSON.parse($("#shuzhi").val())
+				//if (!checkRepeat(oldData,newData)){
+				if (newData && newData.length > 0) {
+					$.each(newData, function (index, item) {
+						item.zcId = item.id;
+						item.applyDeptId = item.syDeptId
+						item.bz = "";
+						if (!checkRepeat(oldData,item)) {
+							oldData.push(item);
+						}
+					})
+
+					tableIns.reload({
+						url:"",
+						data : oldData
+					})
+				}
+				//}
+			}
+		});
+	}
+
+	// 判断报废子单是否重复
+	function checkRepeat(array,item) {
+		//var id = item[0].id;
+		var id = item.id;
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].id == id){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//批量删除
+	function batchdel(){
+		var oldData = table.cache["data"];
+		var newData = [];
+		if(!oldData || data.length == 0) {
+			layer.msg("请选择要删除的行");
+		}else{
+			layer.confirm('确定批量删除行么', function (index) {
+				for (var i = 0; i < oldData.length; i++) {
+					if (!oldData[i].LAY_CHECKED){
+						newData.push(oldData[i]);
+					}
+				}
+				tableIns.reload({
+					url:"",
+					data: newData
+				});
+
+				layer.close(index);
+			});
+		}
+	}
+</script>
+</body>
+</html>

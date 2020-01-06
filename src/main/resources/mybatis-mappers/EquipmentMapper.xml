@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.EquipmentDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.xtid != null and params.xtid != ''">
+				and xtid = #{params.xtid} 
+			</if>
+			<if test="params.lbid != null and params.lbid != ''">
+				and lbid = #{params.lbid} 
+			</if>
+			<if test="params.deptid != null and params.deptid != ''">
+				and deptid = #{params.deptid} 
+			</if>
+			<if test="params.xjqyid != null and params.xjqyid != ''">
+				and xjqyid = #{params.xjqyid} 
+			</if>
+			<if test="params.whqyid != null and params.whqyid != ''">
+				and whqyid = #{params.whqyid} 
+			</if>
+			<if test="params.cname != null and params.cname != ''">
+				and cname like concat('%', #{params.cname}, '%')
+			</if>
+			<if test="params.pid != null and params.pid != ''">
+				and pid = #{params.pid} 
+			</if>
+			<if test="params.isort != null and params.isort != ''">
+				and isort = #{params.isort} 
+			</if>
+			<if test="params.serialno != null and params.serialno != ''">
+				and serialno like concat('%', #{params.serialno}, '%')
+			</if>
+			<if test="params.etype != null and params.etype != ''">
+				and etype = #{params.etype} 
+			</if>
+			<if test="params.factoryid != null and params.factoryid != ''">
+				and factoryid = #{params.factoryid} 
+			</if>
+			<if test="params.buildtime != null and params.buildtime != ''">
+				and buildtime = #{params.buildtime} 
+			</if>
+			<if test="params.techphone != null and params.techphone != ''">
+				and techphone = #{params.techphone} 
+			</if>
+			<if test="params.techname != null and params.techname != ''">
+				and techname = #{params.techname} 
+			</if>
+			<if test="params.qualityperiod != null and params.qualityperiod != ''">
+				and qualityperiod = #{params.qualityperiod} 
+			</if>
+			<if test="params.maintainperiod != null and params.maintainperiod != ''">
+				and maintainperiod = #{params.maintainperiod} 
+			</if>
+			<if test="params.maintainbiao1 != null and params.maintainbiao1 != ''">
+				and maintainbiao1 = #{params.maintainbiao1} 
+			</if>
+			<if test="params.maintainbiao2 != null and params.maintainbiao2 != ''">
+				and maintainbiao2 = #{params.maintainbiao2} 
+			</if>
+			<if test="params.maintainbiao3 != null and params.maintainbiao3 != ''">
+				and maintainbiao3 = #{params.maintainbiao3} 
+			</if>
+			<if test="params.useperiod != null and params.useperiod != ''">
+				and useperiod = #{params.useperiod} 
+			</if>
+			<if test="params.equipmentcontent != null and params.equipmentcontent != ''">
+				and equipmentcontent = #{params.equipmentcontent} 
+			</if>
+			<if test="params.equipmentstatus != null and params.equipmentstatus != ''">
+				and equipmentstatus = #{params.equipmentstatus} 
+			</if>
+			<if test="params.adminid != null and params.adminid != ''">
+				and adminid = #{params.adminid} 
+			</if>
+			<if test="params.addtime != null and params.addtime != ''">
+				and addtime = #{params.addtime} 
+			</if>
+			<if test="params.isxun != null and params.isxun != ''">
+				and isxun = #{params.isxun} 
+			</if>
+			<if test="params.iswei != null and params.iswei != ''">
+				and iswei = #{params.iswei} 
+			</if>
+			<if test="params.tdesc != null and params.tdesc != ''">
+				and tdesc = #{params.tdesc} 
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and createby = #{params.createby} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and updateby = #{params.updateby} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and auditby = #{params.auditby} 
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and auditTime = #{params.auditTime} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and ctype = #{params.ctype} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+			<if test="params.whid != null and params.whid != ''">
+				and whid = #{params.whid}
+			</if>
+			<if test="params.price != null and params.price != ''">
+				and price = #{params.price}
+			</if>
+			<if test="params.pinpai != null and params.pinpai != ''">
+				and pinpai = #{params.pinpai}
+			</if>
+			<if test="params.anzhaung != null and params.anzhaung != ''">
+				and anzhaung = #{params.anzhaung}
+			</if>
+			<if test="params.zhuangfx != null and params.zhuangfx != ''">
+				and zhuangfx = #{params.zhuangfx}
+			</if>
+			<if test="params.zhuangfw != null and params.zhuangfw != ''">
+				and zhuangfw = #{params.zhuangfw}
+			</if>
+			<if test="params.zhuangwz != null and params.zhuangwz != ''">
+				and zhuangwz = #{params.zhuangwz}
+			</if>
+			<if test="params.sbzt != null and params.sbzt != ''">
+				<if test="params.sbzt == 10 ">
+					and status BETWEEN 10 and 19
+				</if>
+				<if test="params.sbzt == 20 ">
+					and status BETWEEN 20 and 29
+				</if>
+			</if>
+			<if test="params.dynamicCondition != null and params.dynamicCondition != ''">
+				${params.dynamicCondition}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from zx_equipment t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="com.itycu.server.dto.EquipmentVO">
+		select * from v_zx_equipment t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<select id="listByCondition" resultType="com.itycu.server.dto.EquipmentVO">
+		select * from v_zx_equipment t
+		<include refid="where" />
+	</select>
+
+	<insert id="saves">
+		insert into zx_equipment
+		(xtid,lbid,deptid,xjqyid,whqyid,cname,serialno,etype,buildtime,addtime,createby,createTime,memo,price,pinpai,c01,c02,status,whid) values
+		<foreach collection="list" item="eqp" separator=",">
+			(#{eqp.xtid},#{eqp.lbid},#{eqp.deptid},#{eqp.xjqyid},#{eqp.whqyid},#{eqp.cname},#{eqp.serialno},#{eqp.etype},#{eqp.buildtime}
+			 ,#{eqp.addtime},#{eqp.createby},now(),#{eqp.memo},#{eqp.price},#{eqp.pinpai},#{eqp.sblb},#{eqp.xjqyname},#{eqp.status},#{eqp.whid})
+		</foreach>
+	</insert>
+
+	<update id="update">
+		update zx_equipment t
+		<set>
+			<if test="xtid != null">
+				xtid = #{xtid}, 
+			</if>
+			<if test="lbid != null">
+				lbid = #{lbid}, 
+			</if>
+			<if test="deptid != null">
+				deptid = #{deptid}, 
+			</if>
+			<if test="xjqyid != null">
+				xjqyid = #{xjqyid}, 
+			</if>
+			<if test="whqyid != null">
+				whqyid = #{whqyid}, 
+			</if>
+			<if test="cname != null">
+				cname = #{cname}, 
+			</if>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="isort != null">
+				isort = #{isort}, 
+			</if>
+			<if test="serialno != null">
+				serialno = #{serialno}, 
+			</if>
+			<if test="etype != null">
+				etype = #{etype}, 
+			</if>
+			<if test="factoryid != null">
+				factoryid = #{factoryid}, 
+			</if>
+			<if test="buildtime != null">
+				buildtime = #{buildtime}, 
+			</if>
+			<if test="techphone != null">
+				techphone = #{techphone}, 
+			</if>
+			<if test="techname != null">
+				techname = #{techname}, 
+			</if>
+			<if test="qualityperiod != null">
+				qualityperiod = #{qualityperiod}, 
+			</if>
+			<if test="maintainperiod != null">
+				maintainperiod = #{maintainperiod}, 
+			</if>
+			<if test="maintainbiao1 != null">
+				maintainbiao1 = #{maintainbiao1}, 
+			</if>
+			<if test="maintainbiao2 != null">
+				maintainbiao2 = #{maintainbiao2}, 
+			</if>
+			<if test="maintainbiao3 != null">
+				maintainbiao3 = #{maintainbiao3}, 
+			</if>
+			<if test="useperiod != null">
+				useperiod = #{useperiod}, 
+			</if>
+			<if test="equipmentcontent != null">
+				equipmentcontent = #{equipmentcontent}, 
+			</if>
+			<if test="equipmentstatus != null">
+				equipmentstatus = #{equipmentstatus}, 
+			</if>
+			<if test="adminid != null">
+				adminid = #{adminid}, 
+			</if>
+			<if test="addtime != null">
+				addtime = #{addtime}, 
+			</if>
+			<if test="isxun != null">
+				isxun = #{isxun}, 
+			</if>
+			<if test="iswei != null">
+				iswei = #{iswei}, 
+			</if>
+			<if test="tdesc != null">
+				tdesc = #{tdesc}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="whid != null">
+				whid = #{whid},
+			</if>
+
+			<if test="price != null">
+				price = #{price},
+			</if>
+			<if test="pinpai != null">
+				pinpai = #{pinpai},
+			</if>
+			<if test="anzhuang != null">
+				anzhuang = #{anzhuang},
+			</if>
+			<if test="zhuangfx != null">
+				zhuangfx = #{zhuangfx},
+			</if>
+			<if test="zhuangfw != null">
+				zhuangfw = #{zhuangfw},
+			</if>
+			<if test="zhuangwz != null">
+				zhuangwz = #{zhuangwz},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<update id="isxunsaves">
+		update zx_equipment t
+		<set>
+		  isxun = 1
+		</set>
+		where t.xjqyid = #{xjqyid} and t.id in (
+		<foreach collection="sbids" item="sbid" separator=",">
+			 #{sbid}
+		</foreach>)
+	</update>
+
+
+</mapper>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../../layui/css/layui.css">
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+		<fieldset>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>部门编码</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='请输入部门编码' type='text' name='deptcode' id='deptcode' data-bv-notempty='true' data-bv-notempty-message='部门编码不能为空'>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>部门名称</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='部门名称' type='text' name='deptname' id='deptname' data-bv-notempty='true' data-bv-notempty-message='部门名称不能为空'>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">上级部门</label>
+				<div class="col-md-10">
+					<select id="pid" name="pid" class="form-control input-sm"></select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">类型</label>
+				<div class="col-md-10">
+					<select name="zhfhgl" class="form-control input-sm">
+						<option value="0">总行</option>
+						<option value="1">分行</option>
+						<option value="2">管理</option>
+					</select>
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>电话</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='电话' type='text' name='phone' id='phone' >
+				</div>
+			</div>
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>地址</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='地址' type='text' name='address' id='address' >
+				</div>
+			</div>
+			<!--<div class='form-group'>-->
+				<!--<label class='col-md-2 control-label'>是否收费站</label>-->
+				<!--<div class='col-md-10'>-->
+					<!--<input id="ctype" name="ctype" type='checkbox'  title="是否收费站" checked/>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class='form-group'>-->
+			<!--<label class='col-md-2 control-label'>负责人</label>-->
+			<!--<div class='col-md-10'>-->
+			<!--<input class='form-control' placeholder='负责人' type='text' name='leader' id='leader' >-->
+			<!--</div>-->
+			<!--</div>-->
+			<div class='form-group'>
+				<label class='col-md-2 control-label'>备注</label>
+				<div class='col-md-10'>
+					<input class='form-control' placeholder='备注' type='text' name='memo' id='memo' >
+				</div>
+			</div>
+			<div class="form-actions">
+				<div class="row" align="center">
+					<div class="col-md-12">
+						<button class="btn btn-primary" onclick="location.href='depttreeList.html'">返回</button>
+						<button class="btn btn-primary" type="submit" onclick="add()">
+							<i class="fa fa-save"></i> 保存
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+	</form>
+</div>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/dept.js"></script>
+<script type="text/javascript">
+    layui.use(['layer','laydate',"form"], function(){
+        var layer = layui.layer;
+        var form = layui.form;
+    });
+
+    showDeptSelect("pid", "dept", false);
+
+    var pid = getUrlParam("pid");
+    if(pid != ""){$('#pid').val(pid);}
+
+    function add() {
+        $("#form").bootstrapValidator("addField", "phone",{
+            validators: {
+                regexp: {
+                    regexp: /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/,
+                    message: '请输入正确的电话格式！'
+                }
+            }
+        });
+
+        $('#form').bootstrapValidator();
+        var bootstrapValidator = $("#form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(!bootstrapValidator.isValid()){
+            return;
+        }
+
+        var formdata = $("#form").serializeObject();
+
+
+        $.ajax({
+            type : 'post',
+            url : '/depts',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(formdata),
+            success : function(data) {
+                layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                    location.href = "depttreeList.html";
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

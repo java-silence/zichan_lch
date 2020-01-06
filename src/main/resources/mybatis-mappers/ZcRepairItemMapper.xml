@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZcRepairItemDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id} 
+			</if>
+			<if test="params.zcRepairId != null and params.zcRepairId != ''">
+				and t.zc_repair_id = #{params.zcRepairId} 
+			</if>
+			<if test="params.zcId != null and params.zcId != ''">
+				and t.zc_id = #{params.zcId} 
+			</if>
+			<if test="params.repairDes != null and params.repairDes != ''">
+				and t.repair_des = #{params.repairDes} 
+			</if>
+			<if test="params.applyId != null and params.applyId != ''">
+				and t.apply_id = #{params.applyId} 
+			</if>
+			<if test="params.applyDeptId != null and params.applyDeptId != ''">
+				and t.apply_dept_id = #{params.applyDeptId} 
+			</if>
+			<if test="params.repairMode != null and params.repairMode != ''">
+				and t.repair_mode = #{params.repairMode} 
+			</if>
+			<if test="params.deliverMode != null and params.deliverMode != ''">
+				and t.deliver_mode = #{params.deliverMode} 
+			</if>
+			<if test="params.outCompany != null and params.outCompany != ''">
+				and t.out_company = #{params.outCompany} 
+			</if>
+			<if test="params.outAddress != null and params.outAddress != ''">
+				and t.out_address = #{params.outAddress} 
+			</if>
+			<if test="params.outUsername != null and params.outUsername != ''">
+				and t.out_username = #{params.outUsername} 
+			</if>
+			<if test="params.outPhone != null and params.outPhone != ''">
+				and t.out_phone = #{params.outPhone} 
+			</if>
+			<if test="params.outFee != null and params.outFee != ''">
+				and t.out_fee = #{params.outFee} 
+			</if>
+			<if test="params.repairTime != null and params.repairTime != ''">
+				and t.repair_time = #{params.repairTime} 
+			</if>
+			<if test="params.frontDescription != null and params.frontDescription != ''">
+				and t.front_description = #{params.frontDescription} 
+			</if>
+			<if test="params.frontPics != null and params.frontPics != ''">
+				and t.front_pics = #{params.frontPics} 
+			</if>
+			<if test="params.backDescription != null and params.backDescription != ''">
+				and t.back_description = #{params.backDescription} 
+			</if>
+			<if test="params.backPics != null and params.backPics != ''">
+				and t.back_pics = #{params.backPics} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del} 
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz} 
+			</if>
+			<if test="params.shbStatus != null and params.shbStatus != ''">
+				and t.shb_status = #{params.shbStatus} 
+			</if>
+			<if test="params.qrStatus != null and params.qrStatus != ''">
+				and t.qr_status = #{params.qrStatus} 
+			</if>
+			<if test="params.createBy != null and params.createBy != ''">
+				and t.create_by = #{params.createBy} 
+			</if>
+			<if test="params.updateBy != null and params.updateBy != ''">
+				and t.update_by = #{params.updateBy} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.create_time = #{params.createTime} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime} 
+			</if>
+			<if test="params.repairAddress != null and params.repairAddress != ''">
+				and t.repairAddress = #{params.repairAddress}
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != ''">
+				and t.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
+				and <![CDATA[ t.repairStartTime >= #{params.sdate} and t.repairStartTime < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.repairStatus != null and params.repairStatus != ''">
+				and t.repairStatus = #{params.repairStatus}
+			</if>
+			<if test="params.epcid != null and params.epcid != ''">
+				and t.epcid = #{params.epcid}
+			</if>
+			<if test="params.zcName != null and params.zcName != ''">
+				and t.zc_name = #{params.zcName}
+			</if>
+			<if test="params.zcCodenum != null and params.zcCodenum != ''">
+				and t.zc_codenum = #{params.zcCodenum}
+			</if>
+			<if test="params.repairStartTime != null and params.repairStartTime != ''">
+				and t.repairStartTime = #{params.repairStartTime}
+			</if>
+			<if test="params.repairEndTime != null and params.repairEndTime != ''">
+				and t.repairEndTime = #{params.repairEndTime}
+			</if>
+			<if test="params.originalValue != null and params.originalValue != ''">
+				and t.original_value = #{params.originalValue}
+			</if>
+			<if test="params.netvalue != null and params.netvalue != ''">
+				and t.netvalue = #{params.netvalue}
+			</if>
+		</where>
+	</sql>
+
+	<select id="getById" resultType="ZcRepairItem">
+		select t.*
+		,t_creator.nickname as creator
+		from zc_repair_item t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+		select count(1) from v_zc_repair_item t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="com.itycu.server.dto.ZcRepairItemDto">
+		select t.*
+		,t_creator.nickname as creator
+		from v_zc_repair_item t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<select id="listByCondition" resultType="com.itycu.server.dto.ZcRepairItemDto">
+		select t.*
+		,t_creator.nickname as creator
+		from v_zc_repair_item t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		<include refid="where"/>
+	</select>
+
+	<insert id="saves">
+		insert into zc_repair_item
+		(zc_repair_id, zc_id, repair_des, apply_id, apply_dept_id, repair_mode, deliver_mode, out_company, out_address, out_username, out_phone,
+		out_fee, repair_time, front_description, front_pics, back_description, back_pics, del, bz, shb_status, qr_status, create_by, update_by,
+		create_time, update_time, repair_address,gl_dept_id,front_pics_url,back_pics_url,audit_by,audit_time) values
+		<foreach collection="zcRepairItems" item="zcRepairItem" separator=",">
+			(#{zcReId}, #{zcRepairItem.zcId}, #{zcRepairItem.repairDes}, #{zcRepairItem.applyId}, #{zcRepairItem.applyDeptId}, #{zcRepairItem.repairMode},
+			#{zcRepairItem.deliverMode}, #{zcRepairItem.outCompany}, #{zcRepairItem.outAddress}, #{zcRepairItem.outUsername},
+			 #{zcRepairItem.outPhone}, #{zcRepairItem.outFee}, #{zcRepairItem.repairTime}, #{zcRepairItem.frontDescription}, #{zcRepairItem.frontPics},
+			 #{zcRepairItem.backDescription}, #{zcRepairItem.backPics},  #{zcRepairItem.del}, #{zcRepairItem.bz},
+			 #{zcRepairItem.shbStatus}, #{zcRepairItem.qrStatus}, #{zcRepairItem.createBy}, #{zcRepairItem.updateBy}, #{zcRepairItem.createTime},
+			 #{zcRepairItem.updateTime}, #{zcRepairItem.repairAddress},#{zcRepairItem.glDeptId},#{zcRepairItem.frontPicsUrl},#{zcRepairItem.backPicsUrl},
+			 #{zcRepairItem.auditBy},#{zcRepairItem.auditTime})
+		</foreach>
+	</insert>
+
+	<!--根据待办查询资产报修子项-->
+	<select id="listDetailByFlowTodoIdNew" parameterType="long" resultType="com.itycu.server.dto.ZcRepairItemDto">
+		SELECT
+		p.id,
+		t.status,
+		t.flow_todo_id flowTodoId,
+		t.flow_item_id flowItemId,
+		p.zc_repair_id zcRepairId,
+		p.bz,
+		p.shb_status shbStatus,
+		p.qr_status qrStatus,
+		p.status itemStatus,
+		p.repair_des repairDes,
+		p.repair_mode repairMode,
+		p.deliver_mode deliverMode,
+		p.out_company outCompany,
+		p.out_address outAddress,
+		p.out_username outUsername,
+		p.out_phone outPhone,
+		p.repair_address repairAddress,
+		p.front_pics frontPics,
+		p.front_pics_url frontPicsUrl,
+		c.zc_codenum zcCodenum,
+		c.zc_name zcName,
+		g.name categoryName,
+		c.specification,
+		c.model,
+		c.unit,
+		c.use_status,
+		DATE_FORMAT(c.start_use_time,'%Y-%m-%d %h:%m:%s') startUseTime,
+		c.remainingperiod,
+		c.original_value originalValue,
+		c.netvalue,
+		d2.deptname glDeptName,
+		c.warrantyperiod,
+		c.card_num cardNum,
+		c.zc_from zcFrom,
+		c.epcid,
+		c.use_months useMonths
+		FROM
+		flow_todo_item t
+		LEFT JOIN zc_repair_item p ON t.flow_item_id = p.id
+		LEFT JOIN zc_info c ON p.zc_id = c.id
+		LEFT JOIN t_dept d1 ON c.sy_dept_id = d1.id
+		LEFT JOIN t_dept d2 ON c.gl_dept_id = d2.id
+		LEFT JOIN sys_user u ON c.user_id = u.id
+		LEFT JOIN zc_category g ON c.zc_category_id = g.id
+		<where>
+			<if test="todoId != null and todoId != ''">
+				t.flow_todo_id = #{todoId}
+			</if>
+		</where>
+	</select>
+
+	<update id="update">
+		update zc_repair_item t
+		<set>
+			<if test="zcRepairId != null">
+				zc_repair_id = #{zcRepairId}, 
+			</if>
+			<if test="zcId != null">
+				zc_id = #{zcId}, 
+			</if>
+			<if test="repairDes != null">
+				repair_des = #{repairDes}, 
+			</if>
+			<if test="applyId != null">
+				apply_id = #{applyId}, 
+			</if>
+			<if test="applyDeptId != null">
+				apply_dept_id = #{applyDeptId}, 
+			</if>
+			<if test="repairMode != null">
+				repair_mode = #{repairMode}, 
+			</if>
+			<if test="deliverMode != null">
+				deliver_mode = #{deliverMode}, 
+			</if>
+			<if test="outCompany != null">
+				out_company = #{outCompany}, 
+			</if>
+			<if test="outAddress != null">
+				out_address = #{outAddress}, 
+			</if>
+			<if test="outUsername != null">
+				out_username = #{outUsername}, 
+			</if>
+			<if test="outPhone != null">
+				out_phone = #{outPhone}, 
+			</if>
+			<if test="outFee != null">
+				out_fee = #{outFee}, 
+			</if>
+			<if test="repairTime != null">
+				repair_time = #{repairTime}, 
+			</if>
+			<if test="frontDescription != null">
+				front_description = #{frontDescription}, 
+			</if>
+			<if test="frontPics != null">
+				front_pics = #{frontPics}, 
+			</if>
+			<if test="backDescription != null">
+				back_description = #{backDescription}, 
+			</if>
+			<if test="backPics != null">
+				back_pics = #{backPics}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="bz != null">
+				bz = #{bz}, 
+			</if>
+			<if test="shbStatus != null">
+				shb_status = #{shbStatus}, 
+			</if>
+			<if test="qrStatus != null">
+				qr_status = #{qrStatus}, 
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy}, 
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy}, 
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime}, 
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime}, 
+			</if>
+			<if test="repairAddress != null">
+				repair_address = #{repairAddress},
+			</if>
+			<if test="glDeptId != null">
+				gl_dept_id = #{glDeptId},
+			</if>
+			<if test="frontPicsUrl != null">
+				front_pics_url = #{frontPicsUrl},
+			</if>
+			<if test="backPicsUrl != null">
+				back_pics_url = #{backPicsUrl},
+			</if>
+			<if test="auditBy != null">
+				audit_by = #{auditBy},
+			</if>
+			<if test="auditTime != null">
+				audit_time = #{auditTime},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+	<update id="updateStatus">
+		update zc_repair_item t
+		<set>
+			<if test="params.status != null">
+				t.status = #{params.status},
+			</if>
+			<if test="params.auditTime">
+				t.audit_time = #{params.auditTime},
+			</if>
+			<if test="params.auditBy != null">
+				t.audit_by = #{params.auditBy},
+			</if>
+		</set>
+		<where>
+			<if test="params.zcReId != null and params.zcReId != ''">
+				and t.zc_repair_id = #{params.zcReId}
+			</if>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id}
+			</if>
+		</where>
+	</update>
+</mapper>

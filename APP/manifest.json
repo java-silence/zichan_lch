@@ -1,0 +1,547 @@
+{
+    "@platforms" : [ "android", "iPhone", "iPad" ],
+    "id" : "H59597E25", /*应用的标识，创建应用时自动生成，勿手动修改*/
+    "name" : "农商行固定资产管理", /*应用名称，程序桌面图标名称*/
+    "version" : {
+        "name" : "1.6.8", /*应用版本名称*/
+        "code" : 128
+    },
+    "description" : "", /*应用描述信息*/
+    "icons" : {
+        "72" : "icon.png"
+    },
+    "launch_path" : "login.html", /*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
+    "developer" : {
+        "name" : "", /*开发者名称*/
+        "email" : "", /*开发者邮箱地址*/
+        "url" : "http://www.dcloud.io"
+    },
+    "permissions" : {
+        "Cache" : {
+            "description" : "管理应用缓存"
+        },
+        "Console" : {
+            "description" : "跟踪调试输出日志"
+        },
+        "Events" : {
+            "description" : "应用扩展事件"
+        },
+        "UI" : {},
+        "OAuth" : {},
+        "Push" : {},
+        "Speech" : {},
+        "Contacts" : {},
+        "Messaging" : {},
+        "Webview" : {},
+        "NativeUI" : {},
+        "Navigator" : {},
+        "Camera" : {},
+        "Storage" : {},
+        "Barcode" : {},
+        "Device" : {},
+        "Geolocation" : {},
+        "Maps" : {}
+    },
+    "plus" : {
+        "splashscreen" : {
+            "autoclose" : false, /*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
+            "waiting" : true
+        },
+        "runmode" : "liberate", /*应用的首次启动运行模式，可取liberate或normal，liberate模式在第一次启动时将解压应用资源（Android平台File API才可正常访问_www目录）*/
+        "signature" : "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw==", /*可选，保留给应用签名，暂不使用*/
+        "distribute" : {
+            "plugins" : {
+                "maps" : {
+                    "baidu" : {
+                        "appkey_ios" : "k7quF2WojroI5gt1qC0b7VbO",
+                        "appkey_android" : "KxFGZmstoGOTFvk7HYjQaiFOGfCYswUs",
+                        "appkey" : "",
+                        "description" : ""
+                    }
+                },
+                "push" : {
+                    "igexin" : {
+                        "appid" : "3ajXdEBKAD6MhbNoBq546A",
+                        "appkey" : "ueN25olrV5AdIHCCPt3TG1",
+                        "appsecret" : "m5sBI0KtQP9z6PX0SVN5Q3"
+                    }
+                },
+                "speech" : {
+                    "ifly" : {}
+                },
+                "payment" : {}
+            },
+            "apple" : {
+                "appid" : "", /*iOS应用标识，苹果开发网站申请的appid，如io.dcloud.HelloH5*/
+                "mobileprovision" : "", /*iOS应用打包配置文件*/
+                "password" : "", /*iOS应用打包个人证书导入密码*/
+                "p12" : "", /*iOS应用打包个人证书，打包配置文件关联的个人证书*/
+                "devices" : "universal", /*iOS应用支持的设备类型，可取值iphone/ipad/universal*/
+                "frameworks" : []
+            },
+            "google" : {
+                "packagename" : "", /*Android应用包名，如io.dcloud.HelloH5*/
+                "keystore" : "", /*Android应用打包使用的密钥库文件*/
+                "password" : "", /*Android应用打包使用密钥库中证书的密码*/
+                "aliasname" : "", /*Android应用打包使用密钥库中证书的别名*/
+                "permissions" : [
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission  android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
+                    "<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.SEND_SMS\"/>",
+                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SMS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_SMS\"/>"
+                ]
+            },
+            "orientation" : [ "portrait-primary", "portrait-secondary" ], /*应用支持的方向，portrait-primary：竖屏正方向；portrait-secondary：竖屏反方向；landscape-primary：横屏正方向；landscape-secondary：横屏反方向*/
+            "icons" : {
+                "ios" : {
+                    "prerendered" : true, /*应用图标是否已经高亮处理，在iOS6及以下设备上有效*/
+
+                    /*应用图标，分辨率：512x512，用于自动生成各种尺寸程序图标*/
+                    "iphone" : {
+                        "normal" : "unpackage/res/icons/57x57.png", /*iPhone普通屏幕程序图标，分辨率：57x57*/
+                        "retina" : "unpackage/res/icons/114x114.png", /*iPhone高分屏程序图标，分辨率：114x114*/
+
+                        /*iPhone iOS7高分屏程序图标，分辨率：120x120*/
+                        "spotlight-normal" : "unpackage/res/icons/29x29.png", /*iPhone Spotlight搜索程序图标，分辨率：29x29*/
+                        "spotlight-retina" : "unpackage/res/icons/58x58.png", /*iPhone高分屏Spotlight搜索程序图标，分辨率：58x58*/
+
+                        /*iPhone iOS7高分屏Spotlight搜索程序图标，分辨率：80x80*/
+                        "settings-normal" : "unpackage/res/icons/29x29.png", /*iPhone设置页面程序图标，分辨率：29x29*/
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png"
+                    },
+                    "ipad" : {
+                        "normal" : "unpackage/res/icons/72x72.png", /*iPad普通屏幕程序图标，分辨率：72x72*/
+                        "retina" : "unpackage/res/icons/144x144.png", /*iPad高分屏程序图标，分辨率：144x144*/
+
+                        /*iPad iOS7程序图标，分辨率：76x76*//*iPad iOS7高分屏程序图标，分辨率：152x152*/
+                        "spotlight-normal" : "unpackage/res/icons/50x50.png", /*iPad Spotlight搜索程序图标，分辨率：50x50*/
+                        "spotlight-retina" : "unpackage/res/icons/100x100.png", /*iPad高分屏Spotlight搜索程序图标，分辨率：100x100*/
+
+                        /*iPad iOS7 Spotlight搜索程序图标，分辨率：40x40*//*iPad iOS7高分屏Spotlight搜索程序图标，分辨率：80x80*//*iPad设置页面程序图标，分辨率：29x29*/
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png"
+                    },
+                    "appstore" : "unpackage/res/icons/1024x1024.png"
+                },
+                "android" : {
+                    "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/
+                    "ldpi" : "unpackage/res/icons/48x48.png", /*大屏程序图标，分辨率：48x48*/
+                    "hdpi" : "unpackage/res/icons/72x72.png", /*高分屏程序图标，分辨率：72x72*/
+                    "xhdpi" : "unpackage/res/icons/96x96.png", /*720P高分屏程序图标，分辨率：96x96*/
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png"
+                }
+            },
+            "splashscreen" : {
+                "ios" : {
+                    "iphone" : {
+                        "default" : ""
+                    },
+                    "ipad" : {
+                        /*iPad竖屏启动图片，分辨率：768x1004*/
+                        "portrait-retina" : "images/cover.png", /*iPad高分屏竖屏图片，分辨率：1536x2008*/
+
+                        /*iPad横屏启动图片，分辨率：1024x748*/
+                        "landscape-retina" : "images/cover.png", /*iPad高分屏横屏启动图片，分辨率：2048x1496*/
+
+                        /*iPad iOS7竖屏启动图片，分辨率：768x1024*/
+                        "portrait-retina7" : "", /*iPad iOS7高分屏竖屏图片，分辨率：1536x2048*/
+
+                        /*iPad iOS7横屏启动图片，分辨率：1024x768*/
+                        "landscape-retina7" : ""
+                    }
+                },
+                "android" : {
+                    "mdpi" : "", /*普通屏启动图片，分辨率：240x282*/
+                    "ldpi" : "", /*大屏启动图片，分辨率：320x442*/
+                    "hdpi" : "D:/HEMP2018/金贵塑料/文档和sql/封面.png", /*高分屏启动图片，分辨率：480x762*/
+                    "xhdpi" : "D:/HEMP2018/金贵塑料/文档和sql/封面.png", /*720P高分屏启动图片，分辨率：720x1242*/
+                    "xxhdpi" : "D:/HEMP2018/金贵塑料/文档和sql/封面.png"
+                }
+            }
+        },
+        "ads" : {
+            "rp" : false,
+            "splash" : false,
+            "push" : false
+        }
+    },
+    "dependencies" : {
+        "pages" : {
+            "setting.html" : {
+                "href" : "setting.html",
+                "resources" : [
+                    "js/mui.min.js",
+                    "js/mui.view.js",
+                    "libs/easymob-webim-sdk/jquery-1.11.1.js",
+                    "libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+                    "libs/easymob-webim-sdk/json2.js",
+                    "libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+                    "js/feedback.js",
+                    "js/feedback-page.js",
+                    "js/mui.locker.js",
+                    "js/app.js",
+                    "css/mui.min.css",
+                    "fonts/mui.ttf",
+                    "css/feedback-page.css",
+                    "images/iconfont-tianjia.png"
+                ],
+                "refer" : [ "login.html" ],
+                "priority" : 1
+            },
+            "main.html" : {
+                "href" : "main.html",
+                "resources" : [ "css/mui.min.css", "fonts/mui.ttf", "js/mui.min.js", "js/app.js" ],
+                "refer" : [ "setting.html" ],
+                "priority" : 1
+            },
+            "unlock.html" : {
+                "href" : "unlock.html",
+                "resources" : [
+                    "css/mui.min.css",
+                    "fonts/mui.ttf",
+                    "js/mui.min.js",
+                    "js/mui.locker.js",
+                    "js/app.js"
+                ],
+                "refer" : [ "login.html", "main.html" ],
+                "priority" : 0
+            },
+            "forget_password.html" : {
+                "href" : "forget_password.html",
+                "resources" : [
+                    "css/mui.min.css",
+                    "fonts/mui.ttf",
+                    "css/style.css",
+                    "js/mui.min.js",
+                    "js/app.js"
+                ],
+                "priority" : 1
+            },
+            "reg.html" : {
+                "href" : "reg.html",
+                "resources" : [
+                    "css/mui.min.css",
+                    "fonts/mui.ttf",
+                    "css/style.css",
+                    "js/mui.min.js",
+                    "js/app.js"
+                ],
+                "refer" : [ "login.html" ],
+                "priority" : 3
+            },
+            "login.html" : {
+                "href" : "login.html",
+                "resources" : [
+                    "css/mui.min.css",
+                    "fonts/mui.ttf",
+                    "css/style.css",
+                    "js/mui.min.js",
+                    "js/mui.enterfocus.js",
+                    "js/app.js",
+                    "images/qihoo.png",
+                    "images/qq.png",
+                    "images/sinaweibo.png",
+                    "images/weixin.png"
+                ],
+                "refer" : [
+                    "unlock.html",
+                    "forget_password.html",
+                    "main.html",
+                    "reg.html",
+                    "tab-webview-main.html",
+                    "html/tab-webview-main.html",
+                    "html/main.html"
+                ],
+                "priority" : 0
+            },
+            "tab-webview-main.html" : {
+                "resources" : [ "setting.html", "tab-webview-subpage-about.html" ],
+                "refer" : [
+                    "tab-webview-subpage-chat.html",
+                    "tab-webview-subpage-contact.html",
+                    "subpage-setting.html"
+                ],
+                "priority" : 0
+            },
+            "html/tab-webview-main.html" : {
+                "resources" : [ "html/tab-webview-subpage-about.html" ],
+                "refer" : [
+                    "html/tab-webview-subpage-setting.html",
+                    "html/tab-webview-subpage-chat.html",
+                    "html/tab-webview-subpage-contact.html"
+                ],
+                "priority" : 0
+            },
+            "html/main.html" : {
+                "resources" : [ "html/about.html", "html/xunjianjihua/needXunjianquyuMain.html" ],
+                "refer" : [
+                    "html/contact.html",
+                    "html/setting.html",
+                    "html/chat.html",
+                    "setting.html"
+                ],
+                "priority" : 0
+            },
+            "html/setting.html" : {
+                "resources" : [],
+                "refer" : [ "setting.html" ],
+                "priority" : 0
+            },
+            "html/chat.html" : {
+                "resources" : [],
+                "refer" : [
+                    "html/shenhe.html",
+                    "html/auditrepair.html",
+                    "html/auditzhan.html",
+                    "html/repair/auditzhan.html",
+                    "html/repair/auditzx.html",
+                    "html/eqp/auditruku.html",
+                    "html/lingliao/auditlingliao.html",
+                    "html/repair/auditRepair.html",
+                    "html/stocktran/audittran.html",
+                    "html/xjsq/auditxjsq.html"
+                ],
+                "priority" : 0
+            },
+            "html/about.html" : {
+                "resources" : [ "/login.html" ],
+                "refer" : [
+                    "html/labopenlog/labOpenlogList.html",
+                    "html/labopenlog/addLabOpenlog.html",
+                    "html/labinspect/addLabInspect.html",
+                    "html/labinspect/labInspectList.html",
+                    "html/eqp/addEquipment.html",
+                    "html/eqp/equipmentList.html",
+                    "html/anzhuang/anzhuangList.html",
+                    "html/weihujihua/weihujihuaList.html",
+                    "html/repair/repairList.html",
+                    "html/weihu/weihuList.html",
+                    "html/notice/noticePubList.html",
+                    "html/todo/trackList.html",
+                    "html/todo/todoList.html",
+                    "html/inspect/inspectList.html",
+                    "html/change/eqpchangeList.html",
+                    "html/xunjianjihua/needXunjianquyu.html",
+                    "html/xjsq/zxXjsqList.html",
+                    "html/eqp/rukuEquipment.html",
+                    "html/eqp/zaikuList.html",
+                    "html/weihu/addWeihu.html",
+                    "html/lingliao/lingliaoList.html",
+                    "html/repair/addRepair.html",
+                    "html/lingliao/addLingliao.html",
+                    "html/stocktran/stocktranList.html",
+                    "html/change/addEqpchange.html",
+                    "html/anzhuang/addAnzhuang.html",
+                    "html/stocktran/addStocktran.html",
+                    "html/stockin/stockinList.html",
+                    "html/stockin/addStockin.html",
+                    "html/borrow/zxBorrowList.html",
+                    "html/currstock/currstockList.html",
+                    "html/jms/zxJmsxcList.html",
+                    "html/jms/addZxJmsxc.html",
+                    "html/jms/zxJmsList.html",
+                    "html/weihufadian/weihufadianList.html",
+                    "html/weihufadian/addWeihufadian.html",
+                    "html/xjsq/addZxXjsq.html",
+                    "html/user/userList.html",
+                    "html/tongji/xunjianWcl.html"
+                ],
+                "priority" : 0
+            },
+            "html/labopenlog/labOpenlogList.html" : {
+                "resources" : [],
+                "refer" : [ "html/labopenlog/updateLabOpenlog.html" ],
+                "priority" : 0
+            },
+            "html/labopenlog/updateLabOpenlog.html" : {
+                "resources" : [],
+                "refer" : [ "html/labopenlog/labOpenlogList.html" ],
+                "priority" : 0
+            },
+            "html/labinspect/addLabInspect.html" : {
+                "resources" : [],
+                "refer" : [
+                    "html/labinspect/target.html",
+                    "html/labinspect/info.html",
+                    "html/labinspect/inspectResult.html",
+                    "html/labinspect/description.html"
+                ],
+                "priority" : 0
+            },
+            "html/labinspect/labInspectList.html" : {
+                "resources" : [],
+                "refer" : [ "html/labinspect/target.html" ],
+                "priority" : 0
+            },
+            "html/eqp/equipmentList.html" : {
+                "resources" : [],
+                "refer" : [
+                    "html/eqp/addEquipment.html",
+                    "html/eqp/addLabOpration.html",
+                    "html/eqp/updateEquipment.html"
+                ],
+                "priority" : 0
+            },
+            "html/anzhuang/anzhuangList.html" : {
+                "resources" : [],
+                "refer" : [ "html/anzhuang/addAnzhuang.html", "html/anzhuang/updateAnzhuang.html" ],
+                "priority" : 0
+            },
+            "html/weihujihua/weihujihuaList.html" : {
+                "resources" : [],
+                "refer" : [
+                    "html/weihujihua/addWeihujihua.html",
+                    "html/weihujihua/updateWeihujihua.html"
+                ],
+                "priority" : 0
+            },
+            "html/repair/repairList.html" : {
+                "resources" : [],
+                "refer" : [
+                    "html/repair/addRepair.html",
+                    "html/repair/updateRepair.html",
+                    "html/repair/viewRepair.html"
+                ],
+                "priority" : 0
+            },
+            "html/labinspect/target.html" : {
+                "resources" : [ "html/labinspect/addLabInspect.html" ],
+                "refer" : [],
+                "priority" : 0
+            },
+            "html/notice/noticePubList.html" : {
+                "resources" : [],
+                "refer" : [ "html/notice/updateNotice.html", "html/notice/detail.html" ],
+                "priority" : 0
+            },
+            "html/todo/trackList.html" : {
+                "resources" : [],
+                "refer" : [ "html/todo/updateTodo.html", "html/todo/trackrepair.html" ],
+                "priority" : 0
+            },
+            "html/todo/todoList.html" : {
+                "resources" : [],
+                "refer" : [ "html/todo/updateTodo.html", "html/auditrepair.html" ],
+                "priority" : 0
+            },
+            "html/inspect/inspectList.html" : {
+                "resources" : [],
+                "refer" : [ "html/inspect/updateInspect.html" ],
+                "priority" : 0
+            },
+            "html/change/eqpchangeList.html" : {
+                "resources" : [],
+                "refer" : [ "html/change/updateEqpchange.html" ],
+                "priority" : 0
+            },
+            "html/inspect/updateInspect.html" : {
+                "resources" : [],
+                "refer" : [ "html/inspect/inspectList.html" ],
+                "priority" : 0
+            },
+            "html/eqp/addEquipment.html" : {
+                "resources" : [ "/login.html" ],
+                "refer" : [ "html/eqp/equipmentList.html" ],
+                "priority" : 0
+            },
+            "html/xunjianjihua/needXunjianquyuMain.html" : {
+                "resources" : [ "/login.html" ],
+                "refer" : [ "html/labinspect/labInspectList.html" ],
+                "priority" : 0
+            },
+            "html/xjsq/zxXjsqList.html" : {
+                "resources" : [],
+                "refer" : [ "html/xjsq/addZxXjsq.html" ],
+                "priority" : 0
+            },
+            "html/xjsq/addZxXjsq.html" : {
+                "resources" : [],
+                "refer" : [ "html/xjsq/zxXjsqList.html" ],
+                "priority" : 0
+            },
+            "html/eqp/updateEquipment.html" : {
+                "resources" : [ "/login.html" ],
+                "refer" : [],
+                "priority" : 0
+            },
+            "html/weihu/addWeihu.html" : {
+                "resources" : [],
+                "refer" : [ "html/weihu/addWeihujilu.html" ],
+                "priority" : 0
+            },
+            "html/lingliao/addLingliao.html" : {
+                "resources" : [ "/login.html" ],
+                "refer" : [],
+                "priority" : 0
+            },
+            "html/lingliao/lingliaoList.html" : {
+                "resources" : [],
+                "refer" : [
+                    "html/lingliao/updateLingliao.html",
+                    "html/lingliao/auditlingliao.html"
+                ],
+                "priority" : 0
+            },
+            "html/stockin/stockinList.html" : {
+                "resources" : [],
+                "refer" : [ "html/stockin/auditstockin.html" ],
+                "priority" : 0
+            },
+            "html/currstock/currstockList.html" : {
+                "resources" : [],
+                "refer" : [ "html/currstock/updateCurrstock.html" ],
+                "priority" : 0
+            }
+        },
+        "idle" : {
+            "resources" : [
+                "js/service.js",
+                "libs/easymob-webim-sdk/quickstart.md",
+                "images/user-photo.png",
+                "README.md"
+            ]
+        }
+    },
+    "unpackage" : [ "README.md" ]
+}

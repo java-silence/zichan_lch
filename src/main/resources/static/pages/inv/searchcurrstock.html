@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../../css/dataTables.bootstrap.min.css">-->
+	<link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+
+</head>
+<body>
+<div style="height:100%;overflow-x: hidden">
+	<div class="layui-col-space5" style="height:100%;">
+		<!--<div class="layui-col-md2" style="height:100%;">-->
+		<!--<div class="layui-card" style="height:100%;">-->
+		<!--<div class="layui-card-header">仓库</div>-->
+		<!--<div class="layui-card-body">-->
+		<!--&lt;!&ndash;<div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-normcol">&ndash;&gt;-->
+		<!--<div id="eleTree" lay-filter="eleTree"></div>-->
+		<!--&lt;!&ndash;</div>&ndash;&gt;-->
+		<!--</div>-->
+		<!--</div>-->
+		<!--</div>-->
+		<div class="layui-col-md12" style="height:100%">
+			<div class="layui-card" style="height:100%">
+				<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">品名</label>
+							<div class="layui-input-block">
+								<input id="invname" name="invname"  type="text" class="layui-input" style="lay-size:sm" placeholder="存货">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">规格</label>
+							<div class="layui-input-block">
+								<input class="layui-input" name="cpgg" id="cpgg">
+							</div>
+						</div>
+						<!--<div class="layui-inline">-->
+							<!--<label class="layui-form-label">仓库</label>-->
+							<!--<div class="layui-input-block">-->
+								<!--<select id="whid" name="whid" class="layui-input" style="lay-size:sm"></select>-->
+							<!--</div>-->
+						<!--</div>-->
+						<div class="layui-inline">
+							<label class="layui-form-label"></label>
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-sm layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+								</button>
+
+								<div class="layui-btn-group demoTable" style="display:inline-block">
+									<button class="layui-btn layui-btn-sm layuiadmin-btn-useradmin" data-type="getCheckData">保存</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-card-body">
+					<!--<div style="padding-bottom: 10px;"></div>-->
+
+					<table class="layui-hide" id="data" lay-filter="data"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/my/permission.js"></script>
+<!--<script type="text/javascript" src="../../js/dict.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<script type="text/javascript">
+    // var pers = checkPermission();
+    //var appStatus = showStepSelect("stepid", "1", true);
+    //var showDept = showDeptSelect("deptid", "dept", true);
+    //var showUser = showUserSelect("createby", "user", true);
+
+    var tableIns;
+    layui.use(['table','tree'], function(){
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/currstocks/list2"
+            ,where: {orderBy:"order by invname",whid:getUrlParam("whid")}
+            ,page: true
+            ,autoSort:false
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'checkbox',width:40,checkbox: true} //其它参数在此省略
+                ,{field:'invname', title: '名称', sort: false}
+                ,{field:'cpgg', title: '规格', sort: false}
+				,{field:'ilen', title: '长度', sort: false}
+				,{field:'jian', title: '件', sort: false}
+                ,{field:'inum', title: '数量', width:300, sort: false}
+                ,{field:'iprice', title: '单价', sort: true}
+               ,{field:'unit1', title: '单位',sort: true}
+				,{field:'jianzhong', title: '单位重', sort: false}
+				,{field:'perlen', title: '单件长', sort: false}
+
+            ]]
+            ,done: function(res, curr, count){
+                $(document).on("click",".layui-table-body table.layui-table tbody tr", function () {
+                    var id = $(this).children("td[data-field='id']").text();
+                    
+                });
+//                 $("td").each(function(){
+// $(this).find(".layui-table-cell").removeClass('layui-table-cell');
+// });
+            }
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    invcode:$("#invcode").val(),invname:$("#invname").val(),cpgg:$("#cpgg").val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        //监听行单击事件
+//		table.on('row(data)', function(obj){
+//		   //  console.log(JSON.stringify(obj.tr)) //得到当前行元素对象
+//         // console.log(JSON.stringify(obj.data)) //得到当前行数据
+//		   //标注选中样式
+//		   var tr = obj.tr;
+//		   var data = obj.data;
+//
+//		   if(!data.invabbname){
+//			   data.invabbname = "无";
+//		   }
+//		   if(!data.invstd){
+//		   	   data.invstd = "无";
+//		   }
+//		   
+//         obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+//
+//		   if(tr.hasClass("OPEN")){
+//			   tr.next().remove();
+//		   	   tr.removeClass("OPEN");
+//		   }else{
+//			   tr.after("<tr><td></td><td><div class='layui-table-cell'>"+
+//			   	"品牌："+data.invabbname+"</div></td></tr>"+
+//				"<tr><td></td><td><div class='layui-table-cell'>"+
+//				"型号："+data.invstd+"</div></td></tr>")
+//			   tr.addClass("OPEN");
+//		   }	 
+//		});
+
+        active = {
+            getCheckData: function(){ //保存
+                var checkStatus = table.checkStatus('data')
+                    ,data = checkStatus.data;
+                parent.$('#shuzhi').val(JSON.stringify(data));
+                //当你在iframe页面关闭自身时
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {invname:$("#invname").val(),cpgg:$("#cpgg").val(),whid:getUrlParam("whid"),orderBy:"order by convert(invname using gbk)"},page:{curr:1}})
+    });
+
+</script>

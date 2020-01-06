@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layuiAdmin 主页示例模板一</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md8">    
+        <div class="layui-card">
+          <div class="layui-card-header" id="title">
+            	维修单
+          </div>
+          <div class="layui-card-body">
+            <div class="layui-row layui-col-space10">
+              <div class="layui-col-xs12 layui-col-sm12">
+                <div class="layuiadmin-card-text">
+                  <div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>维修单明细</div>
+                  <p class="layui-text-center" id="neirong" ></p>
+                  <p class="layui-text-bottom" id="deptname">表单</p>
+                </div>
+              </div>
+              <div class="layui-col-xs12 layui-col-sm12">
+                <div class="layuiadmin-card-text">
+                  <div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>备品备件信息</div>
+                  <!--<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>
+                  <p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-card">
+          <div class="layui-card-header">审批动态</div>
+          <div class="layui-card-body">
+            <dl class="layuiadmin-card-status">
+              <dd>
+                <div class="layui-status-img"><a href="javascript:;"><img src="../../layuiadmin/style/res/logo.png"></a></div>
+                <div>
+                  <!--<p>胡歌【收费部】 审批通过</p>
+                  <p>审批意见：</p>
+                  <p></p>
+                  <span>几秒前</span>-->
+                </div>
+              </dd>
+            </dl>  
+          </div>
+        </div>     
+      </div>
+      <div class="layui-col-md4">
+        <div class="layui-card">
+        	<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+        		<input type="hidden" id="id" name="id">
+			<input type="hidden" id="bizid" name="bizid">
+			
+          <div class="layui-card-header">审批操作</div>
+          <div class="layui-card-body">
+          	<div class="layui-card-header" >
+          	<!--<button class="layui-btn layui-btn-normal" type="submit" onclick="update(1)">审批通过</button>-->
+              <button class="layui-btn layui-btn-danger" onclick="auditback()" >返回</button>
+            </div>
+          <!--<div class="layui-card-body layui-row layui-col-space10">
+          	<div class="layui-col-md12" id="divwxr"  style="display:none;">
+          	<div class="layui-col-md4">
+             	请选择维修人
+            </div>
+            <div class="layui-col-md8">
+               <select id="userid" name="userid" class="form-control input-sm" >
+              	<option>请选择</option>
+              	<option value="23">维修人</option>
+              </select>
+            </div>	
+          		</div>
+          	<div class="layui-col-md12">审批意见</div>
+            <div class="layui-col-md12">
+              <textarea id="neirong" name="neirong" placeholder="请输入审批意见" class="layui-textarea"></textarea>
+            </div>
+          </div>-->
+          </div>
+         </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../layuiadmin/layui/layui.js"></script>  
+  	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/properties.js" ></script>
+	<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+	<script type="text/javascript" src="../../js/common.js" ></script>
+  <script>
+  	
+  	
+  	 var self = null;
+    mui.plusReady(function() {
+                self = plus.webview.currentWebview();
+           }); 
+           
+	
+	mui.init({  
+	    beforeback: function() {  
+	    	
+	    //获得列表界面的webview  
+	    var list = plus.webview.currentWebview().opener();  
+	    //触发列表界面的自定义事件（refresh）,从而进行数据刷新  
+	    mui.fire(list, 'refresh');  
+	    //返回true，继续页面关闭逻辑  
+	    return true;  
+	    }  
+	});  
+	
+  	initData();
+
+
+		function initData(){
+			token = JSON.parse(localStorage.getItem('$state')).token;
+			var id = getUrlParam("id");
+			console.log(id);
+			if(id != ""){
+				$.ajax({
+					type : 'get',
+					url : server_url+'/repairs/todo/'+id,
+					async : false,
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'token':token},
+					success : function(data) {
+					    console.log(JSON.stringify(data));
+                        $('#id').val(data.todoid);
+
+                        $('#bizid').val(data.id);
+												$('#title').text(data.biaoti);
+                        $('#deptname').text(data.deptname + "-" + "时间:"+data.createTime );  //data.createname +
+//                      $('#qianzi').text(data.createname);
+												
+												$('#neirong').text(data.cname + data.description);
+						
+                        //$('#appgzname').text(data.gzname);
+						$('#biztype').val(data.biztype);
+						if(data.stepname){
+							$("#divwxr").attr("style","display:block;");
+						}
+//						if(data.biztype=="拒绝"){
+//console.log("拒绝");
+//                          $('#biztype1').attr('checked','false');
+//                          $('#biztype0').attr('checked','true');
+//                      }else{
+//                          console.log("同意");
+//                          //$('#biztype1').attr('checked','true');
+//                          //$('#biztype0').attr('checked','false');
+//                      }
+
+
+                       // inittodoFiles(id);	//调出本待办事宜审批人自己上传的附件
+					}
+				});
+			}
+		}
+		
+		
+		function update(send) {
+					    token = JSON.parse(localStorage.getItem('$state')).token;
+		    var formdata = $("#form").serializeObject();
+            //formdata.fileIds=ids;
+            formdata.send = send;
+            console.log(JSON.stringify(formdata));
+			$.ajax({
+				type : 'put',
+				url : server_url+'/todos',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				timeout:10000,//超时时间设置为10秒；
+					headers:{'token':token},
+				success : function(data) {
+					layer.msg("审批成功", {shift: -1, time: 1000}, function(){
+						 var list = plus.webview.currentWebview().opener();  
+	    			//触发列表界面的自定义事件（refresh）,从而进行数据刷新  
+	    			mui.fire(list, 'refresh'); 
+                        self.close();
+                    });
+				}
+			});
+		}
+		
+		function auditback(){
+			var list = plus.webview.currentWebview().opener();  
+	    //触发列表界面的自定义事件（refresh）,从而进行数据刷新  
+	    mui.fire(list, 'refresh'); 
+      self.close();
+		}
+		
+  layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'sample']);
+  </script>
+</body>
+</html>

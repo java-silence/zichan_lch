@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.VendorDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id}
+			</if>
+			<if test="params.ccode != null and params.ccode != ''">
+				and t.ccode = #{params.ccode}
+			</if>
+			<if test="params.cname != null and params.cname != ''">
+				and t.cname like concat('%', #{params.cname}, '%')
+			</if>
+			<if test="params.abbname != null and params.abbname != ''">
+				and t.abbname = #{params.abbname}
+			</if>
+			<if test="params.cid != null and params.cid != ''">
+				and t.cid = #{params.cid}
+			</if>
+			<if test="params.venaddress != null and params.venaddress != ''">
+				and t.venaddress = #{params.venaddress}
+			</if>
+			<if test="params.venpostcode != null and params.venpostcode != ''">
+				and t.venpostcode = #{params.venpostcode}
+			</if>
+			<if test="params.venregcode != null and params.venregcode != ''">
+				and t.venregcode = #{params.venregcode}
+			</if>
+			<if test="params.venbank != null and params.venbank != ''">
+				and t.venbank = #{params.venbank}
+			</if>
+			<if test="params.venaccount != null and params.venaccount != ''">
+				and t.venaccount = #{params.venaccount}
+			</if>
+			<if test="params.devdate != null and params.devdate != ''">
+				and t.devdate = #{params.devdate}
+			</if>
+			<if test="params.venperson != null and params.venperson != ''">
+				and t.venperson = #{params.venperson}
+			</if>
+			<if test="params.venphone != null and params.venphone != ''">
+				and t.venphone = #{params.venphone}
+			</if>
+			<if test="params.venfax != null and params.venfax != ''">
+				and t.venfax = #{params.venfax}
+			</if>
+			<if test="params.venemail != null and params.venemail != ''">
+				and t.venemail = #{params.venemail}
+			</if>
+			<if test="params.legalperson != null and params.legalperson != ''">
+				and t.legalperson = #{params.legalperson}
+			</if>
+			<if test="params.pic != null and params.pic != ''">
+				and t.pic = #{params.pic}
+			</if>
+			<if test="params.barcode != null and params.barcode != ''">
+				and t.barcode = #{params.barcode}
+			</if>
+			<if test="params.tdesc != null and params.tdesc != ''">
+				and t.tdesc = #{params.tdesc}
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and t.createby = #{params.createby}
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.createTime = #{params.createTime}
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and t.updateby = #{params.updateby}
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.updateTime = #{params.updateTime}
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and t.auditby = #{params.auditby}
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and t.auditTime = #{params.auditTime}
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status}
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del}
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and t.memo = #{params.memo}
+			</if>
+			<if test="params.ctype != null and params.ctype != ''">
+				and t.ctype = #{params.ctype}
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and t.c01 = #{params.c01}
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and t.c02 = #{params.c02}
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and t.c03 = #{params.c03}
+			</if>
+			<if test="params.ppath != null and params.ppath != ''">
+				and t.ppath like concat( #{params.ppath}, '%')
+			</if>
+			<if test="params.deptid != null and params.deptid != ''">
+				and t.deptid = #{params.deptid}
+			</if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from t_vendor t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="Vendor">
+		select t.*,c.cname classname,u.nickname creator from t_vendor t
+		left join t_vendorclass c on c.id = t.cid
+		left join sys_user u on u.id = t.createby
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update t_vendor t
+		<set>
+			<if test="ccode != null">
+				ccode = #{ccode}, 
+			</if>
+			<if test="cname != null">
+				cname = #{cname}, 
+			</if>
+			<if test="abbname != null">
+				abbname = #{abbname}, 
+			</if>
+			<if test="cid != null">
+				cid = #{cid}, 
+			</if>
+			<if test="venaddress != null">
+				venaddress = #{venaddress}, 
+			</if>
+			<if test="venpostcode != null">
+				venpostcode = #{venpostcode}, 
+			</if>
+			<if test="venregcode != null">
+				venregcode = #{venregcode}, 
+			</if>
+			<if test="venbank != null">
+				venbank = #{venbank}, 
+			</if>
+			<if test="venaccount != null">
+				venaccount = #{venaccount}, 
+			</if>
+			<if test="devdate != null">
+				devdate = #{devdate}, 
+			</if>
+			<if test="venperson != null">
+				venperson = #{venperson}, 
+			</if>
+			<if test="venphone != null">
+				venphone = #{venphone}, 
+			</if>
+			<if test="venfax != null">
+				venfax = #{venfax}, 
+			</if>
+			<if test="venemail != null">
+				venemail = #{venemail}, 
+			</if>
+			<if test="legalperson != null">
+				legalperson = #{legalperson}, 
+			</if>
+			<if test="pic != null">
+				pic = #{pic}, 
+			</if>
+			<if test="barcode != null">
+				barcode = #{barcode}, 
+			</if>
+			<if test="tdesc != null">
+				tdesc = #{tdesc}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+			<if test="ppath != null">
+				ppath = #{ppath},
+			</if>
+			<if test="deptid != null">
+				deptid = #{deptid},
+			</if>
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

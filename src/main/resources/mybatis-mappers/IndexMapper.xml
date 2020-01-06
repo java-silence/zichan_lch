@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.IndexDao">
+
+	<select id="queryJtIndexJinE" resultType="map">
+		select (
+		select sum(original_value) from zc_info) as zcZongZhi,
+		(select
+		ROUND( sum(original_value-(original_value*0.95/use_months)*TIMESTAMPDIFF(MONTH,start_use_time,NOW())),2)
+		from zc_info
+		where
+		TIMESTAMPDIFF(MONTH,start_use_time,NOW())&lt;=use_months and
+		original_value is NOT Null and
+		use_months is NOT Null ) as zcJingZhi
+	</select>
+	<select id="queryJtIndexAssetCategory" resultType="com.itycu.server.model.IndexAssetCategoryVO">
+		SELECT c.`name` as `name`,count(*) as dataCount from zc_info as a
+		left join t_dept as b on b.id=a.sy_dept_id
+		left join zc_category as c on c.id=a.zc_category_id
+		group by c.pid
+	</select>
+    <select id="queryIndexAssetCategory" resultType="com.itycu.server.model.IndexAssetCategoryVO">
+		SELECT c.`name` as `name`,count(*) as dataCount from zc_info as a
+		left join t_dept as b on b.id=a.sy_dept_id
+		left join zc_category as c on c.id=a.zc_category_id
+		where b.deptcode like concat (#{deptId},'%')
+		group by c.pid
+	</select>
+
+
+    <select id="queryIndexZoneAssetCount" resultType="java.lang.Integer">
+			SELECT count(*)  from zc_info as a
+			left join t_dept as b on b.id=a.sy_dept_id
+			left join zc_category as c on c.id=a.zc_category_id
+			where b.deptcode like concat (#{deptId},'%')
+	</select>
+
+    <select id="queryBranchDataList" resultType="com.itycu.server.model.IndexBranchDataCountVO">
+	select
+		c.c03 as deptType,
+		a.deptname,
+		count(b.sy_dept_id) as zcCount,
+		ifnull(sum(b.netvalue),0)  as zcTotal,
+		ifnull(sum(b.bf),0)  as dealCount
+		from t_dept as
+		a LEFT JOIN zc_info as b on a.id = b.sy_dept_id
+		LEFT JOIN t_dept as c on b.gl_dept_id = c.id
+		where a.pid =#{deptId}
+		GROUP BY b.gl_dept_id
+    </select>
+
+	<select id="queryZhihangZcDataInfo"  resultType="com.itycu.server.model.IndexBranchDataCountVO">
+			select
+		c.c03 as deptType,
+		a.deptname,
+		count(b.sy_dept_id) as zcCount,
+		ifnull(sum(b.netvalue),0)  as zcTotal,
+		ifnull(sum(b.bf),0)  as dealCount
+		from t_dept as
+		a LEFT JOIN zc_info as b on a.id = b.sy_dept_id
+		LEFT JOIN t_dept as c on b.gl_dept_id = c.id
+		where a.deptcode =#{deptcode}
+		GROUP BY b.gl_dept_id
+	</select>
+
+
+	<select id="queryRepairCountThisYear" resultType="int">
+	  <!-- SELECT  COUNT(*) FROM
+	   zc_repair AS a where a.status = 2 and
+	   apply_dept_id = #{deptId}
+	   and  DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <![CDATA[<=]]> date(create_time)-->
+
+
+		SELECT  COUNT(*) FROM
+		zc_repair_item AS a
+		left join t_dept b on b.id=a.apply_dept_id
+		left join t_dept c on c.id =b.pid
+		left join zc_repair d on d.id=a.zc_repair_id
+
+		where d.status = 2 and
+		c.id= 11
+		and  DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <![CDATA[<=]]> date(d.create_time)
+
+	</select>
+
+
+	<select id="queryBranchAllSubBranchAssert" resultType="com.itycu.server.model.IndexFenhangCountVO">
+		SELECT
+			a.deptname as name ,count(b.sy_dept_id ) as resultValue
+		FROM
+			`t_dept` AS a
+			LEFT JOIN zc_info AS b ON a.id = b.sy_dept_id
+		WHERE
+			a.pid = #{deptId}
+
+		GROUP BY
+			a.id
+	</select>
+
+	<select id="queryJtBenYueBuyDataInfo" resultType="com.itycu.server.model.IndexBenYueBuyCountVO">
+		   select
+			c.create_time as buyTime,
+			a.deptname  as buyCompany,
+			count(d.zc_buy_id) as goodsTotal,
+			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			left join zc_buy as c on b.id = c.sy_dept_id
+			left join zc_buy_item as d  on c.id =d.zc_buy_id
+			where
+			a.deptcode  != '01'
+			and a.zhfhgl =0
+			and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+			group by a.deptname
+			order by c.create_time desc
+	</select>
+
+	<select id="queryBenYueBuyDataInfo" resultType="com.itycu.server.model.IndexBenYueBuyCountVO">
+	 	<if test="deptId!=null and deptId!='01'">
+			<!--select
+			c.create_time as buyTime,
+			c.status as buyStatus,
+			b.deptname  as buyCompany,
+			count(d.zc_buy_id) as goodsTotal
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			left join zc_buy as c on b.id = c.sy_dept_id
+			left join zc_buy_item as d  on c.id =d.zc_buy_id
+			where
+			a.deptcode  =  #{deptId}
+			and a.zhfhgl =0
+			and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+			order by c.create_time desc-->
+			select
+			c.create_time as buyTime,
+			b.deptname  as buyCompany,
+			count(d.zc_buy_id) as goodsTotal,
+			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			left join zc_buy as c on b.id = c.sy_dept_id
+			left join zc_buy_item as d  on c.id =d.zc_buy_id
+			where
+			a.deptcode  =  #{deptId}
+			and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+			group by a.deptname
+			order by c.create_time desc
+		</if>
+		<if test="deptId!=null and deptId =='01'">
+			select
+			c.create_time as buyTime,
+			a.deptname  as buyCompany,
+			count(d.zc_buy_id) as goodsTotal,
+			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			left join zc_buy as c on b.id = c.sy_dept_id
+			left join zc_buy_item as d  on c.id =d.zc_buy_id
+			where
+			a.deptcode  != '01'
+			and a.zhfhgl =0
+			and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+			group by a.deptname
+			order by c.create_time desc
+
+
+		</if>
+	</select>
+
+
+	<select id="queryBenYueRepairCountInfo" resultType="com.itycu.server.model.IndexBenYueRepairDataVO">
+	<!--	SELECT
+
+			b.deptname  as repairCompany,
+			b.createTime as repairTime,
+			c.STATUS  as repairStatus,
+			c.zc_ids as dataStr
+		FROM
+			`t_dept` AS a
+			LEFT JOIN t_dept AS b ON a.deptcode = b.pid
+			LEFT JOIN zc_repair AS c ON b.id = c.apply_dept_id
+		WHERE
+			a.zhfhgl = 0
+			AND a.deptcode = #{deptId}
+			AND c.apply_dept_id IS NOT NULL -->
+		SELECT
+		b.deptname  as repairCompany,
+		b.createTime as repairTime,
+		count(c.id) as repairCount,
+		sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+		sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng
+
+		FROM
+		`t_dept` AS a
+		LEFT JOIN t_dept AS b ON a.deptcode = b.pid
+		LEFT JOIN zc_repair AS c ON b.id = c.apply_dept_id
+		WHERE
+		a.zhfhgl = 0
+		AND a.deptcode = #{deptId}
+		AND c.apply_dept_id IS NOT NULL
+		GROUP BY a.deptname
+
+	</select>
+
+
+	<select id="queryZongHangBuyDataInfo" resultType="com.itycu.server.model.IndexBenYueBuyCountVO">
+		SELECT
+			concat (a.deptname,b.deptname) as buyCompany,
+			b.createTime as buyTime,
+			c.STATUS  as buyStatus,
+			c.zc_ids as dataStr
+		FROM
+			`t_dept` AS a
+			LEFT JOIN t_dept AS b ON a.deptcode = b.pid
+			LEFT JOIN zc_repair AS c ON b.id = c.apply_dept_id
+		WHERE
+			a.zhfhgl = 0
+			AND a.deptcode != "01"
+			AND c.apply_dept_id IS NOT NULL
+	</select>
+
+
+	<select id="queryZongHangRepairDataInfo" resultType="com.itycu.server.model.IndexBenYueRepairDataVO">
+		SELECT
+			a.deptname  as repairCompany,
+			b.createTime as repairTime,
+			count(c.id) as repairCount,
+				sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+		sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng
+
+		FROM
+			`t_dept` AS a
+			LEFT JOIN t_dept AS b ON a.deptcode = b.pid
+			LEFT JOIN zc_repair AS c ON b.id = c.apply_dept_id
+		WHERE
+			a.zhfhgl = 0
+			AND a.deptcode != "01"
+			AND c.apply_dept_id IS NOT NULL
+		GROUP BY a.deptname
+	</select>
+
+
+	<select id="queryBenYueDiaoPeiDataInfo" resultType="com.itycu.server.model.IndexBenYueDiaoPeiCountVO">
+		<if test="deptId!=01">
+		<!--	select COUNT(*) diaoPeiCount, b.deptname as diaoPeiCompany,
+			c.create_time as diaoPeiTime, c.status as diaoPeiStatus
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+
+			left join zc_deploy_item as d on b.id = d.front_dept_id
+			left join zc_deploy as c on c.id = d.zc_deploy
+			 where a.deptcode  = #{deptId} and
+			a.zhfhgl = 0 and
+			DATE_FORMAT(c.create_time,'%Y%m')=DATE_FORMAT(CURDATE( ), '%Y%m')
+			and d.front_dept_id is not null
+			group by concat (a.deptname,b.deptname) ,c.status
+			ORDER BY c.create_time-->
+			select  b.deptname as diaoPeiCompany, COUNT(*) diaoPeiCount,
+			c.create_time as diaoPeiTime,
+			sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) weiWanCheng
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			<!--left join zc_deploy_item as d on b.id = d.front_dept_id-->
+			left join zc_deploy as c on c.apply_dept_id = b.id
+			where a.deptcode  =#{deptId} and
+			DATE_FORMAT(c.create_time,'%Y%m')=DATE_FORMAT(CURDATE( ), '%Y%m')
+
+			group by a.deptname
+			ORDER BY c.create_time
+		</if>
+		<if test="deptId=='01'">
+			select  a.deptname as diaoPeiCompany, COUNT(*) diaoPeiCount,
+			c.create_time as diaoPeiTime,
+			sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) weiWanCheng
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			<!--left join zc_deploy_item as d on b.id = d.front_dept_id-->
+			left join zc_deploy as c  on c.apply_dept_id = b.id
+			where a.deptcode  !='01' and a.zhfhgl = 0 and
+			DATE_FORMAT(c.create_time,'%Y%m')=DATE_FORMAT(CURDATE( ), '%Y%m')
+			<!--and d.front_dept_id is not null-->
+			group by a.deptname
+			ORDER BY c.create_time
+
+</if>
+</select>
+
+<!--首页资产报废统计-->
+	<select id="queryBenYueBaoFeiDataInfo" resultType="com.itycu.server.model.IndexBenYueBaoFeiCountVO">
+
+
+
+		<if test="deptId=='01'">
+			<!--select
+			a.deptname as baoFeiCompany,
+			c.update_time as baoFeiTime,
+			c.use_status as baoFeiStatus,
+			count(c.gl_dept_id ) as baoFeiCount
+			from t_dept as  a LEFT JOIN t_dept as b
+			on a.id = b.pid
+			left join zc_info as c on b.id = c.gl_dept_id
+			where a.deptcode != '01'
+			and c.use_status = 7  and a.zhfhgl = 0
+			and  DATE_FORMAT(c.update_time,'%Y%m') = DATE_FORMAT(CURRENT_DATE,'%Y%m')
+			GROUP BY a.deptname,c.use_status-->
+
+
+            select
+            c.create_time as baofeiTime,
+            sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+            sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng,
+            a.deptname  as baofeiCompany,
+            count(*) as baofeiCount
+            from t_dept as a
+            left join t_dept as b on a.id = b.pid
+            left join zc_bf as c on b.id = c.apply_dept_id
+            left join zc_bf_item as d  on c.id =d.zc_bf_id
+            where
+            a.deptcode  !='01'
+            and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+            GROUP BY a.deptname
+            order by c.create_time desc
+
+
+		</if>
+		<if test="deptId!='01'">
+			<!--select
+			b.deptname as baofeiCompany,
+			c.update_time as baofeiTime,
+			c.use_status as baofeiStatus,
+			count(c.gl_dept_id ) as baofeiCount
+			from t_dept as  a LEFT JOIN t_dept as b
+			on a.id = b.pid
+			left join zc_info as c on b.id = c.gl_dept_id
+			where a.deptcode = #{deptId}
+			and c.use_status = 7  and a.zhfhgl = 0
+			and  DATE_FORMAT(c.update_time,'%Y%m') = DATE_FORMAT(CURRENT_DATE,'%Y%m')
+			GROUP BY b.deptname-->
+			select
+			c.create_time as baofeiTime,
+			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE c.status WHEN 2 THEN 1 ELSE 0 END ) weiWanCheng,
+			a.deptname  as baofeiCompany,
+			count(*) as baofeiCount
+			from t_dept as a
+			left join t_dept as b on a.id = b.pid
+			left join zc_bf as c on b.id = c.apply_dept_id
+			left join zc_bf_item as d  on c.id =d.zc_bf_id
+			where
+			a.deptcode = #{deptId}
+			and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+			GROUP BY a.deptname
+			order by c.create_time desc
+
+
+
+		</if>
+	</select>
+
+	<select id="queryBenYueXunjianDataInfo" resultType="com.itycu.server.model.IndexBenYueXunJianCountVO">
+		<if test="deptId=='01'">
+			SELECT
+			a.deptname,
+			c.create_time AS xunjianTime,
+			c.STATUS xunjianStatus,
+			( SELECT count( 1 ) FROM zc_inspect_record AS e WHERE e.zc_inspect_id = c.id ) AS count
+			FROM
+			t_dept AS a
+			LEFT JOIN t_dept AS b ON a.id = b.pid
+			LEFT JOIN zc_inspect AS c ON b.id = c.check_dept_id
+			WHERE
+			a.zhfhgl = 0
+			AND c.check_dept_id IS NOT NULL
+			GROUP BY a.deptname,c.STATUS
+		</if>
+		<if test="deptId !='01'">
+			SELECT
+			a.check_username AS xunjianCompany ,
+			(select count(1) from zc_inspect_record as b where b.zc_inspect_id = a.id) as xunjianCount,
+			a.create_time as xunjianTime,
+			a.status  xunjianStatus
+			FROM
+			`zc_inspect` AS a
+			WHERE
+			a.check_dept_id =#{deptId}
+
+		</if>
+	</select>
+    <select id="queryIndexZhihangCount" resultType="map">
+        select
+        (
+        select count(*) from zc_buy_item
+        left join t_dept a on a.id=zc_buy_item.gl_dept_id
+        left join t_dept b on a.pid = b.id
+        where
+        cwb_status=1 and b.deptcode=#{deptId}
+        and
+        YEAR(create_time) = YEAR(NOW())
+
+        ) as caigouCount,
+        (
+        select count(*) from zc_deploy_item
+        left join t_dept a on a.id=zc_deploy_item.front_dept_id
+        left join t_dept b on a.pid = b.id
+        where
+        cwb_status=1 and b.deptcode=#{deptId}
+        and
+        YEAR(create_time) = YEAR(NOW())
+        ) as diaopeiCount ,
+        (
+        select count(*) from zc_inspect a
+        left join  zc_inspect_record b on a.id=b.zc_inspect_id
+
+        left join t_dept c on c.id=a.check_dept_id
+        left join t_dept d on c.pid = d.id
+        where  d.deptcode=#{deptId} and a.status=1
+        and
+        YEAR(a.create_time) = YEAR(NOW())
+        ) as xunjianCount,
+        (select
+        ROUND( sum(original_value-(original_value*0.95/use_months)*TIMESTAMPDIFF(MONTH,start_use_time,NOW())),2)
+        from zc_info
+        left join t_dept c on c.id=zc_info.sy_dept_id
+        left join t_dept d on c.pid = d.id
+        where d.deptcode=#{deptId} and
+        TIMESTAMPDIFF(MONTH,start_use_time,NOW())&lt;=use_months and
+        original_value is NOT Null and
+        use_months is NOT Null ) as zcJingZhi,
+          (select count(1)  from zc_info a
+		 left join zc_category b on b.id=a.zc_category_id
+		 where b.cat_code like '01%') as GdzcCount,
+        (select count(1)  from zc_info a
+		 left join zc_category b on b.id=a.zc_category_id
+		 where b.cat_code like '03%') as DzyhCount,
+		 (select count(*) from zc_info
+	 left join t_dept a on a.id=zc_info.sy_dept_id
+   left join t_dept b on a.pid = b.id
+	 where b.deptcode=#{deptId}
+	 and bf=1 and YEAR(create_time) = YEAR(NOW())) as countBaoFei
+
+    </select>
+
+
+	<select id="queryBuyData" resultType="com.itycu.server.model.QueryHomeData">
+ select COUNT(*) countTotal, create_time as dateTime,
+		 	sum(CASE  status WHEN 2 THEN 1 ELSE 0 END ) wanCheng,
+		sum(CASE  status WHEN 1 THEN 1 ELSE 0 END ) weiWanCheng
+		 from  zc_buy
+		 where sy_dept_id=#{deptId} and DATE_FORMAT(create_time,'%Y%m')=DATE_FORMAT(CURDATE(), '%Y%m')
+		 	 group by  date_format(create_time, '%Y%m')
+	</select>
+	<select id="queryDiaoPei" resultType="com.itycu.server.model.QueryHomeData">
+		select COUNT(*) countTotal, create_time as dateTime,
+		 	sum(CASE  status WHEN 2 THEN 1 ELSE 0 END ) wanCheng,
+		sum(CASE  status WHEN 1 THEN 1 ELSE 0 END ) weiWanCheng
+		 from  zc_deploy
+		 where apply_dept_id=#{deptId} and DATE_FORMAT(create_time,'%Y%m')=DATE_FORMAT(CURDATE(), '%Y%m')
+		 	 group by  date_format(create_time, '%Y%m')
+	</select>
+	<select id="queryBaoXiu" resultType="com.itycu.server.model.QueryHomeData">
+	 select COUNT(*) countTotal, create_time as dateTime,
+		 	sum(CASE  status WHEN 2 THEN 1 ELSE 0 END ) wanCheng,
+		sum(CASE  status WHEN 1 THEN 1 ELSE 0 END ) weiWanCheng
+		 from  zc_repair
+		 where apply_dept_id=#{deptId} and DATE_FORMAT(create_time,'%Y%m')=DATE_FORMAT(CURDATE(), '%Y%m')
+		 	 group by  date_format(create_time, '%Y%m')
+	</select>
+	<select id="queryChuZhi" resultType="com.itycu.server.model.QueryHomeData">
+		 select COUNT(*) countTotal, create_time as dateTime,
+		 	sum(CASE  status WHEN 2 THEN 1 ELSE 0 END ) wanCheng,
+		sum(CASE  status WHEN 1 THEN 1 ELSE 0 END ) weiWanCheng
+		 from  zc_bf
+		 where apply_dept_id=30 and DATE_FORMAT(create_time,'%Y%m')=DATE_FORMAT(CURDATE(), '%Y%m')
+		 	 group by  date_format(create_time, '%Y%m')
+	</select>
+
+
+
+</mapper>

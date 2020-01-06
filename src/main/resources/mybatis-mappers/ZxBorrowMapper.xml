@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZxBorrowDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and id = #{params.id} 
+			</if>
+			<if test="params.deptid != null and params.deptid != ''">
+				and deptid = #{params.deptid} 
+			</if>
+			<if test="params.whid != null and params.whid != ''">
+				and whid = #{params.whid} 
+			</if>
+			<if test="params.bizdate != null and params.bizdate != ''">
+				and bizdate = #{params.bizdate} 
+			</if>
+			<if test="params.eqpid != null and params.eqpid != ''">
+				and eqpid = #{params.eqpid} 
+			</if>
+			<if test="params.eqpname != null and params.eqpname != ''">
+				and eqpname like concat('%', #{params.eqpname}, '%')
+			</if>
+			<if test="params.description != null and params.description != ''">
+				and description = #{params.description} 
+			</if>
+			<if test="params.quantity != null and params.quantity != ''">
+				and quantity = #{params.quantity} 
+			</if>
+			<if test="params.unit != null and params.unit != ''">
+				and unit = #{params.unit} 
+			</if>
+			<if test="params.price != null and params.price != ''">
+				and price = #{params.price} 
+			</if>
+			<if test="params.money != null and params.money != ''">
+				and money = #{params.money} 
+			</if>
+			<if test="params.expectreturn != null and params.expectreturn != ''">
+				and expectreturn = #{params.expectreturn} 
+			</if>
+			<if test="params.returndate != null and params.returndate != ''">
+				and returndate = #{params.returndate} 
+			</if>
+			<if test="params.returndesc != null and params.returndesc != ''">
+				and returndesc = #{params.returndesc} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and status = #{params.status} 
+			</if>
+			<if test="params.memo != null and params.memo != ''">
+				and memo = #{params.memo} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and del = #{params.del} 
+			</if>
+			<if test="params.biztype != null and params.biztype != ''">
+				and biztype = #{params.biztype} 
+			</if>
+			<if test="params.createby != null and params.createby != ''">
+				and createby = #{params.createby} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateby != null and params.updateby != ''">
+				and updateby = #{params.updateby} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and updateTime = #{params.updateTime} 
+			</if>
+			<if test="params.auditby != null and params.auditby != ''">
+				and auditby = #{params.auditby} 
+			</if>
+			<if test="params.auditTime != null and params.auditTime != ''">
+				and auditTime = #{params.auditTime} 
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and c01 = #{params.c01} 
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and c02 = #{params.c02} 
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and c03 = #{params.c03} 
+			</if>
+		
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select count(1) from v_zx_borrow t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="com.itycu.server.dto.ZxBorrowVO">
+		select * from v_zx_borrow t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update zx_borrow t
+		<set>
+			<if test="deptid != null">
+				deptid = #{deptid}, 
+			</if>
+			<if test="whid != null">
+				whid = #{whid}, 
+			</if>
+			<if test="bizdate != null">
+				bizdate = #{bizdate}, 
+			</if>
+			<if test="eqpid != null">
+				eqpid = #{eqpid}, 
+			</if>
+			<if test="description != null">
+				description = #{description}, 
+			</if>
+			<if test="quantity != null">
+				quantity = #{quantity}, 
+			</if>
+			<if test="unit != null">
+				unit = #{unit}, 
+			</if>
+			<if test="price != null">
+				price = #{price}, 
+			</if>
+			<if test="money != null">
+				money = #{money}, 
+			</if>
+			<if test="expectreturn != null">
+				expectreturn = #{expectreturn}, 
+			</if>
+			<if test="returndate != null">
+				returndate = #{returndate}, 
+			</if>
+			<if test="returndesc != null">
+				returndesc = #{returndesc}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="biztype != null">
+				biztype = #{biztype}, 
+			</if>
+			<if test="createby != null">
+				createby = #{createby}, 
+			</if>
+			<if test="updateby != null">
+				updateby = #{updateby}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="auditby != null">
+				auditby = #{auditby}, 
+			</if>
+			<if test="auditTime != null">
+				auditTime = #{auditTime}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

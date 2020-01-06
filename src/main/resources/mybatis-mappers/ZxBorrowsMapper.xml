@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.itycu.server.dao.ZxBorrowsDao">
+	<insert id="saves">
+		INSERT INTO
+		zx_borrows
+		(pid, invid, inum, iprice, discount, taxrate, itax, imoney, cbatch, status, del, memo, ctype, c01, c02, c03,eqpid)
+		VALUES
+		<foreach collection="zxBorrowsList" item="zxBorrows" separator=",">
+			(#{zxBorrowid}, #{zxBorrows.invid}, #{zxBorrows.inum}, #{zxBorrows.iprice}, #{zxBorrows.discount}, #{zxBorrows.taxrate}, #{zxBorrows.itax}, #{zxBorrows.imoney}, #{zxBorrows.cbatch}, #{zxBorrows.status}, #{zxBorrows.del}, #{zxBorrows.memo}, #{zxBorrows.ctype}, #{zxBorrows.c01}, #{zxBorrows.c02}, #{zxBorrows.c03}, #{zxBorrows.eqpid})
+		</foreach>
+	</insert>
+
+	<update id="update">
+		update kc_stocktrans t
+		<set>
+			<if test="pid != null">
+				pid = #{pid}, 
+			</if>
+			<if test="invid != null">
+				invid = #{invid}, 
+			</if>
+			<if test="inum != null">
+				inum = #{inum}, 
+			</if>
+			<if test="iprice != null">
+				iprice = #{iprice}, 
+			</if>
+			<if test="discount != null">
+				discount = #{discount}, 
+			</if>
+			<if test="taxrate != null">
+				taxrate = #{taxrate}, 
+			</if>
+			<if test="itax != null">
+				itax = #{itax}, 
+			</if>
+			<if test="imoney != null">
+				imoney = #{imoney}, 
+			</if>
+			<if test="cbatch != null">
+				cbatch = #{cbatch}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="memo != null">
+				memo = #{memo}, 
+			</if>
+			<if test="ctype != null">
+				ctype = #{ctype}, 
+			</if>
+			<if test="c01 != null">
+				c01 = #{c01}, 
+			</if>
+			<if test="c02 != null">
+				c02 = #{c02}, 
+			</if>
+			<if test="c03 != null">
+				c03 = #{c03}, 
+			</if>
+
+		</set>
+
+		where t.id = #{id}
+	</update>
+
+</mapper>

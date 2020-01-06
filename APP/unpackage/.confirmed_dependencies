@@ -1,0 +1,274 @@
+{
+  "main.html": {
+    "refer": [
+      "setting.html"
+    ]
+  },
+  "login.html": {
+    "refer": [
+      "main.html",
+      "tab-webview-main.html",
+      "html/tab-webview-main.html",
+      "html/main.html"
+    ]
+  },
+  "tab-webview-main.html": {
+    "resources": [
+      "setting.html",
+      "tab-webview-subpage-about.html"
+    ],
+    "refer": [
+      "setting.html",
+      "tab-webview-subpage-about.html",
+      "tab-webview-subpage-chat.html",
+      "tab-webview-subpage-contact.html",
+      "subpage-setting.html"
+    ]
+  },
+  "html/tab-webview-main.html": {
+    "resources": [
+      "html/tab-webview-subpage-about.html"
+    ],
+    "refer": [
+      "html/tab-webview-subpage-setting.html",
+      "html/tab-webview-subpage-chat.html",
+      "html/tab-webview-subpage-contact.html",
+      "html/tab-webview-subpage-about.html"
+    ]
+  },
+  "html/main.html": {
+    "resources": [
+      "html/about.html",
+      "html/xunjianjihua/needXunjianquyuMain.html"
+    ],
+    "refer": [
+      "html/contact.html",
+      "html/setting.html",
+      "html/about.html",
+      "html/chat.html",
+      "setting.html",
+      "html/xunjianjihua/needXunjianquyuMain.html"
+    ]
+  },
+  "html/setting.html": {
+    "refer": [
+      "setting.html"
+    ]
+  },
+  "html/chat.html": {
+    "refer": [
+      "html/shenhe.html",
+      "html/auditrepair.html",
+      "html/auditzhan.html",
+      "html/repair/auditzhan.html",
+      "html/repair/auditzx.html",
+      "html/eqp/auditruku.html",
+      "html/lingliao/auditlingliao.html",
+      "html/repair/auditRepair.html",
+      "html/stocktran/audittran.html",
+      "html/xjsq/auditxjsq.html"
+    ]
+  },
+  "html/about.html": {
+    "refer": [
+      "html/labopenlog/labOpenlogList.html",
+      "html/labopenlog/addLabOpenlog.html",
+      "html/labinspect/addLabInspect.html",
+      "html/labinspect/labInspectList.html",
+      "html/eqp/addEquipment.html",
+      "html/eqp/equipmentList.html",
+      "html/anzhuang/anzhuangList.html",
+      "html/weihujihua/weihujihuaList.html",
+      "html/repair/repairList.html",
+      "html/weihu/weihuList.html",
+      "html/notice/noticePubList.html",
+      "html/todo/trackList.html",
+      "html/todo/todoList.html",
+      "html/inspect/inspectList.html",
+      "html/change/eqpchangeList.html",
+      "html/xunjianjihua/needXunjianquyu.html",
+      "html/xjsq/zxXjsqList.html",
+      "html/eqp/rukuEquipment.html",
+      "html/eqp/zaikuList.html",
+      "html/weihu/addWeihu.html",
+      "html/lingliao/lingliaoList.html",
+      "html/repair/addRepair.html",
+      "html/lingliao/addLingliao.html",
+      "html/stocktran/stocktranList.html",
+      "html/change/addEqpchange.html",
+      "html/anzhuang/addAnzhuang.html",
+      "html/stocktran/addStocktran.html",
+      "html/stockin/stockinList.html",
+      "html/stockin/addStockin.html",
+      "html/borrow/zxBorrowList.html",
+      "html/currstock/currstockList.html",
+      "html/jms/zxJmsxcList.html",
+      "html/jms/addZxJmsxc.html",
+      "html/jms/zxJmsList.html",
+      "html/weihufadian/weihufadianList.html",
+      "html/weihufadian/addWeihufadian.html",
+      "/login.html",
+      "html/xjsq/addZxXjsq.html",
+      "html/user/userList.html",
+      "html/tongji/xunjianWcl.html"
+    ],
+    "resources": [
+      "/login.html"
+    ]
+  },
+  "html/labopenlog/labOpenlogList.html": {
+    "refer": [
+      "html/labopenlog/updateLabOpenlog.html"
+    ]
+  },
+  "html/labopenlog/updateLabOpenlog.html": {
+    "refer": [
+      "html/labopenlog/labOpenlogList.html"
+    ]
+  },
+  "html/labinspect/addLabInspect.html": {
+    "refer": [
+      "html/labinspect/target.html",
+      "html/labinspect/info.html",
+      "html/labinspect/inspectResult.html",
+      "html/labinspect/description.html"
+    ]
+  },
+  "html/labinspect/labInspectList.html": {
+    "refer": [
+      "html/labinspect/target.html"
+    ]
+  },
+  "html/eqp/equipmentList.html": {
+    "refer": [
+      "html/eqp/addEquipment.html",
+      "html/eqp/addLabOpration.html",
+      "html/eqp/updateEquipment.html"
+    ]
+  },
+  "html/anzhuang/anzhuangList.html": {
+    "refer": [
+      "html/anzhuang/addAnzhuang.html",
+      "html/anzhuang/updateAnzhuang.html"
+    ]
+  },
+  "html/weihujihua/weihujihuaList.html": {
+    "refer": [
+      "html/weihujihua/addWeihujihua.html",
+      "html/weihujihua/updateWeihujihua.html"
+    ]
+  },
+  "html/repair/repairList.html": {
+    "refer": [
+      "html/repair/addRepair.html",
+      "html/repair/updateRepair.html",
+      "html/repair/viewRepair.html"
+    ]
+  },
+  "html/labinspect/target.html": {
+    "resources": [
+      "html/labinspect/addLabInspect.html"
+    ],
+    "refer": [
+      "html/labinspect/addLabInspect.html"
+    ]
+  },
+  "html/notice/noticePubList.html": {
+    "refer": [
+      "html/notice/updateNotice.html",
+      "html/notice/detail.html"
+    ]
+  },
+  "html/todo/trackList.html": {
+    "refer": [
+      "html/todo/updateTodo.html",
+      "html/todo/trackrepair.html"
+    ]
+  },
+  "html/todo/todoList.html": {
+    "refer": [
+      "html/todo/updateTodo.html",
+      "html/auditrepair.html"
+    ]
+  },
+  "html/inspect/inspectList.html": {
+    "refer": [
+      "html/inspect/updateInspect.html"
+    ]
+  },
+  "html/change/eqpchangeList.html": {
+    "refer": [
+      "html/change/updateEqpchange.html"
+    ]
+  },
+  "html/inspect/updateInspect.html": {
+    "refer": [
+      "html/inspect/inspectList.html"
+    ]
+  },
+  "html/eqp/addEquipment.html": {
+    "refer": [
+      "html/eqp/equipmentList.html",
+      "/login.html"
+    ],
+    "resources": [
+      "/login.html"
+    ]
+  },
+  "html/xunjianjihua/needXunjianquyuMain.html": {
+    "refer": [
+      "html/labinspect/labInspectList.html",
+      "/login.html"
+    ],
+    "resources": [
+      "/login.html"
+    ]
+  },
+  "html/xjsq/zxXjsqList.html": {
+    "refer": [
+      "html/xjsq/addZxXjsq.html"
+    ]
+  },
+  "html/xjsq/addZxXjsq.html": {
+    "refer": [
+      "html/xjsq/zxXjsqList.html"
+    ]
+  },
+  "html/eqp/updateEquipment.html": {
+    "resources": [
+      "/login.html"
+    ],
+    "refer": [
+      "/login.html"
+    ]
+  },
+  "html/weihu/addWeihu.html": {
+    "refer": [
+      "html/weihu/addWeihujilu.html"
+    ]
+  },
+  "html/lingliao/addLingliao.html": {
+    "resources": [
+      "/login.html"
+    ],
+    "refer": [
+      "/login.html"
+    ]
+  },
+  "html/lingliao/lingliaoList.html": {
+    "refer": [
+      "html/lingliao/updateLingliao.html",
+      "html/lingliao/auditlingliao.html"
+    ]
+  },
+  "html/stockin/stockinList.html": {
+    "refer": [
+      "html/stockin/auditstockin.html"
+    ]
+  },
+  "html/currstock/currstockList.html": {
+    "refer": [
+      "html/currstock/updateCurrstock.html"
+    ]
+  }
+}
