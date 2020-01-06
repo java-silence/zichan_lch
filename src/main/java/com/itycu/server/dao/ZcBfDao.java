@@ -57,4 +57,7 @@ public interface ZcBfDao {
 
     int countByDeptThisYear(@Param("deptcode") String deptcode);
 
+
+    int queryBaoFeiCountById(@Param("id") long  id);
+
 }

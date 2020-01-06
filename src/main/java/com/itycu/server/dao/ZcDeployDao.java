@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.itycu.server.model.ZcDeploy;
+import org.springframework.security.core.parameters.P;
 
 @Mapper
 public interface ZcDeployDao {
@@ -52,4 +53,7 @@ public interface ZcDeployDao {
     List<Map<String,Object>> listZcDeployRecord(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     int countByDeptThisYear(@Param("deptcode") String deptcode);
+
+
+    int queryDeployCountById(@Param("id") long id );
 }

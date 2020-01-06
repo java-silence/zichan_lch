@@ -548,4 +548,19 @@
         select count(1) from zc_info where sy_dept_id = #{syDeptId}
     </select>
 
+
+    <select id="getZcValueAndZcNumber" resultType="com.itycu.server.dto.ZcInfoDto">
+       SELECT * FROM  zc_info as a
+        where a.sy_dept_id = #{id}
+    </select>
+
+
+    <select id="getDifferentDeptZcCount" resultType="java.util.Map">
+         SELECT b.c03
+        ,count(*) FROM `zc_info` as a
+        left join t_dept as b on a.gl_dept_id = b.id
+        where  a.sy_dept_id =#{id}
+        group by a.gl_dept_id
+    </select>
+
 </mapper>
