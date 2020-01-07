@@ -15,7 +15,7 @@ public class AppIndexDeptDataInfo {
     /**
      * 部门名称
      */
-    private String depename;
+    private String deptname;
 
 
 }

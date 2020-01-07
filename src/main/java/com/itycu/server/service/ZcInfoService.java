@@ -1,5 +1,6 @@
 package com.itycu.server.service;
 
+import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
@@ -23,4 +24,7 @@ public interface ZcInfoService {
 
 
     AppIndexZcValueAndNumber getZcValueAndZcNumber(SysUser user);
+
+
+    List<ZcInfoDto> getAllZcInfoListByUser(SysUser sysUser, ZcInfoListDTO zcInfoListDTO);
 }

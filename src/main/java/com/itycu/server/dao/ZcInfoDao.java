@@ -99,4 +99,16 @@ public interface ZcInfoDao {
 
 
     List<ZcInfoDto> queryAllDeptZcList(@Param("id") long id);
+
+
+    List<ZcInfoDto> getAllZcInfoListByManager(Map<String, Object> map );
+
+
+    /**
+     * 普通的部门获取的资产信息
+     * @param map
+     * @return
+     */
+    List<ZcInfoDto> getAllZcInfoListOrdinaryDept(Map<String, Object> map );
+
 }

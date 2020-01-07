@@ -1,12 +1,15 @@
 package com.itycu.server.app.controller;
 
 
+import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.model.AppIndexDeptDataInfo;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
 import com.itycu.server.app.service.IndexService;
 import com.itycu.server.app.util.FailMap;
+import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.Todo;
+import com.itycu.server.model.ZcInfo;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
@@ -14,7 +17,9 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -94,11 +99,14 @@ public class AppIndexController {
 
     @ApiOperation(value = "获取所有的资产", notes = "获取所有的资产")
     @PostMapping(value = "/getAllZcList")
-    public Map<String, Object> getAllZcList() {
+    public Map<String, Object> getAllZcList(@RequestBody ZcInfoListDTO zcInfoListDTO) {
         Map<String, Object> map = new HashMap<>();
         SysUser sysUser = UserUtil.getLoginUser();
         try {
-
+            List<ZcInfoDto> list = zcInfoService.getAllZcInfoListByUser(sysUser,zcInfoListDTO);
+            map.put("code", 0);
+            map.put("message", "成功");
+            map.put("data", list);
         } catch (Exception e) {
             logger.error("获取所有的资产,{}", e.getMessage());
             map = FailMap.createFailMap();

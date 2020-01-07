@@ -600,4 +600,27 @@
             a.id IS NOT NULL
         AND a.jx  = (select jx from t_dept as c where c.id =#{id})
     </select>
+
+
+    <select id="getAllZcInfoListByManager" resultType="com.itycu.server.dto.ZcInfoDto">
+        select * FROM zc_info as a
+    </select>
+
+
+    <select id="getAllZcInfoListOrdinaryDept" resultType="com.itycu.server.dto.ZcInfoDto">
+        select * FROM zc_info as a
+        where a.sy_dept_id  =  #{id}
+        <if test="keyword!=null and keyword!=''">
+            and (
+            a.zc_name like concat ('%',#{keyword},'%')
+            or
+            a.epcid like concat ('%',#{keyword},'%')
+            or
+            a.sy_dept_id in (select b.id from t_dept as b where b.deptname like concat('%',#{keyword},'%'))
+            or
+            a.zc_category_id in  (select c.id from zc_category as c where c.name like  concat('%',#{keyword},'%') )
+            )
+        </if>
+        limit #{page}, #{limit}
+    </select>
 </mapper>
