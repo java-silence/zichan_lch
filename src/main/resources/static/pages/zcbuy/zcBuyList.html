@@ -90,7 +90,8 @@
                 {type:'numbers',title:'序号'}
                 ,{field:'id',hide:true}
                 //,{field:'checkbox',checkbox: true} //其它参数在此省略
-                ,{field:'companyName',title:'公司名称', width:130, sort: true}
+                ,{field:'buyNum',title:'购买单号', width:155, sort: true}
+                ,{field:'companyName',title:'部门名称', width:130, sort: true}
                 ,{field:'nickname',title:'申请人', width:130, sort: true}
                 ,{field:'deptname',title:'申请部门', width:130, sort: true}
                 ,{field:'fileUrl',title:'附件', width:120, sort: true,hide:true}
@@ -191,16 +192,18 @@
                 {type:'numbers'}
                 ,{field:'id',hide: true}
                 ,{field:'zcBuyId',hide: true}
+                ,{field:'buyNum',title:'购买单号', width:155, sort: true}
                 ,{field:'name',title:'资产名称', width:130, sort: true}
-                ,{field:'num',title:'购买数量', width:100, sort: true,edit:'text'}
+                ,{field:'price',title:'采购单价(元)', width:140, sort: true}
+                ,{field:'num',title:'购买数量', width:120, sort: true,edit:'text'}
+                ,{field:'totalPrice',title:'采购总价(元)', width:140, sort: true,edit:'text'}
                 ,{field:'useDes',title:'用途', width:100, sort: true}
-                ,{field:'gldeptname',title:'管理部门', width:100, sort: true}
+                ,{field:'gldeptname',title:'管理部门', width:120, sort: true}
                 ,{field:'model',title:'规格型号', width:140, sort: true}
                 ,{field:'unit',title:'单位', width:100, sort: true,edit:'text'}
                 ,{field:'fileName',title:'附件名称', width:100, sort: true,edit:'text'}
                 ,{field:'fileUrl',title:'附件地址', width:100, sort: true,hide:true}
                 ,{field:'brand',title:'产品品牌', width:100, sort: true}
-                ,{field:'price',title:'采购单价', width:100, sort: true}
                 ,{field:'supplierName',title:'供应商名称', width:100, sort: true}
                 ,{field:'zcBz',title:'备注', width:100, sort: true}
                 ,{field:'status',hide:true,title:'审核状态', width:100, sort: true}

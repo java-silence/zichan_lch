@@ -22,6 +22,9 @@
         #downLoad {
             margin-left: 24px;
         }
+        .btnfloat button{
+            float: right;
+        }
         .aaa{
             /* float: right; */
             display: block;
@@ -60,8 +63,10 @@
 							<div class="layuiadmin-card-text">
 								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>购买清单信息</div>
 								<!--全部同意操作-->
-								<div class="aaa">
-									<button class="layui-btn layui-btn-warm" onclick="printHtml(1)" >打印</button>
+								<div class="layui-row">
+									<div class="layui-col-md12 btnfloat">
+										<button class="layui-btn layui-btn-warm" onclick="printHtml(1)" >打印</button>
+									</div>
 								</div>
 								<table class="layui-hide" id="datas" lay-filter="datas"></table>
 								<script type="text/html" id="barDemo">
@@ -171,15 +176,16 @@
                 ,url:"/zcBuyItems/listByZcBuyIdNew?todoId="+todoId
                 //,height: 'full-200'
                 ,cols: [[
-                    {field:'checkbox',title: '序号',checkbox: true}
-                    ,{field:'id', hide: true}
+                    // {field:'checkbox',title: '序号',checkbox: true}
+                    {field:'id', hide: true}
                     ,{field:'flowTodoId', hide: true}
                     ,{field:'flowItemId', hide: true}
                     ,{field:'itemStatus', hide: true}
+                    ,{field:'buyNum',title:'购买单号', width:155}
                     ,{field:'name',title:'资产名称', width:130}
-                    ,{field:'price',title:'采购单价', width:100,edit:'text'}
+                    ,{field:'price',title:'采购单价(元)', width:120,edit:'text'}
                     ,{field:'num',title:'采购数量', width:100,edit:'text'}
-                    ,{field:'totalPrice',title:'采购总价', width:100}
+                    ,{field:'totalPrice',title:'采购总价(元)', width:120}
                     ,{field:'useDes',title:'用途', width:100}
                     ,{field:'sydeptname',title:'使用部门', width:130}
                     ,{field:'gldeptname',title:'管理部门', width:130}
@@ -591,8 +597,8 @@
                         "<td style='border:none;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
                         "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
                         "<td style='border-top: 1px solid #000;'>产品品牌</td><td style='border-top: 1px solid #000;'>规格型号</td>" +
-                        "<td style='border-top: 1px solid #000;'>单位（件）</td><td style='border-top: 1px solid #000;'>采购单价</td>" +
-                        "<td style='border-top: 1px solid #000;'>采购数量</td><td style='border-top: 1px solid #000;'>金额（元）</td>" +
+                        "<td style='border-top: 1px solid #000;'>单位(件)</td><td style='border-top: 1px solid #000;'>采购单价(元)</td>" +
+                        "<td style='border-top: 1px solid #000;'>采购数量</td><td style='border-top: 1px solid #000;'>采购总价(元)</td>" +
                         "<td style='border-top: 1px solid #000;'>供应商</td><td style='border-top: 1px solid #000;'>管理部门</td>" +
                         "<td style='border-top: 1px solid #000;'>用途</td></tr>";
                     $.ajax({
@@ -632,16 +638,16 @@
                                 "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td></tr>";
                         }
                     });
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td></tr>";
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>申请</span></td></tr>";
                     if (shenhe == null || JSON.stringify(shenhe) == "{}"){
                         html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span></td></tr>";
                     } else{
-                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td></tr>";
+                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
                     }
                     if (caiwu == null || JSON.stringify(caiwu) == "{}"){
                         html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span></td></tr>";
                     } else{
-                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>"+caiwu.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+caiwu.username+"】"+caiwu.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span>"+caiwu.updateTime+"</td></tr>";
+                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>"+caiwu.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+caiwu.username+"】"+caiwu.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核时间：</span>"+caiwu.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
                     }
                     html += "</table>"
                 }

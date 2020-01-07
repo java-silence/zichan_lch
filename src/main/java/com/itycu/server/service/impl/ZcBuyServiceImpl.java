@@ -353,7 +353,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
     }
 
     /**
-     * 生成Ecpid
+     * 生成资产追溯码Ecpid
      * @param zcBuy
      */
     private void generateEcpId(ZcBuy zcBuy) {
@@ -363,6 +363,8 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         ArrayList<String> ecpIdLlist = EcpIdUtil.getEcpIdLlist(count, buyNum, null);
         String ids = String.join(",", ecpIdLlist);
         zcBuy.setBz(ids);
+        zcBuy.setStatus(2);
+        zcBuy.setUpdateTime(new Date());
         zcBuyDao.update(zcBuy);
     }
 

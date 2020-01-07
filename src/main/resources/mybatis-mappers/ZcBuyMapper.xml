@@ -152,6 +152,7 @@
     <select id="listZcBuy" parameterType="map" resultType="map">
         SELECT
             t.id,
+            t.buyNum,
             t.company_name companyName,
             t.bz,
             t.status,

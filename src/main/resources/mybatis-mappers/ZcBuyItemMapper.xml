@@ -245,6 +245,7 @@
 	<select id="listDetailByZcBfId"  resultType="map">
 		SELECT
 			t.id,
+			b.buyNum,
 			t.zc_buy_id zcBuyId,
 			t.name,
 			t.model,
@@ -256,6 +257,7 @@
 			t.use_des useDes,
 			t.status,
 			t.num,
+			IFNULL(t.price,0)*t.num totalPrice,
 			t.fileName,
 			t.fileUrl,
 			t.zc_bz,
@@ -265,6 +267,7 @@
 		FROM
 			zc_buy_item t
 		LEFT JOIN t_dept p ON t.gl_dept_id = p.id
+		LEFT JOIN zc_buy b ON b.id = t.zc_buy_id
 		<where>
 			<if test="zcBuyId != null and zcBuyId != ''">
 				t.zc_buy_id = #{zcBuyId}
@@ -279,6 +282,7 @@
 	<select id="listDetailByFlowTodoIdNew" parameterType="long" resultType="hashmap">
 		SELECT
 			t.id,
+			b.buyNum,
 			t.status,
 			t.flow_todo_id flowTodoId,
 			t.flow_item_id flowItemId,
@@ -318,14 +322,15 @@
 		update zc_buy_item t
 		<set>
 			<if test="type != null and type == 'shb'">
-				t.shb_status = #{status}
+				t.shb_status = #{status},
 			</if>
 			<if test="type != null and type == 'cwb'">
-				t.cwb_status = #{status}
+				t.cwb_status = #{status},
 			</if>
 			<if test="type != null and type == 'jujue'">
-				t.del = #{status}
+				t.del = #{status},
 			</if>
+			t.update_time = now()
 		</set>
 		where t.id in
 		(

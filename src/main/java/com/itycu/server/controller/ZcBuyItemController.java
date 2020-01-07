@@ -1,13 +1,11 @@
 package com.itycu.server.controller;
 
 import java.util.*;
-
 import com.itycu.server.dao.PermissionDao;
 import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.page.table.PageTableHandler;
 import com.itycu.server.page.table.PageTableResponse;
@@ -15,9 +13,7 @@ import com.itycu.server.page.table.PageTableHandler.CountHandler;
 import com.itycu.server.page.table.PageTableHandler.ListHandler;
 import com.itycu.server.dao.ZcBuyItemDao;
 import com.itycu.server.model.ZcBuyItem;
-
 import io.swagger.annotations.ApiOperation;
-
 import javax.servlet.http.HttpServletRequest;
 
 @RestController

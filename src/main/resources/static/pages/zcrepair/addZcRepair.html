@@ -101,11 +101,11 @@
 				,{field:'startUseTime',title:'开始使用日期', width:200, sort: true}
 				,{field:'useMonths',title:'到期期限', width:110, sort: true}
 				,{field:'warrantyperiod',title:'保修期限', width:110, sort: true}
-				,{field:'originalValue',title:'原值', width:110, sort: true}
-				,{field:'netvalue',title:'净值', width:110, sort: true}
+				,{field:'originalValue',title:'原值(元)', width:110, sort: true}
+				,{field:'netvalue',title:'净值(元)', width:110, sort: true}
 				,{field:'repairDes',title:'报修原因', width:110, sort: true,edit:"text"}
                 ,{field:'frontPicsUrl',title:'附件地址', width:110, sort: true,hide:true}
-                ,{field:'frontPics',title:'附件', width:120, fixed:'right',sort: true,templet:function(d){
+                ,{field:'frontPics',title:'图片附件', width:120, fixed:'right',sort: true,templet:function(d){
                         if(!d.frontPics) d.frontPics = "";
                         return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline;color:blue'>"+d.frontPics+"</a>";
                     }}
