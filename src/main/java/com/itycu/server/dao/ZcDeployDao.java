@@ -56,4 +56,7 @@ public interface ZcDeployDao {
 
 
     int queryDeployCountById(@Param("id") long id );
+
+
+    int  queryDeptDeployCountById(@Param("id") long id );
 }

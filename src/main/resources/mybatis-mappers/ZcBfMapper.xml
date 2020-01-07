@@ -368,7 +368,32 @@
     </select>
 
 	<select id="queryBaoFeiCountById" resultType="int">
-
+        select count(1) from
+        zc_bf_item as a where a.sy_dept_id = #{id}
+        and a.cwb_status =  2
+        and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
 	</select>
 
+
+	<select id="queryDeptBaoFeiCountById" resultType="int">
+		SELECT
+		count( 1 )
+	FROM
+		t_dept AS a
+		LEFT JOIN zc_bf_item AS b ON a.id = b.sy_dept_id
+	WHERE
+		a.jx = (
+	SELECT
+		a.jx
+	FROM
+		t_dept AS c
+	WHERE
+		c.id = #{id} )
+
+		AND b.sy_dept_id IS NOT NULL
+		<if test="id!=null and id!=''">
+			and a.id = #{id}
+		</if>
+		AND DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ), '%Y%m' )
+	</select>
 </mapper>

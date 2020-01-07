@@ -9,10 +9,7 @@ import com.itycu.server.model.*;
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcChangeRecordService;
 import com.itycu.server.service.ZcInfoService;
-import com.itycu.server.utils.EcpIdUtil;
-import com.itycu.server.utils.ExcelUtil;
-import com.itycu.server.utils.UserUtil;
-import com.itycu.server.utils.ZiChanCodeUtil;
+import com.itycu.server.utils.*;
 import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +67,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         List<String> fields = CompareFileds.compareFields(oldZcInfo, after, CompareFileds.getFiledName(zcInfo));
         String changeField = String.join(",", fields);
         //保存变更记录
-        zcChangeRecordService.save((ZcInfo)after,changeField);
+        zcChangeRecordService.save((ZcInfo) after, changeField);
         log.debug("编辑资产档案{}", zcInfo.getUpdateBy() + zcInfo.getZcName());
         return zcInfo;
     }
@@ -509,7 +506,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         return collect;
     }
 
-    List<Dept> findDept(List<Dept> deptList,String deptname){
+    List<Dept> findDept(List<Dept> deptList, String deptname) {
         List<Dept> collect = new ArrayList<>();
         // String newDeptname = deptname.replace("垣曲农商行","");    //暂用
         if (!CollectionUtils.isEmpty(deptList))
@@ -517,7 +514,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         return collect;
     }
 
-    List<Dept> findDeptgl(List<Dept> deptList,String deptname){
+    List<Dept> findDeptgl(List<Dept> deptList, String deptname) {
         List<Dept> collect = new ArrayList<>();
         // String newDeptname = deptname.replace("垣曲农商银行","");    //暂用
         if (!CollectionUtils.isEmpty(deptList))
@@ -525,7 +522,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         return collect;
     }
 
-    List<Dict> findDict(List<Dict> dictList,String val){
+    List<Dict> findDict(List<Dict> dictList, String val) {
         List<Dict> collect = new ArrayList<>();
         if (!CollectionUtils.isEmpty(dictList))
             collect = dictList.stream().filter(d -> val.equals(d.getVal())).collect(Collectors.toList());
@@ -554,13 +551,36 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     public AppIndexZcValueAndNumber getZcValueAndZcNumber(SysUser user) {
         AppIndexZcValueAndNumber result = new AppIndexZcValueAndNumber();
         String auth = user.getC03();
-
-        if (auth.equals("cwb")) {
+        long id = user.getDeptid();
+        if (("cwb").equals(auth)) {
             //财务部身份
-
-
-        } else if (auth.equals("kjb") || auth.equals("yyb") || auth.equals("zhb") || auth.equals("bwb")) {
+            Map<String, Object> map = zcInfoDao.getGlDeptZcCount(id);
+            log.info("获取的四个部门数据是===={}", map);
+            if (!CollectionUtils.isEmpty(map)) {
+                setDiffZcCount(result, map);
+            }
+            List<ZcInfoDto> list = zcInfoDao.queryAllDeptZcList(id);
+            if (!CollectionUtils.isEmpty(list)) {
+                int count = CollectionUtils.isEmpty(list) ? list.size() : 0;
+                result.setZcValue(getTotalValue(list));
+                result.setZcCount(count);
+            }
+            setBenYueDeptCount(result, id);
+        } else if (("kjb").equals(auth) || ("yyb").equals(auth)
+                || ("zhb").equals(auth) || ("bwb").equals(auth)) {
             //综合部 运营部 综合办 保卫部
+            List<ZcInfoDto> zcInfoDtoList = zcInfoDao.queryGlDeptZcList(id);
+            if (!CollectionUtils.isEmpty(zcInfoDtoList)) {
+                int count = CollectionUtils.isEmpty(zcInfoDtoList) ? zcInfoDtoList.size() : 0;
+                result.setZcValue(getTotalValue(zcInfoDtoList));
+                result.setZcCount(count);
+            }
+            Map<String, Object> map = zcInfoDao.getGlDeptZcCount(id);
+            log.info("获取的四个部门数据是===={}", map);
+            if (!CollectionUtils.isEmpty(map)) {
+                setDiffZcCount(result, map);
+            }
+            setBenYueDeptCount(result, id);
 
         } else {
             //使用部门
@@ -568,23 +588,18 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             int count = CollectionUtils.isEmpty(list) ? list.size() : 0;
             result.setZcCount(count);
             result.setZcValue(getTotalValue(list));
-            Map<String, Object> map = zcInfoDao.getDifferentDeptZcCount(user.getId());
+            Map<String, Object> map = zcInfoDao.getDifferentDeptZcCount(id);
             log.info("获取的四个部门数据是===={}", map);
             if (!CollectionUtils.isEmpty(map)) {
-                int bwbCount = map.get("bwb") == null ? 0 : (int) map.get("bwb");
-                int yybCount = map.get("yyb") == null ? 0 : (int) map.get("yyb");
-                int kjbCount = map.get("kjb") == null ? 0 : (int) map.get("kjb");
-                int zhbCount = map.get("zhb") == null ? 0 : (int) map.get("zhb");
-                result.setBwbZcCount(bwbCount);
-                result.setKjbZcCount(kjbCount);
-                result.setYybZcCount(yybCount);
-                result.setZhbZcCount(zhbCount);
+                setDiffZcCount(result, map);
             }
-            long id = user.getId();
             int caigouCount = zcBuyDao.queryBuyCountById(id);
             int diaopeiCount = zcDeployDao.queryDeployCountById(id);
+            /**
+             * TODO 盘点还不确定
+             */
             int pandianCount = 0;
-            int baoxiuCount = 0;
+            int baoxiuCount = zcRepairDao.queryZcRepairById(id);
             int xunjianCount = zcCheckDao.queryZcCheckCountById(id);
             int chuzhiCount = zcBfDao.queryBaoFeiCountById(id);
             result.setDiaoboCount(diaopeiCount);
@@ -608,5 +623,39 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             }
             return total;
         }
+    }
+
+
+    private void setDiffZcCount(AppIndexZcValueAndNumber result, Map<String, Object> map) {
+        int yybCount = map.get("yyb") == null ? 0 : (int) map.get("yyb");
+        int kjbCount = map.get("kjb") == null ? 0 : (int) map.get("kjb");
+        int bwbCount = map.get("bwb") == null ? 0 : (int) map.get("bwb");
+        int zhbCount = map.get("zhb") == null ? 0 : (int) map.get("zhb");
+        result.setBwbZcCount(bwbCount);
+        result.setZhbZcCount(zhbCount);
+        result.setKjbZcCount(kjbCount);
+        result.setYybZcCount(yybCount);
+    }
+
+
+    /**
+     * 用于统计本月的数据信息
+     */
+    private void setBenYueDeptCount(AppIndexZcValueAndNumber result, long id) {
+        int deptCaigouCount = zcBuyDao.queryDeptBuyCountById(id);
+        int deptDiaopeiCount = zcDeployDao.queryDeptDeployCountById(id);
+        /**
+         * TODO 盘点还不确定
+         */
+        int deptPandianCount = 0;
+        int deptBaoxiuCount = zcRepairDao.queryDeptZcRepairById(id);
+        int deptXunjianCount = zcCheckDao.queryDeptZcCheckCountById(id);
+        int deptChuzhiCount = zcBfDao.queryDeptBaoFeiCountById(id);
+        result.setDiaoboCount(deptDiaopeiCount);
+        result.setCaigouCount(deptCaigouCount);
+        result.setPandianCount(deptPandianCount);
+        result.setChuzhiCount(deptChuzhiCount);
+        result.setBaoxiuCount(deptBaoxiuCount);
+        result.setXunjianCount(deptXunjianCount);
     }
 }

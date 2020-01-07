@@ -114,4 +114,7 @@ public interface ZcCheckDao {
 
 
    int   queryZcCheckCountById(@Param("id") long id);
+
+
+   int queryDeptZcCheckCountById(@Param("id") long id);
 }

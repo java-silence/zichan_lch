@@ -90,4 +90,13 @@ public interface ZcInfoDao {
 
 
     Map<String,Object>  getDifferentDeptZcCount(@Param("id") long id);
+
+
+    List<ZcInfoDto> queryGlDeptZcList(@Param("id") long id);
+
+
+    Map<String, Object>  getGlDeptZcCount(@Param("id") long id);
+
+
+    List<ZcInfoDto> queryAllDeptZcList(@Param("id") long id);
 }

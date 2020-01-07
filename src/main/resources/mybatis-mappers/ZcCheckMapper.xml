@@ -126,7 +126,7 @@
             b.deptname AS creator,
             e.deptname AS checkDeptName ,
             d. `id`,
-            d. `check_dept_id`  as checkDeptId,
+            d. `check_dept_id` as checkDeptId,
             d. `check_user_id` as checkUserId ,
             d. `check_time` as checkTime ,
             d. `total` ,
@@ -135,10 +135,10 @@
             d. `del` ,
             d.`bz` ,
             d.`create_by` as createBy,
-            d.`update_by`  as updateBy,
-            d.`create_time`  as createTime,
+            d.`update_by` as updateBy,
+            d.`create_time` as createTime,
             d.`update_time` as updateTime,
-            d.`check_times` as  checkTimes,
+            d.`check_times` as checkTimes,
             d. `re_check` as reCheck,
             d.`bh`,
             d.`profit`
@@ -161,8 +161,8 @@
                 and d.del = #{params.del}
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+                and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and d.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and d.check_dept_id = #{params.syDept}
@@ -184,7 +184,7 @@
             b.deptname AS creator,
             e.deptname AS checkDeptName,
             d. `id`,
-            d. `check_dept_id`  as checkDeptId,
+            d. `check_dept_id` as checkDeptId,
             d. `check_user_id` as checkUserId ,
             d. `check_time` as checkTime ,
             d. `total` ,
@@ -193,10 +193,10 @@
             d. `del` ,
             d.`bz` ,
             d.`create_by` as createBy,
-            d.`update_by`  as updateBy,
-            d.`create_time`  as createTime,
+            d.`update_by` as updateBy,
+            d.`create_time` as createTime,
             d.`update_time` as updateTime,
-            d.`check_times` as  checkTimes,
+            d.`check_times` as checkTimes,
             d. `re_check` as reCheck,
             d.`bh`,
             d.`profit`
@@ -221,8 +221,8 @@
                 and d.del = #{params.del}
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+                and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and d.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and d.check_dept_id = #{params.syDept}
@@ -241,7 +241,7 @@
             d.deptname AS creator,
             b.deptname AS checkDeptName,
             a. `id`,
-            a. `check_dept_id`  as checkDeptId,
+            a. `check_dept_id` as checkDeptId,
             a. `check_user_id` as checkUserId ,
             a. `check_time` as checkTime ,
             a. `total` ,
@@ -250,10 +250,10 @@
             a. `del` ,
             a.`bz` ,
             a.`create_by` as createBy,
-            a.`update_by`  as updateBy,
-            a.`create_time`  as createTime,
+            a.`update_by` as updateBy,
+            a.`create_time` as createTime,
             a.`update_time` as updateTime,
-            a.`check_times` as  checkTimes,
+            a.`check_times` as checkTimes,
             a. `re_check` as reCheck,
             a.`bh`,
             a.`profit`
@@ -275,8 +275,8 @@
                 and a.del = #{params.del}
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+                and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and a.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and a.check_dept_id = #{params.syDept}
@@ -298,7 +298,7 @@
             d.deptname AS creator ,
             b.deptname AS checkDeptName,
             a. `id`,
-            a. `check_dept_id`  as checkDeptId,
+            a. `check_dept_id` as checkDeptId,
             a. `check_user_id` as checkUserId ,
             a. `check_time` as checkTime ,
             a. `total` ,
@@ -307,10 +307,10 @@
             a. `del` ,
             a.`bz` ,
             a.`create_by` as createBy,
-            a.`update_by`  as updateBy,
-            a.`create_time`  as createTime,
+            a.`update_by` as updateBy,
+            a.`create_time` as createTime,
             a.`update_time` as updateTime,
-            a.`check_times` as  checkTimes,
+            a.`check_times` as checkTimes,
             a. `re_check` as reCheck,
             a.`bh`,
             a.`profit`
@@ -332,8 +332,8 @@
                 and a.del = #{params.del}
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+                and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and a.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and a.check_dept_id = #{params.syDept}
@@ -377,8 +377,8 @@
                 and d.del = #{params.del}
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+                and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and d.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and d.check_dept_id = #{params.syDept}
@@ -418,8 +418,8 @@
                 and d.del = #{params.del}
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and d.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and d.check_time <![CDATA[<=]]>   #{params.edate}
+                and d.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and d.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and d.check_dept_id = #{params.syDept}
@@ -458,8 +458,8 @@
                 </foreach>
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+                and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and a.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and a.check_dept_id = #{params.syDept}
@@ -495,8 +495,8 @@
                 </foreach>
             </if>
             <if test="params.sdate!=null and params.sdate!='' and   params.edate!=null and params.sdate!=''">
-                    and a.check_time <![CDATA[>= ]]>  #{params.sdate}
-                    and a.check_time <![CDATA[<=]]>   #{params.edate}
+                and a.check_time <![CDATA[>= ]]>  #{params.sdate}
+                and a.check_time <![CDATA[<=]]>   #{params.edate}
             </if>
             <if test="params.syDept!=null and params.syDept!=''">
                 and a.check_dept_id = #{params.syDept}
@@ -626,8 +626,6 @@
     </select>
 
 
-
-
     <select id="queryPandianUserName" resultType="java.lang.String">
         SELECT b.nickname FROM zc_check
         AS a left join sys_user as b on a.check_user_id = b.id
@@ -657,6 +655,22 @@
         from zc_check
         where check_dept_id = #{id}
         and result in (1,2)
+        and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+    </select>
+
+    <select id="queryDeptZcCheckCountById" resultType="int">
+    SELECT
+        count( 1 )
+    FROM
+        t_dept AS a
+    LEFT JOIN zc_check AS b ON a.id = b.check_dept_id
+    where a.jx = (select a.jx  from t_dept as c where c.id =#{id})
+            and b.check_dept_id is not null
+
+            <if test="id!=null and id!=''">
+                and a.id = #{id}
+            </if>
+            and DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
     </select>
 
 </mapper>

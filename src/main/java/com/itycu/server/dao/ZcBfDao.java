@@ -60,4 +60,7 @@ public interface ZcBfDao {
 
     int queryBaoFeiCountById(@Param("id") long  id);
 
+
+    int queryDeptBaoFeiCountById(@Param("id") long  id);
+
 }

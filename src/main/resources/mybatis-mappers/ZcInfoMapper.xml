@@ -563,4 +563,41 @@
         group by a.gl_dept_id
     </select>
 
+
+    <select id="queryGlDeptZcList" resultType="com.itycu.server.dto.ZcInfoDto">
+        SELECT
+            *
+        FROM
+            `t_dept` AS a
+            LEFT JOIN zc_info AS b ON a.id = b.sy_dept_id
+        WHERE
+            a.id IS NOT NULL
+        AND a.jx  = (select jx from t_dept as c where c.id =#{id})
+    </select>
+
+
+    <select id="getGlDeptZcCount" resultType="java.util.Map">
+        SELECT
+        e.c03,count(b.gl_dept_id )
+        FROM
+            `t_dept` AS a
+            LEFT JOIN zc_info AS b ON a.id = b.sy_dept_id
+            left join t_dept as e on e.id = b.gl_dept_id
+        WHERE
+            a.jx  = (select jx from t_dept as c where c.id =#{id} )
+            and b.gl_dept_id is not null
+            group by b.gl_dept_id
+    </select>
+
+
+    <select id="queryAllDeptZcList" resultType="com.itycu.server.dto.ZcInfoDto">
+        SELECT
+            *
+        FROM
+            `t_dept` AS a
+            LEFT JOIN zc_info AS b ON a.id = b.sy_dept_id
+        WHERE
+            a.id IS NOT NULL
+        AND a.jx  = (select jx from t_dept as c where c.id =#{id})
+    </select>
 </mapper>

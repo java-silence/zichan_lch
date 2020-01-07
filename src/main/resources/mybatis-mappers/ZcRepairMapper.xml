@@ -193,4 +193,26 @@
 	<select id="countByDeptThisYear" parameterType="string" resultType="int">
         SELECT count(1) FROM zc_repair t WHERE YEAR(t.create_time) = YEAR(now()) AND t.deptCode LIKE concat(#{deptcode},'%')
     </select>
+
+
+	<select id="queryZcRepairById" resultType="int">
+		select count(1) from zc_repair where
+		apply_dept_id  = #{id} and status = 2
+		and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+	</select>
+
+	<select id="queryDeptZcRepairById" resultType="int">
+		SELECT
+			count( 1 )
+		FROM
+			t_dept AS a
+			LEFT JOIN zc_repair AS b ON a.id = b.apply_dept_id
+		where a.jx = (select a.jx  from t_dept as c where c.id =#{id})
+			and b.apply_dept_id is not null
+			<if test="id!=null and id!=''">
+				and a.id = #{id}
+			</if>
+
+			and DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+	</select>
 </mapper>

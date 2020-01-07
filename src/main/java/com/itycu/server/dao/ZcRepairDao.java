@@ -44,4 +44,9 @@ public interface ZcRepairDao {
     void updateStatus(@Param("params") Map<String, Object> params);
 
     int countByDeptThisYear(@Param("deptcode") String deptcode);
+
+
+    int queryZcRepairById(@Param("id") long  id);
+
+    int queryDeptZcRepairById(@Param("id") long  id);
 }
