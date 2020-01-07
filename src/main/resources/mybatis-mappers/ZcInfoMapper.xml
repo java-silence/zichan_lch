@@ -603,12 +603,25 @@
 
 
     <select id="getAllZcInfoListByManager" resultType="com.itycu.server.dto.ZcInfoDto">
-        select * FROM zc_info as a
+        select b.* from t_dept as a left join zc_info as b on a.id = b.sy_dept_id
+        where b.gl_dept_id  = #{id}
+        <if test="keyword!=null and keyword!=''">
+            and (
+            b.zc_name like concat ('%',#{keyword},'%')
+            or
+            b.epcid like concat ('%',#{keyword},'%')
+            or
+            b.sy_dept_id in (select c.id from t_dept as c where c.deptname like concat('%',#{keyword},'%'))
+            or
+            b.zc_category_id in  (select e.id from zc_category as e where e.name like  concat('%',#{keyword},'%') )
+            )
+        </if>
+        limit #{page}, #{limit}
     </select>
 
 
     <select id="getAllZcInfoListOrdinaryDept" resultType="com.itycu.server.dto.ZcInfoDto">
-        select * FROM zc_info as a
+        select a.* FROM zc_info as a
         where a.sy_dept_id  =  #{id}
         <if test="keyword!=null and keyword!=''">
             and (
@@ -621,6 +634,31 @@
             a.zc_category_id in  (select c.id from zc_category as c where c.name like  concat('%',#{keyword},'%') )
             )
         </if>
+        limit #{page}, #{limit}
+    </select>
+
+
+
+    <select id="getAllZcInfoListByCwb" resultType="com.itycu.server.dto.ZcInfoDto">
+    SELECT
+        c.*
+    FROM
+        t_dept AS a
+        LEFT JOIN zc_info AS c ON a.id = c.gl_dept_id
+    WHERE
+        a.jx = ( SELECT jx FROM t_dept AS b WHERE b.id = #{deptid} )
+        AND c.gl_dept_id IS NOT NULL
+            <if test="keyword!=null and keyword!=''">
+                and (
+                c.zc_name like concat ('%',#{keyword},'%')
+                or
+                c.epcid like concat ('%',#{keyword},'%')
+                or
+                c.sy_dept_id in (select e.id from t_dept as e where e.deptname like concat('%',#{keyword},'%'))
+                or
+                c.zc_category_id in  (select k.id from zc_category as k where k.name like  concat('%',#{keyword},'%') )
+                )
+            </if>
         limit #{page}, #{limit}
     </select>
 </mapper>

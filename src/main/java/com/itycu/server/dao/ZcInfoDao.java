@@ -111,4 +111,12 @@ public interface ZcInfoDao {
      */
     List<ZcInfoDto> getAllZcInfoListOrdinaryDept(Map<String, Object> map );
 
+
+    /**
+     * 获取财务部下面的资产列表数据
+     * @param map
+     * @return
+     */
+    List<ZcInfoDto> getAllZcInfoListByCwb(Map<String, Object> map);
+
 }

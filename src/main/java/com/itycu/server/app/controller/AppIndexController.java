@@ -103,7 +103,7 @@ public class AppIndexController {
         Map<String, Object> map = new HashMap<>();
         SysUser sysUser = UserUtil.getLoginUser();
         try {
-            List<ZcInfoDto> list = zcInfoService.getAllZcInfoListByUser(sysUser,zcInfoListDTO);
+            List<ZcInfoDto> list = zcInfoService.getAllZcInfoListByUser(sysUser, zcInfoListDTO);
             map.put("code", 0);
             map.put("message", "成功");
             map.put("data", list);

@@ -623,12 +623,13 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         map.put("id", sysUser.getId());
         String auth = sysUser.getC03();
         List<ZcInfoDto> zcInfoList = null;
-        if ("cwb".equals(auth) ||
-                "bwb".equals(auth) ||
+        if ("cwb".equals(auth)) {
+            //获取使用部门的资产列表数据
+            zcInfoList = zcInfoDao.getAllZcInfoListByCwb(map);
+        } else if("bwb".equals(auth) ||
                 "kjb".equals(auth) ||
                 "zhb".equals(auth) ||
                 "yyb".equals(auth)) {
-            //获取使用部门的资产列表数据
             zcInfoList = zcInfoDao.getAllZcInfoListByManager(map);
         } else {
             //获取普通部门的资产列表
