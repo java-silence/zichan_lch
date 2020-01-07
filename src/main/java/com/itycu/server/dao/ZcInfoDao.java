@@ -82,4 +82,12 @@ public interface ZcInfoDao {
 
     @Select("SELECT count(t.id) FROM zc_info t LEFT JOIN t_dept p ON t.sy_dept_id = p.id WHERE p.deptcode like concat(#{deptcode},'%')")
     int countByDeptcode(@Param("deptcode") String deptcode);
+
+
+
+
+    List<ZcInfoDto>  getZcValueAndZcNumber(@Param("id") long  id);
+
+
+    Map<String,Object>  getDifferentDeptZcCount(@Param("id") long id);
 }

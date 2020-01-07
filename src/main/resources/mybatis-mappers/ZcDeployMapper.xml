@@ -357,4 +357,13 @@
         SELECT count(1) FROM zc_deploy t WHERE YEAR(t.create_time) = YEAR(now()) AND t.deptCode LIKE concat(#{deptcode},'%')
     </select>
 
+
+	<select id="queryDeployCountById" resultType="int">
+		select count(*) from
+		zc_deploy
+		where apply_dept_id = #{id}
+		and status = 2
+
+	</select>
+
 </mapper>

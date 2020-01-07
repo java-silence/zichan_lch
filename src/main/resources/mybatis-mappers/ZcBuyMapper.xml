@@ -210,4 +210,9 @@
         SELECT SUM(t.num) FROM zc_buy_item t WHERE t.zc_buy_id = #{zcBuyId} and t.cwb_status = 1 and t.del = 0
     </select>
 
+
+	<select id="queryBuyCountById" resultType="int">
+		select  count(*) from zc_buy
+		where status = 2 and sy_dept_id = #{id}
+	</select>
 </mapper>

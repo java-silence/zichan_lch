@@ -367,4 +367,8 @@
         SELECT count(1) FROM zc_bf t WHERE YEAR(t.create_time) = YEAR(now()) AND t.deptCode LIKE concat(#{deptcode},'%')
     </select>
 
+	<select id="queryBaoFeiCountById" resultType="int">
+
+	</select>
+
 </mapper>

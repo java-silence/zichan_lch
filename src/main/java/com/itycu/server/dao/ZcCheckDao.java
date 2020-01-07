@@ -111,4 +111,7 @@ public interface ZcCheckDao {
      * @return 返回管理的部门列表
      */
     List<ZcCheck> queryManagerDeptIds(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+
+   int   queryZcCheckCountById(@Param("id") long id);
 }

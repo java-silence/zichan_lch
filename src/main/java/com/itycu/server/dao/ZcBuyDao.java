@@ -50,4 +50,7 @@ public interface ZcBuyDao {
     int countByDeptThisYear(@Param("deptcode") String deptcode);
 
     int countByZcBuyId(@Param("zcBuyId") Long zcBuyId);
+
+
+    int queryBuyCountById(@Param("id") long id);
 }

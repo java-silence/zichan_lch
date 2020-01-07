@@ -652,4 +652,11 @@
     </select>
 
 
+    <select id="queryZcCheckCountById" resultType="int">
+        select count(1)
+        from zc_check
+        where check_dept_id = #{id}
+        and result in (1,2)
+    </select>
+
 </mapper>
