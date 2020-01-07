@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.model.AppIndexDeptDataInfo;
 import com.itycu.server.model.Dept;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -76,4 +77,10 @@ public interface DeptDao {
 
     @Select("select * from t_dept t where t.jx = #{jx} and t.c03 = #{c03} limit 0,1")
     Dept deptByJx(@Param("jx") String jx,@Param("c03") String c03);
+
+
+    List<AppIndexDeptDataInfo> getAllManagerDeptList(@Param("id") long id);
+
+
+    List<AppIndexDeptDataInfo> getAllBranchDeptList(@Param("id") long id);
 }

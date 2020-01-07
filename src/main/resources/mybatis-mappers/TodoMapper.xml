@@ -192,4 +192,12 @@
         )
 	</select>
 
+
+	<select id="queryAllTodoList" resultType="com.itycu.server.model.Todo">
+		 SELECT * FROM flow_todo
+		 WHERE
+		  auditby  = #{id}
+			order by create_time desc
+	</select>
+
 </mapper>

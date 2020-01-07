@@ -181,4 +181,28 @@
 
 	</select>
 
+
+	<select id="getAllManagerDeptList" resultType="com.itycu.server.app.model.AppIndexDeptDataInfo">
+		SELECT
+			a.id,
+			a.deptname
+		FROM
+			t_dept AS a
+		WHERE
+			a.c03 IN ( 'cwb', 'zhb', 'yyb', 'kjb', 'bwb' )
+			and a.jx = (select jx from t_dept where id = #{id})
+	</select>
+
+
+	<select id="getAllBranchDeptList" resultType="com.itycu.server.app.model.AppIndexDeptDataInfo">
+		SELECT
+			a.id,
+			a.deptname
+		FROM
+			t_dept AS a
+		WHERE
+			a.c03  not IN ( 'cwb', 'zhb', 'yyb', 'kjb', 'bwb' )
+			and a.jx = (select jx from t_dept where id = #{id})
+	</select>
+
 </mapper>
