@@ -79,6 +79,8 @@ public class ZcRepairServiceImpl implements ZcRepairService {
         zcRepair.setStatus(0);
         zcRepair.setCode(bxNum);
         zcRepair.setDeptCode(child.getDeptcode());
+        zcRepair.setCreateTime(new Date());
+        zcRepair.setUpdateTime(new Date());
         zcRepairDao.save(zcRepair);
 
         if (!CollectionUtils.isEmpty(zcRepairItemList)){
@@ -214,6 +216,8 @@ public class ZcRepairServiceImpl implements ZcRepairService {
         todo.setStatus("0");
         todo.setFlowid(zcRepair.getFlowid());
         todo.setStepid(flowstep.getId());
+        todo.setCreateTime(new Date());
+        todo.setUpdateTime(new Date());
         // 流程审核跳转页面
         todo.setUrl(flowstep.getFlowact());
         int save = todoDao.save(todo);

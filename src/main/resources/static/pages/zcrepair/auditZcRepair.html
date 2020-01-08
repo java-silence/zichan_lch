@@ -124,7 +124,8 @@
     var bfzcid = getUrlParam("bizid");
     var zcRepairId = getUrlParam("bizid");
     var type = getUrlParam("type");
-    if (type == 1) $("#form").hide()
+    if (type == 1) $("#form").hide();
+    var finishType = 0;
     // 查询角色信息
     // showUserbyRole("userid",6);
     var table;
@@ -386,6 +387,7 @@
                 layer.msg("审批成功", {shift: -1, time: 1000}, function(){
                     location.href = "/pages/todo/todoList.html";
                 });
+                finishType = 1;
                 $('#GlprintBt').trigger('click');
             }
         });
