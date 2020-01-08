@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.itycu.server.app.vo.GlDeptZcCountVO;
+import com.itycu.server.app.vo.XunJianVO;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcInfo;
 import org.apache.ibatis.annotations.Delete;
@@ -119,5 +120,13 @@ public interface ZcInfoDao {
      * @return
      */
     List<ZcInfoDto> getAllZcInfoListByCwb(Map<String, Object> map);
+
+
+    /**
+     * 获取资产巡检列表
+     * @param map
+     * @return
+     */
+    List<XunJianVO> queryZcXunJianList(Map<String, Object> map);
 
 }

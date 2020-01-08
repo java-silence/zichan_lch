@@ -661,4 +661,11 @@
             </if>
         limit #{page}, #{limit}
     </select>
+
+
+
+    <select id="queryZcXunJianList" resultType="com.itycu.server.app.vo.XunJianVO">
+        select * from zc_info as a
+        
+    </select>
 </mapper>
