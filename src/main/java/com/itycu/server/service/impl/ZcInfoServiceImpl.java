@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
+import com.itycu.server.app.vo.GlDeptZcCountVO;
 import com.itycu.server.dao.*;
 import com.itycu.server.dto.*;
 import com.itycu.server.model.*;
@@ -555,7 +556,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         long id = user.getDeptid();
         if (("cwb").equals(auth)) {
             //财务部身份
-            Map<String, Object> map = zcInfoDao.getGlDeptZcCount(id);
+            List<GlDeptZcCountVO> map = zcInfoDao.getGlDeptZcCount(id);
             log.info("获取的四个部门数据是===={}", map);
             if (!CollectionUtils.isEmpty(map)) {
                 setDiffZcCount(result, map);
@@ -576,7 +577,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                 result.setZcValue(getTotalValue(zcInfoDtoList));
                 result.setZcCount(count);
             }
-            Map<String, Object> map = zcInfoDao.getGlDeptZcCount(id);
+            List<GlDeptZcCountVO> map = zcInfoDao.getGlDeptZcCount(id);
             log.info("获取的四个部门数据是===={}", map);
             if (!CollectionUtils.isEmpty(map)) {
                 setDiffZcCount(result, map);
@@ -589,10 +590,10 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             int count = CollectionUtils.isEmpty(list) ? list.size() : 0;
             result.setZcCount(count);
             result.setZcValue(getTotalValue(list));
-            Map<String, Object> map = zcInfoDao.getDifferentDeptZcCount(id);
-            log.info("获取的四个部门数据是===={}", map);
-            if (!CollectionUtils.isEmpty(map)) {
-                setDiffZcCount(result, map);
+            List<GlDeptZcCountVO> mapList = zcInfoDao.getDifferentDeptZcCount(id);
+            log.info("获取的四个部门数据是===={}", mapList);
+            if (!CollectionUtils.isEmpty(mapList)) {
+                setDiffZcCount(result, mapList);
             }
             int caigouCount = zcBuyDao.queryBuyCountById(id);
             int diaopeiCount = zcDeployDao.queryDeployCountById(id);
@@ -616,7 +617,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     @Override
     public List<ZcInfoDto> getAllZcInfoListByUser(SysUser sysUser, ZcInfoListDTO zcInfoListDTO) {
         Map<String, Object> map = new HashMap<>();
-        map.put("page", zcInfoListDTO.getPage()*zcInfoListDTO.getLimit() - zcInfoListDTO.getLimit());
+        map.put("page", zcInfoListDTO.getPage() * zcInfoListDTO.getLimit() - zcInfoListDTO.getLimit());
         map.put("limit", zcInfoListDTO.getLimit());
         map.put("keyword", zcInfoListDTO.getKeyword());
         map.put("deptid", sysUser.getDeptid());
@@ -626,7 +627,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         if ("cwb".equals(auth)) {
             //获取使用部门的资产列表数据
             zcInfoList = zcInfoDao.getAllZcInfoListByCwb(map);
-        } else if("bwb".equals(auth) ||
+        } else if ("bwb".equals(auth) ||
                 "kjb".equals(auth) ||
                 "zhb".equals(auth) ||
                 "yyb".equals(auth)) {
@@ -652,15 +653,18 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     }
 
 
-    private void setDiffZcCount(AppIndexZcValueAndNumber result, Map<String, Object> map) {
-        int yybCount = map.get("yyb") == null ? 0 : (int) map.get("yyb");
-        int kjbCount = map.get("kjb") == null ? 0 : (int) map.get("kjb");
-        int bwbCount = map.get("bwb") == null ? 0 : (int) map.get("bwb");
-        int zhbCount = map.get("zhb") == null ? 0 : (int) map.get("zhb");
-        result.setBwbZcCount(bwbCount);
-        result.setZhbZcCount(zhbCount);
-        result.setKjbZcCount(kjbCount);
-        result.setYybZcCount(yybCount);
+    private void setDiffZcCount(AppIndexZcValueAndNumber result, List<GlDeptZcCountVO> mapList) {
+        mapList.forEach(k -> {
+            if ("kjb".equals(k.getC03())) {
+                result.setKjbZcCount(k.getZcCount());
+            } else if ("yyb".equals(k.getC03())) {
+                result.setYybZcCount(k.getZcCount());
+            } else if ("bwb".equals(k.getC03())) {
+                result.setBwbZcCount(k.getZcCount());
+            } else if ("zhb".equals(k.getC03())) {
+                result.setZhbZcCount(k.getZcCount());
+            }
+        });
     }
 
 

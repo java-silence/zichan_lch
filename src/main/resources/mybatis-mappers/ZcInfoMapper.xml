@@ -555,9 +555,9 @@
     </select>
 
 
-    <select id="getDifferentDeptZcCount" resultType="java.util.Map">
-         SELECT b.c03
-        ,count(*) FROM `zc_info` as a
+    <select id="getDifferentDeptZcCount" resultType="com.itycu.server.app.vo.GlDeptZcCountVO">
+         SELECT b.c03 as c03
+        ,count(*) as zcCount FROM `zc_info` as a
         left join t_dept as b on a.gl_dept_id = b.id
         where  a.sy_dept_id =#{id}
         group by a.gl_dept_id
@@ -576,9 +576,9 @@
     </select>
 
 
-    <select id="getGlDeptZcCount" resultType="java.util.Map">
+    <select id="getGlDeptZcCount" resultType="com.itycu.server.app.vo.GlDeptZcCountVO">
         SELECT
-        e.c03,count(b.gl_dept_id )
+        e.c03,count(b.gl_dept_id ) as zcCount
         FROM
             `t_dept` AS a
             LEFT JOIN zc_info AS b ON a.id = b.sy_dept_id

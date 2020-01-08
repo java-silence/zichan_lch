@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.vo.GlDeptZcCountVO;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcInfo;
 import org.apache.ibatis.annotations.Delete;
@@ -89,13 +90,13 @@ public interface ZcInfoDao {
     List<ZcInfoDto>  getZcValueAndZcNumber(@Param("id") long  id);
 
 
-    Map<String,Object>  getDifferentDeptZcCount(@Param("id") long id);
+    List<GlDeptZcCountVO>  getDifferentDeptZcCount(@Param("id") long id);
 
 
     List<ZcInfoDto> queryGlDeptZcList(@Param("id") long id);
 
 
-    Map<String, Object>  getGlDeptZcCount(@Param("id") long id);
+    List<GlDeptZcCountVO>  getGlDeptZcCount(@Param("id") long id);
 
 
     List<ZcInfoDto> queryAllDeptZcList(@Param("id") long id);
