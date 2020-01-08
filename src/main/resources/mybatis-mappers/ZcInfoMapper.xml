@@ -675,7 +675,8 @@
             inspect_time,
             c03,
             gl_dept_id,
-            sy_dept_id
+            sy_dept_id,
+            zc_codenum
         FROM
             zc_info
         WHERE

@@ -76,4 +76,10 @@ public class XunJianVO {
      */
     private String c03;
 
+
+    /**
+     * 资产编码
+     */
+    private String zc_codenum;
+
 }

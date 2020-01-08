@@ -1,9 +1,6 @@
 package com.itycu.server.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
 
 public class Todo extends BaseEntity<Long> {
 
@@ -33,34 +30,9 @@ public class Todo extends BaseEntity<Long> {
      */
     private String todoIds;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
-    private Date createTime;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
-    private Date updateTime;
 
 
-    @Override
-    public Date getCreateTime() {
-        return createTime;
-    }
 
-    @Override
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    @Override
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    @Override
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 
     public Integer getType() {
         return type;
