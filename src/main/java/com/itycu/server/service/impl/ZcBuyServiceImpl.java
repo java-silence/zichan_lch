@@ -8,16 +8,15 @@ import com.itycu.server.dto.ZcBuyDto;
 import com.itycu.server.model.*;
 import com.itycu.server.service.ZcBuyService;
 import com.itycu.server.utils.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 资产购买
@@ -50,6 +49,8 @@ public class ZcBuyServiceImpl implements ZcBuyService {
     private ZcInfoDao zcInfoDao;
     @Autowired
     private NoticeDao noticeDao;
+    @Autowired
+    private ZcEpcCodeDao zcEpcCodeDao;
 
     @Override
     public ZcBuyDto save(ZcBuyDto zcBuyDto) {
@@ -358,9 +359,26 @@ public class ZcBuyServiceImpl implements ZcBuyService {
      */
     private void generateEcpId(ZcBuy zcBuy) {
         Long syDeptId = zcBuy.getSyDeptId();
-        int count = zcInfoDao.countByDeptId(syDeptId);
+        Dept dept = deptDao.getById(syDeptId);
+        String suCode = dept.getSuCode();
+        //int count = zcInfoDao.countByDeptId(syDeptId);
+        // 查询追溯码最后的元素
+        String lastCode = zcEpcCodeDao.findDeptLastCode(syDeptId);
+        String substring = lastCode.substring(suCode.length());
+        int count = Integer.parseInt(substring);
         int buyNum = zcBuyDao.countByZcBuyId(zcBuy.getId());
         ArrayList<String> ecpIdLlist = EcpIdUtil.getEcpIdLlist(count, buyNum, null);
+        ArrayList<ZcEpcCode> insertList = new ArrayList<>();
+        for (int i = 0; i < ecpIdLlist.size(); i++) {
+            ZcEpcCode zcEpcCode = new ZcEpcCode();
+            zcEpcCode.setEpcid(dept.getSuCode()+ecpIdLlist.get(i));
+            zcEpcCode.setDeptId(dept.getId());
+            zcEpcCode.setEnable(1);
+            zcEpcCode.setCreateTime(new Date());
+            zcEpcCode.setUpdateTime(new Date());
+            insertList.add(zcEpcCode);
+        }
+        zcEpcCodeDao.saves(insertList);
         String ids = String.join(",", ecpIdLlist);
         zcBuy.setBz(ids);
         zcBuy.setStatus(2);
@@ -497,6 +515,8 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         todo.setFlowid(zcBuy.getFlowid());
         todo.setStepid(flowstep.getId());
         todo.setMemo(String.valueOf(memo));
+        todo.setCreateTime(new Date());
+        todo.setUpdateTime(new Date());
         // 流程审核跳转页面
         todo.setUrl(flowstep.getFlowact());
         int save = todoDao.save(todo);

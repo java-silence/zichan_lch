@@ -799,6 +799,8 @@ public class ZcBfServiceImpl implements ZcBfService {
         todo.setStepid(flowstep.getId());
         todo.setMemo(String.valueOf(memo));
         todo.setTodoIds(id);
+        todo.setCreateTime(new Date());
+        todo.setUpdateTime(new Date());
         // 流程审核跳转页面
         todo.setUrl(flowstep.getFlowact());
         int save = todoDao.save(todo);

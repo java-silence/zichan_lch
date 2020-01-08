@@ -27,6 +27,8 @@ public class Dept extends BaseEntity<Long> {
 	private String c03;
 	private String ctype;
 
+	private String suCode;
+
     public String getJx() {
         return jx;
     }
@@ -162,4 +164,12 @@ public class Dept extends BaseEntity<Long> {
     public void setOtherAllName(String otherAllName) {
         this.otherAllName = otherAllName;
     }
+
+	public String getSuCode() {
+		return suCode;
+	}
+
+	public void setSuCode(String suCode) {
+		this.suCode = suCode;
+	}
 }

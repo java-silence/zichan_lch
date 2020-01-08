@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ZcInfoServiceImpl implements ZcInfoService {
+
     private static final Logger log = LoggerFactory.getLogger("adminLogger");
     @Autowired
     private ZcInfoDao zcInfoDao;
@@ -42,6 +43,8 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private DictDao dictDao;
     @Autowired
     private ZcChangeRecordService zcChangeRecordService;
+    @Autowired
+    private ZcEpcCodeDao zcEpcCodeDao;
 
 
     @Override
@@ -320,7 +323,6 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                     }
                     Dept syDept = syDepts.get(0);
                     zcInfo.setSyDeptId(syDept.getId());
-
                     zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
                     zcInfo.setCreateBy(loginUser.getId());
                     zcInfo.setDel(0);
@@ -333,11 +335,21 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                     insertlist.add(zc);
                 }
 
+                // 资产追溯码
+                ArrayList<ZcEpcCode> zcEpcCodeList = new ArrayList<>();
                 // 插入资产追溯码
                 for (int i = 0; i < insertlist.size(); i++) {
-                    String ecpId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
-                    insertlist.get(i).setEpcid("000" + ecpId);
+                    String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
+                    insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
+                    ZcEpcCode zcEpcCode = new ZcEpcCode();
+                    zcEpcCode.setEpcid(dept.getSuCode()+epcId);
+                    zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
+                    zcEpcCode.setEnable(0);
+                    zcEpcCode.setCreateTime(new Date());
+                    zcEpcCode.setUpdateTime(new Date());
+                    zcEpcCodeList.add(zcEpcCode);
                 }
+                zcEpcCodeDao.saves(zcEpcCodeList);
                 zcInfoDao.saves(insertlist);
                 map.put("code", "0");
 //                fileInfo = fileService.save(file);
@@ -481,11 +493,23 @@ public class ZcInfoServiceImpl implements ZcInfoService {
 //                        }
 //                    }
                 }
+
+                // 资产追溯码
+                ArrayList<ZcEpcCode> zcEpcCodeList = new ArrayList<>();
                 // 插入资产追溯码
                 for (int i = 0; i < insertlist.size(); i++) {
-                    String ecpId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
-                    insertlist.get(i).setEpcid("000" + ecpId);
+                    String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
+                    insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
+                    // 资产追溯码
+                    ZcEpcCode zcEpcCode = new ZcEpcCode();
+                    zcEpcCode.setEpcid(dept.getSuCode()+epcId);
+                    zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
+                    zcEpcCode.setEnable(0);
+                    zcEpcCode.setCreateTime(new Date());
+                    zcEpcCode.setUpdateTime(new Date());
+                    zcEpcCodeList.add(zcEpcCode);
                 }
+                zcEpcCodeDao.saves(zcEpcCodeList);
                 zcInfoDao.saves(insertlist);
                 map.put("code", "0");
                 //fileInfo = fileService.save(file);

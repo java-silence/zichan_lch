@@ -35,7 +35,7 @@ public class EcpIdUtil {
      * @return
      */
     public synchronized static String getEcpId(Integer id){
-        String staticNum = getStaticNum(id, 8);
+        String staticNum = getStaticNum(id, 5);
         return staticNum;
     }
 

@@ -428,6 +428,8 @@ public class ZcDeployServiceImpl implements ZcDeployService {
         todo.setFlowid(zcDeploy.getFlowid());
         todo.setStepid(flowstep.getId());
         todo.setMemo(String.valueOf(memo));
+        todo.setCreateTime(new Date());
+        todo.setUpdateTime(new Date());
         // 流程审核跳转页面
         todo.setUrl(flowstep.getFlowact());
         int save = todoDao.save(todo);

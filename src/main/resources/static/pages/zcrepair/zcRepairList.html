@@ -141,13 +141,15 @@ var el1,el2;
                 pageName: 'offset' //页码的参数名称，默认：page
             }
             ,cols: [[
-                {field:'id',hide:true}
-					,{field:'nickname',title:'申请用户', width:150, sort: true}
-					,{field:'deptname',title:'申请部门', width:200, sort: true}
-					,{field:'status',title:'状态', width:100, sort: true,style:'color: #2eb926eb;', templet: function(d){
-						return processStatus[d.status];
-					}}
-					,{field:'createTime',title:'创建时间', width:200, sort: true}
+                {type:'numbers',title:'序号'}
+                ,{field:'id',hide:true}
+				,{field:'code',title:'维修单号', width:155, sort: true}
+				,{field:'nickname',title:'申请用户', width:150, sort: true}
+				,{field:'deptname',title:'申请部门', width:200, sort: true}
+				,{field:'status',title:'状态', width:100, sort: true,style:'color: #2eb926eb;', templet: function(d){
+					return processStatus[d.status];
+				}}
+				,{field:'createTime',title:'创建时间', width:200, sort: true}
                 ,{field:'caozuo', title: '操作',fixed:'right', align:'center',width:140,templet: function(d){
                     var id = d.id;
                     var href = "updateZcRepair.html?id=" + id;
@@ -246,6 +248,7 @@ var el1,el2;
 			,cols: [[
 				// {checkbox: true}
 				{type:'numbers'}
+                ,{field:'code',title:'维修单号', width:155, sort: true}
 				,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
 				,{field:'applyDeptId',title:'申请部门ID', width:100, sort: true,hide:true}
 				,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
@@ -260,8 +263,8 @@ var el1,el2;
 				,{field:'startUseTime',title:'开始使用日期', width:200, sort: true}
 				,{field:'useMonths',title:'到期期限', width:110, sort: true}
 				,{field:'warrantyperiod',title:'保修期限', width:110, sort: true}
-				,{field:'originalValue',title:'原值', width:110, sort: true}
-				,{field:'netvalue',title:'净值', width:110, sort: true}
+				,{field:'originalValue',title:'原值(元)', width:110, sort: true}
+				,{field:'netvalue',title:'净值(元)', width:110, sort: true}
 				,{field:'repairDes',title:'报修原因', width:110, sort: true,edit:"text"}
 				,{field:'frontPicsUrl',title:'附件地址', width:110, sort: true,hide:true}
 				,{field:'frontPics',title:'附件', width:120, fixed:'right',sort: true,templet:function(d){

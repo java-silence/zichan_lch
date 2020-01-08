@@ -5,6 +5,7 @@ import com.itycu.server.model.ZcRepairItem;
 import java.util.Date;
 
 public class ZcRepairItemDto extends ZcRepairItem {
+
     private String glDeptName;
     private String cardNum;
     private String zcCodenum;
@@ -25,6 +26,9 @@ public class ZcRepairItemDto extends ZcRepairItem {
     private String useMonths;
     private Date repairStartTime;
     private Date repairEndTime;
+
+    /** 维修单号. */
+    private String code;
 
     public String getGlDeptName() {
         return glDeptName;
@@ -186,5 +190,13 @@ public class ZcRepairItemDto extends ZcRepairItem {
 
     public void setRepairEndTime(Date repairEndTime) {
         this.repairEndTime = repairEndTime;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
