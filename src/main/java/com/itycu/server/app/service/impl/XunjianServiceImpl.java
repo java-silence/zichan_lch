@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,11 @@ public class XunjianServiceImpl implements XunJianService {
             Map<String, Object> map = new HashMap<>();
             map.put("deptid", sysUser.getDeptid());
             List<XunJianVO> xunJianVOList = zcInfoDao.queryZcXunJianList(map);
+            if(!CollectionUtils.isEmpty(xunJianVOList)){
+               xunJianVOList.forEach(k->{
+                   k.setStatus(0);
+               });
+            }
             return xunJianVOList;
         } else {
             logger.info("当前用户的身份不是管理部门,部门id===={}", sysUser.getDeptid());

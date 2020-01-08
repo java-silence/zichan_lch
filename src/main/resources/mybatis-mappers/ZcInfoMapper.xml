@@ -663,28 +663,27 @@
 
 
     <select id="queryZcXunJianList" resultType="com.itycu.server.app.vo.xunjian.XunJianVO">
-        SELECT
-            epcid,
-            zc_name,
-            self_codenum,
-            store_address,
-            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = sy_dept_id ) AS syDeptName,
-            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = gl_dept_id ) AS glDeptName,
-            gl_dept_id,
-            create_time,
-            inspect_time,
-            c03,
-            gl_dept_id,
-            sy_dept_id,
-            zc_codenum
-        FROM
-            zc_info
-        WHERE
-            gl_dept_id = #{deptid}
-            AND (
-                FLOOR( timestampdiff( DAY, start_use_time, now( ) ) / inspect_time ) = timestampdiff( DAY, start_use_time, now( ) ) / inspect_time
-                ) = 1
-            AND inspect_time IS NOT NULL
-        AND timestampdiff( DAY, start_use_time, now( ) ) > 0
+SELECT
+    id,
+	epcid,
+	zc_name as zcName,
+	self_codenum as selfCodenum,
+	store_address as storeAddress,
+	( SELECT b.deptname FROM t_dept AS b WHERE b.id = sy_dept_id ) AS syDeptName,
+	( SELECT b.deptname FROM t_dept AS b WHERE b.id = gl_dept_id ) AS glDeptName,
+	gl_dept_id AS glDeptId,
+	create_time AS createTime,
+	inspect_time AS inspectTime,
+	sy_dept_id AS syDeptId,
+	zc_codenum AS zcCodenum
+FROM
+	zc_info
+WHERE
+	gl_dept_id = #{deptid}
+	AND (
+	FLOOR( timestampdiff( DAY, start_use_time, now( ) ) / inspect_time ) = timestampdiff( DAY, start_use_time, now( ) ) / inspect_time
+	) = 1
+	AND inspect_time IS NOT NULL
+	AND timestampdiff( DAY, start_use_time, now( ) ) > 0
     </select>
 </mapper>

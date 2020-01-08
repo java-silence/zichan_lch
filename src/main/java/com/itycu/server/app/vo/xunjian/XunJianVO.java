@@ -20,7 +20,7 @@ public class XunJianVO {
     /**
      * 使用部门id
      */
-    private long sy_dept_id;
+    private long syDeptId;
 
     /**
      * 使用部门名称
@@ -31,7 +31,7 @@ public class XunJianVO {
     /**
      * 管理部门id
      */
-    private long gl_dept_id;
+    private long glDeptId;
 
 
     /**
@@ -43,13 +43,13 @@ public class XunJianVO {
     /**
      * 存储地址
      */
-    private String store_address;
+    private String storeAddress;
 
 
     /**
      * 资产名称
      */
-    private String zc_name;
+    private String zcName;
 
 
     /**
@@ -57,7 +57,7 @@ public class XunJianVO {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
-    private Date create_time;
+    private Date createTime;
 
 
     /**
@@ -68,18 +68,15 @@ public class XunJianVO {
     /**
      * 巡检周期
      */
-    private String inspect_time;
+    private String inspectTime;
 
 
-    /**
-     * 标记是否已经巡检
-     */
-    private String c03;
+
 
 
     /**
      * 资产编码
      */
-    private String zc_codenum;
+    private String zcCodenum;
 
 }

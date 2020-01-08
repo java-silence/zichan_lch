@@ -19,6 +19,7 @@ public class Todo extends BaseEntity<Long> {
     private String status;
     private String memo;
     private String c01;
+
     private String c02;
     private String c03;
     private Long flowid;
