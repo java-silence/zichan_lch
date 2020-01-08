@@ -274,7 +274,7 @@
 		c.zc_from zcfrom,
 		c.card_num cardNum,
 		c.zcCategoryName,
-		DATE_FORMAT(c.start_use_time,'%Y-%m-%d %h:%m:%s') startusetime,
+		DATE_FORMAT(c.start_use_time,'%Y-%m-%d') startusetime,
 		c.lave_time lavetime,
 		c.original_value originalvalue,
 		c.netvalue,

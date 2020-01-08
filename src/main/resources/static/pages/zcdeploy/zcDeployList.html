@@ -82,6 +82,7 @@
                 ,{field:'id',hide:true}
                 ,{field:'backDeptId',hide:true}
                 //,{field:'checkbox',checkbox: true} //其它参数在此省略
+                ,{field:'deployNum',title:'调配单号', width:150}
                 ,{field:'nickname',title:'申请人', width:100, sort: true}
                 ,{field:'username',title:'账号', width:100, sort: true}
                 ,{field:'deptname',title:'申请部门', width:120, sort: true}
@@ -100,13 +101,15 @@
                         var edit = buttonEdit(href, "", pers);
                         var del = buttonDel(id, "", pers);
                         var noAction = "";
+                        var prePrint = "";
                         if(d.status>0){
                             edit ="";
                             del="";
                             startProcess="";
                             noAction = btnNoAction(id, "", pers);
+                            prePrint = prePrintAction(id, "", pers);
                         }
-                        return startProcess + edit + del + noAction;
+                        return startProcess + edit + del + noAction + prePrint;
                     }}
             ]]
         });
@@ -148,10 +151,10 @@
                 {type:'numbers'}
                 ,{field:'id',hide: true}
                 ,{field:'zcbfid',hide: true}
-
+                ,{field:'deployNum',title:'调配单号', width:150}
                 ,{field:'epcid',title:'资产追溯码', width:100}
                 ,{field:'zcCodenum',title:'资产编码', width:160}
-                ,{field:'zcName',title:'资产名称', width:100}
+                ,{field:'zcName',title:'资产名称', width:140}
                 ,{field:'categoryName',title:'类别名称', width:130, sort: true}
                 ,{field:'specification',title:'规格', width:100, sort: true}
                 ,{field:'model',title:'型号', width:100, sort: true}
@@ -347,18 +350,22 @@
     });
 
 	$("#printBt").click(function(){
-		if (!zcDeployId){
-			layer.msg('请选择调配单');
-			return
-		}
+		aPrint(zcDeployId);
+	});
 
-		var html = "";
-		$.ajax({
-			type : 'get',
-			url : '/zcDeploys/' + zcDeployId ,
-			async : false,
-			success : function(data) {
-			    var deploy = data.zcDeploy;
+	// 打印
+	function aPrint(zcDeployId) {
+        if (!zcDeployId){
+            layer.msg('请选择调配单');
+            return
+        }
+        var html = "";
+        $.ajax({
+            type : 'get',
+            url : '/zcDeploys/' + zcDeployId ,
+            async : false,
+            success : function(data) {
+                var deploy = data.zcDeploy;
                 var shenqing = data.shenqing;
                 var diaoru = data.diaoru;
                 var diaochu = data.diaochu;
@@ -367,23 +374,23 @@
                 if (pdeptName == null || pdeptName == ''){
                     pdeptName = "垣曲农村商业银行";
                 }
-				formatData(data);
-				html += "<div class='zctitle'>"+pdeptName+"实物资产调配单</div>"+
-						"<table class='print-zctable'><tr><td style='border:none;font-size: 20px;text-align: left' colspan='6'>调配单号："+ deploy.deployNum +"</td>" +
-						"<td style='border:none;font-size: 20px;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
-				        "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产追溯码</td>" +
-						"<td style='border-top: 1px solid #000;'>资产编码</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
-						"<td style='border-top: 1px solid #000;'>原值（元）</td>" +
-						"<td style='border-top: 1px solid #000;'>调出部门</td><td style='border-top: 1px solid #000;'>调入部门</td>" +
-						"<td style='border-top: 1px solid #000;'>调拨原因</td></tr>";
-				$.ajax({
-					type : 'get',
-					url : "/zcDeployItems/listByZcDeployId?zcDeployId="+zcDeployId,
-					async : false,
-					success : function(datas) {
-						console.log(datas)
-						for (var i=0;i<datas.data.length;i++){
-							var d = datas.data[i];
+                formatData(data);
+                html += "<div class='zctitle'>"+pdeptName+"实物资产调配单</div>"+
+                    "<table class='print-zctable'><tr><td style='border:none;font-size: 20px;text-align: left' colspan='6'>调配单号："+ deploy.deployNum +"</td>" +
+                    "<td style='border:none;font-size: 20px;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
+                    "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产追溯码</td>" +
+                    "<td style='border-top: 1px solid #000;'>资产编码</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
+                    "<td style='border-top: 1px solid #000;'>原值（元）</td>" +
+                    "<td style='border-top: 1px solid #000;'>调出部门</td><td style='border-top: 1px solid #000;'>调入部门</td>" +
+                    "<td style='border-top: 1px solid #000;'>调拨原因</td></tr>";
+                $.ajax({
+                    type : 'get',
+                    url : "/zcDeployItems/listByZcDeployId?zcDeployId="+zcDeployId,
+                    async : false,
+                    success : function(datas) {
+                        console.log(datas)
+                        for (var i=0;i<datas.data.length;i++){
+                            var d = datas.data[i];
                             var fu = d.frontUsername;
                             var bu = d.backUsername;
                             var ep = d.epcid;
@@ -397,13 +404,13 @@
                             if (ep == null){
                                 ep = "";
                             }
-							html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td><td>"+d.originalvalue+"</td>" +
-                            		"<td>"+ d.sydeptname +"</td><td>"+ d.backdeptname +"</td><td>"+d.bz+"</td></tr>";
-						}
-					}
-				});
+                            html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td><td>"+d.originalvalue+"</td>" +
+                                "<td>"+ d.sydeptname +"</td><td>"+ d.backdeptname +"</td><td>"+d.bz+"</td></tr>";
+                        }
+                    }
+                });
 
-				html += "</table>"
+                html += "</table>"
                 html += "<div style='margin: 5px 3px'>资产调配审批流程：</div>"
 
                 html += "<table class='print-zctable'>";
@@ -437,25 +444,24 @@
                 }
 
                 html += "</table>"
-			}
+            }
         });
-
-		$("#test").print({
-			//Use Global styles
-			globalStyles : false,
-			//Add link with attrbute media=print
-			mediaPrint : false,
-			//Print in a hidden iframe
-			iframe : false,
-			//Don't print this
-			noPrintSelector : ".avoid-this",
-			//Add this at top
-			prepend : html,
-			//Add this on bottom
-			append : "",
-			//Log to console when printing is done via a deffered callback
-			deferred: $.Deferred().done(function() {}),
-			stylesheet:'../../css/fahuoprint.css'
-		});
-	});
+        $("#test").print({
+            //Use Global styles
+            globalStyles : false,
+            //Add link with attrbute media=print
+            mediaPrint : false,
+            //Print in a hidden iframe
+            iframe : false,
+            //Don't print this
+            noPrintSelector : ".avoid-this",
+            //Add this at top
+            prepend : html,
+            //Add this on bottom
+            append : "",
+            //Log to console when printing is done via a deffered callback
+            deferred: $.Deferred().done(function() {}),
+            stylesheet:'../../css/fahuoprint.css'
+        });
+    }
 </script>

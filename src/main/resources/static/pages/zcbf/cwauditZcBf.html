@@ -73,7 +73,7 @@
                                         <button class="layui-btn chooseAll" onclick="agreeAll()">选择全部</button>
                                         <button class="layui-btn layui-btn-warm" onclick="prePrint()">审核打印</button>
                                         <button class="layui-btn layui-btn-normal" onclick="download2()">一键下载</button>
-                                        <button class="layui-btn layui-btn-danger" onclick="download3()">合并下载</button>
+                                        <button class="layui-btn layui-btn-danger" onclick="download3()">合并打印</button>
                                     </div>
                                 </div>
                                 <div class="layui-row">
@@ -736,8 +736,8 @@
                                     model = "";
                                 }
                                 html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td>" +
-                                    "<td>"+spe+"</td><td>"+model+"</td><td>"+stime+"</td><td>"+originalvalue/10000+"</td>" +
-                                    "<td>"+bn_zhejiu/10000+"</td><td>"+netvalue/10000+"</td><td>"+d.bz+"</td></tr>";
+                                    "<td>"+spe+"</td><td>"+model+"</td><td>"+stime+"</td><td>"+originalvalue+"</td>" +
+                                    "<td>"+bn_zhejiu+"</td><td>"+netvalue+"</td><td class='bzSize'>"+d.bz+"</td></tr>";
                             }
                         }
                     });
@@ -900,8 +900,8 @@
                                     model = "";
                                 }
                                 html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td>" +
-                                    "<td>"+spe+"</td><td>"+model+"</td><td>"+stime+"</td><td>"+originalvalue/10000+"</td>" +
-                                    "<td>"+bn_zhejiu/10000+"</td><td>"+netvalue/10000+"</td><td>"+d.bz+"</td></tr>";
+                                    "<td>"+spe+"</td><td>"+model+"</td><td>"+stime+"</td><td>"+originalvalue+"</td>" +
+                                    "<td>"+bn_zhejiu+"</td><td>"+netvalue+"</td><td class='bzSize'>"+d.bz+"</td></tr>";
                             }
                         }
                     });

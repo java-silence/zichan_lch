@@ -397,6 +397,7 @@
 	<!--查询完成列表-->
 	<select id="listZcBuyFinish" parameterType="map" resultType="map">
         SELECT
+			z.id zcBuyId,
             z.buyNum,
             t.name,
             t.model,

@@ -146,6 +146,7 @@
 	<select id="listDetailByZcDeployId" parameterType="long" resultType="map">
 		SELECT
 		t.id,
+		p.deployNum,
 		t.zc_deploy deployId,
 		t.status,
 		t.bz,
@@ -190,6 +191,7 @@
 		LEFT JOIN t_dept d3 ON t.back_dept_id = d3.id
 		LEFT JOIN sys_user u ON c.user_id = u.id
 		LEFT JOIN zc_category g ON c.zc_category_id = g.id
+		LEFT JOIN zc_deploy p ON p.id = t.zc_deploy
 		<where>
 			<if test="zcDeployId != null and zcDeployId != ''">
 				t.zc_deploy = #{zcDeployId}

@@ -10,6 +10,9 @@
 	<!--<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
     <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
     <style>
+        #test{
+            display: none;
+        }
         .eleTree{
             width: 350px;
             height: 500px;
@@ -32,7 +35,7 @@
     </style>
 </head>
 <body>
-
+<div id="test"></div>
 <div class="layui-fluid">
 	<div class="layui-card">
         <div class="layui-card-header headTop">购买查询</div>
@@ -144,6 +147,7 @@
 <script type="text/javascript" src="../../js/common.js"></script>
 <script type="text/javascript" src="../../js/dict.js"></script>
 <script type="text/javascript" src="../../js/xm-select.js"></script>
+<script type="text/javascript" src="../../js/jQuery.print.min.js"></script>
 <script type="text/javascript">
 
     var pers = checkPermission();
@@ -195,9 +199,9 @@
                 ,{field:'model',title:'规格型号', width:140, sort: true}
                 ,{field:'unit',title:'单位', width:100, sort: true,edit:'text'}
                 ,{field:'brand',title:'产品品牌', width:100, sort: true}
-                ,{field:'price',title:'采购单价', width:100, sort: true}
+                ,{field:'price',title:'采购单价(元)', width:120, sort: true}
                 ,{field:'num',title:'采购数量', width:100, sort: true}
-                ,{field:'totalPrice',title:'采购总价', width:100, sort: true}
+                ,{field:'totalPrice',title:'采购总价(元)', width:120, sort: true}
                 ,{field:'supplierName',title:'供应商名称', width:100, sort: true}
                 ,{field:'useDes',title:'用途', width:100, sort: true}
                 ,{field:'sydeptname',title:'申请部门', width:120, sort: true}
@@ -207,10 +211,18 @@
                 ,{field:'applyTime',title:'申请时间', width:150, sort: true}
                 ,{field:'finishTime',title:'完成时间', width:150, sort: true}
                 ,{field:'zcBz',title:'备注', width:100, sort: true}
-                ,{field:'caozuo',width:180, title: '操作',fixed:'right',align:'center', toolbar: '#preViewBtn'}
+                ,{field:'caozuo',width:120, title: '操作',fixed:'right',align:'center', toolbar: '#preViewBtn'}
             ]]
             ,done: function(res, curr, count){
+            }
+        });
 
+        //监听工具条
+        table.on('tool(data)', function(obj){
+            var data = obj.data;
+            // 预览打印
+            if (obj.event === 'preView') {
+                preViewPrintHtml(data.buyNum,data.zcBuyId);
             }
         });
 
@@ -458,5 +470,106 @@
         $("#form").submit();
         $("#form").attr("onsubmit", "return false");
     });
+
+    // 财务审核完成打印数据
+    function preViewPrintHtml(buyNum,buyId){
+        if (!buyId){
+            layer.msg('请选择采购单');
+            return
+        }
+        var url = "/zcBuyItems/listByZcBuyId?zcBuyId="+buyId+"&cw=2";
+        var html = "";
+        $.ajax({
+            type : 'get',
+            url : '/zcBuys/' + buyId ,
+            async : false,
+            success : function(data) {
+                var zcBuy = data.zcBuy;
+                var shenqing = data.shenqing;
+                var shenhe = data.shenhe;
+                var caiwu = data.caiwu;
+                formatData(zcBuy);
+                formatData(shenqing);
+                formatData(shenhe);
+                formatData(caiwu);
+                html += "<div class='zctitle'>垣曲农村商业银行采购申请单</div>"+
+                    "<table class='print-zctable'><tr><td style='border:none;text-align: left' colspan='6'>采购单号："+zcBuy.buyNum+"</td>" +
+                    "<td style='border:none;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
+                    "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
+                    "<td style='border-top: 1px solid #000;'>产品品牌</td><td style='border-top: 1px solid #000;'>规格型号</td>" +
+                    "<td style='border-top: 1px solid #000;'>单位(件)</td><td style='border-top: 1px solid #000;'>采购单价(元)</td>" +
+                    "<td style='border-top: 1px solid #000;'>采购数量</td><td style='border-top: 1px solid #000;'>采购总价(元)</td>" +
+                    "<td style='border-top: 1px solid #000;'>供应商</td><td style='border-top: 1px solid #000;'>管理部门</td>" +
+                    "<td style='border-top: 1px solid #000;'>用途</td></tr>";
+                $.ajax({
+                    type : 'get',
+                    url : url,
+                    async : false,
+                    success : function(datas) {
+                        debugger
+                        console.log(datas)
+                        var allIprice = 0;
+                        var allNum = 0;
+                        var allImoney = 0;
+                        for (var i=0;i<datas.data.length;i++){
+                            var d = datas.data[i];
+                            var pri = d.price;
+                            if (d.price == null){
+                                pri = 0;
+                            }
+                            formatData(d);
+                            var imoney = d.price*d.num;
+                            if (isNaN(imoney)){
+                                imoney = 0;
+                            }
+                            html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+d.name+"</td><td>"+d.brand+"</td><td>"+d.model+"</td><td>"+d.unit+"</td><td>"+pri+"</td>" +
+                                "<td>"+d.num+"</td><td>"+imoney+"</td><td>"+d.supplierName+"</td><td>"+d.gldeptname+"</td><td>"+d.useDes+"</td></tr>";
+                            allIprice = parseFloat((Number(d.price) + Number(allIprice)).toFixed(2))
+                            allNum = parseFloat((Number(d.num) + Number(allNum)).toFixed(2))
+                            allImoney = parseFloat((Number(imoney) + Number(allImoney)).toFixed(2))
+                        }
+                        if (allIprice == null || isNaN(allIprice)){
+                            allIprice = 0;
+                        }
+                        if (allImoney == null || isNaN(allImoney)){
+                            allImoney = 0;
+                        }
+                        html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td>"+allIprice+"</td>" +
+                            "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td></tr>";
+                    }
+                });
+                html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>申请</span></td></tr>";
+                if (shenhe == null || JSON.stringify(shenhe) == "{}"){
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span></td></tr>";
+                } else{
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+                }
+                if (caiwu == null || JSON.stringify(caiwu) == "{}"){
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span></td></tr>";
+                } else{
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>"+caiwu.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+caiwu.username+"】"+caiwu.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核时间：</span>"+caiwu.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+                }
+                html += "</table>"
+            }
+        });
+
+        $("#test").print({
+            //Use Global styles
+            globalStyles : false,
+            //Add link with attrbute media=print
+            mediaPrint : false,
+            //Print in a hidden iframe
+            iframe : false,
+            //Don't print this
+            noPrintSelector : ".avoid-this",
+            //Add this at top
+            prepend : html,
+            //Add this on bottom
+            append : "",
+            //Log to console when printing is done via a deffered callback
+            deferred: $.Deferred().done(function() {}),
+            stylesheet:'../../css/fahuoprint.css'
+        });
+    }
 
 </script>

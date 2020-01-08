@@ -623,6 +623,121 @@
             });
         }
 
+        // 打印调配单
+        function printHtml(){
+            if (!deployId){
+                layer.msg('请选择调配单');
+                return
+            }
+
+            var prhtml = "";
+            $.ajax({
+                type : 'get',
+                url : '/zcDeploys/' + deployId ,
+                async : false,
+                success : function(data) {
+                    var deploy = data.zcDeploy;
+                    var shenqing = data.shenqing;
+                    var diaoru = data.diaoru;
+                    var diaochu = data.diaochu;
+                    var shenhe = data.shenhe;
+                    var pdeptName = data.pdeptName;
+                    if (pdeptName == null || pdeptName == ''){
+                        pdeptName = "垣曲农村商业银行";
+                    }
+                    formatData(data);
+                    prhtml += "<div class='zctitle'>"+pdeptName+"实物资产调配单</div>"+
+                        "<table class='print-zctable'><tr><td style='border:none;font-size: 20px;text-align: left' colspan='6'>调配单号："+ deploy.deployNum +"</td>" +
+                        "<td style='border:none;font-size: 20px;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
+                        "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产追溯码</td>" +
+                        "<td style='border-top: 1px solid #000;'>资产编码</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
+                        "<td style='border-top: 1px solid #000;'>原值（元）</td>" +
+                        "<td style='border-top: 1px solid #000;'>调出部门</td><td style='border-top: 1px solid #000;'>调入部门</td>" +
+                        "<td style='border-top: 1px solid #000;'>调拨原因</td></tr>";
+                    $.ajax({
+                        type : 'get',
+                        url : "/zcDeployItems/listByZcDeployId?zcDeployId="+deployId+"&cw=2",
+                        async : false,
+                        success : function(datas) {
+                            console.log(datas)
+                            for (var i=0;i<datas.data.length;i++){
+                                var d = datas.data[i];
+                                var fu = d.frontUsername;
+                                var bu = d.backUsername;
+                                var ep = d.epcid
+                                formatData(d);
+                                if (fu == null){
+                                    fu = "";
+                                }
+                                if (bu == null){
+                                    bu = "";
+                                }
+                                if (ep == null){
+                                    ep = "";
+                                }
+                                prhtml += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td><td>"+d.originalvalue+"</td>" +
+                                    "<td>"+ d.sydeptname +"</td><td>"+ d.backdeptname +"</td><td>"+d.bz+"</td></tr>";
+                            }
+                        }
+                    });
+                    prhtml += "</table>"
+
+                    prhtml += "</table>"
+                    prhtml += "<div style='margin: 5px 3px'>资产调配审批流程：</div>"
+
+                    prhtml += "<table class='print-zctable'>";
+                    prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >发起部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >发起人员：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='2'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+
+                    if (diaochu.length > 0){
+                        if (diaochu.length == 1){
+                            var da = diaochu[0];
+                            prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调出部门：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                        }else {
+                            for (var i = 0; i < diaochu.length; i++) {
+                                var da = diaochu[i];
+                                prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调出部门"+(i+1)+"：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                            }
+                        }
+                    }
+                    if (diaoru.length > 0){
+                        if (diaoru.length == 1){
+                            var da = diaoru[0];
+                            prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调入部门：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                        } else {
+                            for (var i = 0; i < diaoru.length; i++) {
+                                var da = diaoru[i];
+                                prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >调入部门"+(i+1)+"：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >确认时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                            }
+                        }
+                    }
+                    if (shenhe.length > 0){
+                        var da = shenhe[0];
+                        prhtml += "<tr><td class='qianzi' colspan='2'><span class='songti' >审核部门：</span>"+da.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+da.username+"】"+da.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核时间：</span>"+da.updateTime+"</td><td align='left' class='qianzi' colspan='2'>同意</td></tr>"
+                    }
+
+                    prhtml += "</table>"
+
+                }
+            });
+
+            $("#test").print({
+                //Use Global styles
+                globalStyles : false,
+                //Add link with attrbute media=print
+                mediaPrint : false,
+                //Print in a hidden iframe
+                iframe : false,
+                //Don't print this
+                noPrintSelector : ".avoid-this",
+                //Add this at top
+                prepend : prhtml,
+                //Add this on bottom
+                append : "",
+                //Log to console when printing is done via a deffered callback
+                deferred: $.Deferred().done(function() {}),
+                stylesheet:'../../css/fahuoprint.css'
+            });
+        }
 
 	</script>
 </body>

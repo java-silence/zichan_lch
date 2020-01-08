@@ -182,6 +182,16 @@ function btnNoAction(data, permission, pers){
     return btn.prop("outerHTML");
 }
 
+function prePrintAction(data, permission, pers){
+    if(permission != ""){
+        if ($.inArray(permission, pers) < 0) {
+            return "";
+        }
+    }
+    var btn = $("<button class='layui-btn layui-btn-warm layui-btn-xs' title='预览' onclick='aPrint(\""+ data +"\")'>预览</button>");
+    return btn.prop("outerHTML");
+}
+
 $(document).on('keydown','.layui-table-edit',function(e){
 	var td = $(this).parent('td'),
 		tr = td.parent('tr'),

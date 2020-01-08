@@ -163,22 +163,23 @@
 
 	<select id="listZcDeploy" parameterType="map" resultType="map">
 		SELECT
-		t.id,
-		DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') createtime,
-		t.back_dept_id backDeptId,
-		t.description,
-		t.bz,
-		t.status,
-		f.id flowid,
-		f.flowname,
-		s.id stepid,
-		s.stepname,
-		u.id userid,
-		u.nickname,
-		u.username,
-		d.id deptid,
-		d.deptname,
-		d1.deptname backDeptname
+            t.id,
+            t.deployNum,
+            DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') createtime,
+            t.back_dept_id backDeptId,
+            t.description,
+            t.bz,
+            t.status,
+            f.id flowid,
+            f.flowname,
+            s.id stepid,
+            s.stepname,
+            u.id userid,
+            u.nickname,
+            u.username,
+            d.id deptid,
+            d.deptname,
+            d1.deptname backDeptname
 		FROM
 		zc_deploy t
 		LEFT JOIN sys_user u ON t.apply_user_id = u.id
@@ -275,6 +276,7 @@
 	<!--资产记录信息-->
 	<select id="listZcDeployRecord" parameterType="map" resultType="map">
 		SELECT
+			b.id deployId,
 			b.deployNum,
 			t.bz bfReason,
 			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') applyTime,

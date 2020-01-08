@@ -115,13 +115,15 @@
                         var edit = buttonEdit(href, "", pers);
                         var del = buttonDel(id, "", pers);
                         var noAction = "";
+                        var prePrint = "";
                         if(d.status>0){
                             edit ="";
                             del="";
                             startProcess="";
                             noAction = btnNoAction(id, "", pers);
+                            prePrint = prePrintAction(id, "", pers);
                         }
-                        return startProcess + edit + del + noAction;
+                        return startProcess + edit + del + noAction + prePrint;
                     }}
             ]]
         });
@@ -400,6 +402,11 @@
     });
 
     $("#printBt").click(function(){
+        aPrint(zcBuyId);
+    });
+
+    // 打印
+    function aPrint(zcBuyId) {
         if (!zcBuyId){
             layer.msg('请选择采购单');
             return
@@ -478,7 +485,6 @@
                 html += "</table>"
             }
         });
-
         $("#test").print({
             //Use Global styles
             globalStyles : false,
@@ -496,5 +502,5 @@
             deferred: $.Deferred().done(function() {}),
             stylesheet:'../../css/fahuoprint.css'
         });
-    });
+    }
 </script>

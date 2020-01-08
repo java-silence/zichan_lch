@@ -19,6 +19,10 @@
 		.submitCw{
 			display: none;
 		}
+		.btnfloat button{
+			float: right;
+            margin-left: 5px;
+		}
         .agreeAll{
             margin-left: 623px;
             width: 183px;
@@ -57,19 +61,17 @@
 							<div class="layuiadmin-card-text">
 								<div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>报废资产信息</div>
                                 <!--操作行-->
-                                <div class="layui-container">
-                                    <div class="layui-row">
-                                        <div class="layui-col-md9">
-                                            <div class="layui-row">
-                                                <div class="layui-col-md8">
-                                                    已选择资产数:<span id="itemNum">0</span>个
-                                                </div>
-                                                <div class="layui-col-md4 ">
-                                                    <button id="uploadIdentity" class="layui-btn" style="display: none"></button>
-                                                    <button class="layui-btn" onclick="uploadIdentityFile()">鉴定附件</button>
-                                                    <!--全部同意操作-->
-                                                    <button class="layui-btn" onclick="agreeAll()" >选择全部</button>
-                                                </div>
+                                <div class="layui-row">
+                                    <div class="layui-col-md12">
+                                        <div class="layui-row">
+                                            <div class="layui-col-md6">
+                                                已选择资产数:<span id="itemNum">0</span>个
+                                            </div>
+                                            <div class="layui-col-md6 btnfloat">
+                                                <button id="uploadIdentity" class="layui-btn" style="display: none"></button>
+                                                <!--全部同意操作-->
+                                                <button class="layui-btn" onclick="agreeAll()" >选择全部</button>
+                                                <button class="layui-btn" onclick="uploadIdentityFile()">鉴定附件批量上传</button>&nbsp;
                                             </div>
                                         </div>
                                     </div>
