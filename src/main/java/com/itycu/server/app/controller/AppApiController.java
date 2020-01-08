@@ -2,10 +2,13 @@ package com.itycu.server.app.controller;
 
 
 import com.itycu.server.app.model.AppUserInfo;
+import com.itycu.server.dao.DeptDao;
+import com.itycu.server.model.Dept;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,10 @@ import java.util.Map;
 @RequestMapping("/api")
 @Api(tags = "获取登录用户信息")
 public class AppApiController {
+
+
+    @Autowired
+    private DeptDao deptDao;
 
 
     @ApiOperation(value = "当前登录用户")
@@ -43,6 +50,9 @@ public class AppApiController {
             appUserInfo.setSex(sysUser.getSex());
             appUserInfo.setStatus(sysUser.getStatus());
             appUserInfo.setMemo(sysUser.getMemo());
+            Dept dept = deptDao.getById(sysUser.getDeptid());
+            String name = dept ==null? null : dept.getDeptname();
+            appUserInfo.setDeptName(name);
             hashMap.put("code", "0");
             hashMap.put("message", "成功");
             hashMap.put("data",appUserInfo);

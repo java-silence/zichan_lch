@@ -1,18 +1,19 @@
 package com.itycu.server.app.controller;
 
 
+import com.itycu.server.app.dto.xunjian.InspectItemVO;
 import com.itycu.server.app.service.XunJianService;
 import com.itycu.server.app.util.FailMap;
-import com.itycu.server.app.vo.XunJianVO;
+import com.itycu.server.app.vo.xunjian.XunJianVO;
 import com.itycu.server.model.SysUser;
+import com.itycu.server.model.ZcInspectRecord;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +31,14 @@ public class AppXunJianController {
     private XunJianService xunJianService;
 
 
-    @RequestMapping(value = "/list")
+    @PostMapping(value = "/list")
     @ApiOperation(notes = "获取App端巡检列表", value = "获取App端巡检列表")
     public Map<String, Object> getXunjianList() {
         Map<String, Object> map = new HashMap<>();
         try {
             SysUser sysUser = UserUtil.getLoginUser();
             if (null != sysUser) {
-                List<XunJianVO> list = xunJianService.getXunjianList();
+                List<XunJianVO> list = xunJianService.getXunjianList(sysUser);
                 map.put("code", 0);
                 map.put("message", "成功");
                 map.put("data", list);
@@ -50,15 +51,26 @@ public class AppXunJianController {
     }
 
 
-    @RequestMapping(value = "/insertRecord")
+    @PostMapping(value = "/insertRecord")
     @ApiOperation(notes = "添加巡检数据到数据库的接口", value = "添加巡检数据到数据库的接口")
-    public void insertXunJianRecord() {
-
-
+    public Map<String, Object> insertXunJianRecord(@RequestBody ZcInspectRecord zcInspectRecord) {
+        Map<String, Object> map = new HashMap<>();
+        int result = xunJianService.insertInspectRecord(zcInspectRecord);
+        try {
+            if (result > 0) {
+                map.put("code", 0);
+                map.put("message", "成功");
+                map.put("data", result);
+            }
+        } catch (Exception e) {
+            logger.error("添加巡检数据到数据库的接口,{}", e.getMessage());
+            map = FailMap.createFailMap();
+        }
+        return map;
     }
 
 
-    @RequestMapping(value = "/inspect/list")
+    @PostMapping(value = "/inspect/list")
     @ApiOperation(notes = "获取已经巡检的列表数据", value = "获取已经巡检的列表数据")
     public void getInspectList() {
 
@@ -66,7 +78,7 @@ public class AppXunJianController {
     }
 
 
-    @RequestMapping(value = "/inspect/detail")
+    @PostMapping(value = "/inspect/detail")
     @ApiOperation(notes = "获取巡检的详情", value = "获取巡检的详情")
     public void getInspectDetail() {
 

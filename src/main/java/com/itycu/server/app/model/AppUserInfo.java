@@ -20,4 +20,6 @@ public class AppUserInfo {
     private String memo;
     private String c03;
     private Long deptId;
+
+    private String deptName;
 }

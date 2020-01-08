@@ -198,8 +198,8 @@
             <if test="params.linbao != null and params.linbao != ''">
                 and <![CDATA[ (warrantyperiod*30)-timestampdiff(DAY,start_use_time,now()) <= #{params.daoqi} ]]>
                 and <![CDATA[ (warrantyperiod*30)-timestampdiff(DAY,start_use_time,now()) > 0 ]]>
-<!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) <= #{params.linbao} ]]>-->
-<!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) > 0 ]]>-->
+                <!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) <= #{params.linbao} ]]>-->
+                <!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) > 0 ]]>-->
             </if>
             <if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
                 and
@@ -604,7 +604,7 @@
 
     <select id="getAllZcInfoListByManager" resultType="com.itycu.server.dto.ZcInfoDto">
         select b.* from t_dept as a left join zc_info as b on a.id = b.sy_dept_id
-        where b.gl_dept_id  = #{id}
+        where b.gl_dept_id = #{id}
         <if test="keyword!=null and keyword!=''">
             and (
             b.zc_name like concat ('%',#{keyword},'%')
@@ -613,7 +613,7 @@
             or
             b.sy_dept_id in (select c.id from t_dept as c where c.deptname like concat('%',#{keyword},'%'))
             or
-            b.zc_category_id in  (select e.id from zc_category as e where e.name like  concat('%',#{keyword},'%') )
+            b.zc_category_id in (select e.id from zc_category as e where e.name like concat('%',#{keyword},'%') )
             )
         </if>
         limit #{page}, #{limit}
@@ -622,7 +622,7 @@
 
     <select id="getAllZcInfoListOrdinaryDept" resultType="com.itycu.server.dto.ZcInfoDto">
         select a.* FROM zc_info as a
-        where a.sy_dept_id  =  #{id}
+        where a.sy_dept_id = #{id}
         <if test="keyword!=null and keyword!=''">
             and (
             a.zc_name like concat ('%',#{keyword},'%')
@@ -631,41 +631,59 @@
             or
             a.sy_dept_id in (select b.id from t_dept as b where b.deptname like concat('%',#{keyword},'%'))
             or
-            a.zc_category_id in  (select c.id from zc_category as c where c.name like  concat('%',#{keyword},'%') )
+            a.zc_category_id in (select c.id from zc_category as c where c.name like concat('%',#{keyword},'%') )
             )
         </if>
         limit #{page}, #{limit}
     </select>
 
 
-
     <select id="getAllZcInfoListByCwb" resultType="com.itycu.server.dto.ZcInfoDto">
-    SELECT
+        SELECT
         c.*
-    FROM
+        FROM
         t_dept AS a
         LEFT JOIN zc_info AS c ON a.id = c.gl_dept_id
-    WHERE
+        WHERE
         a.jx = ( SELECT jx FROM t_dept AS b WHERE b.id = #{deptid} )
         AND c.gl_dept_id IS NOT NULL
-            <if test="keyword!=null and keyword!=''">
-                and (
-                c.zc_name like concat ('%',#{keyword},'%')
-                or
-                c.epcid like concat ('%',#{keyword},'%')
-                or
-                c.sy_dept_id in (select e.id from t_dept as e where e.deptname like concat('%',#{keyword},'%'))
-                or
-                c.zc_category_id in  (select k.id from zc_category as k where k.name like  concat('%',#{keyword},'%') )
-                )
-            </if>
+        <if test="keyword!=null and keyword!=''">
+            and (
+            c.zc_name like concat ('%',#{keyword},'%')
+            or
+            c.epcid like concat ('%',#{keyword},'%')
+            or
+            c.sy_dept_id in (select e.id from t_dept as e where e.deptname like concat('%',#{keyword},'%'))
+            or
+            c.zc_category_id in (select k.id from zc_category as k where k.name like concat('%',#{keyword},'%') )
+            )
+        </if>
         limit #{page}, #{limit}
     </select>
 
 
-
-    <select id="queryZcXunJianList" resultType="com.itycu.server.app.vo.XunJianVO">
-        select * from zc_info as a
-        
+    <select id="queryZcXunJianList" resultType="com.itycu.server.app.vo.xunjian.XunJianVO">
+        SELECT
+            epcid,
+            zc_name,
+            self_codenum,
+            store_address,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = sy_dept_id ) AS syDeptName,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = gl_dept_id ) AS glDeptName,
+            gl_dept_id,
+            create_time,
+            inspect_time,
+            c03,
+            gl_dept_id,
+            sy_dept_id
+        FROM
+            zc_info
+        WHERE
+            gl_dept_id = #{deptid}
+            AND (
+                FLOOR( timestampdiff( DAY, start_use_time, now( ) ) / inspect_time ) = timestampdiff( DAY, start_use_time, now( ) ) / inspect_time
+                ) = 1
+            AND inspect_time IS NOT NULL
+        AND timestampdiff( DAY, start_use_time, now( ) ) > 0
     </select>
 </mapper>

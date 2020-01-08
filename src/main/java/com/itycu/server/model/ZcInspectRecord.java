@@ -17,6 +17,48 @@ public class ZcInspectRecord extends BaseEntity<Long> {
 	private Long zcInspectId;
 
 
+
+
+	private String opinion;
+
+	private String img;
+
+	private String apperence;
+
+	private String function;
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+	public String getApperence() {
+		return apperence;
+	}
+
+	public void setApperence(String apperence) {
+		this.apperence = apperence;
+	}
+
+	public String getFunction() {
+		return function;
+	}
+
+	public void setFunction(String function) {
+		this.function = function;
+	}
+
 	/**
 	 * 制单人（多表关联查询字段）
 	 */

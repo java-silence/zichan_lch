@@ -1,4 +1,4 @@
-package com.itycu.server.app.vo;
+package com.itycu.server.app.vo.xunjian;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -57,7 +57,7 @@ public class XunJianVO {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
-    private Date createTime;
+    private Date create_time;
 
 
     /**
@@ -68,6 +68,12 @@ public class XunJianVO {
     /**
      * 巡检周期
      */
-    private String xunjianTime;
+    private String inspect_time;
+
+
+    /**
+     * 标记是否已经巡检
+     */
+    private String c03;
 
 }

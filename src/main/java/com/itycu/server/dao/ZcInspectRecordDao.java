@@ -26,13 +26,13 @@ public interface ZcInspectRecordDao {
     int deleteByZcInReId(Long zcInReId);
 
     int update(ZcInspectRecord zcInspectRecord);
-    
+
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into zc_inspect_record(zc_id, content, check_time, result, check_user_id, check_username, create_by, create_time, bz, zc_inspect_id) values(#{zcId}, #{content}, #{checkTime}, #{result}, #{checkUserId}, #{checkUsername}, #{createBy}, #{createTime}, #{bz}, #{zcInspectId})")
     int save(ZcInspectRecord zcInspectRecord);
 
-    int saves(@Param("zcInspectRecords")List<ZcInspectRecord> zcInspectRecords, @Param("zcInReId") Long zcInReId);
-    
+    int saves(@Param("zcInspectRecords") List<ZcInspectRecord> zcInspectRecords, @Param("zcInReId") Long zcInReId);
+
     int count(@Param("params") Map<String, Object> params);
 
     List<ZcInspectRecordDto> list(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
@@ -50,4 +50,16 @@ public interface ZcInspectRecordDao {
     List<ZcInspectRecordDto> listByZcInReId(Long zcInReId);
 
     List<ZcInspectRecordDto> listByCondition(@Param("params") Map<String, Object> params);
+
+
+    int insertInspectRecord(@Param("zcInspectRecord") ZcInspectRecord zcInspectRecord);
+
+
+    /**
+     * 更新资产已经盘点
+     *
+     * @param id
+     * @return
+     */
+    int updateZcInfoInspected(@Param("id") long id);
 }
