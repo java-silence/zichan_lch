@@ -148,12 +148,12 @@
 		(
 		#{zcInspectRecord.zcId},
 		#{zcInspectRecord.content},
-		#{zcInspectRecord.checkTime},
+		now(),
 		#{zcInspectRecord.result},
 		#{zcInspectRecord.checkUserId},
 		#{zcInspectRecord.checkUsername},
 		#{zcInspectRecord.createBy},
-		#{zcInspectRecord.createTime},
+		now(),
 		#{zcInspectRecord.bz},
 		null,
 		#{zcInspectRecord.img},
@@ -166,7 +166,7 @@
 
     <update id="updateZcInfoInspected">
         update zc_info set
-        c03 = 1
+        inspect_time = null
         where id = #{id}
     </update>
 </mapper>

@@ -39,4 +39,7 @@ public interface ZcInspectDao {
 
     @Select("select max(ccode) from zc_inspect t")
     String getMaxCcode();
+
+
+    List<ZcInspect>  getByDeptId(@Param("deptId") long deptId);
 }

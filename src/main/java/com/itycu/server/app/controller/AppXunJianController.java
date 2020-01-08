@@ -72,18 +72,36 @@ public class AppXunJianController {
 
     @PostMapping(value = "/inspect/list")
     @ApiOperation(notes = "获取已经巡检的列表数据", value = "获取已经巡检的列表数据")
-    public void getInspectList() {
-
-
+    public Map<String, Object> getInspectRecordList() {
+        SysUser sysUser = UserUtil.getLoginUser();
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<XunJianVO> list = xunJianService.getInspectRecordList(sysUser);
+            map.put("code", 0);
+            map.put("message", "成功");
+            map.put("data", list);
+        } catch (Exception e) {
+            logger.error("获取资产净值和资产数量错误,{}", e.getMessage());
+            map = FailMap.createFailMap();
+        }
+        return map;
     }
 
 
     @PostMapping(value = "/inspect/detail")
     @ApiOperation(notes = "获取巡检的详情", value = "获取巡检的详情")
-    public void getInspectDetail() {
-
-
+    public Map<String, Object> getInspectDetail() {
+        SysUser sysUser = UserUtil.getLoginUser();
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<XunJianVO> list = xunJianService.getInspectRecordList(sysUser);
+            map.put("code", 0);
+            map.put("message", "成功");
+            map.put("data", list);
+        } catch (Exception e) {
+            logger.error("获取资产净值和资产数量错误,{}", e.getMessage());
+            map = FailMap.createFailMap();
+        }
+        return map;
     }
-
-
 }

@@ -24,4 +24,7 @@ public interface XunJianService {
     int insertInspectRecord(ZcInspectRecord zcInspectRecord);
 
 
+    List<XunJianVO>  getInspectRecordList(SysUser sysUser);
+
+
 }

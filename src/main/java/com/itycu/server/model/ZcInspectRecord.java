@@ -23,9 +23,17 @@ public class ZcInspectRecord extends BaseEntity<Long> {
 
 	private String img;
 
-	private String apperence;
+	private String appearance;
 
-	private String function;
+	private String funct;
+
+	public String getFunct() {
+		return funct;
+	}
+
+	public void setFunct(String funct) {
+		this.funct = funct;
+	}
 
 	public String getOpinion() {
 		return opinion;
@@ -43,21 +51,15 @@ public class ZcInspectRecord extends BaseEntity<Long> {
 		this.img = img;
 	}
 
-	public String getApperence() {
-		return apperence;
+	public String getAppearance() {
+		return appearance;
 	}
 
-	public void setApperence(String apperence) {
-		this.apperence = apperence;
+	public void setAppearance(String appearance) {
+		this.appearance = appearance;
 	}
 
-	public String getFunction() {
-		return function;
-	}
 
-	public void setFunction(String function) {
-		this.function = function;
-	}
 
 	/**
 	 * 制单人（多表关联查询字段）

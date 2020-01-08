@@ -3,63 +3,64 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itycu.server.dao.ZcInspectDao">
 
-	<sql id="where">
-		<where>
-			<if test="params.id != null and params.id != ''">
-				and t.id = #{params.id} 
-			</if>
-			<if test="params.zcId != null and params.zcId != ''">
-				and t.zc_id = #{params.zcId} 
-			</if>
-			<if test="params.days != null and params.days != ''">
-				and t.days = #{params.days} 
-			</if>
-			<if test="params.lastCheckTime != null and params.lastCheckTime != ''">
-				and t.last_check_time = #{params.lastCheckTime} 
-			</if>
-			<if test="params.del != null and params.del != ''">
-				and t.del = #{params.del} 
-			</if>
-			<if test="params.bz != null and params.bz != ''">
-				and t.bz = #{params.bz} 
-			</if>
-			<if test="params.createBy != null and params.createBy != ''">
-				and t.create_by = #{params.createBy} 
-			</if>
-			<if test="params.updateBy != null and params.updateBy != ''">
-				and t.update_by = #{params.updateBy} 
-			</if>
-			<if test="params.createTime != null and params.createTime != ''">
-				and t.create_time = #{params.createTime} 
-			</if>
-			<if test="params.updateTime != null and params.updateTime != ''">
-				and t.update_time = #{params.updateTime} 
-			</if>
-			<if test="params.checkTime != null and params.checkTime != ''">
-				and t.check_time = #{params.checkTime} 
-			</if>
-			<if test="params.checkUserId != null and params.checkUserId != ''">
-				and t.check_user_id = #{params.checkUserId} 
-			</if>
-			<if test="params.checkUsername != null and params.checkUsername != ''">
-				and t.check_username = #{params.checkUsername} 
-			</if>
-			<if test="params.status != null and params.status != ''">
-				and t.status = #{params.status} 
-			</if>
-			<if test="params.code != null and params.code != ''">
-				and t.code = #{params.code} 
-			</if>
-			<if test="params.checkDeptId != null and params.checkDeptId != ''">
-				and t.check_dept_id = #{params.checkDeptId}
-			</if>
-			<if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
-				and <![CDATA[ t.check_time >= #{params.sdate} and t.check_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
-			</if>
-		</where>
-	</sql>
+    <sql id="where">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and t.id = #{params.id}
+            </if>
+            <if test="params.zcId != null and params.zcId != ''">
+                and t.zc_id = #{params.zcId}
+            </if>
+            <if test="params.days != null and params.days != ''">
+                and t.days = #{params.days}
+            </if>
+            <if test="params.lastCheckTime != null and params.lastCheckTime != ''">
+                and t.last_check_time = #{params.lastCheckTime}
+            </if>
+            <if test="params.del != null and params.del != ''">
+                and t.del = #{params.del}
+            </if>
+            <if test="params.bz != null and params.bz != ''">
+                and t.bz = #{params.bz}
+            </if>
+            <if test="params.createBy != null and params.createBy != ''">
+                and t.create_by = #{params.createBy}
+            </if>
+            <if test="params.updateBy != null and params.updateBy != ''">
+                and t.update_by = #{params.updateBy}
+            </if>
+            <if test="params.createTime != null and params.createTime != ''">
+                and t.create_time = #{params.createTime}
+            </if>
+            <if test="params.updateTime != null and params.updateTime != ''">
+                and t.update_time = #{params.updateTime}
+            </if>
+            <if test="params.checkTime != null and params.checkTime != ''">
+                and t.check_time = #{params.checkTime}
+            </if>
+            <if test="params.checkUserId != null and params.checkUserId != ''">
+                and t.check_user_id = #{params.checkUserId}
+            </if>
+            <if test="params.checkUsername != null and params.checkUsername != ''">
+                and t.check_username = #{params.checkUsername}
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and t.status = #{params.status}
+            </if>
+            <if test="params.code != null and params.code != ''">
+                and t.code = #{params.code}
+            </if>
+            <if test="params.checkDeptId != null and params.checkDeptId != ''">
+                and t.check_dept_id = #{params.checkDeptId}
+            </if>
+            <if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
+                and
+                <![CDATA[ t.check_time >= #{params.sdate} and t.check_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+            </if>
+        </where>
+    </sql>
 
-	<select id="getById" resultType="ZcInspect">
+    <select id="getById" resultType="ZcInspect">
 		select t.*
 		,t_creator.nickname as creator
 		from zc_inspect t
@@ -67,75 +68,80 @@
 		where t.id = #{id}
 	</select>
 
-	<select id="count" resultType="int">
-		select count(1) from zc_inspect t
-		<include refid="where" />
-	</select>
+    <select id="count" resultType="int">
+        select count(1) from zc_inspect t
+        <include refid="where"/>
+    </select>
 
-	<select id="list" resultType="ZcInspect">
-		select t.*
-		,t_creator.nickname as creator
-		from zc_inspect t
-		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
-		<include refid="where" />
-		${params.orderBy}
-		limit #{offset}, #{limit}
-	</select>
+    <select id="list" resultType="ZcInspect">
+        select t.*
+        ,t_creator.nickname as creator
+        from zc_inspect t
+        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        <include refid="where"/>
+        ${params.orderBy}
+        limit #{offset}, #{limit}
+    </select>
 
-	<update id="update">
-		update zc_inspect t
-		<set>
-			<if test="zcId != null">
-				zc_id = #{zcId}, 
-			</if>
-			<if test="days != null">
-				days = #{days}, 
-			</if>
-			<if test="lastCheckTime != null">
-				last_check_time = #{lastCheckTime}, 
-			</if>
-			<if test="del != null">
-				del = #{del}, 
-			</if>
-			<if test="bz != null">
-				bz = #{bz}, 
-			</if>
-			<if test="createBy != null">
-				create_by = #{createBy}, 
-			</if>
-			<if test="updateBy != null">
-				update_by = #{updateBy}, 
-			</if>
-			<if test="createTime != null">
-				create_time = #{createTime}, 
-			</if>
-			<if test="updateTime != null">
-				update_time = #{updateTime}, 
-			</if>
-			<if test="checkTime != null">
-				check_time = #{checkTime}, 
-			</if>
-			<if test="checkUserId != null">
-				check_user_id = #{checkUserId}, 
-			</if>
-			<if test="checkUsername != null">
-				check_username = #{checkUsername}, 
-			</if>
-			<if test="status != null">
-				status = #{status}, 
-			</if>
-			<if test="code != null">
-				code = #{code}, 
-			</if>
-			<if test="checkDeptId != null">
-				check_dept_id = #{checkDeptId},
-			</if>
-			<if test="checkDeptName != null">
-				check_dept_name = #{checkDeptName},
-			</if>
-		</set>
+    <update id="update">
+        update zc_inspect t
+        <set>
+            <if test="zcId != null">
+                zc_id = #{zcId},
+            </if>
+            <if test="days != null">
+                days = #{days},
+            </if>
+            <if test="lastCheckTime != null">
+                last_check_time = #{lastCheckTime},
+            </if>
+            <if test="del != null">
+                del = #{del},
+            </if>
+            <if test="bz != null">
+                bz = #{bz},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime},
+            </if>
+            <if test="checkUserId != null">
+                check_user_id = #{checkUserId},
+            </if>
+            <if test="checkUsername != null">
+                check_username = #{checkUsername},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="checkDeptId != null">
+                check_dept_id = #{checkDeptId},
+            </if>
+            <if test="checkDeptName != null">
+                check_dept_name = #{checkDeptName},
+            </if>
+        </set>
 
-		where t.id = #{id}
-	</update>
+        where t.id = #{id}
+    </update>
 
+
+    <select id="getByDeptId" resultType="com.itycu.server.model.ZcInspect">
+		select * from
+		zc_inspect as a where a.check_dept_id = #{deptId}
+    </select>
 </mapper>
