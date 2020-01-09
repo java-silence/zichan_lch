@@ -688,7 +688,8 @@
 
     <update id="updateInspectStatus">
         update zc_inspect_relation set status = 1
-        where id = #{id}
+        where zc_inspect_id = #{id}
+        and status = 0
     </update>
 
     <select id="queryZnInfoByEpcId" resultType="com.itycu.server.dto.ZcInfoDto">

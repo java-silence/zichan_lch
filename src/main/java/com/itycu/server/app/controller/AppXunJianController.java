@@ -65,26 +65,12 @@ public class AppXunJianController {
     @PostMapping(value = "/insertRecord")
     @ApiOperation(notes = "添加巡检数据到数据库", value = "添加巡检数据到数据库")
     public Map<String, Object> insertXunJianRecord(@RequestBody XunJianSubmitDTO xunJianSubmitDTO) {
-        Map<String, Object> map = new HashMap<>();
         ZcInfo zcInfo = zcInfoService.queryZnInfoByEpcId(xunJianSubmitDTO.getEpcid());
         if (null != zcInfo) {
-            int result = xunJianService.insertInspectRecord(xunJianSubmitDTO);
-            try {
-                if (result > 0) {
-                    map.put("code", 0);
-                    map.put("message", "成功");
-                    map.put("data", result);
-                }
-            } catch (Exception e) {
-                logger.error("添加巡检数据到数据库的接口,{}", e.getMessage());
-                map = FailMap.createFailMap();
-            }
+            Map<String, Object> map  = xunJianService.insertInspectRecord(xunJianSubmitDTO,zcInfo);
             return map;
         } else {
-            map.put("code", 0);
-            map.put("message", "资产不存在");
-            map.put("data", null);
-            return map;
+            return null;
         }
     }
 

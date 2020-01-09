@@ -173,4 +173,30 @@
 	VALUES
 	 ( #{zc_inspect_id}, #{zc_id}, now(), #{status} );
     </insert>
+
+
+    <select id="queryZcRealIdByZcId" resultType="com.itycu.server.app.model.AppXunJianReal">
+        SELECT
+            id,
+            zc_inspect_id as zcInspectId,
+            create_time as createTime,
+            result,
+            status,
+            zc_id as zcId
+        FROM
+            `zc_inspect_relation`
+        WHERE
+            zc_id = #{zc_id}
+        ORDER BY
+            create_time DESC
+        LIMIT 1
+    </select>
+
+
+    <select id="queryXunjianAgainId" resultType="java.lang.Integer">
+        select zc_id from
+        zc_inspect_relation
+        where zc_id = #{zcId}
+        and status = 0
+    </select>
 </mapper>

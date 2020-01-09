@@ -46,4 +46,10 @@ public interface ZcInspectDao {
 
 
     int saveZcInspectRel(Map<String, Object> params);
+
+
+    com.itycu.server.app.model.AppXunJianReal  queryZcRealIdByZcId(@Param("zc_id") long zcId);
+
+
+    Integer queryXunjianAgainId(@Param("zcId") long  zcId);
 }

@@ -3,9 +3,11 @@ package com.itycu.server.app.service;
 import com.itycu.server.app.dto.xunjian.XunJianSubmitDTO;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
 import com.itycu.server.model.SysUser;
+import com.itycu.server.model.ZcInfo;
 import com.itycu.server.model.ZcInspectRecord;
 
 import java.util.List;
+import java.util.Map;
 
 public interface XunJianService {
 
@@ -22,7 +24,7 @@ public interface XunJianService {
      * @param xunJianSubmitDTO
      * @return
      */
-    int insertInspectRecord(XunJianSubmitDTO xunJianSubmitDTO);
+    Map<String, Object>   insertInspectRecord(XunJianSubmitDTO xunJianSubmitDTO, ZcInfo zcInfo );
 
 
     List<XunJianVO>  getInspectRecordList(SysUser sysUser);

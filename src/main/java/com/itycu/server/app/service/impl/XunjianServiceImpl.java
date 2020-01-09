@@ -2,7 +2,9 @@ package com.itycu.server.app.service.impl;
 
 import com.itycu.server.app.constant.SystemConstant;
 import com.itycu.server.app.dto.xunjian.XunJianSubmitDTO;
+import com.itycu.server.app.model.AppXunJianReal;
 import com.itycu.server.app.service.XunJianService;
+import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
 import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.ZcInfoDao;
@@ -62,27 +64,51 @@ public class XunjianServiceImpl implements XunJianService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int insertInspectRecord(XunJianSubmitDTO xunJianSubmitDTO) {
-        ZcInspectRecord zcInspectRecord = new ZcInspectRecord();
-        zcInspectRecord.setImg(xunJianSubmitDTO.getImg());
-        zcInspectRecord.setOpinion(xunJianSubmitDTO.getOpinion());
-        zcInspectRecord.setAppearance(xunJianSubmitDTO.getAppearance());
-        zcInspectRecord.setResult(xunJianSubmitDTO.getResult());
-        zcInspectRecord.setFunct(xunJianSubmitDTO.getFunct());
-        zcInspectRecord.setResult(xunJianSubmitDTO.getResult());
+    public Map<String, Object>   insertInspectRecord(XunJianSubmitDTO xunJianSubmitDTO, ZcInfo zcInfo) {
+        Map<String,Object> map = new HashMap<>();
+        try {
 
+            ZcInspectRecord zcInspectRecord = new ZcInspectRecord();
+            zcInspectRecord.setImg(xunJianSubmitDTO.getImg());
+            zcInspectRecord.setOpinion(xunJianSubmitDTO.getOpinion());
+            zcInspectRecord.setAppearance(xunJianSubmitDTO.getAppearance());
+            zcInspectRecord.setResult(xunJianSubmitDTO.getResult());
+            zcInspectRecord.setFunct(xunJianSubmitDTO.getFunct());
+            zcInspectRecord.setResult(xunJianSubmitDTO.getResult());
+            AppXunJianReal appXunJianReal   = zcInspectDao.queryZcRealIdByZcId(zcInfo.getId());
+            if(null!=appXunJianReal){
+                if(appXunJianReal.getStatus()==1){
+                    map.put("code", 400);
+                    map.put("message", "该数据已经巡检过了");
+                    map.put("data", null);
+                    return map;
+                }
+            }
+            zcInspectRecord.setZcRealId(appXunJianReal.getId());
+            zcInspectRecord.setZcId(zcInfo.getId());
 
-        int zcInspectRelId = 0;
-
-
-
-        int flag = 0;
-        int result = zcInspectRecordDao.insertInspectRecord(zcInspectRecord);
-        if (result > 0) {
-            //更新巡检的天数为null
-            flag = zcInfoDao.updateInspectStatus(zcInspectRecord.getZcInspectId());
+            zcInspectRecord.setCreateBy(UserUtil.getLoginUser().getId());
+            zcInspectRecord.setBz("");
+            zcInspectRecord.setUpdateTime(new Date());
+            zcInspectRecord.setCreateTime(new Date());
+            zcInspectRecord.setCheckTime(new Date());
+            zcInspectRecord.setCheckUserId(UserUtil.getLoginUser().getId());
+            if( 0 !=appXunJianReal.getZcInspectId()){
+                zcInspectRecord.setZcInspectId(new Long(appXunJianReal.getId()));
+            }
+            int result = zcInspectRecordDao.insertInspectRecord(zcInspectRecord);
+            if (result > 0) {
+                zcInfoDao.updateInspectStatus(appXunJianReal.getZcInspectId());
+            }
+            map.put("code", 0);
+            map.put("message", "成功");
+            map.put("data", result);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map = FailMap.createFailMap();
+            return map;
         }
-        return flag;
     }
 
     @Override

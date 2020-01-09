@@ -141,9 +141,9 @@
 		 bz,
 		 zc_inspect_id,
 		 img,
-		 apperence,
+		 appearance,
 		 opinion,
-		 funciton
+		 funct
 		 ) values
 		(
 		#{zcInspectRecord.zcId},
@@ -155,11 +155,11 @@
 		#{zcInspectRecord.createBy},
 		now(),
 		#{zcInspectRecord.bz},
-		null,
+		#{zcInspectRecord.zcInspectId},
 		#{zcInspectRecord.img},
-		#{zcInspectRecord.apperence},
+		#{zcInspectRecord.appearance},
 		#{zcInspectRecord.opinion},
-		#{zcInspectRecord.funciton}
+		#{zcInspectRecord.funct}
 		)
 	</insert>
 
@@ -173,6 +173,6 @@
 
     <select id="getByInspectId" resultType="com.itycu.server.model.ZcInspectRecord">
         select  * from zc_inspect_record
-        as a where a.id = #{id}
+        as a where a.zc_inspect_id = #{id}
     </select>
 </mapper>
