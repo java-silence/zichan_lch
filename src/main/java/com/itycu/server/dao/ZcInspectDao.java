@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.itycu.server.app.vo.xunjian.XunJianVO;
+import com.itycu.server.model.ZcInspectRecord;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -52,4 +53,7 @@ public interface ZcInspectDao {
 
 
     Integer queryXunjianAgainId(@Param("zcId") long  zcId);
+
+
+    int updateLastInspect(@Param("zcInspectRecord") ZcInspectRecord zcInspectRecord);
 }

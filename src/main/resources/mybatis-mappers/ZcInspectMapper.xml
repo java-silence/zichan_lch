@@ -199,4 +199,22 @@
         where zc_id = #{zcId}
         and status = 0
     </select>
+
+    <update id="updateLastInspect">
+     UPDATE `zc_inspect_record`
+        SET
+            `content` = NULL,
+            `check_time` = #{zcInspectRecord.checkTime},
+            `result` =#{zcInspectRecord.result},
+            `check_user_id` =#{zcInspectRecord.checkUserId},
+            `check_username` = #{zcInspectRecord.checkUsername},
+            `create_by` = #{zcInspectRecord.createBy},
+            `bz` =  #{zcInspectRecord.bz},
+            `opinion` = #{zcInspectRecord.opinion},
+            `funct` = #{zcInspectRecord.funct},
+            `appearance` = #{zcInspectRecord.appearance},
+            `img` =  #{zcInspectRecord.img}
+        WHERE
+            `zc_inspect_id` = #{zcInspectRecord.zcInspectId}
+    </update>
 </mapper>

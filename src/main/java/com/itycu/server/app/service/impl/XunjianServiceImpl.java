@@ -64,10 +64,10 @@ public class XunjianServiceImpl implements XunJianService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Map<String, Object>   insertInspectRecord(XunJianSubmitDTO xunJianSubmitDTO, ZcInfo zcInfo) {
-        Map<String,Object> map = new HashMap<>();
+    public Map<String, Object> insertInspectRecord(XunJianSubmitDTO xunJianSubmitDTO, ZcInfo zcInfo) {
+        Map<String, Object> map = new HashMap<>();
         try {
-
+            int result = 0;
             ZcInspectRecord zcInspectRecord = new ZcInspectRecord();
             zcInspectRecord.setImg(xunJianSubmitDTO.getImg());
             zcInspectRecord.setOpinion(xunJianSubmitDTO.getOpinion());
@@ -75,30 +75,33 @@ public class XunjianServiceImpl implements XunJianService {
             zcInspectRecord.setResult(xunJianSubmitDTO.getResult());
             zcInspectRecord.setFunct(xunJianSubmitDTO.getFunct());
             zcInspectRecord.setResult(xunJianSubmitDTO.getResult());
-            AppXunJianReal appXunJianReal   = zcInspectDao.queryZcRealIdByZcId(zcInfo.getId());
-            if(null!=appXunJianReal){
-                if(appXunJianReal.getStatus()==1){
-                    map.put("code", 400);
-                    map.put("message", "该数据已经巡检过了");
-                    map.put("data", null);
-                    return map;
-                }
-            }
-            zcInspectRecord.setZcRealId(appXunJianReal.getId());
+            AppXunJianReal appXunJianReal = zcInspectDao.queryZcRealIdByZcId(zcInfo.getId());
             zcInspectRecord.setZcId(zcInfo.getId());
-
             zcInspectRecord.setCreateBy(UserUtil.getLoginUser().getId());
             zcInspectRecord.setBz("");
             zcInspectRecord.setUpdateTime(new Date());
             zcInspectRecord.setCreateTime(new Date());
             zcInspectRecord.setCheckTime(new Date());
             zcInspectRecord.setCheckUserId(UserUtil.getLoginUser().getId());
-            if( 0 !=appXunJianReal.getZcInspectId()){
-                zcInspectRecord.setZcInspectId(new Long(appXunJianReal.getId()));
-            }
-            int result = zcInspectRecordDao.insertInspectRecord(zcInspectRecord);
-            if (result > 0) {
-                zcInfoDao.updateInspectStatus(appXunJianReal.getZcInspectId());
+
+            if (null != appXunJianReal) {
+                zcInspectRecord.setZcRealId(appXunJianReal.getId());
+                if (0 != appXunJianReal.getZcInspectId()) {
+                    zcInspectRecord.setZcInspectId(new Long(appXunJianReal.getId()));
+                }
+                if (appXunJianReal.getStatus() == 1) {
+//                    map.put("code", 400);
+//                    map.put("message", "该数据已经巡检过了");
+//                    map.put("data", null);
+//                    return map;
+
+                    zcInspectDao.updateLastInspect(zcInspectRecord);
+                } else {
+                    result = zcInspectRecordDao.insertInspectRecord(zcInspectRecord);
+                    if (result > 0) {
+                        zcInfoDao.updateInspectStatus(appXunJianReal.getZcInspectId());
+                    }
+                }
             }
             map.put("code", 0);
             map.put("message", "成功");
