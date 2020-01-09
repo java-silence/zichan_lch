@@ -12,12 +12,15 @@ import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcChangeRecordService;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.*;
+import io.swagger.models.auth.In;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,6 +50,11 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private ZcEpcCodeDao zcEpcCodeDao;
 
 
+    @Autowired
+    private ZcInspectDao zcInspectDao;
+
+
+
     @Override
     public ZcInfo save(ZcInfo zcInfo) {
         zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
@@ -58,6 +66,8 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         return zcInfo;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ZcInfo update(ZcInfo zcInfo) {
 
@@ -74,8 +84,65 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         //保存变更记录
         zcChangeRecordService.save((ZcInfo) after, changeField);
         log.debug("编辑资产档案{}", zcInfo.getUpdateBy() + zcInfo.getZcName());
+
+        /**
+         * 插入巡检的数据记录
+         */
+        Integer inspectTime = zcInfo.getInspectTime();
+        if(null!=inspectTime && 0!= inspectTime){
+            insertInspectRecode(zcInfo);
+        }
+
         return zcInfo;
     }
+
+
+    private  void insertInspectRecode(ZcInfo zcInfo){
+        /**
+         * 插入的巡检记录表中
+         */
+        insertInspectData(zcInfo);
+    }
+
+    private int insertInspectData(ZcInfo zcInfo){
+        long  id = UserUtil.getLoginUser().getId();
+        ZcInspect inspect = new ZcInspect();
+        inspect.setZcId(zcInfo.getId());
+        inspect.setDays(String.valueOf(zcInfo.getInspectTime()));
+        inspect.setLastCheckTime(new Date());
+        inspect.setBz(null);
+        inspect.setCreateBy(id);
+        inspect.setUpdateBy(id);
+        inspect.setCreateTime(new Date());
+        inspect.setUpdateTime(new Date());
+        inspect.setCheckTime(new Date());
+        inspect.setCheckUserId(id);
+        inspect.setCheckUsername(UserUtil.getLoginUser().getUsername());
+        inspect.setStatus("1");
+        //正常状态
+        inspect.setDel(0);
+        inspect.setCheckDeptId(UserUtil.getLoginUser().getDeptid());
+        inspect.setCheckDeptName(UserUtil.getLoginUser().getLoginUserDepartName());
+        inspect.setCode("");
+        int result =  zcInspectDao.save(inspect);
+        if(result>0){
+            insertInspectRelation(zcInfo,inspect);
+        }else{
+            log.error("插入数据失败,资产id=={}",zcInfo.getId());
+        }
+        return result;
+    }
+
+    private void  insertInspectRelation(ZcInfo zcInfo,ZcInspect zcInspect){
+        Map<String,Object> map  = new HashMap<>();
+        map.put("zc_inspect_id",zcInspect.getId());
+        map.put("zc_id",zcInfo.getId());
+        map.put("status",0);
+        zcInspectDao.saveZcInspectRel(map);
+    }
+
+
+
 
     @Override
     public void delete(Long id) {

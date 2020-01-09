@@ -71,7 +71,10 @@ public class XunJianVO {
     private String inspectTime;
 
 
-
+    /**
+     * 巡检结果
+     */
+    private String result;
 
 
     /**

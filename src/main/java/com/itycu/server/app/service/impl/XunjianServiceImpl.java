@@ -70,9 +70,14 @@ public class XunjianServiceImpl implements XunJianService {
             return flag;
         }
         ZcInspect zcInspect = createZcInspect(zcInfo);
+        /**
+         * 设置巡检结果 看是否是完成 1完整 0 不完整
+         */
+        zcInspect.setStatus(zcInspectRecord.getResult());
         zcInspectDao.save(zcInspect);
         int result = zcInspectRecordDao.insertInspectRecord(zcInspectRecord);
         if (result > 0) {
+            //更新巡检的天数为null
             flag = zcInspectRecordDao.updateZcInfoInspected(zcInspectRecord.getZcId());
         }
         return flag;
@@ -97,6 +102,7 @@ public class XunjianServiceImpl implements XunJianService {
                 xunJianVO.setZcCodenum(zcInfo.getZcCodenum());
                 xunJianVO.setZcName(zcInfo.getZcName());
                 xunJianVO.setInspectTime(k.getDays());
+                xunJianVO.setResult(k.getStatus());
                 list.add(xunJianVO);
             });
         }
@@ -124,7 +130,6 @@ public class XunjianServiceImpl implements XunJianService {
         zcInspect.setCheckTime(new Date());
         zcInspect.setCheckUserId(UserUtil.getLoginUser().getId());
         zcInspect.setCheckUsername(UserUtil.getLoginUser().getUsername());
-        zcInspect.setStatus("0");
         zcInspect.setCheckDeptId(UserUtil.getLoginUser().getDeptid());
         zcInspect.setCheckDeptName(UserUtil.getLoginUser().getLoginUserDepartName());
         return zcInspect;

@@ -42,4 +42,7 @@ public interface ZcInspectDao {
 
 
     List<ZcInspect>  getByDeptId(@Param("deptId") long deptId);
+
+
+    int saveZcInspectRel(Map<String, Object> params);
 }

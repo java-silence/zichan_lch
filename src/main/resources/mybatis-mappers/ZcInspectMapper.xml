@@ -144,4 +144,12 @@
 		select * from
 		zc_inspect as a where a.check_dept_id = #{deptId}
     </select>
+
+
+    <insert id="saveZcInspectRel">
+      INSERT INTO `zc_inspect_relation`
+	(  `zc_inspect_id`, `zc_id`, `create_time`, `status` )
+	VALUES
+	 ( #{zc_inspect_id}, #{zc_id}, now(), #{status} );
+    </insert>
 </mapper>
