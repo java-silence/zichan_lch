@@ -1,18 +1,22 @@
 package com.itycu.server.app.controller;
 
 
-import com.itycu.server.app.dto.xunjian.InspectItemVO;
+import com.itycu.server.app.dto.xunjian.XunJianItemDetailDTO;
+import com.itycu.server.app.dto.xunjian.XunJianSubmitDTO;
 import com.itycu.server.app.service.XunJianService;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
 import com.itycu.server.model.SysUser;
+import com.itycu.server.model.ZcInfo;
 import com.itycu.server.model.ZcInspectRecord;
+import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -29,6 +33,13 @@ public class AppXunJianController {
 
     @Autowired
     private XunJianService xunJianService;
+
+    @Autowired
+    private ZcInfoService zcInfoService;
+
+
+    @Value("${IMAGE_SERVER}")
+    private String IMAGE_SERVER;
 
 
     @PostMapping(value = "/list")
@@ -52,21 +63,29 @@ public class AppXunJianController {
 
 
     @PostMapping(value = "/insertRecord")
-    @ApiOperation(notes = "添加巡检数据到数据库的接口", value = "添加巡检数据到数据库的接口")
-    public Map<String, Object> insertXunJianRecord(@RequestBody ZcInspectRecord zcInspectRecord) {
+    @ApiOperation(notes = "添加巡检数据到数据库", value = "添加巡检数据到数据库")
+    public Map<String, Object> insertXunJianRecord(@RequestBody XunJianSubmitDTO xunJianSubmitDTO) {
         Map<String, Object> map = new HashMap<>();
-        int result = xunJianService.insertInspectRecord(zcInspectRecord);
-        try {
-            if (result > 0) {
-                map.put("code", 0);
-                map.put("message", "成功");
-                map.put("data", result);
+        ZcInfo zcInfo = zcInfoService.queryZnInfoByEpcId(xunJianSubmitDTO.getEpcid());
+        if (null != zcInfo) {
+            int result = xunJianService.insertInspectRecord(xunJianSubmitDTO);
+            try {
+                if (result > 0) {
+                    map.put("code", 0);
+                    map.put("message", "成功");
+                    map.put("data", result);
+                }
+            } catch (Exception e) {
+                logger.error("添加巡检数据到数据库的接口,{}", e.getMessage());
+                map = FailMap.createFailMap();
             }
-        } catch (Exception e) {
-            logger.error("添加巡检数据到数据库的接口,{}", e.getMessage());
-            map = FailMap.createFailMap();
+            return map;
+        } else {
+            map.put("code", 0);
+            map.put("message", "资产不存在");
+            map.put("data", null);
+            return map;
         }
-        return map;
     }
 
 
@@ -90,16 +109,18 @@ public class AppXunJianController {
 
     @PostMapping(value = "/inspect/detail")
     @ApiOperation(notes = "获取巡检的详情", value = "获取巡检的详情")
-    public Map<String, Object> getInspectDetail() {
-        SysUser sysUser = UserUtil.getLoginUser();
+    public Map<String, Object> getInspectDetail(@RequestBody XunJianItemDetailDTO xunJianItemDetailDTO) {
         Map<String, Object> map = new HashMap<>();
         try {
-            List<XunJianVO> list = xunJianService.getInspectRecordList(sysUser);
+            ZcInspectRecord record = xunJianService.getInspectRecordById(xunJianItemDetailDTO.getId());
+            if (null != record) {
+                record.setImg(IMAGE_SERVER + record.getImg());
+            }
             map.put("code", 0);
             map.put("message", "成功");
-            map.put("data", list);
+            map.put("data", record);
         } catch (Exception e) {
-            logger.error("获取资产净值和资产数量错误,{}", e.getMessage());
+            logger.error("获取巡检的详情,{}", e.getMessage());
             map = FailMap.createFailMap();
         }
         return map;

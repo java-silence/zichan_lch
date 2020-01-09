@@ -706,6 +706,11 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     }
 
     @Override
+    public ZcInfo queryZnInfoByEpcId(String epcid) {
+        return zcInfoDao.queryZnInfoByEpcId(epcid);
+    }
+
+    @Override
     public List<ZcInfoDto> getAllZcInfoListByUser(SysUser sysUser, ZcInfoListDTO zcInfoListDTO) {
         Map<String, Object> map = new HashMap<>();
         map.put("page", zcInfoListDTO.getPage() * zcInfoListDTO.getLimit() - zcInfoListDTO.getLimit());
@@ -779,4 +784,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         result.setBaoxiuCount(deptBaoxiuCount);
         result.setXunjianCount(deptXunjianCount);
     }
+
+
+
 }

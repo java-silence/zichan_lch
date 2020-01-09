@@ -26,5 +26,7 @@ public interface ZcInfoService {
     AppIndexZcValueAndNumber getZcValueAndZcNumber(SysUser user);
 
 
+    ZcInfo  queryZnInfoByEpcId(String epcid);
+
     List<ZcInfoDto> getAllZcInfoListByUser(SysUser sysUser, ZcInfoListDTO zcInfoListDTO);
 }

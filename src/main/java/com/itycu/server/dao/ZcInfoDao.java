@@ -138,4 +138,7 @@ public interface ZcInfoDao {
 
     int updateInspectStatus(@Param("id") long id);
 
+
+    ZcInfo queryZnInfoByEpcId(String epcid);
+
 }

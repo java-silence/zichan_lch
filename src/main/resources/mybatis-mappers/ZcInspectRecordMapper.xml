@@ -169,4 +169,10 @@
         inspect_time = null
         where id = #{id}
     </update>
+
+
+    <select id="getByInspectId" resultType="com.itycu.server.model.ZcInspectRecord">
+        select  * from zc_inspect_record
+        as a where a.id = #{id}
+    </select>
 </mapper>

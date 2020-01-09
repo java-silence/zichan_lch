@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.vo.xunjian.XunJianVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,7 +42,7 @@ public interface ZcInspectDao {
     String getMaxCcode();
 
 
-    List<ZcInspect>  getByDeptId(@Param("deptId") long deptId);
+    List<XunJianVO>  getByDeptId(@Param("deptId") long deptId);
 
 
     int saveZcInspectRel(Map<String, Object> params);

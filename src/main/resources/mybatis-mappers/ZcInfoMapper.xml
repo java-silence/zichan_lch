@@ -682,6 +682,7 @@
             LEFT JOIN zc_info AS info ON a.zc_id = info.id
         WHERE
             a.STATUS = 0
+            and info.gl_dept_id = #{deptid}
     </select>
 
 
@@ -689,4 +690,10 @@
         update zc_inspect_relation set status = 1
         where id = #{id}
     </update>
+
+    <select id="queryZnInfoByEpcId" resultType="com.itycu.server.dto.ZcInfoDto">
+        select  * from zc_info as
+        a where a.del = 0 and
+        a.epcid = #{epcid}
+    </select>
 </mapper>

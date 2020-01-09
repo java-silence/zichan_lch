@@ -140,9 +140,30 @@
     </update>
 
 
-    <select id="getByDeptId" resultType="com.itycu.server.model.ZcInspect">
-		select * from
-		zc_inspect as a where a.check_dept_id = #{deptId}
+    <select id="getByDeptId" resultType="com.itycu.server.app.vo.xunjian.XunJianVO">
+        SELECT
+            c.id,
+            c.epcid,
+            c.zc_name AS zcName,
+            c.self_codenum AS selfCodenum,
+            c.store_address AS storeAddress,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = c.sy_dept_id ) AS syDeptName,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = c.gl_dept_id ) AS glDeptName,
+            c.gl_dept_id AS glDeptId,
+            c.create_time AS createTime,
+            c.inspect_time AS inspectTime,
+            c.sy_dept_id AS syDeptId,
+            c.zc_codenum AS zcCodenum,
+            a.id AS zcRealId,
+            a.result as result,
+            a.status as status
+        FROM
+            `zc_inspect_relation` AS a
+            LEFT JOIN zc_inspect AS info ON a.zc_inspect_id = info.id
+            LEFT JOIN zc_info AS c ON info.zc_id = c.id
+        WHERE
+            a.STATUS = 1
+            AND info.check_dept_id = #{deptId}
     </select>
 
 

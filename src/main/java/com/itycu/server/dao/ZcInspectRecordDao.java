@@ -62,4 +62,8 @@ public interface ZcInspectRecordDao {
      * @return
      */
     int updateZcInfoInspected(@Param("id") long id);
+
+
+
+    ZcInspectRecord  getByInspectId(@Param("id") long id);
 }
