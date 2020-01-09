@@ -663,27 +663,30 @@
 
 
     <select id="queryZcXunJianList" resultType="com.itycu.server.app.vo.xunjian.XunJianVO">
-SELECT
-    id,
-	epcid,
-	zc_name as zcName,
-	self_codenum as selfCodenum,
-	store_address as storeAddress,
-	( SELECT b.deptname FROM t_dept AS b WHERE b.id = sy_dept_id ) AS syDeptName,
-	( SELECT b.deptname FROM t_dept AS b WHERE b.id = gl_dept_id ) AS glDeptName,
-	gl_dept_id AS glDeptId,
-	create_time AS createTime,
-	inspect_time AS inspectTime,
-	sy_dept_id AS syDeptId,
-	zc_codenum AS zcCodenum
-FROM
-	zc_info
-WHERE
-	gl_dept_id = #{deptid}
-	AND (
-	FLOOR( timestampdiff( DAY, start_use_time, now( ) ) / inspect_time ) = timestampdiff( DAY, start_use_time, now( ) ) / inspect_time
-	) = 1
-	AND inspect_time IS NOT NULL
-	AND timestampdiff( DAY, start_use_time, now( ) ) > 0
+        SELECT
+            info.id,
+            info.epcid,
+            info.zc_name AS zcName,
+            info.self_codenum AS selfCodenum,
+            info.store_address AS storeAddress,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = info.sy_dept_id ) AS syDeptName,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = info.gl_dept_id ) AS glDeptName,
+            info.gl_dept_id AS glDeptId,
+            info.create_time AS createTime,
+            info.inspect_time AS inspectTime,
+            info.sy_dept_id AS syDeptId,
+            info.zc_codenum AS zcCodenum,
+            a.id as zcRealId
+        FROM
+            zc_inspect_relation AS a
+            LEFT JOIN zc_info AS info ON a.zc_id = info.id
+        WHERE
+            a.STATUS = 0
     </select>
+
+
+    <update id="updateInspectStatus">
+        update zc_inspect_relation set status = 1
+        where id = #{id}
+    </update>
 </mapper>

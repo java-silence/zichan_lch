@@ -82,4 +82,10 @@ public class XunJianVO {
      */
     private String zcCodenum;
 
+
+    /**
+     * 巡检关系id
+     */
+    private int zcRealId;
+
 }

@@ -69,16 +69,17 @@ public class XunjianServiceImpl implements XunJianService {
             logger.info("获取的资产数据目前存在");
             return flag;
         }
-        ZcInspect zcInspect = createZcInspect(zcInfo);
+        //ZcInspect zcInspect = createZcInspect(zcInfo);
         /**
          * 设置巡检结果 看是否是完成 1完整 0 不完整
          */
-        zcInspect.setStatus(zcInspectRecord.getResult());
-        zcInspectDao.save(zcInspect);
+          //zcInspect.setStatus(zcInspectRecord.getResult());
+          //zcInspectDao.save(zcInspect);
         int result = zcInspectRecordDao.insertInspectRecord(zcInspectRecord);
         if (result > 0) {
             //更新巡检的天数为null
-            flag = zcInspectRecordDao.updateZcInfoInspected(zcInspectRecord.getZcId());
+           // flag = zcInspectRecordDao.updateZcInfoInspected(zcInspectRecord.getZcId());
+            flag = zcInfoDao.updateInspectStatus(zcInspectRecord.getZcInspectId());
         }
         return flag;
     }
