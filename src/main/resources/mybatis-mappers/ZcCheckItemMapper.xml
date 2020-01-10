@@ -349,7 +349,7 @@ where  a.zc_check_id = #{checkId}  AND a.result =0
             LEFT JOIN t_dept AS y ON x.deptid = y.id
         WHERE
             x.id = b.create_by
-            ) AS slDeptName,
+            ) AS syDeptName,
             c.zc_name AS zcName,
             c.store_address AS storeAddress,
             a.id,

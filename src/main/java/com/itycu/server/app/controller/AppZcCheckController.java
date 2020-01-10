@@ -1,6 +1,7 @@
 package com.itycu.server.app.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.itycu.server.app.dto.pandian.ZcCheckListDTO;
 import com.itycu.server.app.dto.pandian.ZxCheckListItemDTO;
 import com.itycu.server.app.vo.pandian.CheckItemVO;
@@ -240,8 +241,207 @@ public class AppZcCheckController {
         List<CheckItemVO> zcCheckItems = zcCheckItemDao.queryCheckItemListById(id, offset * limit - limit, limit);
         params.put("zcCheckItems", zcCheckItems);
         params.put("danhao", danHao);
-        map.put("data", params);
+        map.put("data", zcCheckItems);
         return map;
     }
+
+
+    /**
+     *
+     */
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping("/updateZcItemStatus")
+    @ApiOperation(value = "盘点资产数据接口", tags = "盘点资产数据接口")
+    public Map updateAssetsState(String model, long zcCheckId) {
+        Map finalMap = new HashMap();
+        //更新找到的资产状态。
+        Map map = new HashMap();
+        logger.info("获得的Model===>  " + model);
+        if (StringUtils.isEmpty(model)) {
+            map.put("code", "500");
+            map.put("message", "盘点的数据为空");
+            return map;
+        }
+        try {
+            List<ZcCheckItem> zcCheckItemList = JSONObject.parseArray(model, ZcCheckItem.class);
+            if (!CollectionUtils.isEmpty(zcCheckItemList)) {
+                logger.info("盘点数据的列表是：===========》》{}", zcCheckItemList);
+                Map<String, Object> resultMap = insertProfitCheckItem(zcCheckItemList, zcCheckId);
+                //   List<ZcCheckItem> profitList = (List) resultMap.get("profitList");
+                List<ZcCheckItem> resultList = (List) resultMap.get("inCheckItemList");
+                List<ZcCheckItem> notInCheckItem = (List) resultMap.get("notInCheckItemList");
+                /**
+                 *  提交的EpcID 不在资产信息表中存在
+                 *  map.put("emptyEpcIdList", emptyEpcIdList);
+                 *
+                 *  提交的数据EpcId 在资产信息表中存在
+                 * map.put("notEmptyEpcIdList", notEmptyEpcIdList);
+                 *
+                 *  提交的盘点数据在当前盘点单下面
+                 * map.put("inCheckItemList", inCheckItemList);
+                 *
+                 * 提交的盘点数据不在当前的盘点单下面
+                 *  map.put("notInCheckItemList", notInCheckItemList);
+                 */
+                if (CollectionUtils.isEmpty(resultList)) {
+                    logger.info("盘点的数据全部是为空==={}", zcCheckId);
+                    map.put("code", "0");
+                    map.put("message", "成功");
+                    map.put("data", null);
+                    return map;
+                }
+                ZcCheckItem zcCheckItem = resultList.get(0);
+                //没有盘点数据
+                if (0 == zcCheckItem.getReCheck()) {
+                    int result = updateZcCheck(resultList, zcCheckItem);
+                    if (result > 0) {
+                        finalMap.put("notCheck",queryNotFullCheckItem(zcCheckId));
+                        finalMap.put("panying",queryPanYingCheckItem(zcCheckId));
+                        map.put("code", "0");
+                        map.put("message", "成功");
+                        map.put("data", finalMap);
+                    } else {
+                        map.put("code", "500");
+                        map.put("message", "操作失败");
+                        map.put("data", null);
+                    }
+                    return map;
+                } else {
+                    //再次盘点
+                    updateZcCheck(resultList, zcCheckItem);
+                    long checkId = zcCheckItem.getZcCheckId();
+                    long oldCheckId = zcCheckDao.queryOldCheckId(checkId);
+                    logger.info("查询到的原始id=====>{}", oldCheckId);
+                    int status = 1;
+                    int result = 0;
+                    //更新
+                    for (int i = 0; i < resultList.size(); i++) {
+                        long zcId = resultList.get(i).getZcId();
+                        result = zcCheckItemDao.updateItemStatusByZid(oldCheckId, zcId, status);
+                    }
+                    if (result > 0) {
+                        finalMap.put("notCheck",queryNotFullCheckItem(zcCheckId));
+                        finalMap.put("panying",queryPanYingCheckItem(zcCheckId));
+                        map.put("code", "0");
+                        map.put("message", "成功");
+                        map.put("data", finalMap);
+
+                    } else {
+                        map.put("code", "500");
+                        map.put("message", "操作失败");
+                        map.put("data", null);
+                    }
+                    return map;
+                }
+            } else {
+                map.put("code", "500");
+                map.put("message", "盘点的数据为空");
+                map.put("data", null);
+            }
+        } catch (Exception e) {
+            throw new NullPointerException(e.getMessage());
+        }
+        return map;
+    }
+
+
+
+    private int updateZcCheck(List<ZcCheckItem> zcCheckItemList, ZcCheckItem zcCheckItem) {
+        //新的表单的数据
+        for (int i = 0; i < zcCheckItemList.size(); i++) {
+            zcCheckItemDao.update(zcCheckItemList.get(i));
+        }
+        //将盘点的父表更新为盘点状态盘点中
+        long zcCheckId = zcCheckItem.getZcCheckId();
+        int status = 1; //盘点中的状态
+        return zcCheckDao.updateZcStatus(zcCheckId, status);
+    }
+
+
+    /**
+     * 过滤提交的数据中是否存在盘盈的数据，如果有直接插入到数据库中
+     * 如果没有的话 就是将资产的列表的返回之后更新资产的状态
+     */
+    private Map<String, Object> insertProfitCheckItem(List<ZcCheckItem> zcCheckItemList, long zcCheckId) {
+        Map<String, Object> map = new HashMap<>();
+        //1  如果列表中有盘盈的数据，
+        //2  找出需要盘盈的数据，加入到数据库中，更新数据的父表为盘盈的状态 ,字表插入盘盈的列表项
+        //long zcCheckId = zcCkeckId;
+        logger.info("【zcCheckId================>】" + zcCheckId);
+        if (0 == zcCheckId) {
+            return null;
+        }
+        List<String> emptyEpcIdList = new ArrayList<>();
+        List<String> notEmptyEpcIdList = new ArrayList<>();
+        List<ZcCheckItem> inCheckItemList = new ArrayList<>();
+        List<ZcInfoDto> notInCheckItemList = new ArrayList<>();
+        zcCheckItemList.forEach(k -> {
+            String epcId = k.getEpcid();
+            ZcInfoDto zcInfo = zcCheckDao.getByEpcId(epcId);
+            if (null != zcInfo) {
+                notEmptyEpcIdList.add(epcId);
+                long zcId = zcInfo.getId();
+                //查询盘点的资产信息是否在当前的盘点记录的盘点单里面
+                ZcCheckItem zcCheck = zcCheckItemDao.findZcItemInZcCheckSubList(zcId, zcCheckId);
+                if (null != zcCheck) {
+                    //设置为盘点中
+                    zcCheck.setResult("1");
+                    inCheckItemList.add(zcCheck);
+                } else {
+                    //
+                    notInCheckItemList.add(zcInfo);
+                }
+            } else {
+                emptyEpcIdList.add(epcId);
+            }
+        });
+        map.put("emptyEpcIdList", emptyEpcIdList);
+        map.put("notEmptyEpcIdList", notEmptyEpcIdList);
+        map.put("inCheckItemList", inCheckItemList);
+        map.put("notInCheckItemList", notInCheckItemList);
+        logger.info("EpcId为空的数据 emptyEpcIdList =========>{}," +
+                        "EpcId不为空数据 notEmptyEpcIdList===>{}, " +
+                        "当前盘点单存在的数据 inCheckItemList===>{},不在当前盘点单中的数据 notInCheckItemList ===>{}",
+                emptyEpcIdList, notEmptyEpcIdList, inCheckItemList, notInCheckItemList);
+        /**
+         * 盘盈数据处理方式
+         */
+        if (!CollectionUtils.isEmpty(notInCheckItemList)) {
+            List<ZcCheckItem> result = new ArrayList<>();
+            notInCheckItemList.forEach(k -> {
+                ZcCheckItem zcCheckItem = new ZcCheckItem();
+                //盘点完成
+                zcCheckItem.setResult("1");
+                zcCheckItem.setProfit(1);
+                zcCheckItem.setFinishTime(new Date());
+                zcCheckItem.setZcId(k.getId());
+                zcCheckItem.setZcCheckId(zcCheckId);
+                zcCheckItem.setDel(0);
+                //没有再次复盘
+                zcCheckItem.setReCheck(0);
+                result.add(zcCheckItem);
+            });
+            int profit = 1;
+            zcCheckDao.batchZcItem(result);
+            zcCheckDao.updateZcCheck(zcCheckId, profit);
+        }
+        return map;
+    }
+
+
+    private List<ZcEpcCheckItem> queryNotFullCheckItem(long zcCheckId) {
+        List<ZcEpcCheckItem> zcCheckItemList = zcCheckItemDao.queryNotFullCheckItem(zcCheckId);
+        return zcCheckItemList;
+    }
+
+
+
+    private List<ZcEpcCheckItem> queryPanYingCheckItem(long zcCheckId) {
+        List<ZcEpcCheckItem> zcCheckItemList = zcCheckItemDao.queryPanYingCheckItem(zcCheckId);
+        return zcCheckItemList;
+    }
+
 
 }
