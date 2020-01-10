@@ -18,31 +18,31 @@ import java.util.List;
 public class InspectTask {
 
 
-
     @Autowired
     private ZcInspectDao zcInspectDao;
-
-
 
 
     //3.添加定时任务
     @Scheduled(cron = "0/5000 * * * * ?")
     private void configureTasks() {
 
-        List<ZcInspect>  zcInspectList = zcInspectDao.listAll();
-        if(CollectionUtils.isEmpty(zcInspectList)){
-           return ;
+        List<ZcInspect> zcInspectList = zcInspectDao.listAll();
+        if (CollectionUtils.isEmpty(zcInspectList)) {
+            return;
         }
 
+
+        /**
+         * TODO 重复巡检数据
+         */
         List<Long> waitXunJianList = new ArrayList<>();
-        zcInspectList.forEach(k->{
+        zcInspectList.forEach(k -> {
             long zcId = k.getZcId();
             Integer waitXunJianZcId = zcInspectDao.queryXunjianAgainId(zcId);
-            if(null == waitXunJianZcId ) {
+            if (null == waitXunJianZcId) {
                 waitXunJianList.add(zcId);
             }
         });
-
 
 
         System.err.println("执行静态定时任务时间: " + LocalDateTime.now());

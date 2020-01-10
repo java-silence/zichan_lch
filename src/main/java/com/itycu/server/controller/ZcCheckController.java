@@ -272,7 +272,7 @@ public class ZcCheckController {
             count = zcCheckDao.queryCountManagerDeptIds(request.getParams());
             logger.info("获得的查询总数是==={}", count);
         }
-
+        createZcCheckTableInfo(managerIdList);
         if (!CollectionUtils.isEmpty(managerIdList)) {
             for (ZcCheck zcCheck : managerIdList) {
                 long id = zcCheck.getId();
