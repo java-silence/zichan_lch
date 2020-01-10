@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.vo.pandian.CheckItemVO;
 import com.itycu.server.model.ZcEpcCheckItem;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -105,4 +106,7 @@ public interface ZcCheckItemDao {
 
 
     ZcCheckItem  findZcItemInZcCheckSubList(@Param("zcId") long  zcId,@Param("zcCheckId") Long  zc_check_id);
+
+
+    List<CheckItemVO> queryCheckItemListById(@Param("id") long  id, @Param("offset") long  offset, @Param("limit") long  limit);
 }

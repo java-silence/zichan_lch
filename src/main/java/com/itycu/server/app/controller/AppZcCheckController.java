@@ -2,12 +2,12 @@ package com.itycu.server.app.controller;
 
 
 import com.itycu.server.app.dto.pandian.ZcCheckListDTO;
+import com.itycu.server.app.dto.pandian.ZxCheckListItemDTO;
+import com.itycu.server.app.vo.pandian.CheckItemVO;
 import com.itycu.server.controller.ZcCheckController;
 import com.itycu.server.dao.*;
-import com.itycu.server.model.Dept;
-import com.itycu.server.model.SysUser;
-import com.itycu.server.model.ZcCheck;
-import com.itycu.server.model.ZcCheckItem;
+import com.itycu.server.dto.ZcInfoDto;
+import com.itycu.server.model.*;
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcCheckService;
 import com.itycu.server.utils.UserUtil;
@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -139,7 +140,7 @@ public class AppZcCheckController {
                 int createCount = zcCheckService.checkHasCreatedCount(UserUtil.getLoginUser().getId(), Long.parseLong(ids[i]));
                 if (createCount > 0) {
                     map.put("message", "该盘点单已经创建过了");
-                    map.put("code", "500");
+                    map.put("code", "400");
                     return map;
                 }
             }
@@ -211,4 +212,36 @@ public class AppZcCheckController {
             return sb.toString() + source;
         }
     }
+
+
+    @PostMapping("/info")
+    @ApiOperation(value = "获取盘点单的数据信息")
+    @Transactional
+    public Map<String, Object> zcCheckDanHaoInfo(@RequestBody ZxCheckListItemDTO zxCheckListItemDTO) {
+        Map<String, Object> map = new HashMap<>();
+        int offset = zxCheckListItemDTO.getOffset();
+        int limit = zxCheckListItemDTO.getLimit();
+        long id = zxCheckListItemDTO.getId();
+        logger.info("获取订单的盘点id=====》{}", zxCheckListItemDTO.getId());
+        ZcCheck zcCheck = zcCheckDao.getById(id);
+        String jx = deptDao.getJxById(id);
+        int count = zcCheck.getBh();
+        String pdNum = "";
+        if (count == 0) {
+            pdNum = "00001";
+        } else {
+            String countStr = String.valueOf(count);
+            pdNum = appendName(5, countStr);
+        }
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        String danHao = jx + "-PD" + year + "-" + pdNum;
+        HashMap<String, Object> params = new HashMap<>();
+        List<CheckItemVO> zcCheckItems = zcCheckItemDao.queryCheckItemListById(id, offset * limit - limit, limit);
+        params.put("zcCheckItems", zcCheckItems);
+        params.put("danhao", danHao);
+        map.put("data", params);
+        return map;
+    }
+
 }
