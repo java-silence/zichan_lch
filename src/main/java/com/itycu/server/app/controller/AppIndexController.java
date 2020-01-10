@@ -9,7 +9,6 @@ import com.itycu.server.app.util.FailMap;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.Todo;
-import com.itycu.server.model.ZcInfo;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
