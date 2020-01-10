@@ -170,7 +170,7 @@
             },
             success: function (data) {
                 layer.close(loadingFlag);
-                layer.msg("添加成功", {shift: -1, time: 1000}, function () {
+                layer.msg(data.message, {shift: -1, time: 1000}, function () {
                     parent.layui.table.reload('data'); //重载表格
                     parent.layer.close(index); //再执行关闭
                 });
