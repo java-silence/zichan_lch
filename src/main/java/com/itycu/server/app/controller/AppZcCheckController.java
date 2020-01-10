@@ -1,6 +1,7 @@
 package com.itycu.server.app.controller;
 
 
+import com.itycu.server.app.dto.pandian.ZcCheckListDTO;
 import com.itycu.server.controller.ZcCheckController;
 import com.itycu.server.dao.*;
 import com.itycu.server.model.Dept;
@@ -17,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -48,13 +47,14 @@ public class AppZcCheckController {
     private ZcInfoDao zcInfoDao;
 
 
-    @GetMapping("/getZcCheckList")
+    @PostMapping("/getZcCheckList")
     @ApiOperation(value = "App端获取盘点列表")
-    public Map<String, Object> list2(PageTableRequest request) {
-        Integer page = Integer.valueOf((String) request.getParams().get("offset"));
-        Integer limit = Integer.valueOf((String) request.getParams().get("limit"));
+    public Map<String, Object> getZcCheckList(@RequestBody ZcCheckListDTO zcCheckListDTO) {
+        Integer page = zcCheckListDTO.getOffset();
+        Integer limit = zcCheckListDTO.getLimit();
+        Map<String, Object> param = new HashMap<>();
         Integer type = null;
-        String typeStr = (String) request.getParams().get("type");
+        String typeStr = zcCheckListDTO.getType();
         if (StringUtils.isEmpty(typeStr)) {
             type = 3;
         } else {
@@ -63,7 +63,6 @@ public class AppZcCheckController {
         SysUser sysUser = UserUtil.getLoginUser();
         long deptId = sysUser.getDeptid();
         int checked = 0;
-        logger.info("获取的请求参数是：" + request.getParams());
         logger.info("获取档期登录用户的部门id:{}", deptId);
         int count = 0;
         Map<String, Object> map = new HashMap();
@@ -73,34 +72,34 @@ public class AppZcCheckController {
         if (null != dept) {
             logger.info("获取的盘点数据是 type======>{}", type);
             if (type == 3 || null == type) {
-                request.getParams().put("profit", null);
+                param.put("profit", null);
             } else {
-                request.getParams().put("profit", type);
+                param.put("profit", type);
             }
-            request.getParams().put("del", "0");
-            request.getParams().put("createBy", UserUtil.getLoginUser().getId());
-            request.getParams().put("deptId", deptId);
-            request.getParams().put("pid", dept.getPid());
-            request.getParams().put("deptType", dept.getC03());
+            param.put("del", "0");
+            param.put("createBy", UserUtil.getLoginUser().getId());
+            param.put("deptId", deptId);
+            param.put("pid", dept.getPid());
+            param.put("deptType", dept.getC03());
             if (("cwb").equals(dept.getC03())) {
-                request.getParams().put("statusList", Arrays.asList(0, 1));// 盘点状态不等于2
+                param.put("statusList", Arrays.asList(0, 1));// 盘点状态不等于2
                 //财务登录当前账号
                 logger.info("当前登录账号类型财务部门是======>>{}", dept.getDeptname());
-                managerIdList = queryManagerDeptIds(request.getParams(), page * limit - limit, limit);
+                managerIdList = queryManagerDeptIds(param, page * limit - limit, limit);
             } else if ("zhb".equals(dept.getC03()) || "kjb".equals(dept.getC03())
                     || "yyb".equals(dept.getC03()) || "bwb".equals(dept.getC03())) {
                 //四个部门的登录当前账
-                request.getParams().put("statusList", Arrays.asList(0, 1));//  盘点状态不等于2
+                param.put("statusList", Arrays.asList(0, 1));//  盘点状态不等于2
                 logger.info("当前登录账号搜四个管理部门中之一:======>>{}", dept.getDeptname());
-                managerIdList = queryManagerDeptIds(request.getParams(), page * limit - limit, limit);
+                managerIdList = queryManagerDeptIds(param, page * limit - limit, limit);
             } else {
                 //其他部门或者是支行登录
-                request.getParams().put("statusList", Arrays.asList(0, 1));//  盘点状态不等于2
+                param.put("statusList", Arrays.asList(0, 1));//  盘点状态不等于2
                 logger.info("当前登录账号类型是其他账号:======>>{}", dept.getDeptname());
-                logger.info("当前登录账号参数类型:======>>{}", request.getParams());
-                managerIdList = queryManagerDeptIds(request.getParams(), page * limit - limit, limit);
+                logger.info("当前登录账号参数类型:======>>{}", param);
+                managerIdList = queryManagerDeptIds(param, page * limit - limit, limit);
             }
-            count = zcCheckDao.queryCountManagerDeptIds(request.getParams());
+            count = zcCheckDao.queryCountManagerDeptIds(param);
             logger.info("获得的查询总数是==={}", count);
         }
         createZcCheckTableInfo(managerIdList);
@@ -164,7 +163,6 @@ public class AppZcCheckController {
             } else {
                 zcCheck.setCheckUserName("");
             }
-
         }
     }
 
@@ -185,5 +183,4 @@ public class AppZcCheckController {
             return sb.toString() + source;
         }
     }
-
 }
