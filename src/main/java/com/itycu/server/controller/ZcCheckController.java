@@ -61,19 +61,24 @@ public class ZcCheckController {
     @Transactional
     public Map save(@RequestBody ZcCheck zcCheck) {
         Map<String, Object> map = new HashMap();
-        int createCount = zcCheckService.checkHasCreatedCount( UserUtil.getLoginUser().getId(),Long.parseLong(zcCheck.getCheckDeptId()));
-        if(createCount>0){
-            map.put("code", "500");
-            map.put("message", "该盘点单已经创建过了");
-            return map;
+        if (!StringUtils.isEmpty(zcCheck.getCheckDeptId())) {
+            String[] ids = zcCheck.getCheckDeptId().split(",");
+            for (int i = 0; i < ids.length; i++) {
+                int createCount = zcCheckService.checkHasCreatedCount(UserUtil.getLoginUser().getId(), Long.parseLong(ids[i]));
+                if (createCount > 0) {
+                    map.put("code", "500");
+                    map.put("message", "该盘点单已经创建过了");
+                    return map;
+                }
+            }
         }
         int result = zcCheckService.insertZcTask(zcCheck);
         if (result > 0) {
             map.put("code", "0");
-            map.put("message", "成功");
+            map.put("message", "添加成功");
         } else {
             map.put("code", "500");
-            map.put("message", "失败");
+            map.put("message", "添加失败");
         }
         return map;
     }
@@ -86,7 +91,7 @@ public class ZcCheckController {
         SysUser sysUser = UserUtil.getLoginUser();
         long deptid = sysUser.getDeptid();
         logger.info("获取用户部门信息是=={},部门id=={}", sysUser, deptid);
-        Map map = zcCheckService.pdeSaveCheck(String.valueOf(deptid),profit);
+        Map map = zcCheckService.pdeSaveCheck(String.valueOf(deptid), profit);
         logger.info("获取用最后数据信息是=={},", map);
         return map;
     }
@@ -220,12 +225,12 @@ public class ZcCheckController {
 
         Integer type = null;
         String typeStr = (String) request.getParams().get("type");
-        if(StringUtils.isEmpty(typeStr)){
+        if (StringUtils.isEmpty(typeStr)) {
             type = 3;
-        }else{
+        } else {
             type = Integer.valueOf(typeStr);
         }
-       // Integer  type  = Integer.valueOf((String) request.getParams().get("type"));
+        // Integer  type  = Integer.valueOf((String) request.getParams().get("type"));
         SysUser sysUser = UserUtil.getLoginUser();
         long deptId = sysUser.getDeptid();
         int checked = 0;
@@ -238,11 +243,11 @@ public class ZcCheckController {
         //获取去区分不同的部门
         Dept dept = deptDao.getById(deptId);
         if (null != dept) {
-            logger.info("获取的盘点数据是 type======>{}",type);
+            logger.info("获取的盘点数据是 type======>{}", type);
 
-            if(type==3 || null==type){
+            if (type == 3 || null == type) {
                 request.getParams().put("profit", null);
-            }else{
+            } else {
                 request.getParams().put("profit", type);
             }
 
@@ -369,13 +374,13 @@ public class ZcCheckController {
         if (CollectionUtils.isEmpty(managerIdList)) {
             return;
         }
-            for (ZcCheck zcCheck : managerIdList) {
+        for (ZcCheck zcCheck : managerIdList) {
             long id = zcCheck.getId();
             ZcCheck zc = zcCheckDao.getById(id);
             Dept dept = deptDao.getById(Long.parseLong(zcCheck.getCheckDeptId()));
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
-            zcCheck.setCheck_num( dept.getJx() + "-PD" + year + "-"+appendName(5, String.valueOf(zc.getBh())));
+            zcCheck.setCheck_num(dept.getJx() + "-PD" + year + "-" + appendName(5, String.valueOf(zc.getBh())));
             List<ZcCheckItem> zcCheckItemList = zcCheckItemDao.queryCheckFailItem(id);
             if (null != zcCheckItemList) {
                 zcCheck.setError(zcCheckItemList.size());
@@ -385,7 +390,7 @@ public class ZcCheckController {
                 zcCheck.setNormal(zc.getTotal());
             }
             if (null != zc.getCheckUserId()) {
-                String userName = zcCheckDao.queryPandianUserName(zcCheck.getId(),zc.getCheckUserId());
+                String userName = zcCheckDao.queryPandianUserName(zcCheck.getId(), zc.getCheckUserId());
                 if (StringUtils.isEmpty(userName)) {
                     zcCheck.setCheckUserName("");
                 } else {
@@ -453,18 +458,18 @@ public class ZcCheckController {
         map.put("endUser", checkUser(id));
         map.put("startTime", simpleDateInfo(zcCheck.getCreateTime()));
         map.put("endTime", simpleDateInfo(zcCheck.getCreateTime()));
-        map.put("list","");
+        map.put("list", "");
         int normal = getNormal(id);
         int total = getTotal(id);
         // 查询部门资产
         HashMap<String, Object> params = new HashMap<>();
-        params.put("syDeptId",zcCheck.getCheckDeptId());
+        params.put("syDeptId", zcCheck.getCheckDeptId());
         List<ZcInfoDto> zcInfoDtos = zcInfoDao.listByCondition(params);
 
         // 本部门盘点总数
         map.put("total", zcInfoDtos.size());
         //本部门差异数量
-        map.put("chayi", Math.abs(zcInfoDtos.size()-normal));
+        map.put("chayi", Math.abs(zcInfoDtos.size() - normal));
         // 本部门正常数量
         map.put("normal", normal);
         map.put("account", getAccountName(String.valueOf(zcCheck.getCheckDeptId())));
@@ -472,9 +477,9 @@ public class ZcCheckController {
         map.put("error", error);
         // 盘盈数据
         int profitCount = getProfitCount(id);
-        int trueNum = normal-profitCount;
+        int trueNum = normal - profitCount;
         // 实际本部门盘点数量
-        map.put("trueNum",trueNum);
+        map.put("trueNum", trueNum);
         if (profitCount > 0) {
             //标记是否是实物盘点的数据
             map.put("profit", "Y");
@@ -489,10 +494,10 @@ public class ZcCheckController {
 
         //获取不同的部门的差异数据量
         List<ZcItemDeptCountInfo> zcInfoDtoList = zcCheckDao.queryPanYinZcList(id);
-        if(!CollectionUtils.isEmpty(zcInfoDtoList)){
-            zcInfoDtoList.forEach(k->{
-               k.setActCount(k.getDiffCount());
-               k.setDeptTotalCount(0);
+        if (!CollectionUtils.isEmpty(zcInfoDtoList)) {
+            zcInfoDtoList.forEach(k -> {
+                k.setActCount(k.getDiffCount());
+                k.setDeptTotalCount(0);
             });
             map.put("deptList", zcInfoDtoList);
         }
@@ -683,8 +688,8 @@ public class ZcCheckController {
     private void exportPanDian(HttpServletResponse response, List<ZcCheck> managerIdList) {
         String fileName = "盘点记录";
         String[] headers = new String[]{
-                "盘点单号","盘点部门", "盘点人","盘点时间",
-                "资产总数",  "正常数量", "差异数量","盘点状态",
+                "盘点单号", "盘点部门", "盘点人", "盘点时间",
+                "资产总数", "正常数量", "差异数量", "盘点状态",
                 "盘点结果", "是否已复盘", "盘点类型", "创建人",
                 "创建时间", "更新时间", "备注"};
         List<Object[]> datas = new ArrayList<>(managerIdList.size());
@@ -704,7 +709,7 @@ public class ZcCheckController {
             Dept dept = deptDao.getById(Long.parseLong(zcInfo.getCheckDeptId()));
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
-            String checkUserName =    dept.getJx() + "-PD" + year + "-"+ appendName(5, String.valueOf(zc.getBh()));
+            String checkUserName = dept.getJx() + "-PD" + year + "-" + appendName(5, String.valueOf(zc.getBh()));
             if (zcInfo.getCheckTime() != null) {
                 checkTime = s.format(zcInfo.getCheckTime());
             }
@@ -739,7 +744,7 @@ public class ZcCheckController {
 
             String userName = "";
             if (null != zc.getCheckUserId()) {
-                 userName = zcCheckDao.queryPandianUserName(zcInfo.getId(),zc.getCheckUserId());
+                userName = zcCheckDao.queryPandianUserName(zcInfo.getId(), zc.getCheckUserId());
             }
             int errorNum = 0;
             int normalNum = 0;
@@ -752,8 +757,8 @@ public class ZcCheckController {
                 normalNum = (zc.getTotal());
             }
             Object[] objects = new Object[]{
-                    checkUserName , zcInfo.getCheckDeptName(),userName , checkTime,
-                    zcInfo.getTotal(), normalNum,errorNum, pdStatus,
+                    checkUserName, zcInfo.getCheckDeptName(), userName, checkTime,
+                    zcInfo.getTotal(), normalNum, errorNum, pdStatus,
                     pdResult, reCheck, pdProfit, zcInfo.getCreator(), createTime, updateTime, zcInfo.getBz()
             };
             datas.add(objects);

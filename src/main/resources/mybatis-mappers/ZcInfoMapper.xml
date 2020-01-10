@@ -697,4 +697,21 @@
         a where a.del = 0 and
         a.epcid = #{epcid}
     </select>
+
+
+
+    <!-- 查询其他部门下面的资产信息表	-->
+    <select id="queryGlDeptZc" resultType="com.itycu.server.dto.ZcInfoDto">
+		SELECT
+			c.*
+		FROM
+			zc_info AS c
+			left join t_dept as d
+			on c.gl_dept_id = d.id
+		where
+			 c.gl_dept_id =  #{syDeptId}
+		AND c.del = 0
+		AND c.bf = 0
+		and d.c03 = #{deptType}
+	</select>
 </mapper>

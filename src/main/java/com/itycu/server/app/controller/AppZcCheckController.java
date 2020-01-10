@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -127,11 +128,38 @@ public class AppZcCheckController {
     }
 
 
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "保存")
+    @Transactional
+    public Map save(@RequestBody ZcCheck zcCheck) {
+        Map<String, Object> map = new HashMap();
+        if (!StringUtils.isEmpty(zcCheck.getCheckDeptId())) {
+            String[] ids = zcCheck.getCheckDeptId().split(",");
+            for (int i = 0; i < ids.length; i++) {
+                int createCount = zcCheckService.checkHasCreatedCount(UserUtil.getLoginUser().getId(), Long.parseLong(ids[i]));
+                if (createCount > 0) {
+                    map.put("message", "该盘点单已经创建过了");
+                    map.put("code", "500");
+                    return map;
+                }
+            }
+        }
+        int result = zcCheckService.insertZcTask(zcCheck);
+        if (result > 0) {
+            map.put("code", "0");
+            map.put("message", "操作成功");
+        } else {
+            map.put("code", "500");
+            map.put("message", "操作失败");
+        }
+        return map;
+    }
+
+
     private List<com.itycu.server.model.ZcCheck> queryManagerDeptIds(Map<String, Object> map, int page, int limit) {
         List<com.itycu.server.model.ZcCheck> list = zcCheckDao.queryManagerDeptIds(map, page, limit);
         return list;
     }
-
 
 
     private void createZcCheckTableInfo(List<ZcCheck> managerIdList) {
@@ -144,7 +172,7 @@ public class AppZcCheckController {
             Dept dept = deptDao.getById(Long.parseLong(zcCheck.getCheckDeptId()));
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
-            zcCheck.setCheck_num( dept.getJx() + "-PD" + year + "-"+appendName(5, String.valueOf(zc.getBh())));
+            zcCheck.setCheck_num(dept.getJx() + "-PD" + year + "-" + appendName(5, String.valueOf(zc.getBh())));
             List<ZcCheckItem> zcCheckItemList = zcCheckItemDao.queryCheckFailItem(id);
             if (null != zcCheckItemList) {
                 zcCheck.setError(zcCheckItemList.size());
@@ -154,7 +182,7 @@ public class AppZcCheckController {
                 zcCheck.setNormal(zc.getTotal());
             }
             if (null != zc.getCheckUserId()) {
-                String userName = zcCheckDao.queryPandianUserName(zcCheck.getId(),zc.getCheckUserId());
+                String userName = zcCheckDao.queryPandianUserName(zcCheck.getId(), zc.getCheckUserId());
                 if (StringUtils.isEmpty(userName)) {
                     zcCheck.setCheckUserName("");
                 } else {

@@ -107,7 +107,6 @@ public class ZcCheckServiceImpl implements ZcCheckService {
                 //财务部门创建盘点订单
                 for (int i = 0; i < idList.size(); i++) {
                     map.put("syDeptId", idList.get(i));
-
                     map.put("pid", dept.getPid());
                     log.info("sysDeptId===={},pid===={}", idList.get(i), deptid);
                     List<ZcInfoDto> zcInfoList = zcInfoDao.queryCwbZcInfoList(map);
@@ -137,7 +136,19 @@ public class ZcCheckServiceImpl implements ZcCheckService {
                     // map.put("glDeptId", deptid);
                     map.put("deptType", deptType);
                     log.info("syDeptId===={},glDeptId===={}", idList.get(i), deptid);
-                    List<ZcInfoDto> zcInfoList = zcInfoDao.queryOtherZcInfoList(map);
+                    List<ZcInfoDto> zcInfoList = null;
+                    Dept resultDept = deptDao.getById(Long.parseLong(idList.get(i))) ;
+                    if(null!=resultDept){
+                        if("bwb".equals(resultDept.getC03())
+                                || "zhb".equals(resultDept.getC03())
+                                || "yyb".equals(resultDept.getC03())
+                                || "kjb".equals(resultDept.getC03())){
+
+                            zcInfoList = zcInfoDao.queryGlDeptZc(map);
+                        }else{
+                            zcInfoList = zcInfoDao.queryOtherZcInfoList(map);
+                        }
+                    }
                     if (!CollectionUtils.isEmpty(zcInfoList)) {
                         zcCheck.setCheckDeptId(String.valueOf(idList.get(i)));
                         saveZcCheck(zcCheck, zcInfoList.size());

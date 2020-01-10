@@ -141,4 +141,7 @@ public interface ZcInfoDao {
 
     ZcInfo queryZnInfoByEpcId(String epcid);
 
+    List<ZcInfoDto> queryGlDeptZc(Map<String, Object> map);
+
+
 }
