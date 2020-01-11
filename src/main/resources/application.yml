@@ -77,6 +77,8 @@ token:
   jwtSecret: (XIAO:)_$^11244^%$_(WEI:)_@@++--(LAO:)_++++_.sds_(SHI:)
 server:
   port: 8080
+  address: 0.0.0.0
 
 DIAN_JIAN_CE_HOST : "http://112.35.81.14:8017"
 #DIAN_JIAN_CE_HOST : "http://10.0.26.27:8011"
+IMAGE_SERVER : "http://10.0.26.42:8888/files/"
