@@ -524,11 +524,11 @@ public class AppZcCheckController {
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/checkRecordList")
     @ApiOperation(value = "盘点记录列表", tags = "盘点记录列表")
-    public Map getChecked(@RequestBody ZcCheckRecordListDTO zcCheckRecordListDTO) {
-        Map<String,Object> paramMap = new HashMap<>();
+    public Map<String,Object> getChecked(@RequestBody ZcCheckRecordListDTO zcCheckRecordListDTO) {
+        Map<String, Object> paramMap = new HashMap<>();
         SysUser sysUser = UserUtil.getLoginUser();
-        Integer page = zcCheckRecordListDTO.getLimit();
-        Integer limit = zcCheckRecordListDTO.getOffset();
+        Integer limit = zcCheckRecordListDTO.getLimit();
+        Integer page= zcCheckRecordListDTO.getOffset();
         long deptId = sysUser.getDeptid();
         logger.info("获取档期登录用户的部门id:{}", deptId);
         int count = 0;
@@ -546,8 +546,6 @@ public class AppZcCheckController {
             //获取全部的盘点数据
             paramMap.put("profit", null);
 
-
-
             if (("cwb").equals(dept.getC03())) {
                 //财务登录当前账号
                 logger.info("当前登录账号类型财务部门是======>>{}", dept.getDeptname());
@@ -563,11 +561,25 @@ public class AppZcCheckController {
                 managerIdList = queryManagerDeptIds(paramMap, page * limit - limit, limit);
             }
             createZcCheckTableInfo(managerIdList);
-            count = zcCheckDao.queryCountManagerDeptIds(paramMap);
             logger.info("获得的查询总数是==={}", count);
         }
         map.put("data", managerIdList);
-        map.put("count", count);
+        map.put("code", "0");
+        map.put("message", "");
+        return map;
+    }
+
+
+    @PostMapping("/checkItemList/detail")
+    @ApiOperation(value = "获取盘点记录的列表数据", tags = "获取盘点记录的列表数据")
+    public Map<String,Object> list2(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
+        Map<String, Object> map = new HashMap();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("del", "0");
+        Integer page = zcCheckRecordDetailListDTO.getLimit();
+        Integer limit = zcCheckRecordDetailListDTO.getOffset();
+        List list = zcCheckItemDao.list(paramMap, page * limit - limit, limit);
+        map.put("data", list);
         map.put("code", "0");
         map.put("message", "");
         return map;
