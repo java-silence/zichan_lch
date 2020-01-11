@@ -38,7 +38,7 @@
 			</div>
 		</div>
 		<hr style="height:3px;">
-		<form class="layui-form" onsubmit="return false" id="form">
+		<form class="layui-form" onsubmit="return false" id="form" lay-filter="">
 			<div class='layui-form-item'>
 
 				<div class='layui-col-md3'>
@@ -105,13 +105,13 @@
 					</div>
 				</div>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>技术支持人员</label>
+					<label class='layui-form-label'>技术人员</label>
 					<div class='layui-input-block'>
 						<input class='layui-input' placeholder='技术支持人员' type='text' name='supportName' id='supportName' >
 					</div>
 				</div>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>技术支持电话</label>
+					<label class='layui-form-label'>技术电话</label>
 					<div class='layui-input-block'>
 						<input class='layui-input' placeholder='技术支持电话' type='text' name='supportPhone' id='supportPhone' >
 					</div>
@@ -132,7 +132,7 @@
 					</div>
 				</div>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>折旧年限(月份)</label>
+					<label class='layui-form-label'>折旧年限(月)</label>
 					<div class='layui-input-block'>
 						<input name='depreciationTime' id='depreciationTime' data-step="1" data-min="0" data-digit="0" class="alignment" data-edit="true" value="0"/>
 					</div>
@@ -213,12 +213,12 @@
 				<div class='layui-col-md3'>
 					<label class='layui-form-label'>发卡日期</label>
 					<div class='layui-input-block'>
-						<input class='layui-input' placeholder='发卡日期' type='text' name='cardTime' id='cardTime' >
+						<input class='layui-input'  placeholder='发卡日期' type='text' name='cardTime' id='cardTime' >
 					</div>
 				</div>
 
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>管理部门</label>
+					<label class='layui-form-label'><span class="layui-badge-dot" style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>管理部门</label>
 					<div class='layui-input-block'>
 						<input class="layui-input" type="text" id="glDeptName" data-id=""  placeholder="请选择管理部门" readonly="" autocomplete="off">
 						<div class="eleTree ele5" id="glDeptEleTree" lay-filter="glDeptEleTree"></div>
@@ -226,7 +226,7 @@
 					</div>
 				</div>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>使用部门</label>
+					<label class='layui-form-label'><span class="layui-badge-dot" style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>使用部门</label>
 					<div class='layui-input-block'>
 						<input class="layui-input" type="text" id="syDeptName" data-id=""  placeholder="请选择使用部门" readonly="" autocomplete="off">
 						<div class="eleTree ele5" id="syDeptEleTree" lay-filter="syDeptEleTree"></div>
@@ -263,10 +263,10 @@
 					</div>
 				</div>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>巡检周期</label>
+					<label class='layui-form-label'>巡检周期(天)</label>
 					<div class='layui-input-block'>
 						<input class='layui-input' placeholder='巡检周期' type='text' name='inspectTime' id='inspectTime' style="width:250px;float:left">
-						<div class="layui-form-mid layui-word-aux" style="margin-left: 5px">天</div>
+						<!--<div class="layui-form-mid layui-word-aux" style="margin-left: 5px">天</div>-->
 					</div>
 
 				</div>
@@ -274,13 +274,13 @@
 			</div>
 			<div class='layui-form-item'>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>开始使用日期</label>
+					<label class='layui-form-label'>开始日期</label>
 					<div class='layui-input-block'>
 						<input class='layui-input' placeholder='开始使用日期' type='text' name='startUseTime' id='startUseTime' >
 					</div>
 				</div>
 				<div class='layui-col-md3'>
-					<label class='layui-form-label'>预计使用年限</label>
+					<label class='layui-form-label'>预计年限</label>
 					<div class='layui-input-block'>
 						<input class='layui-input' placeholder='预计使用年限' type='text' name='predictYears' id='predictYears' >
 					</div>
@@ -425,13 +425,14 @@
 		</form>
 	</div>
 </div>
-	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../../js/num-alignment.js"></script>
-	<script type="text/javascript" src="../../js/jq.js"></script>
-	<script type="text/javascript" src="../../js/common.js"></script>
-    <script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
-    <script type="text/javascript" src="../../js/zcCategory.js"></script>
-    <script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../js/num-alignment.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/zcCategory.js"></script>
+<script type="text/javascript" src="../../js/dict.js"></script>
+<script type="text/javascript" src="../../js/xm-select.js"></script>
 	<script type="text/javascript">
 		// 加减数字初始化
 		alignmentFns.initialize();
@@ -495,7 +496,7 @@
 			if(!el1){
 				el1=eleTree.render({
 					elem: '#glDeptEleTree',
-					url:'/depts/eleTree',
+					url:'/depts/eleTreeSelf',
 					request: {
 						name: "name",
 					},
@@ -511,7 +512,7 @@
 			if(!el2){
 				el2=eleTree.render({
 					elem: '#syDeptEleTree',
-					url:'/depts/eleTree',
+					url:'/depts/xmSelectTree',
 					request: {
 						name: "name",
 					},
@@ -560,8 +561,19 @@
 		});
 
 		function add() {
-		    var formdata = $("#form").serializeObject();
 
+			// 表单验证
+			var glDeptId = $('#glDeptId').val();
+			var syDeptId = $('#syDeptId').val();
+			if (glDeptId == null || glDeptId == '' || isNaN(glDeptId)) {
+				layer.msg("请选择管理部门");
+				return
+			}
+			if (syDeptId == null || syDeptId == '' || isNaN(syDeptId)) {
+				layer.msg("请选择使用部门");
+				return
+			}
+		    var formdata = $("#form").serializeObject();
 			$.ajax({
 				type : 'post',
 				url : '/zcInfos',

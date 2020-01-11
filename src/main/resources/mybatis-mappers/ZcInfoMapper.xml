@@ -192,14 +192,12 @@
                 ${params.dynamicCondition}
             </if>
             <if test="params.daoqi != null and params.daoqi != ''">
-                and <![CDATA[ (use_months*30)-timestampdiff(DAY,start_use_time,now()) <= #{params.daoqi} ]]>
-                and <![CDATA[ (use_months*30)-timestampdiff(DAY,start_use_time,now()) > 0 ]]>
+                and <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) <= #{params.daoqi} ]]>
+                and <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) > 0 ]]>
             </if>
             <if test="params.linbao != null and params.linbao != ''">
-                and <![CDATA[ (warrantyperiod*30)-timestampdiff(DAY,start_use_time,now()) <= #{params.daoqi} ]]>
-                and <![CDATA[ (warrantyperiod*30)-timestampdiff(DAY,start_use_time,now()) > 0 ]]>
-                <!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) <= #{params.linbao} ]]>-->
-                <!--                and <![CDATA[ timestampdiff(DAY,start_use_time,maintain_deadline) > 0 ]]>-->
+                and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) <= #{params.linbao} ]]>
+                and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) > 0 ]]>
             </if>
             <if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
                 and
