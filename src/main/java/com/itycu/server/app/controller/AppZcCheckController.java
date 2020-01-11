@@ -1,7 +1,10 @@
 package com.itycu.server.app.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.itycu.server.app.dto.pandian.ZcCheckDTO;
+import com.itycu.server.app.dto.pandian.ZcCheckFinishedDTO;
 import com.itycu.server.app.dto.pandian.ZcCheckListDTO;
 import com.itycu.server.app.dto.pandian.ZxCheckListItemDTO;
 import com.itycu.server.app.vo.pandian.CheckItemVO;
@@ -246,29 +249,114 @@ public class AppZcCheckController {
     }
 
 
-    /**
-     *
-     */
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping("/finishAssetsStatus")
+    @ApiOperation(value = "完成后,修改资产状态", tags = "完成后,修改资产状态")
+    public Map updateAssetsState(@RequestBody ZcCheckFinishedDTO zcCheckFinishedDTO) {
+        //更新找到的资产状态。
+        long id = zcCheckFinishedDTO.getId();
+        Map map = new HashMap();
+        try {
+            ZcCheck zcCheck = zcCheckDao.getById(zcCheckFinishedDTO.getId());
+            zcCheck.setStatus(2);
+            long checkId = zcCheck.getId();
+            if (zcCheck.getReCheck() == 0) {
+                //盘点完成
+                List<ZcCheckItem> items = zcCheckItemDao.queryAllZcCheckItem(checkId);
+                int result = updateZcStatusAndCheckZcResult(zcCheck, items);
+                if (result > 0) {
+                    map.put("code", "0");
+                    map.put("message", "成功");
+                } else {
+                    map.put("code", "500");
+                    map.put("message", "失败");
+                }
+            } else {
+                logger.info("提交的盘点单的id是==={}", id);
+                //更新新的盘点数据
+                List<ZcCheckItem> newCheckItemList = zcCheckItemDao.queryRecheckId(id);
+                zcCheck.setDel(1);
+                updateZcStatusAndCheckZcResult(zcCheck, newCheckItemList);
+
+                //更新原始的盘点数据
+                long oldCheckId = zcCheckDao.queryOldCheckId(id);
+                List<ZcCheckItem> reCheckItemList = zcCheckItemDao.queryRecheckId(oldCheckId);
+                ZcCheck oldZcCheck = zcCheckDao.getById(oldCheckId);
+                oldZcCheck.setId(oldCheckId);
+                oldZcCheck.setDel(0);
+                updateZcStatusAndCheckZcResult(oldZcCheck, reCheckItemList);
+                //删除原来的复盘数据
+                int result = zcCheckItemDao.deleteZcItem(id);
+                if (result > 0) {
+                    map.put("code", "0");
+                    map.put("message", "成功");
+                } else {
+                    map.put("code", "500");
+                    map.put("message", "失败");
+                }
+            }
+        } catch (Exception e) {
+            throw new NullPointerException(e.getMessage());
+        }
+        return map;
+    }
+
+
+    private int updateZcStatusAndCheckZcResult(ZcCheck zcCheck, List<ZcCheckItem> items) {
+        int errorCount = 0;
+        int normalCount = 0;
+        List<Long> errorItemList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(items)) {
+            for (int i = 0; i < items.size(); i++) {
+                if ("1".equals(items.get(i).getResult())) {
+                    //盘点正常
+                    normalCount++;
+                } else {
+                    //盘点异常
+                    errorCount++;
+                    errorItemList.add(items.get(i).getId());
+                }
+            }
+        }
+        if (errorCount > 0) {
+            //盘点异常
+            zcCheck.setResult(2);
+            //更新字表中的状态是异常状态
+            zcCheckDao.updateItemStatus(errorItemList);
+        } else {
+            //盘点正常
+            zcCheck.setResult(1);
+        }
+        logger.info("盘点完成之后的更新数据是：======》》》" + zcCheck);
+        return zcCheckDao.update(zcCheck);
+    }
 
 
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/updateZcItemStatus")
     @ApiOperation(value = "盘点资产数据接口", tags = "盘点资产数据接口")
-    public Map updateAssetsState(String model, long zcCheckId) {
+    public Map updateAssetsState(@RequestBody ZcCheckDTO zcCheckDTO) {
         Map finalMap = new HashMap();
         //更新找到的资产状态。
         Map map = new HashMap();
-        logger.info("获得的Model===>  " + model);
-        if (StringUtils.isEmpty(model)) {
+        if (StringUtils.isEmpty(zcCheckDTO.getEpcid())) {
             map.put("code", "500");
             map.put("message", "盘点的数据为空");
             return map;
         }
+        int zcCheckId = zcCheckDTO.getZcCheckId();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("epcid", zcCheckDTO.getEpcid());
+        JSONArray array = new JSONArray();
+        array.add(jsonObject);
+        logger.info("获得的Json数组是===>{}", array.toJSONString());
+        logger.info("获得的JsonString数组是===>{}", array.toString());
         try {
-            List<ZcCheckItem> zcCheckItemList = JSONObject.parseArray(model, ZcCheckItem.class);
+            String epcid = zcCheckDTO.getEpcid();
+            List<ZcCheckItem> zcCheckItemList = JSONObject.parseArray(array.toString(), ZcCheckItem.class);
             if (!CollectionUtils.isEmpty(zcCheckItemList)) {
                 logger.info("盘点数据的列表是：===========》》{}", zcCheckItemList);
-                Map<String, Object> resultMap = insertProfitCheckItem(zcCheckItemList, zcCheckId);
+                Map<String, Object> resultMap = insertProfitCheckItem(zcCheckItemList, zcCheckDTO.getZcCheckId());
                 //   List<ZcCheckItem> profitList = (List) resultMap.get("profitList");
                 List<ZcCheckItem> resultList = (List) resultMap.get("inCheckItemList");
                 List<ZcCheckItem> notInCheckItem = (List) resultMap.get("notInCheckItemList");
@@ -286,7 +374,7 @@ public class AppZcCheckController {
                  *  map.put("notInCheckItemList", notInCheckItemList);
                  */
                 if (CollectionUtils.isEmpty(resultList)) {
-                    logger.info("盘点的数据全部是为空==={}", zcCheckId);
+                    logger.info("盘点的数据全部是为空==={}", zcCheckDTO.getZcCheckId());
                     map.put("code", "0");
                     map.put("message", "成功");
                     map.put("data", null);
@@ -297,11 +385,11 @@ public class AppZcCheckController {
                 if (0 == zcCheckItem.getReCheck()) {
                     int result = updateZcCheck(resultList, zcCheckItem);
                     if (result > 0) {
-                        finalMap.put("notCheck",queryNotFullCheckItem(zcCheckId));
-                        finalMap.put("panying",queryPanYingCheckItem(zcCheckId));
+                        //  finalMap.put("notCheck", queryNotFullCheckItem(zcCheckId));
+                        //   finalMap.put("panying", queryPanYingCheckItem(zcCheckId));
                         map.put("code", "0");
                         map.put("message", "成功");
-                        map.put("data", finalMap);
+                        map.put("data", null);
                     } else {
                         map.put("code", "500");
                         map.put("message", "操作失败");
@@ -322,12 +410,11 @@ public class AppZcCheckController {
                         result = zcCheckItemDao.updateItemStatusByZid(oldCheckId, zcId, status);
                     }
                     if (result > 0) {
-                        finalMap.put("notCheck",queryNotFullCheckItem(zcCheckId));
-                        finalMap.put("panying",queryPanYingCheckItem(zcCheckId));
+                        // finalMap.put("notCheck", queryNotFullCheckItem(zcCheckId));
+                        // finalMap.put("panying", queryPanYingCheckItem(zcCheckId));
                         map.put("code", "0");
                         map.put("message", "成功");
-                        map.put("data", finalMap);
-
+                        map.put("data", null);
                     } else {
                         map.put("code", "500");
                         map.put("message", "操作失败");
@@ -345,7 +432,6 @@ public class AppZcCheckController {
         }
         return map;
     }
-
 
 
     private int updateZcCheck(List<ZcCheckItem> zcCheckItemList, ZcCheckItem zcCheckItem) {
@@ -435,7 +521,6 @@ public class AppZcCheckController {
         List<ZcEpcCheckItem> zcCheckItemList = zcCheckItemDao.queryNotFullCheckItem(zcCheckId);
         return zcCheckItemList;
     }
-
 
 
     private List<ZcEpcCheckItem> queryPanYingCheckItem(long zcCheckId) {
