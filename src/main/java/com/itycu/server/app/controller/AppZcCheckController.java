@@ -3,13 +3,10 @@ package com.itycu.server.app.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.itycu.server.app.dto.pandian.ZcCheckDTO;
-import com.itycu.server.app.dto.pandian.ZcCheckFinishedDTO;
-import com.itycu.server.app.dto.pandian.ZcCheckListDTO;
-import com.itycu.server.app.dto.pandian.ZxCheckListItemDTO;
+import com.itycu.server.app.dto.pandian.*;
 import com.itycu.server.app.vo.pandian.CheckItemVO;
-import com.itycu.server.controller.ZcCheckController;
 import com.itycu.server.dao.*;
+import com.itycu.server.dto.SysUserDto;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.*;
 import com.itycu.server.page.table.PageTableRequest;
@@ -25,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -452,9 +448,6 @@ public class AppZcCheckController {
      */
     private Map<String, Object> insertProfitCheckItem(List<ZcCheckItem> zcCheckItemList, long zcCheckId) {
         Map<String, Object> map = new HashMap<>();
-        //1  如果列表中有盘盈的数据，
-        //2  找出需要盘盈的数据，加入到数据库中，更新数据的父表为盘盈的状态 ,字表插入盘盈的列表项
-        //long zcCheckId = zcCkeckId;
         logger.info("【zcCheckId================>】" + zcCheckId);
         if (0 == zcCheckId) {
             return null;
@@ -476,7 +469,6 @@ public class AppZcCheckController {
                     zcCheck.setResult("1");
                     inCheckItemList.add(zcCheck);
                 } else {
-                    //
                     notInCheckItemList.add(zcInfo);
                 }
             } else {
@@ -526,6 +518,59 @@ public class AppZcCheckController {
     private List<ZcEpcCheckItem> queryPanYingCheckItem(long zcCheckId) {
         List<ZcEpcCheckItem> zcCheckItemList = zcCheckItemDao.queryPanYingCheckItem(zcCheckId);
         return zcCheckItemList;
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping("/checkRecordList")
+    @ApiOperation(value = "盘点记录列表", tags = "盘点记录列表")
+    public Map getChecked(@RequestBody ZcCheckRecordListDTO zcCheckRecordListDTO) {
+        Map<String,Object> paramMap = new HashMap<>();
+        SysUser sysUser = UserUtil.getLoginUser();
+        Integer page = zcCheckRecordListDTO.getLimit();
+        Integer limit = zcCheckRecordListDTO.getOffset();
+        long deptId = sysUser.getDeptid();
+        logger.info("获取档期登录用户的部门id:{}", deptId);
+        int count = 0;
+        Map<String, Object> map = new HashMap();
+        List<com.itycu.server.model.ZcCheck> managerIdList = new ArrayList<>();
+        //获取去区分不同的部门
+        Dept dept = deptDao.getById(deptId);
+        if (null != dept) {
+            paramMap.put("statusList", Arrays.asList(2));// 盘点状态等于2
+            paramMap.put("del", "0");
+            // request.getParams().put("createBy", UserUtil.getLoginUser().getId());
+            paramMap.put("deptId", deptId);
+            paramMap.put("pid", dept.getPid());
+            paramMap.put("deptType", dept.getC03());
+            //获取全部的盘点数据
+            paramMap.put("profit", null);
+
+
+
+            if (("cwb").equals(dept.getC03())) {
+                //财务登录当前账号
+                logger.info("当前登录账号类型财务部门是======>>{}", dept.getDeptname());
+                managerIdList = queryManagerDeptIds(paramMap, page * limit - limit, limit);
+            } else if ("zhb".equals(dept.getC03()) || "kjb".equals(dept.getC03())
+                    || "yyb".equals(dept.getC03()) || "bwb".equals(dept.getC03())) {
+                //四个部门的登录当前账
+                logger.info("当前登录账号搜四个管理部门中之一:======>>{}", dept.getDeptname());
+                managerIdList = queryManagerDeptIds(paramMap, page * limit - limit, limit);
+            } else {
+                //其他部门或者是支行登录
+                logger.info("当前登录账号类型是其他账号:======>>{}", dept.getDeptname());
+                managerIdList = queryManagerDeptIds(paramMap, page * limit - limit, limit);
+            }
+            createZcCheckTableInfo(managerIdList);
+            count = zcCheckDao.queryCountManagerDeptIds(paramMap);
+            logger.info("获得的查询总数是==={}", count);
+        }
+        map.put("data", managerIdList);
+        map.put("count", count);
+        map.put("code", "0");
+        map.put("message", "");
+        return map;
     }
 
 
