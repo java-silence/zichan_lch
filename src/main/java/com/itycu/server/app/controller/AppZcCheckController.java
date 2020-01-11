@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.itycu.server.app.dto.pandian.*;
 import com.itycu.server.app.vo.pandian.CheckItemVO;
+import com.itycu.server.app.vo.pandian.ZcCheckDetailReportVO;
 import com.itycu.server.dao.*;
 import com.itycu.server.dto.SysUserDto;
 import com.itycu.server.dto.ZcInfoDto;
@@ -524,11 +525,11 @@ public class AppZcCheckController {
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/checkRecordList")
     @ApiOperation(value = "盘点记录列表", tags = "盘点记录列表")
-    public Map<String,Object> getChecked(@RequestBody ZcCheckRecordListDTO zcCheckRecordListDTO) {
+    public Map<String, Object> getChecked(@RequestBody ZcCheckRecordListDTO zcCheckRecordListDTO) {
         Map<String, Object> paramMap = new HashMap<>();
         SysUser sysUser = UserUtil.getLoginUser();
         Integer limit = zcCheckRecordListDTO.getLimit();
-        Integer page= zcCheckRecordListDTO.getOffset();
+        Integer page = zcCheckRecordListDTO.getOffset();
         long deptId = sysUser.getDeptid();
         logger.info("获取档期登录用户的部门id:{}", deptId);
         int count = 0;
@@ -572,7 +573,100 @@ public class AppZcCheckController {
 
     @PostMapping("/checkItemList/detail")
     @ApiOperation(value = "获取盘点记录的列表数据", tags = "获取盘点记录的列表数据")
-    public Map<String,Object> list2(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
+    public Map<String, Object> getDetailInfo(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
+        Map<String, Object> map = new HashMap();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("del", "0");
+        Integer page = zcCheckRecordDetailListDTO.getLimit();
+        Integer limit = zcCheckRecordDetailListDTO.getOffset();
+        List list = zcCheckItemDao.list(paramMap, page * limit - limit, limit);
+        map.put("data", list);
+        map.put("code", "0");
+        map.put("message", "");
+        return map;
+    }
+
+
+    @PostMapping("/checkReport")
+    @ApiOperation(value = "获取盘点报表--基本信息", tags = "获取盘点报表--基本信息")
+    public Map<String, Object> getCheckReportInfo(@RequestBody ZcCheckFinishedDTO zcCheckFinishedDTO) {
+        Map<String, Object> map = new HashMap();
+        ZcCheckDetailReportVO zcCheckDetailReportVO = zcCheckDao.getCheckReportInfoById(zcCheckFinishedDTO.getId());
+        if (null != zcCheckDetailReportVO) {
+            zcCheckDetailReportVO.setReCheckFlag(reCheckFlag(zcCheckDetailReportVO.getReCheck()));
+            zcCheckDetailReportVO.setStatusFlag(statusFlag(zcCheckDetailReportVO.getStatus()));
+            zcCheckDetailReportVO.setStrResult(resultFlag(zcCheckDetailReportVO.getResult()));
+            zcCheckDetailReportVO.setNormal(zcCheckDetailReportVO.getTotal() - zcCheckDetailReportVO.getErrorNum());
+            zcCheckDetailReportVO.setCheckNum(appendName(5, zcCheckDetailReportVO.getCheckNum()));
+            Dept dept = deptDao.getById(new Long(zcCheckDetailReportVO.getCheckDeptId()));
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            String checkBH = dept.getJx() + "-PD" + year + "-" + appendName(5, String.valueOf(zcCheckDetailReportVO.getCheckNum()));
+            zcCheckDetailReportVO.setCheckNum(checkBH);
+        }
+        map.put("data", zcCheckDetailReportVO);
+        map.put("code", "0");
+        map.put("message", "");
+        return map;
+    }
+
+
+    private String reCheckFlag(int reCheck) {
+        String reCheckFlag = "";
+        if (reCheck == 1) {
+            reCheckFlag = "已经复盘";
+        } else {
+            reCheckFlag = "没有复盘";
+        }
+        return reCheckFlag;
+    }
+
+
+    private String statusFlag(int status) {
+        String reCheckFlag = "";
+        if (status == 1) {
+            reCheckFlag = "盘点中";
+        } else if (status == 2) {
+            reCheckFlag = "盘点完成";
+        } else {
+            reCheckFlag = "盘点中";
+        }
+        return reCheckFlag;
+    }
+
+
+    private String resultFlag(int result) {
+        String reCheckFlag = "";
+        if (result == 1) {
+            reCheckFlag = "盘点正常";
+        } else if (result == 2) {
+            reCheckFlag = "盘点异常";
+        } else {
+            reCheckFlag = "盘点中";
+        }
+        return reCheckFlag;
+    }
+
+
+    @PostMapping("/checkReport/profitList")
+    @ApiOperation(value = "获取盘点报表信息--盘盈列表", tags = "获取盘点报表信息--盘盈列表")
+    public Map<String, Object> getCheckReportInfoProfitList(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
+        Map<String, Object> map = new HashMap();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("del", "0");
+        Integer page = zcCheckRecordDetailListDTO.getLimit();
+        Integer limit = zcCheckRecordDetailListDTO.getOffset();
+        List list = zcCheckItemDao.list(paramMap, page * limit - limit, limit);
+        map.put("data", list);
+        map.put("code", "0");
+        map.put("message", "");
+        return map;
+    }
+
+
+    @PostMapping("/checkReport/lossList")
+    @ApiOperation(value = "获取盘点报表信息--盘亏列表", tags = "获取盘点报表信息--盘亏列表")
+    public Map<String, Object> getCheckReportInfoLossList(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
         Map<String, Object> map = new HashMap();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("del", "0");

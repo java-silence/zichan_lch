@@ -673,4 +673,23 @@
             and DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
     </select>
 
+
+    <select id="getCheckReportInfoById" resultType="com.itycu.server.app.vo.pandian.ZcCheckDetailReportVO">
+        SELECT
+            a.id,
+            a.total,
+            a.status,
+            a.result,
+            (select deptname from t_dept as  dept  where dept.id = a.check_dept_id) as syDeptName,
+            (select nickname from sys_user as c where c.id = a.check_user_id) as checkUserName,
+            (select count(1) from zc_check_item as d where  d.zc_check_id = a.id  and  d.result=2) as errorNum,
+            a.re_check,
+            a.bh AS  checkNum,
+            a.profit ,
+            a.check_time  as checkTime,
+            a.check_dept_id as checkDeptId
+        FROM
+            zc_check AS a
+        WHERE  a.id = #{id}
+    </select>
 </mapper>

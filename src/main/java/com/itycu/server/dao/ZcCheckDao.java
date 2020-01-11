@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.vo.pandian.ZcCheckDetailReportVO;
 import com.itycu.server.dto.ZcCheckDto;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcCheckItem;
@@ -117,4 +118,7 @@ public interface ZcCheckDao {
 
 
    int queryDeptZcCheckCountById(@Param("id") long id);
+
+
+    ZcCheckDetailReportVO getCheckReportInfoById(@Param("id") long id);
 }

@@ -198,6 +198,7 @@
         zc_inspect_relation
         where zc_id = #{zcId}
         and status = 0
+        limit 1
     </select>
 
     <update id="updateLastInspect">
