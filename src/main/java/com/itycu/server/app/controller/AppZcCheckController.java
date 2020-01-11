@@ -4,6 +4,7 @@ package com.itycu.server.app.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.itycu.server.app.dto.pandian.*;
+import com.itycu.server.app.vo.pandian.CheckItemReportVO;
 import com.itycu.server.app.vo.pandian.CheckItemVO;
 import com.itycu.server.app.vo.pandian.ZcCheckDetailReportVO;
 import com.itycu.server.dao.*;
@@ -649,35 +650,28 @@ public class AppZcCheckController {
 
 
     @PostMapping("/checkReport/profitList")
-    @ApiOperation(value = "获取盘点报表信息--盘盈列表", tags = "获取盘点报表信息--盘盈列表")
-    public Map<String, Object> getCheckReportInfoProfitList(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
+    @ApiOperation(value = "获取盘点报表信息--盘盈/盘亏列表", tags = "获取盘点报表信息--盘盈/盘亏列表")
+    public Map<String, Object> getCheckReportInfoProfitLossList(@RequestBody CheckItemReportDTO checkItemReportDTO) {
         Map<String, Object> map = new HashMap();
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("del", "0");
-        Integer page = zcCheckRecordDetailListDTO.getLimit();
-        Integer limit = zcCheckRecordDetailListDTO.getOffset();
-        List list = zcCheckItemDao.list(paramMap, page * limit - limit, limit);
-        map.put("data", list);
-        map.put("code", "0");
-        map.put("message", "");
-        return map;
+        try {
+
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("del", "0");
+            paramMap.put("type", checkItemReportDTO.getType());
+            paramMap.put("zcCheckId", checkItemReportDTO.getZcCheckId());
+            Integer page = checkItemReportDTO.getLimit();
+            Integer limit = checkItemReportDTO.getOffset();
+            List<CheckItemReportVO> list = zcCheckItemDao.getCheckReportInfoProfitLossList(paramMap, page * limit - limit, limit);
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("message", "成功");
+            return map;
+        } catch (Exception e) {
+            logger.error("获取盘点报表信息失败===>{}", e.getMessage());
+            map.put("data", null);
+            map.put("code", "0");
+            map.put("message", "失败");
+            return map;
+        }
     }
-
-
-    @PostMapping("/checkReport/lossList")
-    @ApiOperation(value = "获取盘点报表信息--盘亏列表", tags = "获取盘点报表信息--盘亏列表")
-    public Map<String, Object> getCheckReportInfoLossList(@RequestBody ZcCheckRecordDetailListDTO zcCheckRecordDetailListDTO) {
-        Map<String, Object> map = new HashMap();
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("del", "0");
-        Integer page = zcCheckRecordDetailListDTO.getLimit();
-        Integer limit = zcCheckRecordDetailListDTO.getOffset();
-        List list = zcCheckItemDao.list(paramMap, page * limit - limit, limit);
-        map.put("data", list);
-        map.put("code", "0");
-        map.put("message", "");
-        return map;
-    }
-
-
 }

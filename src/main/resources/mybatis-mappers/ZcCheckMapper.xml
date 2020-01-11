@@ -687,7 +687,8 @@
             a.bh AS  checkNum,
             a.profit ,
             a.check_time  as checkTime,
-            a.check_dept_id as checkDeptId
+            a.check_dept_id as checkDeptId,
+            a.profit
         FROM
             zc_check AS a
         WHERE  a.id = #{id}

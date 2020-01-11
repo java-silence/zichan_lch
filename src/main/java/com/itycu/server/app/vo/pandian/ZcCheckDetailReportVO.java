@@ -46,4 +46,7 @@ public class ZcCheckDetailReportVO {
     private String reCheckFlag;
 
 
+    private int profit;
+
+
 }
