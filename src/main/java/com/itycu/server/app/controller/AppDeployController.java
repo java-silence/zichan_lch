@@ -139,7 +139,7 @@ public class AppDeployController {
 
 
     @PostMapping("/dept/subDeptList")
-    @ApiOperation(value = "eleTree部门树列表", notes = "获取部门树状表")
+    @ApiOperation(value = "获取eleTree部门树列表", notes = "获取部门树状表")
     public Map getSubDept() {
         Map<String, Object> map = null;
         try {

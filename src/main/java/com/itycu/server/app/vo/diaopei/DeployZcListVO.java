@@ -14,14 +14,25 @@ public class DeployZcListVO {
     public int id;
 
 
-
+    /**
+     * 资产名称
+     */
     public String zcName;
 
+    /**
+     * 放置位置
+     */
     public String storeAddress;
 
 
+    /**
+     * 使用部门
+     */
     public String syDeptName;
 
+    /**
+     * 管理部门
+     */
     public String glDeptName;
 
     public String zcCodenum;
@@ -29,10 +40,26 @@ public class DeployZcListVO {
     public String epcid;
 
 
+    /**
+     * 原价值
+     */
     private BigDecimal originalValue;
 
+    /**
+     * 净值
+     */
     private BigDecimal netvalue;
 
+
+    /**
+     * 调入部门id
+     */
+    private Integer inDeptId;
+
+    /**
+     * 调入部门名称
+     */
+    private String inDeptName;
 
 
 }
