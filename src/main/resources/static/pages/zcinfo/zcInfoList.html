@@ -168,13 +168,13 @@
                                        placeholder="使用月限">
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">剩余期限</label>
-                            <div class="layui-input-block">
-                                <input id="remainingperiod" name="remainingperiod" type="text" class="layui-input"
-                                       placeholder="剩余期限">
-                            </div>
-                        </div>
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label">剩余期限</label>-->
+                            <!--<div class="layui-input-block">-->
+                                <!--<input id="remainingperiod" name="remainingperiod" type="text" class="layui-input"-->
+                                       <!--placeholder="剩余期限">-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="layui-inline">
                             <label class="layui-form-label">创建日期</label>
                             <div class="layui-input-block">
@@ -182,9 +182,13 @@
                                        placeholder="创建日期">
                             </div>
                         </div>
-                        <button class="layui-btn layuiadmin-btn-useradmin" lay-submit
+                        <button type="button" class="layui-btn layuiadmin-btn-useradmin" lay-submit
                                 lay-filter="LAY-user-front-search" id="searchBt">
                             <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                        <button type="reset" class="layui-btn layuiadmin-btn-useradmin" lay-submit
+                                lay-filter="LAY-user-front-search" >
+                            <i class="layui-icon layui-icon-refresh-3 layuiadmin-button-btn"></i>
                         </button>
                     </div>
                     <div class="layui-form-item">
@@ -585,7 +589,7 @@
         if (!el2) {
             el2 = eleTree.render({
                 elem: '#syDeptEleTree',
-                url: '/depts/eleTree',
+                url: '/depts/xmSelectTree',
                 request: {
                     name: "name",
                 },
@@ -652,6 +656,17 @@
     }
 
     $("#searchBt").click(function () {
+        debugger
+        var glDeptId = $('#glDeptId').val();
+        var syDeptId = $('#syDeptId').val();
+        var glName = $('#glDeptName').val();
+        var syName = $('#syDeptName').val();
+        if (glName == null || glName == '') {
+            glDeptId = "";
+        }
+        if (syName == null || syName == '') {
+            syDeptId = "";
+        }
         tableIns.reload({
             where: {
                 epcid:$('#epcid').val(),
@@ -660,7 +675,8 @@
                 sdate: $('#sdate').val(),
                 edate: $('#edate').val(),
                 catCode: $('#catCode').val(),
-                glDeptId: $('#glDeptId').val(),
+                glDeptId: glDeptId,
+                syDeptId: syDeptId,
                 specification: $('#specification').val(),
                 model:$('#model').val(),
                 useStatus: $('#useStatus').val(),
