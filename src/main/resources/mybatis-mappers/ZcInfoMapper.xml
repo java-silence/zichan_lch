@@ -86,12 +86,18 @@
             <if test="params.responsible != null and params.responsible != ''">
                 and t.responsible = #{params.responsible}
             </if>
-            <if test="params.glDeptId != null and params.glDeptId != ''">
-                and t.gl_dept_id = #{params.glDeptId}
-            </if>
-            <if test="params.syDeptId != null and params.syDeptId != ''">
+            <if test="params.syRole != null and params.syRole != ''">
                 and t.sy_dept_id = #{params.syDeptId}
             </if>
+            <if test="params.glRole != null and params.glRole != ''">
+                and (t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.syDeptId})
+            </if>
+    <if test="params.glDeptId != null and params.glDeptId != ''">
+        and t.gl_dept_id = #{params.glDeptId}
+    </if>
+    <if test="params.syDeptId != null and params.syDeptId != ''">
+        and t.sy_dept_id = #{params.syDeptId}
+    </if>
             <if test="params.syName != null and params.syName != ''">
                 and t.sy_name = #{params.syName}
             </if>
@@ -186,7 +192,7 @@
                 and t.update_by = #{params.updateBy}
             </if>
             <if test="params.createTime != null and params.createTime != ''">
-                and t.create_time = #{params.createTime}
+                and to_days(t.create_time) = to_days(#{params.createTime})
             </if>
             <if test="params.updateTime != null and params.updateTime != ''">
                 and t.update_time = #{params.updateTime}

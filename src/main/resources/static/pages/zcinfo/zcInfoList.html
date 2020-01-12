@@ -133,6 +133,18 @@
                                 <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
                             </div>
                         </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">使用部门</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" id="syDeptName" data-id="" placeholder="请选使用部门"
+                                       readonly="" autocomplete="off">
+                                <div class="eleTree ele5" id="syDeptEleTree" lay-filter="syDeptEleTree"></div>
+                                <input class="layui-input" type="hidden" id="syDeptId" name="syDeptId">
+                            </div>
+                        </div>
+
+
                         <div class="layui-inline">
                             <label class="layui-form-label">原价值</label>
                             <div class="layui-input-block">
@@ -161,6 +173,13 @@
                             <div class="layui-input-block">
                                 <input id="remainingperiod" name="remainingperiod" type="text" class="layui-input"
                                        placeholder="剩余期限">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">创建日期</label>
+                            <div class="layui-input-block">
+                                <input id="createTime" name="createTime" type="text" class="form-control layui-input"
+                                       placeholder="创建日期">
                             </div>
                         </div>
                         <button class="layui-btn layuiadmin-btn-useradmin" lay-submit
@@ -244,6 +263,9 @@
         });
         laydate.render({
             elem: '#edate'
+        });
+        laydate.render({
+            elem: '#createTime'
         });
         var upload = layui.upload;
         var dynamicCondition = layui.dynamicCondition;
@@ -547,7 +569,7 @@
         if (!el1) {
             el1 = eleTree.render({
                 elem: '#glDeptEleTree',
-                url: '/depts/eleTree',
+                url: '/depts/eleTreeSelf',
                 request: {
                     name: "name",
                 },
@@ -645,7 +667,8 @@
                 originalValue: $('#originalValue').val(),
                 netvalue: $('#netvalue').val(),
                 useMonths: $('#useMonths').val(),
-                remainingperiod: $('#remainingperiod').val()
+                remainingperiod: $('#remainingperiod').val(),
+                createTime:$('#createTime').val()
             }, page: {curr: 1}
         })
     });

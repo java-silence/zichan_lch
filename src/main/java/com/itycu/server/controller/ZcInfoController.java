@@ -1,42 +1,33 @@
 package com.itycu.server.controller;
 
+import com.itycu.server.annotation.LogAnnotation;
+import com.itycu.server.dao.PermissionDao;
+import com.itycu.server.dao.ZcCategoryDao;
+import com.itycu.server.dao.ZcInfoDao;
+import com.itycu.server.dto.ZcInfoDto;
+import com.itycu.server.model.ZcCategory;
+import com.itycu.server.model.ZcInfo;
+import com.itycu.server.page.table.PageTableRequest;
+import com.itycu.server.service.ZcInfoService;
+import com.itycu.server.utils.DynamicConditionUtil;
+import com.itycu.server.utils.UserUtil;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.itycu.server.annotation.LogAnnotation;
-import com.itycu.server.dao.PermissionDao;
-import com.itycu.server.dao.ZcCategoryDao;
-import com.itycu.server.dto.ZcInfoDto;
-import com.itycu.server.model.ZcCategory;
-import com.itycu.server.model.ZcInfo;
-import com.itycu.server.service.ZcInfoService;
-import com.itycu.server.utils.DynamicConditionUtil;
-import com.itycu.server.utils.UserUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.itycu.server.page.table.PageTableRequest;
-import com.itycu.server.dao.ZcInfoDao;
-
-import io.swagger.annotations.ApiOperation;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/zcInfos")
@@ -79,14 +70,106 @@ public class ZcInfoController {
 
     @GetMapping("/layuiList")
     @ApiOperation(value = "列表")
-//    @PreAuthorize("hasAuthority('sys:jjxx:query')")
     public Map list2(PageTableRequest request, HttpServletRequest httpServletRequest) {
+
+        // 使用部门
+        Object syDeptId = request.getParams().get("syDeptId");
+        Object glDeptId = request.getParams().get("glDeptId");
+        request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+        request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
         if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
-			request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("syRole", "syRole");
 		}
         if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
-			request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("glRole", "glRole");
 		}
+        // 财务部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
+            request.getParams().put("syRole", null);
+            request.getParams().put("glRole", null);
+            request.getParams().put("glDeptId", null);
+            request.getParams().put("syDeptId", null);
+        }
+        if (!ObjectUtils.isEmpty(syDeptId)) {
+            request.getParams().put("syDeptId", syDeptId);
+        }
+        if (!ObjectUtils.isEmpty(glDeptId)) {
+            request.getParams().put("glDeptId", glDeptId);
+        }
+        Map map = new HashMap();
+        request.getParams().put("del","0");
+        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+        int count = zcInfoDao.count(request.getParams());
+        List list = zcInfoDao.list(request.getParams(), page*limit-limit, limit);
+
+        if (!CollectionUtils.isEmpty(list)){
+            List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
+            findZcCategorys(list,zcCategoryList);
+        }
+        map.put("data",list);
+        map.put("count",count);
+        map.put("code","0");
+        map.put("msg","");
+        return map;
+    }
+
+    @GetMapping("/layuiList3")
+    @ApiOperation(value = "列表")
+    public Map list3(PageTableRequest request, HttpServletRequest httpServletRequest) {
+
+        // 使用部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
+            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+        }
+        // 管理部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
+            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+        }
+        // 财务部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
+            request.getParams().put("glDeptId", null);
+            request.getParams().put("syDeptId", null);
+        }
+        Map map = new HashMap();
+        request.getParams().put("del","0");
+        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+        int count = zcInfoDao.count(request.getParams());
+        List list = zcInfoDao.list(request.getParams(), page*limit-limit, limit);
+
+        if (!CollectionUtils.isEmpty(list)){
+            List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
+            findZcCategorys(list,zcCategoryList);
+        }
+        map.put("data",list);
+        map.put("count",count);
+        map.put("code","0");
+        map.put("msg","");
+        return map;
+    }
+
+    @GetMapping("/layuiList4")
+    @ApiOperation(value = "列表")
+    public Map list4(PageTableRequest request, HttpServletRequest httpServletRequest) {
+
+        // 使用部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
+            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+        }
+        // 管理部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
+            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+        }
+        // 财务部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
+            request.getParams().put("glDeptId", null);
+            request.getParams().put("syDeptId", null);
+        }
         Map map = new HashMap();
         request.getParams().put("del","0");
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));

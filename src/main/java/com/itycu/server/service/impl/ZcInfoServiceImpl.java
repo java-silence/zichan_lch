@@ -6,15 +6,13 @@ import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
 import com.itycu.server.app.vo.GlDeptZcCountVO;
 import com.itycu.server.dao.*;
-import com.itycu.server.dto.*;
+import com.itycu.server.dto.LoginUser;
+import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.*;
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcChangeRecordService;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.*;
-import io.swagger.models.auth.In;
-import org.omg.PortableInterceptor.INACTIVE;
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -389,6 +387,32 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                         return map;
                     }
                     Dept syDept = syDepts.get(0);
+                    Integer quantity1 = zcInfo.getQuantity();
+                    if (zcInfo.getQuantity() > 1) {
+                        BigDecimal originalValue = zcInfo.getOriginalValue();
+                        BigDecimal netvalue = zcInfo.getNetvalue();
+                        BigDecimal net = zcInfo.getNet();
+                        BigDecimal subOriginalValue = originalValue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                        BigDecimal subNetvalue = netvalue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                        BigDecimal subNet = net.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                        zcInfo.setOriginalValue(subOriginalValue);
+                        zcInfo.setNetvalue(subNetvalue);
+                        zcInfo.setNet(subNet);
+                        for (int j = 0; j < quantity1 - 1; j++) {
+                            ZcInfo info = new ZcInfo();
+                            zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                            zcInfo.setSyDeptId(syDept.getId());
+                            zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                            zcInfo.setCreateBy(loginUser.getId());
+                            zcInfo.setDel(0);
+                            zcInfo.setBf("0");
+                            zcInfo.setAccountentryStatus(1);
+                            zcInfo.setCardStatus(1);
+                            zcInfo.setUseStatus(1);
+                            BeanUtils.copyProperties(zcInfo, info);
+                            insertlist.add(info);
+                        }
+                    }
                     zcInfo.setSyDeptId(syDept.getId());
                     zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
                     zcInfo.setCreateBy(loginUser.getId());
@@ -545,20 +569,6 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                     ZcInfo zc = new ZcInfo();
                     BeanUtils.copyProperties(zcInfo, zc);
                     insertlist.add(zc);
-                    if (zcInfo.getQuantity() == null || "".equals(zcInfo.getQuantity())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行数量不能为空");
-                        return map;
-                    }
-//                    Integer quantity = zcInfo.getQuantity();   //资产数量
-//                    if (quantity > 1){     //数量大于1，复制导入资产
-//                        for (int a=0;a<quantity-1;a++){
-//                            ZcInfo zcInfo1 = new ZcInfo();
-//                            BeanUtils.copyProperties(zc,zcInfo1);
-//                            zcInfo1.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-//                            insertlist.add(zcInfo1);
-//                        }
-//                    }
                 }
 
                 // 资产追溯码
