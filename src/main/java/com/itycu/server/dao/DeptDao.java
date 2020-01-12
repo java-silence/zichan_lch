@@ -83,4 +83,7 @@ public interface DeptDao {
 
 
     List<AppIndexDeptDataInfo> getAllBranchDeptList(@Param("id") long id);
+
+
+    List<Map<String,Object>> querySubDeptListById(@Param("type") String type);
 }

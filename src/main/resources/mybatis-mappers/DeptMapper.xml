@@ -205,4 +205,16 @@
 			and a.jx = (select jx from t_dept where id = #{id})
 	</select>
 
+	<select id="querySubDeptListById" resultType="java.util.Map">
+		SELECT
+			b.id,
+			b.deptname
+		FROM
+			t_dept AS a
+			LEFT JOIN t_dept AS b ON a.pid = b.pid
+		WHERE
+			a.c03 = #{type}
+			AND b.id != a.id
+	</select>
+
 </mapper>

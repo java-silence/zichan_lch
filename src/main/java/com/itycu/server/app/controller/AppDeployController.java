@@ -1,13 +1,16 @@
 package com.itycu.server.app.controller;
 
 
+import com.google.common.collect.Lists;
 import com.itycu.server.app.dto.diaopei.DeployZcListDTO;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.diaopei.DeployZcListVO;
+import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.PermissionDao;
 import com.itycu.server.dao.ZcCategoryDao;
 import com.itycu.server.dao.ZcInfoDao;
 import com.itycu.server.dto.ZcInfoDto;
+import com.itycu.server.model.Dept;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcCategory;
 import com.itycu.server.page.table.PageTableRequest;
@@ -16,6 +19,7 @@ import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +52,10 @@ public class AppDeployController {
 
     @Autowired
     private ZcCategoryDao zcCategoryDao;
+
+
+    @Autowired
+    private DeptDao deptDao;
 
 
     @PostMapping("/zc/deployList")
@@ -86,7 +94,7 @@ public class AppDeployController {
             map.put("msg", "成功");
             return map;
         } catch (Exception e) {
-            logger.info("获得的调配的资产列表失败{}",e.getMessage());
+            logger.info("获得的调配的资产列表失败{}", e.getMessage());
             return FailMap.createFailMap();
         }
     }
@@ -127,6 +135,25 @@ public class AppDeployController {
             collect = zcCategoryList.stream().filter(c -> c.getId().equals(id)).collect(Collectors.toList());
         }
         return collect;
+    }
+
+
+    @PostMapping("/dept/subDeptList")
+    @ApiOperation(value = "eleTree部门树列表", notes = "获取部门树状表")
+    public Map getSubDept() {
+        Map<String, Object> map = null;
+        try {
+            SysUser sysUser = UserUtil.getLoginUser();
+            map = new HashMap();
+            List<Map<String, Object>> mapList = deptDao.querySubDeptListById(sysUser.getC03());
+            map.put("data", mapList);
+            map.put("code", 0);
+            map.put("message", "成功");
+            return map;
+        } catch (Exception e) {
+            logger.info("获取部门树列表失败{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
     }
 
 
