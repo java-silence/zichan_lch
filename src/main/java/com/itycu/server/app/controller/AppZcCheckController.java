@@ -659,8 +659,8 @@ public class AppZcCheckController {
             paramMap.put("del", "0");
             paramMap.put("type", checkItemReportDTO.getType());
             paramMap.put("zcCheckId", checkItemReportDTO.getZcCheckId());
-            Integer page = checkItemReportDTO.getLimit();
-            Integer limit = checkItemReportDTO.getOffset();
+            Integer limit = checkItemReportDTO.getLimit();
+            Integer page = checkItemReportDTO.getOffset();
             List<CheckItemReportVO> list = zcCheckItemDao.getCheckReportInfoProfitLossList(paramMap, page * limit - limit, limit);
             map.put("data", list);
             map.put("code", "0");
