@@ -20,6 +20,9 @@
             <if test="params.zcName != null and params.zcName != ''">
                 and t.zc_name like concat('%', #{params.zcName}, '%')
             </if>
+            <if test="params.keyword != null and params.keyword != ''">
+                and t.zc_name like concat('%', #{params.keyword}, '%')
+            </if>
             <if test="params.zcCategoryId != null and params.zcCategoryId != ''">
                 and t.zc_category_id = #{params.zcCategoryId}
             </if>
