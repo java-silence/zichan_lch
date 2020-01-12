@@ -92,11 +92,11 @@
             <if test="params.glRole != null and params.glRole != ''">
                 and (t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.syDeptId})
             </if>
-    <if test="params.glDeptId != null and params.glDeptId != ''">
-        and t.gl_dept_id = #{params.glDeptId}
-    </if>
-    <if test="params.syDeptId != null and params.syDeptId != ''">
+    <if test="params.searchSyDeptId != null and params.searchSyDeptId != '' and params.syDeptId != null and params.syDeptId != ''">
         and t.sy_dept_id = #{params.syDeptId}
+    </if>
+    <if test=" params.searchGlDeptId != null and params.searchGlDeptId != '' and  params.glDeptId != null and params.glDeptId != ''">
+        and t.gl_dept_id = #{params.glDeptId}
     </if>
             <if test="params.syName != null and params.syName != ''">
                 and t.sy_name = #{params.syName}

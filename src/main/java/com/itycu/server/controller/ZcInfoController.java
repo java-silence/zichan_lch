@@ -80,22 +80,51 @@ public class ZcInfoController {
         if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
             request.getParams().put("syRole", "syRole");
 		}
+
         if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
             request.getParams().put("glRole", "glRole");
+            if (!ObjectUtils.isEmpty(glDeptId)) {
+                request.getParams().put("glDeptId", glDeptId);
+            }else {
+                request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            }
+            if (!ObjectUtils.isEmpty(syDeptId)) {
+                request.getParams().put("syDeptId", syDeptId);
+            }else {
+                request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+            }
 		}
+
         // 财务部门
         if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
             request.getParams().put("syRole", null);
             request.getParams().put("glRole", null);
-            request.getParams().put("glDeptId", null);
-            request.getParams().put("syDeptId", null);
+            if (!ObjectUtils.isEmpty(syDeptId)) {
+                request.getParams().put("searchSyDeptId", "searchSyDeptId");
+                request.getParams().put("syDeptId", syDeptId);
+            }else {
+                request.getParams().put("syDeptId", null);
+            }
+            if (!ObjectUtils.isEmpty(glDeptId)) {
+                request.getParams().put("searchGlDeptId", "searchGlDeptId");
+                request.getParams().put("glDeptId", glDeptId);
+            }else {
+                request.getParams().put("glDeptId", null);
+            }
         }
+
         if (!ObjectUtils.isEmpty(syDeptId)) {
+            request.getParams().put("glRole", null);
             request.getParams().put("syDeptId", syDeptId);
+            request.getParams().put("searchSyDeptId", "searchSyDeptId");
         }
         if (!ObjectUtils.isEmpty(glDeptId)) {
+            request.getParams().put("glRole", null);
             request.getParams().put("glDeptId", glDeptId);
+            request.getParams().put("searchGlDeptId", "searchGlDeptId");
         }
+
+
         Map map = new HashMap();
         request.getParams().put("del","0");
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
