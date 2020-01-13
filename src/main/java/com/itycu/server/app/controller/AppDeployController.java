@@ -4,16 +4,18 @@ package com.itycu.server.app.controller;
 import com.google.common.collect.Lists;
 import com.itycu.server.app.dto.diaopei.DeployZcListDTO;
 import com.itycu.server.app.util.FailMap;
+import com.itycu.server.app.vo.diaopei.DeployZcItemRecordDTO;
 import com.itycu.server.app.vo.diaopei.DeployZcListVO;
-import com.itycu.server.dao.DeptDao;
-import com.itycu.server.dao.PermissionDao;
-import com.itycu.server.dao.ZcCategoryDao;
-import com.itycu.server.dao.ZcInfoDao;
+import com.itycu.server.app.vo.fenye.PageVO;
+import com.itycu.server.dao.*;
+import com.itycu.server.dto.ZcDeployDto;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.Dept;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcCategory;
+import com.itycu.server.model.ZcDeployItem;
 import com.itycu.server.page.table.PageTableRequest;
+import com.itycu.server.service.ZcDeployService;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.UserUtil;
@@ -51,11 +53,20 @@ public class AppDeployController {
     private PermissionDao permissionDao;
 
     @Autowired
+    private ZcDeployService zcDeployService;
+
+    @Autowired
     private ZcCategoryDao zcCategoryDao;
 
 
     @Autowired
     private DeptDao deptDao;
+
+    @Autowired
+    private ZcDeployDao zcDeployDao;
+
+    @Autowired
+    private ZcDeployItemDao zcDeployItemDao;
 
 
     @PostMapping("/zc/deployList")
@@ -85,6 +96,8 @@ public class AppDeployController {
                     deployZcListVO.setZcName(k.getZcName());
                     deployZcListVO.setZcCodenum(k.getZcCodenum());
                     deployZcListVO.setNetvalue(k.getNetvalue());
+                    deployZcListVO.setGlDeptId(k.getGlDeptId().intValue());
+                    deployZcListVO.setSyDeptId(k.getSyDeptId().intValue());
                     deployZcListVO.setOriginalValue(k.getOriginalValue());
                     zcListVOList.add(deployZcListVO);
                 });
@@ -159,23 +172,83 @@ public class AppDeployController {
 
     @PostMapping("/zc/insertZcDeployData")
     @ApiOperation(value = "添加资产调配的数据信息", notes = "添加资产调配的数据信息")
-    public Map<String, Object> insertZcDeployData() {
-        /**
-         * TODO 待完成
-         */
-        Map<String, Object> map = null;
+    public Map<String, Object> insertZcDeployData(@RequestBody List<DeployZcListVO> listVOList) {
+        if (CollectionUtils.isEmpty(listVOList)) {
+            String msg = "数据列表为空";
+            return FailMap.createFailMapMsg(msg);
+        }
+        ZcDeployDto zcDeployDto = new ZcDeployDto();
+        List<ZcDeployItem> zcDeployItemList = new ArrayList<>();
+        zcDeployDto.setType("1");
+        Map<String, Object> map = new HashMap();
         try {
-            SysUser sysUser = UserUtil.getLoginUser();
-            map = new HashMap();
-            List<Map<String, Object>> mapList = deptDao.querySubDeptListById(sysUser.getC03());
-            map.put("data", mapList);
+            for (DeployZcListVO deployZcListVO : listVOList) {
+                ZcDeployItem zcDeployItem = new ZcDeployItem();
+                zcDeployItem.setZcId((long) deployZcListVO.getId());
+                zcDeployItem.setGlDeptId((long) (deployZcListVO.getGlDeptId()));
+                zcDeployItem.setBackDeptId(new Long(deployZcListVO.getBackDeptId()));
+                zcDeployItem.setSyDeptId((long) (deployZcListVO.getSyDeptId()));
+                zcDeployItem.setDel(0);
+                zcDeployItemList.add(zcDeployItem);
+            }
+            zcDeployDto.setZcDeployItems(zcDeployItemList);
+            zcDeployService.save(zcDeployDto);
+            map.put("data", null);
             map.put("code", 0);
             map.put("message", "成功");
             return map;
         } catch (Exception e) {
-            logger.info("获取部门树列表失败{}", e.getMessage());
+            logger.info("添加资产调配的数据信息{}", e.getMessage());
             return FailMap.createFailMap();
         }
     }
 
+
+    @PostMapping("/deployRecordList")
+    @ApiOperation(value = "获取调配记录的列表", notes = "获取调配记录的列表")
+    public Map getDeployRecordList(@RequestBody PageVO pageVO) {
+        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> map = new HashMap();
+        try {
+            params.put("applyUserId", UserUtil.getLoginUser().getId());
+            Integer page = pageVO.getOffset();
+            Integer limit = pageVO.getLimit();
+            List<Map<String, Object>> list = zcDeployDao.listZcDeploy(params, page * limit - limit, limit);
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "操作成功");
+            return map;
+        } catch (Exception e) {
+            logger.info("获取调配记录的列表{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+    }
+
+
+
+
+
+    @PostMapping("/listByZcDeployId")
+    @ApiOperation(value = "获取调配记录找到子记录数据",notes = "获取调配记录找到子记录数据")
+    public Map listByZcDeployId(@RequestBody DeployZcItemRecordDTO deployZcItemRecordDTO) {
+        Map<String,Object> map = new HashMap();
+        try {
+            String cw = "";
+            SysUser sysUser = UserUtil.getLoginUser();
+            if(null!=sysUser && "cwb".equals(sysUser.getC03())){
+                cw =  sysUser.getC03()!=null ? sysUser.getC03() : null;
+            }
+            List<Map<String,Object>> list = new ArrayList<>();
+            if ( null!=deployZcItemRecordDTO.getZcDeployId()) {
+                list = zcDeployItemDao.listDetailByZcDeployId(deployZcItemRecordDTO.getZcDeployId(),cw);
+            }
+            map.put("data",list);
+            map.put("code","0");
+            map.put("msg","成功");
+        } catch (Exception e) {
+            logger.info("获取调配记录找到子记录数据{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
 }
