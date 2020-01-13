@@ -157,4 +157,25 @@ public class AppDeployController {
     }
 
 
+    @PostMapping("/zc/insertZcDeployData")
+    @ApiOperation(value = "添加资产调配的数据信息", notes = "添加资产调配的数据信息")
+    public Map<String, Object> insertZcDeployData() {
+        /**
+         * TODO 待完成
+         */
+        Map<String, Object> map = null;
+        try {
+            SysUser sysUser = UserUtil.getLoginUser();
+            map = new HashMap();
+            List<Map<String, Object>> mapList = deptDao.querySubDeptListById(sysUser.getC03());
+            map.put("data", mapList);
+            map.put("code", 0);
+            map.put("message", "成功");
+            return map;
+        } catch (Exception e) {
+            logger.info("获取部门树列表失败{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+    }
+
 }
