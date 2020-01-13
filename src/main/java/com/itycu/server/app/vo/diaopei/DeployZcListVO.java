@@ -54,12 +54,21 @@ public class DeployZcListVO {
     /**
      * 调入部门id
      */
-    private Integer inDeptId;
+    private Integer backDeptId;
 
     /**
      * 调入部门名称
      */
-    private String inDeptName;
+    private String backUsername;
 
+    /**
+     * 使用部门id
+     */
+    private int syDeptId;
+
+    /**
+     * 管理部门id
+     */
+    private int glDeptId;
 
 }

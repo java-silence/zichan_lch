@@ -14,4 +14,11 @@ public class FailMap {
         return map;
     }
 
+    public  static Map<String, Object> createFailMapMsg(String message) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 500);
+        map.put("message", message);
+        map.put("data", null);
+        return map;
+    }
 }
