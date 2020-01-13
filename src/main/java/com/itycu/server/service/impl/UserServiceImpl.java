@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void changePassword(String username, String oldPassword, String newPassword) {
+	public int changePassword(String username, String oldPassword, String newPassword) {
 		SysUser u = userDao.getUser(username);
 		if (u == null) {
 			throw new IllegalArgumentException("用户不存在");
@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
 		if (!passwordEncoder.matches(oldPassword, u.getPassword())) {
 			throw new IllegalArgumentException("旧密码错误");
 		}
-
-		userDao.changePassword(u.getId(), passwordEncoder.encode(newPassword));
-
 		log.debug("修改{}的密码", username);
+	  return 	userDao.changePassword(u.getId(), passwordEncoder.encode(newPassword));
+
+
 	}
 
 	@Override

@@ -102,7 +102,7 @@ public class UserController {
 	@ApiOperation(value = "修改密码")
 	@PreAuthorize("hasAuthority('sys:user:password')")
 	public void changePassword(@PathVariable String username, String oldPassword, String newPassword) {
-		userService.changePassword(username, oldPassword, newPassword);
+	  	userService.changePassword(username, oldPassword, newPassword);
 	}
 
 	@GetMapping

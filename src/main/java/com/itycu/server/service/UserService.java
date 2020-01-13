@@ -14,7 +14,7 @@ public interface UserService {
 
 	SysUser getUser(String username);
 
-	void changePassword(String username, String oldPassword, String newPassword);
+	int  changePassword(String username, String oldPassword, String newPassword);
 
 	void export(PageTableRequest request, HttpServletResponse response);
 
