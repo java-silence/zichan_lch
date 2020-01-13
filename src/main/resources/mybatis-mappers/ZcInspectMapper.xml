@@ -218,4 +218,12 @@
         WHERE
             `zc_inspect_id` = #{zcInspectRecord.zcInspectId}
     </update>
+
+
+    <select id="queryZcInspectCountByDeptId" resultType="int">
+        select  count(*) from
+
+        zc_inspect as a where a.check_dept_id = #{id}
+        and del = 0
+    </select>
 </mapper>

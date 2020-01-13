@@ -13,6 +13,7 @@ import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcChangeRecordService;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.*;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -650,6 +651,8 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private ZcCheckDao zcCheckDao;
 
 
+
+
     @Override
     public AppIndexZcValueAndNumber getZcValueAndZcNumber(SysUser user) {
         AppIndexZcValueAndNumber result = new AppIndexZcValueAndNumber();
@@ -698,16 +701,13 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             }
             int caigouCount = zcBuyDao.queryBuyCountById(id);
             int diaopeiCount = zcDeployDao.queryDeployCountById(id);
-            /**
-             * TODO 盘点还不确定
-             */
-            int pandianCount = 0;
+            int deptPandianCount = zcInspectDao.queryZcInspectCountByDeptId(id);
             int baoxiuCount = zcRepairDao.queryZcRepairById(id);
             int xunjianCount = zcCheckDao.queryZcCheckCountById(id);
             int chuzhiCount = zcBfDao.queryBaoFeiCountById(id);
             result.setDiaoboCount(diaopeiCount);
             result.setCaigouCount(caigouCount);
-            result.setPandianCount(pandianCount);
+            result.setPandianCount(deptPandianCount);
             result.setChuzhiCount(chuzhiCount);
             result.setBaoxiuCount(baoxiuCount);
             result.setXunjianCount(xunjianCount);
@@ -785,10 +785,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private void setBenYueDeptCount(AppIndexZcValueAndNumber result, long id) {
         int deptCaigouCount = zcBuyDao.queryDeptBuyCountById(id);
         int deptDiaopeiCount = zcDeployDao.queryDeptDeployCountById(id);
-        /**
-         * TODO 盘点还不确定
-         */
-        int deptPandianCount = 0;
+        int deptPandianCount = zcInspectDao.queryZcInspectCountByDeptId(id);
         int deptBaoxiuCount = zcRepairDao.queryDeptZcRepairById(id);
         int deptXunjianCount = zcCheckDao.queryDeptZcCheckCountById(id);
         int deptChuzhiCount = zcBfDao.queryDeptBaoFeiCountById(id);

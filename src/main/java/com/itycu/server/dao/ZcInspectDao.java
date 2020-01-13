@@ -56,4 +56,7 @@ public interface ZcInspectDao {
 
 
     int updateLastInspect(@Param("zcInspectRecord") ZcInspectRecord zcInspectRecord);
+
+
+    int queryZcInspectCountByDeptId(@Param("deptid") long  deptid);
 }
