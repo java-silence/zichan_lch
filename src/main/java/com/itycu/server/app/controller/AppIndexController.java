@@ -2,17 +2,21 @@ package com.itycu.server.app.controller;
 
 
 import com.itycu.server.app.dto.ZcInfoListDTO;
+import com.itycu.server.app.dto.index.ZcInfoEpcIdDTO;
 import com.itycu.server.app.model.AppIndexDeptDataInfo;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
 import com.itycu.server.app.service.IndexService;
 import com.itycu.server.app.util.FailMap;
+import com.itycu.server.app.vo.index.IndexZcInfoVO;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.Todo;
+import com.itycu.server.model.ZcInfo;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,4 +133,27 @@ public class AppIndexController {
         }
         return map;
     }
+
+
+    @ApiOperation(value = "首页扫一扫获取资产信息数据", notes = "首页扫一扫获取资产信息数据")
+    @PostMapping(value = "/getZcInfo")
+    public Map<String, Object> getZcInfo(@RequestBody ZcInfoEpcIdDTO zcInfoEpcIdDTO) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            IndexZcInfoVO zcInfoVO = new IndexZcInfoVO();
+            ZcInfoDto zcInfoDto = zcInfoService.queryZnInfoDtoByEpcId(zcInfoEpcIdDTO.getEpcid());
+            if (null != zcInfoDto) {
+                BeanUtils.copyProperties(zcInfoVO, zcInfoDto);
+            }
+            map.put("code", 0);
+            map.put("message", "成功");
+            map.put("data", zcInfoVO);
+        } catch (Exception e) {
+            logger.error("待办事项列表,{}", e.getMessage());
+            map = FailMap.createFailMap();
+        }
+        return map;
+    }
+
+
 }

@@ -29,4 +29,7 @@ public interface ZcInfoService {
     ZcInfo  queryZnInfoByEpcId(String epcid);
 
     List<ZcInfoDto> getAllZcInfoListByUser(SysUser sysUser, ZcInfoListDTO zcInfoListDTO);
+
+
+    ZcInfoDto queryZnInfoDtoByEpcId(String epcid);
 }

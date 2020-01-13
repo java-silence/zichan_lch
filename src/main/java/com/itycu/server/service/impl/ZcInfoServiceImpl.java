@@ -745,6 +745,11 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         return zcInfoList;
     }
 
+    @Override
+    public ZcInfoDto queryZnInfoDtoByEpcId(String epcid) {
+        return zcInfoDao.queryZnInfoDtoByEpcId(epcid);
+    }
+
 
     private BigDecimal getTotalValue(List<ZcInfoDto> list) {
         BigDecimal total = new BigDecimal(BigDecimal.ZERO.intValue());

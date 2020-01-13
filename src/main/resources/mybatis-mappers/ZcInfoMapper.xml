@@ -721,4 +721,27 @@
 		AND c.bf = 0
 		and d.c03 = #{deptType}
 	</select>
+
+
+
+    <select id="queryZnInfoDtoByEpcId" resultType="com.itycu.server.dto.ZcInfoDto">
+        SELECT
+            id,
+            epcid,
+            a.zc_name AS zcName,
+            ( SELECT e.NAME FROM zc_category AS e WHERE e.id = a.zc_category_id ) AS zcCategoryName,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = a.sy_dept_id ) AS syDeptName,
+            ( SELECT b.deptname FROM t_dept AS b WHERE b.id = a.gl_dept_id ) AS glDeptName,
+            a.zc_from AS zcFrom,
+            a.start_use_time AS startUseTime,
+            remainingperiod,
+            net,
+            a.original_value AS originalValue
+        FROM
+            zc_info AS a
+        WHERE
+            a.del = 0
+        AND a.epcid = #{epcid}
+    </select>
+
 </mapper>
