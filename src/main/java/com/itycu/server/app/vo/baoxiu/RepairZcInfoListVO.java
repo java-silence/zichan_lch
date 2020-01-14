@@ -24,4 +24,17 @@ public class RepairZcInfoListVO {
     private String epcid;
 
 
+
+    /**
+     * 使用部门id
+     */
+    public long syDeptId;
+
+
+    /**
+     * 管理部门id
+     */
+    public long  glDeptId;
+
+
 }

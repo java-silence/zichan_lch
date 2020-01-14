@@ -1,6 +1,7 @@
 package com.itycu.server.app.controller;
 
 
+import com.itycu.server.app.dto.baoxiu.RepairInsertDataDTO;
 import com.itycu.server.app.dto.baoxiu.RepairZcInfoListDTO;
 import com.itycu.server.app.dto.baoxiu.RepairZcItemRecordListDTO;
 import com.itycu.server.app.util.FailMap;
@@ -8,15 +9,19 @@ import com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO;
 import com.itycu.server.dao.RepairsDao;
 import com.itycu.server.dao.ZcRepairDao;
 import com.itycu.server.dao.ZcRepairItemDao;
+import com.itycu.server.dto.ZcRepairDto;
 import com.itycu.server.dto.ZcRepairItemDto;
 import com.itycu.server.model.SysUser;
+import com.itycu.server.model.ZcRepairItem;
 import com.itycu.server.service.RepairService;
+import com.itycu.server.service.ZcRepairService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,7 +45,7 @@ public class AppRepairController {
     private ZcRepairDao zcRepairDao;
 
     @Autowired
-    private RepairService repairService;
+    private ZcRepairService zcRepairService;
 
     @Autowired
     private ZcRepairItemDao zcRepairItemDao;
@@ -127,6 +132,41 @@ public class AppRepairController {
         } catch (Exception e) {
             logger.info("根据报修记录资产数据列表==>{}", e.getMessage());
             return FailMap.createFailMapMsg("根据报修记录资产数据列表失败");
+        }
+        return map;
+    }
+
+
+    @PostMapping(value = "/insertRepairData")
+    @ApiOperation(value = "提交上传的报修的信息", notes = "提交上传的报修的信息")
+    public Map<String, Object> insertRepairData(@RequestBody List<RepairInsertDataDTO> repairInsertDataDTOS) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (CollectionUtils.isEmpty(repairInsertDataDTOS)) {
+                return FailMap.createFailMapMsg("报修数据为空");
+            }
+            List<ZcRepairItem> zcRepairItemList = new ArrayList<>();
+            for (RepairInsertDataDTO zcItemRecordListDTO : repairInsertDataDTOS) {
+                ZcRepairItem zcRepairItem = new ZcRepairItem();
+                zcRepairItem.setGlDeptId(zcItemRecordListDTO.getGlDeptId());
+                zcRepairItem.setZcId(zcItemRecordListDTO.getId());
+                zcRepairItem.setApplyDeptId(zcItemRecordListDTO.getSyDeptId());
+                zcRepairItem.setFrontPicsUrl(zcItemRecordListDTO.getImageUrl());
+                zcRepairItem.setId(zcItemRecordListDTO.getId());
+                zcRepairItem.setDel(0);
+                zcRepairItem.setCreateBy(UserUtil.getLoginUser().getId());
+                zcRepairItemList.add(zcRepairItem);
+            }
+            ZcRepairDto zcRepairDto = new ZcRepairDto();
+            zcRepairDto.setType("1");
+            zcRepairDto.setZcRepairItemList(zcRepairItemList);
+            zcRepairService.save(zcRepairDto);
+            map.put("data", null);
+            map.put("code", "0");
+            map.put("msg", "成功");
+        } catch (Exception e) {
+            logger.info("提交上传的报修的信息==>{}", e.getMessage());
+            return FailMap.createFailMapMsg("提交上传的报修的信息失败");
         }
         return map;
     }

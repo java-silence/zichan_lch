@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -49,6 +50,8 @@ public class ZcRepairServiceImpl implements ZcRepairService {
     @Autowired
     private NoticeDao noticeDao;
 
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ZcRepairDto save(ZcRepairDto zcRepair) {
         // 查询报修流程
@@ -126,7 +129,8 @@ public class ZcRepairServiceImpl implements ZcRepairService {
         // 查询子节点
         List<Flowstep> flowsteps = flowstepDao.listSteps(flowId);
         // 报修子表
-        List<ZcRepairItemDto> zcRepairItems = zcRepairItemDao.listByZcReId(zcRepair.getId());
+        long  zcRepairId = zcRepair.getId();
+        List<ZcRepairItemDto> zcRepairItems = zcRepairItemDao.listByZcReId(zcRepairId);
         // 获取所有的管理部门
         ArrayList<Long> deptIdList = getGlDeptIdList(zcRepairItems);
         if (deptIdList.size()<=0){
