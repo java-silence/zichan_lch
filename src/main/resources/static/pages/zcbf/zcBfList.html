@@ -82,18 +82,18 @@
                 {type:'numbers',title:'序号'}
 				,{field:'id',hide:true}
                 //,{field:'checkbox',checkbox: true} //其它参数在此省略
-                ,{field:'nickname',title:'申请人', width:100, sort: true}
+                ,{field:'nickname',title:'申请人', width:140, sort: true}
                 ,{field:'username',title:'账号', width:100, sort: true}
-                ,{field:'deptname',title:'申请部门', width:120, sort: true}
-                ,{field:'flowname',title:'业务类型', width:150, sort: true}
-                ,{field:'stepname',title:'流程环节', width:150, sort: true}
+                ,{field:'deptname',title:'申请部门', width:150, sort: true}
+                ,{field:'flowname',title:'业务类型', width:170, sort: true}
+                ,{field:'stepname',title:'流程环节', width:170, sort: true}
                 // ,{field:'bfdes',title:'处置描述', width:220, sort: true}
-                ,{field:'status',title:'流程状态', width:90,style:'color: #2eb926eb;', sort: false,templet: function(d){
+                ,{field:'status',title:'流程状态', width:100,style:'color: #2eb926eb;', sort: false,templet: function(d){
                         return processStatus[d.status];
                     }}
-                ,{field:'createtime',title:'申请时间', width:140, sort: true}
+                ,{field:'createtime',title:'申请时间', width:160, sort: true}
                 // ,{field:'bz',title:'处置备注', width:150, sort: true}
-				,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
+				,{field:'caozuo', title: '操作',fixed:'right', width:150,align:"center",templet: function(d){
 						var id = d.id;
 						var href = "updateZcBf.html?id=" + id;
                         var startProcess = buttonStartProcess(id, "", pers);

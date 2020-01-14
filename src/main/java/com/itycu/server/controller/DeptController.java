@@ -1,31 +1,21 @@
 package com.itycu.server.controller;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.Lists;
 import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.PermissionDao;
-import com.itycu.server.utils.UserUtil;
-import com.google.common.collect.Lists;
 import com.itycu.server.model.Dept;
-import com.itycu.server.page.table.PageTableRequest;
-import com.itycu.server.page.table.PageTableResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.itycu.server.page.table.PageTableHandler;
 import com.itycu.server.page.table.PageTableHandler.CountHandler;
 import com.itycu.server.page.table.PageTableHandler.ListHandler;
-
+import com.itycu.server.page.table.PageTableRequest;
+import com.itycu.server.page.table.PageTableResponse;
+import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/depts")
@@ -164,7 +154,6 @@ public class DeptController {
 
     @GetMapping("/eleTreeSelf")
     @ApiOperation(value = "查询所在的管理部门")
-    //@PreAuthorize("hasAuthority('sys:menu:query')")
     public Map eleTreeSelf() {
         Map map = new HashMap();
         List<Map> list = new LinkedList<>();
@@ -185,10 +174,28 @@ public class DeptController {
         return map;
     }
 
-
-
-
-
+    /**
+     * 列出垣曲县的管理部门
+     * @return
+     */
+    @GetMapping("/eleTreeGlDept")
+    @ApiOperation(value = "查询所在的管理部门")
+    public Map eleTreeGlDept() {
+        Map map = new HashMap();
+        List<Map> list = new LinkedList<>();
+        // 查询下级所有的管理部门
+        List<Dept> depts = deptDao.listChildGlDept(11l, 3l);
+        for (Dept dept : depts) {
+            Map map1 = new HashMap();
+            map1.put("name", dept.getDeptname());
+            map1.put("id", dept.getId());
+            map1.put("deptcode", dept.getDeptcode());
+            list.add(map1);
+        }
+        map.put("data", list);
+        map.put("code", 0);
+        return map;
+    }
 
     @GetMapping("/eleTree")
     @ApiOperation(value = "eleTree部门树列表")

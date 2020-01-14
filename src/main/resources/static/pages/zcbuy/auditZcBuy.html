@@ -99,7 +99,7 @@
         <!--审批操作-->
 		<div class="layui-col-md4">
 			<div class="layui-card">
-				<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+				<form class="layui-form form-horizontal shenhecaozuo" onsubmit="return false" id="form">
 					<input type="hidden" id="id" name="id">
 					<input type="hidden" id="bizid" name="bizid">
 
@@ -161,6 +161,9 @@
         var todoId = getUrlParam("id");
         var buyId = getUrlParam("bizid");
         var type = getUrlParam("type");
+		if (type == 1){
+			$('.shenhecaozuo').css("display","none");
+		}
         // 查询角色信息
         // showUserbyRole("userid",6);
         var table;
@@ -181,7 +184,7 @@
                     ,{field:'flowTodoId', hide: true}
                     ,{field:'flowItemId', hide: true}
                     ,{field:'itemStatus', hide: true}
-                    ,{field:'buyNum',title:'购买单号', width:155}
+                    ,{field:'buyNum',title:'购买单号', width:170}
                     ,{field:'name',title:'资产名称', width:130}
                     ,{field:'price',title:'采购单价(元)', width:120,edit:'text'}
                     ,{field:'num',title:'采购数量', width:100,edit:'text'}
@@ -195,7 +198,7 @@
                     ,{field:'unit',title:'单位', width:100,edit:'text'}
                     ,{field:'brand',title:'产品品牌', width:100,edit:'text'}
                     ,{field:'supplierName',title:'供应商名称', width:100,edit:'text'}
-                    ,{field:'zcBz',title:'备注', width:100,edit:'text'}
+                    ,{field:'buyBz',title:'备注', width:100,edit:'text'}
                     ,{field:'status',title:'状态', align:'center',width:100, fixed:'right',templet: function(d){
                             var status = "";
                             if (d.status == 0 ){
@@ -215,6 +218,9 @@
                             }else if (d.status == 2 && d.shbStatus==3){
                                 status = "<span style='color: #FFB800'>删除</span>";
                             }
+                            if (d.del == 1) {
+								status = "<span style='color: #FFB800'>拒绝</span>";
+							}
                             return status;
                         }}
                     ,{field:'caozuo',width:180, title: '操作',fixed:'right',align:'center', toolbar: '#auditBfItem'}
@@ -632,7 +638,7 @@
                             if (allImoney == null || isNaN(allImoney)){
                                 allImoney = 0;
                             }
-                            html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td>"+allIprice+"</td>" +
+                            html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td></td>" +
                                 "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td></tr>";
                         }
                     });
@@ -687,9 +693,9 @@
                         html += "<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
                         html += "<div>";
                         if(data[i].biztype = "同意"){
-                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:同意</p>";
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:已审核</p>";
                         }else {
-                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
+                            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:未通过</p>";
                         }
                         // html += "<p>审批意见：</p>";
                         html += "<p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";

@@ -208,7 +208,7 @@
 
     <!--统计购买子项-->
 	<select id="countByZcBuyId" parameterType="long" resultType="int">
-        SELECT SUM(t.num) FROM zc_buy_item t WHERE t.zc_buy_id = #{zcBuyId} and t.cwb_status = 1 and t.del = 0
+        SELECT IFNULL(SUM(t.num),0) FROM zc_buy_item t WHERE t.zc_buy_id = #{zcBuyId} and t.cwb_status = 1 and t.del = 0
     </select>
 
 

@@ -1,8 +1,9 @@
 package com.itycu.server.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ZcBuyItem extends BaseEntity<Long> {
 
@@ -22,6 +23,7 @@ public class ZcBuyItem extends BaseEntity<Long> {
 	private Integer cwbStatus;
 	private Integer status;
 	private String bz;
+	private String buyBz;
 	private Integer del;
 	private Integer num;
 	private String fileName;
@@ -169,4 +171,11 @@ public class ZcBuyItem extends BaseEntity<Long> {
 	    return this.price.multiply(new BigDecimal(this.num));
     }
 
+	public String getBuyBz() {
+		return buyBz;
+	}
+
+	public void setBuyBz(String buyBz) {
+		this.buyBz = buyBz;
+	}
 }

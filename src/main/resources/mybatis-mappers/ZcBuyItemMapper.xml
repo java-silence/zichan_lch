@@ -107,10 +107,10 @@
 	<insert id="saves">
 		INSERT INTO
 		zc_buy_item
-		(zc_buy_id,apply_user_id,gl_dept_id,name,model,unit,brand,price,totalPrice,supplier_name,use_des,arrive_time,zc_bz,shb_status,cwb_status,num,fileName,fileUrl,bz,create_time,update_time)
+		(zc_buy_id,apply_user_id,gl_dept_id,name,model,unit,brand,price,totalPrice,supplier_name,use_des,arrive_time,zc_bz,shb_status,cwb_status,num,fileName,fileUrl,bz,buyBz,create_time,update_time)
 		VALUES
 		<foreach collection="zcBuyItemList" item="zcBuyItem" separator=",">
-			(#{zcBuyId},#{applyUserId},#{zcBuyItem.glDeptId},#{zcBuyItem.name},#{zcBuyItem.model},#{zcBuyItem.unit},#{zcBuyItem.brand},#{zcBuyItem.price},#{zcBuyItem.totalPrice},#{zcBuyItem.supplierName},#{zcBuyItem.useDes},#{zcBuyItem.arriveTime},#{zcBuyItem.zcBz},#{zcBuyItem.shbStatus},#{zcBuyItem.cwbStatus},#{zcBuyItem.num},#{zcBuyItem.fileName},#{zcBuyItem.fileUrl},#{zcBuyItem.bz},#{zcBuyItem.createTime},#{zcBuyItem.updateTime})
+			(#{zcBuyId},#{applyUserId},#{zcBuyItem.glDeptId},#{zcBuyItem.name},#{zcBuyItem.model},#{zcBuyItem.unit},#{zcBuyItem.brand},#{zcBuyItem.price},#{zcBuyItem.totalPrice},#{zcBuyItem.supplierName},#{zcBuyItem.useDes},#{zcBuyItem.arriveTime},#{zcBuyItem.zcBz},#{zcBuyItem.shbStatus},#{zcBuyItem.cwbStatus},#{zcBuyItem.num},#{zcBuyItem.fileName},#{zcBuyItem.fileUrl},#{zcBuyItem.bz},#{zcBuyItem.buyBz},#{zcBuyItem.createTime},#{zcBuyItem.updateTime})
 		</foreach>
 	</insert>
 
@@ -279,16 +279,18 @@
 	</select>
 
 	<!--根据待办查询资产购买子项-->
-	<select id="listDetailByFlowTodoIdNew" parameterType="long" resultType="hashmap">
+	<select id="listDetailByFlowTodoIdNew" parameterType="long" resultType="map">
 		SELECT
 			t.id,
 			b.buyNum,
 			t.status,
 			t.flow_todo_id flowTodoId,
 			t.flow_item_id flowItemId,
+			z.shb_status shbStatus,
+			z.cwb_status cwbStatus,
 			z.num,
 			z.fileName,
-			z.fileUrl,
+			IFNULL(z.fileUrl,"") fileUrl,
 			z.status itemStatus,
 			z.name,
 			z.model,
@@ -302,6 +304,8 @@
 			z.use_des useDes,
 			DATE_FORMAT(z.arrive_time,'%Y-%m-%d') arriveTime,
 			z.zc_bz zcBz,
+			z.buyBz,
+			z.del,
 			p.deptname gldeptname,
 			p1.deptname sydeptname
 		FROM

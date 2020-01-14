@@ -82,18 +82,18 @@
                 ,{field:'id',hide:true}
                 ,{field:'backDeptId',hide:true}
                 //,{field:'checkbox',checkbox: true} //其它参数在此省略
-                ,{field:'deployNum',title:'调配单号', width:150}
-                ,{field:'nickname',title:'申请人', width:100, sort: true}
-                ,{field:'username',title:'账号', width:100, sort: true}
+                ,{field:'deployNum',title:'调配单号', width:170}
+                ,{field:'nickname',title:'申请人', width:120, sort: true}
+                ,{field:'username',title:'账号', width:130, sort: true}
                 ,{field:'deptname',title:'申请部门', width:120, sort: true}
                 // ,{field:'backDeptname',title:'调出后部门', width:120, sort: true}
-                ,{field:'flowname',title:'业务类型', width:150, sort: true}
-                ,{field:'stepname',title:'流程环节', width:150, sort: true}
+                ,{field:'flowname',title:'业务类型', width:170, sort: true}
+                ,{field:'stepname',title:'流程环节', width:170, sort: true}
                 // ,{field:'description',title:'调配描述', width:220, sort: true}
                 ,{field:'status',title:'流程状态', width:90,style:'color: #2eb926eb;', sort: false,templet: function(d){
                         return processStatus[d.status];
                     }}
-                ,{field:'createtime',title:'申请时间', width:140, sort: true}
+                ,{field:'createtime',title:'申请时间', width:180, sort: true}
                 ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
                         var id = d.id;
                         var href = "updateZcDeploy.html?id=" + id;

@@ -101,7 +101,7 @@
                     }}
                 ,{field:'flowname',title:'业务类型', width:120, sort: true}
                 ,{field:'stepname',title:'流程环节', width:150, sort: true}
-                ,{field:'bz',title:'购买备注', width:180, sort: true}
+                ,{field:'bz',title:'追溯码', width:180, sort: true}
                 ,{field:'status',title:'流程状态', width:90,style:'color: #2eb926eb;', sort: false,templet: function(d){
                         return processStatus[d.status];
                     }}
@@ -194,7 +194,7 @@
                 {type:'numbers'}
                 ,{field:'id',hide: true}
                 ,{field:'zcBuyId',hide: true}
-                ,{field:'buyNum',title:'购买单号', width:155, sort: true}
+                ,{field:'buyNum',title:'购买单号', width:170, sort: true}
                 ,{field:'name',title:'资产名称', width:130, sort: true}
                 ,{field:'price',title:'采购单价(元)', width:140, sort: true}
                 ,{field:'num',title:'购买数量', width:120, sort: true,edit:'text'}
@@ -207,7 +207,7 @@
                 ,{field:'fileUrl',title:'附件地址', width:100, sort: true,hide:true}
                 ,{field:'brand',title:'产品品牌', width:100, sort: true}
                 ,{field:'supplierName',title:'供应商名称', width:100, sort: true}
-                ,{field:'zcBz',title:'备注', width:100, sort: true}
+                ,{field:'buyBz',title:'备注', width:100, sort: true}
                 ,{field:'status',hide:true,title:'审核状态', width:100, sort: true}
                 ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
                         var id = d.id;
@@ -467,7 +467,7 @@
                         if (allImoney == null || isNaN(allImoney)){
                             allImoney = 0;
                         }
-                        html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td>"+allIprice+"</td>" +
+                        html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td></td>" +
                             "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td></tr>";
                     }
                 });

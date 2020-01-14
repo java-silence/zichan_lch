@@ -188,16 +188,19 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         FlowTodoItem flowTodoItem1 = flowTodoItems.get(0);
         Long todoId = flowTodoItem1.getFlowTodoId();
         Todo flowTodo = todoDao.getById(todoId);
-        // 1,修改报废子项分类别
+        // 1,修改购买子项分类别
         List<FlowTodoItem> agreeTodoItems = new ArrayList<>();        // 1审核为同意   2财务为同意  3再次提交的
         List<Long> agreeToDoItemIds = new ArrayList<>();
         List<Long> agreeBfItemIds = new ArrayList<>();
+
         List<FlowTodoItem> refuseTodoItems = new ArrayList<>();       // 1审核为拒绝    2财务为拒绝  3再次提交删除
         List<Long> refuseToDoItemIds = new ArrayList<>();
         List<Long> refuseBfItemIds = new ArrayList<>();
+
         List<FlowTodoItem> backTodoItems = new ArrayList<>();
         List<Long> backToDoItemIds = new ArrayList<>();
         List<Long> backBfItemIds = new ArrayList<>();
+
         for (FlowTodoItem flowTodoItem : flowTodoItems) {
             // 更新购买子项信息
             zcBuyItemDao.updateByflowTodoItem(flowTodoItem);
@@ -367,23 +370,25 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         String substring = lastCode.substring(suCode.length());
         int count = Integer.parseInt(substring);
         int buyNum = zcBuyDao.countByZcBuyId(zcBuy.getId());
-        ArrayList<String> ecpIdLlist = EcpIdUtil.getEcpIdLlist(count, buyNum, null);
-        ArrayList<ZcEpcCode> insertList = new ArrayList<>();
-        for (int i = 0; i < ecpIdLlist.size(); i++) {
-            ZcEpcCode zcEpcCode = new ZcEpcCode();
-            zcEpcCode.setEpcid(dept.getSuCode()+ecpIdLlist.get(i));
-            zcEpcCode.setDeptId(dept.getId());
-            zcEpcCode.setEnable(1);
-            zcEpcCode.setCreateTime(new Date());
-            zcEpcCode.setUpdateTime(new Date());
-            insertList.add(zcEpcCode);
+        if (buyNum>0) {
+            ArrayList<String> ecpIdLlist = EcpIdUtil.getEcpIdLlist(count, buyNum, null);
+            ArrayList<ZcEpcCode> insertList = new ArrayList<>();
+            for (int i = 0; i < ecpIdLlist.size(); i++) {
+                ZcEpcCode zcEpcCode = new ZcEpcCode();
+                zcEpcCode.setEpcid(dept.getSuCode()+ecpIdLlist.get(i));
+                zcEpcCode.setDeptId(dept.getId());
+                zcEpcCode.setEnable(1);
+                zcEpcCode.setCreateTime(new Date());
+                zcEpcCode.setUpdateTime(new Date());
+                insertList.add(zcEpcCode);
+            }
+            zcEpcCodeDao.saves(insertList);
+            String ids = String.join(",", ecpIdLlist);
+            zcBuy.setBz(ids);
+            zcBuy.setStatus(2);
+            zcBuy.setUpdateTime(new Date());
+            zcBuyDao.update(zcBuy);
         }
-        zcEpcCodeDao.saves(insertList);
-        String ids = String.join(",", ecpIdLlist);
-        zcBuy.setBz(ids);
-        zcBuy.setStatus(2);
-        zcBuy.setUpdateTime(new Date());
-        zcBuyDao.update(zcBuy);
     }
 
     /**

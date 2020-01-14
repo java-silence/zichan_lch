@@ -124,7 +124,6 @@ public class ZcInfoController {
             request.getParams().put("searchGlDeptId", "searchGlDeptId");
         }
 
-
         Map map = new HashMap();
         request.getParams().put("del","0");
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
@@ -269,8 +268,8 @@ public class ZcInfoController {
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
         Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
         DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
-        int count = zcInfoDao.count(request.getParams());
-        List list = zcInfoDao.list(request.getParams(), page*limit-limit, limit);
+        int count = zcInfoDao.bfCount(request.getParams());
+        List list = zcInfoDao.bfList(request.getParams(), page*limit-limit, limit);
         map.put("data",list);
         map.put("count",count);
         map.put("code","0");

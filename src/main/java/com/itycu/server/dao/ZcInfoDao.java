@@ -1,18 +1,13 @@
 package com.itycu.server.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import com.itycu.server.app.vo.GlDeptZcCountVO;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcInfo;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ZcInfoDao {
@@ -34,6 +29,10 @@ public interface ZcInfoDao {
     int count(@Param("params") Map<String, Object> params);
 
     List<ZcInfoDto> list(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    int bfCount(@Param("params") Map<String, Object> params);
+
+    List<ZcInfoDto> bfList(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     List<ZcInfoDto> listByCondition(@Param("params") Map<String, Object> params);
 

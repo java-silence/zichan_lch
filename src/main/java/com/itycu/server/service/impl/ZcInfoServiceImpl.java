@@ -13,7 +13,6 @@ import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcChangeRecordService;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.*;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,8 +47,8 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private ZcChangeRecordService zcChangeRecordService;
     @Autowired
     private ZcEpcCodeDao zcEpcCodeDao;
-
-
+    @Autowired
+    private PermissionDao permissionDao;
     @Autowired
     private ZcInspectDao zcInspectDao;
 
@@ -156,7 +156,54 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     @Override
     public void export(PageTableRequest request, HttpServletResponse response) {
         request.getParams().put("del", "0");
+        // 使用部门
+        Object syDeptId = request.getParams().get("syDeptId");
+        Object glDeptId = request.getParams().get("glDeptId");
         request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+        request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
+            request.getParams().put("syRole", "syRole");
+        }
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
+            request.getParams().put("glRole", "glRole");
+            if (!ObjectUtils.isEmpty(glDeptId)) {
+                request.getParams().put("glDeptId", glDeptId);
+            }else {
+                request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            }
+            if (!ObjectUtils.isEmpty(syDeptId)) {
+                request.getParams().put("syDeptId", syDeptId);
+            }else {
+                request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+            }
+        }
+        // 财务部门
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
+            request.getParams().put("syRole", null);
+            request.getParams().put("glRole", null);
+            if (!ObjectUtils.isEmpty(syDeptId)) {
+                request.getParams().put("searchSyDeptId", "searchSyDeptId");
+                request.getParams().put("syDeptId", syDeptId);
+            }else {
+                request.getParams().put("syDeptId", null);
+            }
+            if (!ObjectUtils.isEmpty(glDeptId)) {
+                request.getParams().put("searchGlDeptId", "searchGlDeptId");
+                request.getParams().put("glDeptId", glDeptId);
+            }else {
+                request.getParams().put("glDeptId", null);
+            }
+        }
+        if (!ObjectUtils.isEmpty(syDeptId)) {
+            request.getParams().put("glRole", null);
+            request.getParams().put("syDeptId", syDeptId);
+            request.getParams().put("searchSyDeptId", "searchSyDeptId");
+        }
+        if (!ObjectUtils.isEmpty(glDeptId)) {
+            request.getParams().put("glRole", null);
+            request.getParams().put("glDeptId", glDeptId);
+            request.getParams().put("searchGlDeptId", "searchGlDeptId");
+        }
         List<ZcInfoDto> zcInfoList = zcInfoDao.listByCondition(request.getParams());
         String fileName = "资产档案";
         if ("90".equals(request.getParams().get("daoqi"))) fileName = "到期资产";

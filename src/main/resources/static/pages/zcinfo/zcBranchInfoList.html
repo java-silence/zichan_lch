@@ -418,7 +418,7 @@
 		if(!el1){
 			el1=eleTree.render({
 				elem: '#glDeptEleTree',
-				url:'/depts/eleTree',
+				url:'/depts/eleTreeGlDept',
 				request: {
 					name: "name",
 				},
@@ -500,7 +500,34 @@
 	}
 
 	$("#searchBt").click(function(){
-		tableIns.reload({where: {zcName:$('#zcName').val(),zcCodenum:$('#').val(),sdate:$('#sdate').val(),edate:$('#edate').val(),catCode:$('#catCode').val(),originalValue:$('#originalValue').val(),glDeptId:$('#glDeptId').val(),syDeptId:syDeptIds, useStatus:$('#useStatus').val(),},page:{curr:1}})
+		var glDeptId = $('#glDeptId').val();
+		var syDeptId = $('#syDeptId').val();
+		var glName = $('#glDeptName').val();
+		var syName = $('#syDeptName').val();
+		if (glName == null || glName == '') {
+			glDeptId = "";
+		}
+		if (syName == null || syName == '') {
+			syDeptId = "";
+		}
+		tableIns.reload({where: {
+				epcid:$('#epcid').val(),
+				zcName: $('#zcName').val(),
+				zcCodenum: $('#zcCodenum').val(),
+				sdate: $('#sdate').val(),
+				edate: $('#edate').val(),
+				catCode: $('#catCode').val(),
+				glDeptId: glDeptId,
+				syDeptId: syDeptId,
+				specification: $('#specification').val(),
+				model:$('#model').val(),
+				useStatus: $('#useStatus').val(),
+				originalValue: $('#originalValue').val(),
+				netvalue: $('#netvalue').val(),
+				useMonths: $('#useMonths').val(),
+				remainingperiod: $('#remainingperiod').val(),
+				createTime:$('#createTime').val()
+			},page:{curr:1}})
 	});
 
 	//导出
