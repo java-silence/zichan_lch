@@ -843,7 +843,4 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         result.setBaoxiuCount(deptBaoxiuCount);
         result.setXunjianCount(deptXunjianCount);
     }
-
-
-
 }

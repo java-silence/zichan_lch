@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO;
 import com.itycu.server.dto.RepairsVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -42,5 +43,8 @@ public interface RepairsDao {
 
     @Select("select * from zx_repairs t order by id")
     List<Repairs> listAll();
+
+
+    List<RepairZcInfoListVO> getRepairVOList(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
 }
