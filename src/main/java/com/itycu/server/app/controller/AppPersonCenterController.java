@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Api("App中的个人中心接口")
+@Api(tags = "App中的个人中心接口")
 @RequestMapping(value = "/mine")
 @RestController
 public class AppPersonCenterController {
