@@ -112,7 +112,7 @@ public class AppRepairController {
     }
 
 
-    @GetMapping("/listByZcReId")
+    @PostMapping(value = "/listByZcReId")
     @ApiOperation(value = "根据报修记录资产数据列表", notes = "根据报修记录资产数据列表")
     public Map<String, Object> listByZcReId(@RequestBody RepairZcItemRecordListDTO repairZcItemRecordListDTO) {
         Map<String, Object> map = new HashMap<>();
