@@ -210,9 +210,11 @@
                 and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) <= #{params.linbao} ]]>
                 and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) > 0 ]]>
             </if>
-            <if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
-                and
-                <![CDATA[ t.start_use_time >= #{params.sdate} and t.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+            <if test="params.sdate != null and params.sdate != ''">
+                and <![CDATA[ t.start_use_time >= #{params.sdate}]]>
+            </if>
+            <if test="params.edate != null and params.edate != ''">
+                and <![CDATA[t.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
             </if>
             <if test="params.catCode != null and params.catCode != ''">
                 and t.cat_code like concat('',#{params.catCode},'%')
@@ -432,9 +434,11 @@
                 and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) <= #{params.linbao} ]]>
                 and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) > 0 ]]>
             </if>
-            <if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
-                and
-                <![CDATA[ t.start_use_time >= #{params.sdate} and t.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+            <if test="params.sdate != null and params.sdate != ''">
+                and <![CDATA[ t.start_use_time >= #{params.sdate}]]>
+            </if>
+            <if test="params.edate != null and params.edate != ''">
+                and <![CDATA[t.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
             </if>
             <if test="params.catCode != null and params.catCode != ''">
                 and t.cat_code like concat('',#{params.catCode},'%')
@@ -1046,5 +1050,16 @@
             </where>
         </foreach>
     </update>
+
+    <!--根据资产编码查询-->
+    <select id="listByZcCodeNum" resultType="string">
+        select zc_codenum from zc_info t
+        where t.zc_codenum in
+        (
+            <foreach collection="codes" item="code" separator=",">
+                #{code}
+            </foreach>
+        )
+    </select>
 
 </mapper>

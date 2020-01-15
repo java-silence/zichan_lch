@@ -156,4 +156,5 @@ public interface ZcInfoDao {
     @Select("select * from zc_info where catType = 0 and remainingperiod > 0")
     List<ZcInfo> listByCatType(@Param("catType") Integer catType);
 
+    List<String> listByZcCodeNum(@Param("codes") List<String> codes);
 }

@@ -109,7 +109,7 @@
 							edit ="";
 							del="";
                             startProcess="";
-                            noAction = btnNoAction(id, "", pers);
+                            //noAction = btnNoAction(id, "", pers);
 						}
 						return startProcess + edit + del + noAction;
 					}}
@@ -183,32 +183,32 @@
                 // ,{field:'inspecttime',title:'巡检周期', width:100, sort: true}
                 // ,{field:'warrantyperiod',title:'保养周期', width:100, sort: true}
                 ,{field:'status',hide:true,title:'审核状态', width:100, sort: true}
-                ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
-                        var id = d.id;
-                        var bz = d.bz;
-                        var cstatus = d.cwbStatus;
-                        var sstatus = d.shbStatus;
-                        var zcbfid = d.zcbfid;
-                        var deldata = id+"_"+zcbfid;
-                        var jsondata = id+"_"+zcbfid+"_"+bz;
-                        var href = "updateZcBaofei.html?id=" + id;
-                        var startProcess = buttonStartItemProcess(jsondata, "", pers);
-                        var del = buttonDelItem(deldata, "", pers);
-                        var noAction = "";
-                        var huifu = "";
-                        if(d.status==0 && d.shbStatus == 3){
-                        	var audit = buttonAudit(id,"sys:ZcBaofei:audit",pers);
-                        }
-                        if (cstatus == 2 && sstatus != 4){
-                            huifu = huifuItemProcess(jsondata, "", pers);
-                        }
-                        if(d.status>0){
-                            startProcess="";
-                            del = "";
-                            noAction = btnNoAction(id, "", pers);
-                        }
-                        return  del + noAction + huifu;
-                    }}
+                // ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
+                //         var id = d.id;
+                //         var bz = d.bz;
+                //         var cstatus = d.cwbStatus;
+                //         var sstatus = d.shbStatus;
+                //         var zcbfid = d.zcbfid;
+                //         var deldata = id+"_"+zcbfid;
+                //         var jsondata = id+"_"+zcbfid+"_"+bz;
+                //         var href = "updateZcBaofei.html?id=" + id;
+                //         var startProcess = buttonStartItemProcess(jsondata, "", pers);
+                //         var del = buttonDelItem(deldata, "", pers);
+                //         var noAction = "";
+                //         var huifu = "";
+                //         if(d.status==0 && d.shbStatus == 3){
+                //         	var audit = buttonAudit(id,"sys:ZcBaofei:audit",pers);
+                //         }
+                //         if (cstatus == 2 && sstatus != 4){
+                //             huifu = huifuItemProcess(jsondata, "", pers);
+                //         }
+                //         if(d.status>0){
+                //             startProcess="";
+                //             del = "";
+                //             noAction = btnNoAction(id, "", pers);
+                //         }
+                //         return  del + noAction + huifu;
+                //     }}
 			]]
 			,done: function(res, curr, count){
 
