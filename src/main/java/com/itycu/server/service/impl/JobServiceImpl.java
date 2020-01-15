@@ -168,7 +168,7 @@ public class JobServiceImpl implements JobService {
 		}
 
 		// 1, 查询全部的固定资产(1,固定 2,剩余期限大于0)
-		List<ZcInfo> list = zcInfoDao.listByCatType(0);
+	//	List<ZcInfo> list = zcInfoDao.listByCatType(0);
 		// 2,计算值
 		/**
 		 * 计提数加1

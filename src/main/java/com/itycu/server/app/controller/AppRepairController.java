@@ -6,6 +6,8 @@ import com.itycu.server.app.dto.baoxiu.RepairZcInfoListDTO;
 import com.itycu.server.app.dto.baoxiu.RepairZcItemRecordListDTO;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO;
+import com.itycu.server.app.vo.baoxiu.RepairZcInfoRecordVO;
+import com.itycu.server.app.vo.baoxiu.ZcRepairItemVO;
 import com.itycu.server.dao.RepairsDao;
 import com.itycu.server.dao.ZcRepairDao;
 import com.itycu.server.dao.ZcRepairItemDao;
@@ -20,6 +22,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@Api(tags = "app资产保修接口")
+@Api(tags = "app资产报修接口")
 @RestController
 @RequestMapping(value = "/app/repair")
 public class AppRepairController {
@@ -52,7 +55,7 @@ public class AppRepairController {
 
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取保修的资产列表", notes = "获取保修的资产列表")
+    @ApiOperation(value = "获取报修的资产列表", notes = "获取报修的资产列表")
     public Map<String, Object> getRepairVOList(@RequestBody RepairZcInfoListDTO repairZcInfoListDTO) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -68,53 +71,66 @@ public class AppRepairController {
             map.put("message", "成功");
 
         } catch (Exception e) {
-            logger.info("获取保修的资产列表失败{}", e.getMessage());
-            return FailMap.createFailMapMsg("获取保修的资产列表失败");
+            logger.info("获取报修的资产列表失败{}", e.getMessage());
+            return FailMap.createFailMapMsg("获取报修的资产列表失败");
         }
         return map;
     }
 
 
     @PostMapping(value = "/repair/recordList")
-    @ApiOperation(value = "获取保修的【记录列表】", notes = "获取保修的【记录列表】")
+    @ApiOperation(value = "获取报修的【记录列表】", notes = "获取报修的【记录列表】")
     public Map<String, Object> getRecordList(@RequestBody RepairZcInfoListDTO repairZcInfoListDTO) {
         Map<String, Object> map = new HashMap<>();
         try {
+            List<RepairZcInfoRecordVO> listVO = new ArrayList<>();
             int page = repairZcInfoListDTO.getOffset();
             int limit = repairZcInfoListDTO.getLimit();
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("del", "0");
-            List list = zcRepairDao.list(params, page * limit - limit, limit);
-            map.put("data", list);
+            List<ZcRepairDto> list = zcRepairDao.list(params, page * limit - limit, limit);
+            if (!CollectionUtils.isEmpty(list)) {
+                list.forEach(k -> {
+                    RepairZcInfoRecordVO recordVO = new RepairZcInfoRecordVO();
+                    recordVO.setId(k.getId().intValue());
+                    recordVO.setDeptname(k.getDeptname());
+                    recordVO.setNickname(k.getNickname());
+                    recordVO.setCode(k.getCode());
+                    recordVO.setCreateTime(k.getCreateTime());
+                    listVO.add(recordVO);
+                });
+            }
+            map.put("data", listVO);
             map.put("code", "0");
             map.put("msg", "成功");
         } catch (Exception e) {
-            logger.info("获取保修的【记录列表】==>{}", e.getMessage());
-            return FailMap.createFailMapMsg("获取保修的记录列表失败");
+            logger.info("获取报修的【记录列表】==>{}", e.getMessage());
+            return FailMap.createFailMapMsg("获取报修的记录列表失败");
         }
         return map;
     }
 
 
-    @PostMapping(value = "/repair/record/zcList")
-    @ApiOperation(value = "获取保修记录的【资产列表】", notes = "获取保修记录的【资产列表】")
-    public Map<String, Object> getRepairRecordItemList(@RequestBody RepairZcInfoListDTO repairZcInfoListDTO) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            int page = repairZcInfoListDTO.getOffset();
-            int limit = repairZcInfoListDTO.getLimit();
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("del", "0");
-            List list = zcRepairDao.list(params, page * limit - limit, limit);
-            map.put("data", list);
-            map.put("code", "0");
-            map.put("msg", "成功");
-        } catch (Exception e) {
-            logger.info("获取保修的【记录列表】==>{}", e.getMessage());
-            return FailMap.createFailMapMsg("获取保修的记录列表失败");
-        }
-        return map;
-    }
+//    @PostMapping(value = "/repair/record/zcList")
+//    @ApiOperation(value = "获取报修记录的【资产列表】", notes = "获取报修记录的【资产列表】")
+//    public Map<String, Object> getRepairRecordItemList(@RequestBody RepairZcInfoListDTO repairZcInfoListDTO) {
+//        Map<String, Object> map = new HashMap<>();
+//        try {
+//
+//            int page = repairZcInfoListDTO.getOffset();
+//            int limit = repairZcInfoListDTO.getLimit();
+//            Map<String, Object> params = new HashMap<String, Object>();
+//            params.put("del", "0");
+//            List<ZcRepairDto> list = zcRepairDao.list(params, page * limit - limit, limit);
+//            map.put("data", list);
+//            map.put("code", "0");
+//            map.put("msg", "成功");
+//        } catch (Exception e) {
+//            logger.info("获取报修的【记录列表】==>{}", e.getMessage());
+//            return FailMap.createFailMapMsg("获取报修的记录列表失败");
+//        }
+//        return map;
+//    }
 
 
     @PostMapping(value = "/listByZcReId")
@@ -122,11 +138,20 @@ public class AppRepairController {
     public Map<String, Object> listByZcReId(@RequestBody RepairZcItemRecordListDTO repairZcItemRecordListDTO) {
         Map<String, Object> map = new HashMap<>();
         try {
+
+            List<ZcRepairItemVO> itemVOS = new ArrayList<>();
             List<ZcRepairItemDto> list = new ArrayList<>();
             if (repairZcItemRecordListDTO != null) {
                 list = zcRepairItemDao.listByZcReId(repairZcItemRecordListDTO.getId());
+                if (!CollectionUtils.isEmpty(list)) {
+                    list.forEach(k -> {
+                        ZcRepairItemVO repairItemVO = new ZcRepairItemVO();
+                        BeanUtils.copyProperties(k, repairItemVO);
+                        itemVOS.add(repairItemVO);
+                    });
+                }
             }
-            map.put("data", list);
+            map.put("data", itemVOS);
             map.put("code", "0");
             map.put("msg", "成功");
         } catch (Exception e) {
