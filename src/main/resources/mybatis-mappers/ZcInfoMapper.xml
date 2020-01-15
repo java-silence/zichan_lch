@@ -505,7 +505,7 @@
         predict_years, maintain_cycle,
         lave_time, maintain_deadline, last_maintain_time, lj_zhejiu, bn_zhejiu, netvalue, jzzb, net, net_residual_rate,
         net_residual_value,
-        use_months, have_count, remainingperiod, cname, venperson, venphone, venaddress, warrantyperiod, del, bf, bz,
+        use_months, have_count, remainingperiod, cname, venperson, venphone, venaddress, warrantyperiod, catType ,del, bf, bz,
         c01, c02, c03, create_by,
         update_by, create_time, update_time,card_num,inspect_time,epcid,zc_coding) values
         <foreach collection="list" item="zcInfo" separator=",">
@@ -524,7 +524,7 @@
             #{zcInfo.jzzb}, #{zcInfo.net}, #{zcInfo.netResidualRate}, #{zcInfo.netResidualValue}, #{zcInfo.useMonths},
             #{zcInfo.haveCount},
             #{zcInfo.remainingperiod}, #{zcInfo.cname}, #{zcInfo.venperson}, #{zcInfo.venphone}, #{zcInfo.venaddress},
-            #{zcInfo.warrantyperiod},
+            #{zcInfo.warrantyperiod},#{zcInfo.catType},
             #{zcInfo.del}, #{zcInfo.bf}, #{zcInfo.bz}, #{zcInfo.c01}, #{zcInfo.c02}, #{zcInfo.c03}, #{zcInfo.createBy},
             #{zcInfo.updateBy},
             #{zcInfo.createTime},
@@ -978,5 +978,24 @@
             a.del = 0
         AND a.epcid = #{epcid}
     </select>
+
+    <!--批量更新-->
+    <update id="updateList" parameterType="java.util.List">
+        <foreach collection="list" item="zcInfo" index="index" open="" close="" separator=";">
+            UPDATE zc_info
+            <set>
+                lj_zhejiu=#{zcInfo.ljZhejiu},
+                bn_zhejiu=#{zcInfo.bnZhejiu},
+                netvalue=#{zcInfo.netvalue},
+                net=#{zcInfo.net},
+                net_residual_value=#{zcInfo.netResidualValue},
+                have_count=#{zcInfo.haveCount},
+                remainingperiod=#{zcInfo.remainingperiod},
+            </set>
+            <where>
+                id = #{zcInfo.id}
+            </where>
+        </foreach>
+    </update>
 
 </mapper>

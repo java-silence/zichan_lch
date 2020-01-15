@@ -78,14 +78,14 @@
                                 <input class="layui-input" type="hidden" id="catCode" name="catCode">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">规格</label>
                             <div class="layui-input-block">
                                 <input id="specification" name="specification" type="text" class="layui-input" placeholder="规格">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">型号</label>
                             <div class="layui-input-block">
@@ -106,6 +106,8 @@
                                        placeholder="终止日期">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">使用状态</label>
                             <div class="layui-input-block">
@@ -121,8 +123,6 @@
                                 <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">原价值</label>
                             <div class="layui-input-block">
@@ -137,6 +137,8 @@
                                        placeholder="净值">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">使用月限</label>
                             <div class="layui-input-block">
@@ -282,7 +284,7 @@
             ,limits: [20,40,50,100,200,500,1000,2000]
             ,totalRow: true
             ,toolbar: 'defaultX'
-            ,height:  'full-300'
+            ,height:  'full-200'
             ,even: true //开启隔行背景
             ,size: 'sm' //小尺寸的表格
             ,autoSort:false
@@ -313,7 +315,7 @@
                 ,{field:'zcName',title:'资产名称', width:100, sort: true}
                 , {field: 'zcCategoryYiJi', title: '资产1级分类', width: 120, sort: true}
                 , {field: 'zcCategoryErJi', title: '资产2级分类', width: 120, sort: true}
-                , {field: 'zcCategoryName', title: '资产分类', width: 120, sort: true}
+                , {field: 'zcCategoryName', title: '资产3级分类', width: 120, sort: true}
                 ,{field:'specification',title:'规格', width:100, sort: true}
                 ,{field:'model',title:'型号', width:100, sort: true}
 

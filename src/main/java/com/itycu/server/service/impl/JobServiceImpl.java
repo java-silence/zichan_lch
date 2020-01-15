@@ -1,30 +1,22 @@
 package com.itycu.server.service.impl;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.itycu.server.service.JobService;
 import com.itycu.server.dao.JobDao;
+import com.itycu.server.dao.ZcInfoDao;
 import com.itycu.server.job.SpringBeanJob;
 import com.itycu.server.model.JobModel;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
+import com.itycu.server.model.ZcInfo;
+import com.itycu.server.service.JobService;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Method;
+import java.util.*;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -38,6 +30,8 @@ public class JobServiceImpl implements JobService {
 	private static final String JOB_DATA_KEY = "JOB_DATA_KEY";
 	@Autowired
 	private JobDao jobDao;
+	@Autowired
+	private ZcInfoDao zcInfoDao;
 
 	@Override
 	public void saveJob(JobModel jobModel) {
@@ -146,6 +140,48 @@ public class JobServiceImpl implements JobService {
 
 		jobModel.setStatus(0);
 		jobDao.update(jobModel);
+	}
+
+	public static Integer status = 0;
+	@Override
+	//每月1号增加计提数,
+	//@Scheduled(cron = "0 0 1 1 * ?")
+	@Scheduled(cron = "*/5 * * * * ?")
+	public void calculateZcinfo() {
+
+		if (status == 0) {
+
+			ArrayList<ZcInfo> list = new ArrayList<>();
+			ZcInfo zcInfo1 = new ZcInfo();
+			zcInfo1.setId(1l);
+			zcInfo1.setZcName("柜内清111111");
+			zcInfo1.setSpecification("中联智科1");
+			ZcInfo zcInfo2 = new ZcInfo();
+			zcInfo2.setId(2l);
+			zcInfo2.setZcName("柜内清111222");
+			zcInfo2.setSpecification("中联智科2");
+			list.add(zcInfo1);
+			list.add(zcInfo2);
+
+			zcInfoDao.updateList(list);
+
+		}
+
+		// 1, 查询全部的固定资产(1,固定 2,剩余期限大于0)
+		List<ZcInfo> list = zcInfoDao.listByCatType(0);
+		// 2,计算值
+		/**
+		 * 计提数加1
+		 * 累计折旧
+		 * 本年折旧
+		 * 净值=净额
+		 * 净残值
+		 * 剩余期限
+		 */
+
+		// 3,批量更新(只更新特定的几个值)
+
+		status = 1;
 	}
 
 }

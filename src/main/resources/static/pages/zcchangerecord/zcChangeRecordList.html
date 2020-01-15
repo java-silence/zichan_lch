@@ -47,7 +47,7 @@
     <!--		</div>-->
     <!--		<div class="layui-col-md9" style="height:100%">-->
     <div class="layui-card">
-        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:242px">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:240px">
             <div class="layui-form-item">
                 <form class="form-inline layui-inline" style="margin-top:15px" id="form" method="post"
                       action="/zcChangeRecords/export" onsubmit="return false" enctype="multipart/form-data">
@@ -301,7 +301,10 @@
                 // , {field: 'cardNum', title: '卡片编号', width: 100}
                 , {field: 'zcCodenum', title: '资产编码', width: 140}
                 , {field: 'zcName', title: '资产名称', width: 100}
-                , {field: 'zcCategoryName', title: '资产分类', width: 100}
+                //, {field: 'zcCategoryName', title: '资产分类', width: 100}
+                , {field: 'cateName1', title: '资产1级分类', width: 100}
+                , {field: 'cateName2', title: '资产2级分类', width: 100}
+                , {field: 'cateName3', title: '资产3级分类', width: 100}
                 , {field: 'specification', title: '规格', width: 100}
                 , {field: 'model', title: '型号', width: 100}
                 , {field: 'unit', title: '单位', width: 100}

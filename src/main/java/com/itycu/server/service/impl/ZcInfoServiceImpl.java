@@ -480,6 +480,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                 for (int i = 0; i < insertlist.size(); i++) {
                     String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
                     insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
+                    insertlist.get(i).setCatType(0);
                     ZcEpcCode zcEpcCode = new ZcEpcCode();
                     zcEpcCode.setEpcid(dept.getSuCode()+epcId);
                     zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
@@ -625,6 +626,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
                 for (int i = 0; i < insertlist.size(); i++) {
                     String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
                     insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
+                    insertlist.get(i).setCatType(1);
                     // 资产追溯码
                     ZcEpcCode zcEpcCode = new ZcEpcCode();
                     zcEpcCode.setEpcid(dept.getSuCode()+epcId);

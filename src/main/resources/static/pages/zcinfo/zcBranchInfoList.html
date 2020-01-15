@@ -69,7 +69,7 @@
 
 			<div class="layui-card">
 				<div class="layui-card-header">分行资产查询</div>
-				<div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:190px">
+				<div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:240px">
 					<div class="layui-form-item">
 						<form class="form-inline layui-inline" style="margin-top:15px" id="form" method="post"
 							  action="/zcInfos/export" onsubmit="return false" enctype="multipart/form-data">
@@ -102,14 +102,14 @@
 										<input class="layui-input" type="hidden" id="catCode" name="catCode">
 									</div>
 								</div>
+							</div>
+							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">规格</label>
 									<div class="layui-input-block">
 										<input id="specification" name="specification" type="text" class="layui-input" placeholder="规格">
 									</div>
 								</div>
-							</div>
-							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">型号</label>
 									<div class="layui-input-block">
@@ -130,6 +130,8 @@
 											   placeholder="终止日期">
 									</div>
 								</div>
+							</div>
+							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">使用状态</label>
 									<div class="layui-input-block">
@@ -145,8 +147,6 @@
 										<input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
 									</div>
 								</div>
-							</div>
-							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">原价值</label>
 									<div class="layui-input-block">
@@ -161,6 +161,8 @@
 											   placeholder="净值">
 									</div>
 								</div>
+							</div>
+							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">使用月限</label>
 									<div class="layui-input-block">
@@ -296,7 +298,7 @@
 			,limits: [20,40,50,100,200,500,1000,2000]
 			,totalRow: true
 			,toolbar: 'defaultX'
-			,height: 'full-380'
+			,height: 'full-200'
 			,even: true //开启隔行背景
 			,size: 'sm' //小尺寸的表格
 			,autoSort:false
@@ -322,15 +324,15 @@
 			,cols: [[
 				{field: 'id', hide: true}
 				// ,{field:'selfCodenum',title:'同资产编码', width:100, sort: true}
-				, {field: 'epcid', title: '资产追溯码', width: 100, sort: true}
+				, {field: 'epcid', title: '资产追溯码', width: 130, sort: true}
 				// , {field: 'cardNum', title: '卡片编号', width: 100, sort: true}
-				, {field: 'zcCodenum', title: '资产编码', width: 100, sort: true}
-				, {field: 'zcName', title: '资产名称', width: 100, sort: true}
+				, {field: 'zcCodenum', title: '资产编码', width: 130, sort: true}
+				, {field: 'zcName', title: '资产名称', width: 130, sort: true}
 				, {field: 'zcCategoryYiJi', title: '资产1级分类', width: 120}
 				, {field: 'zcCategoryErJi', title: '资产2级分类', width: 120}
 				, {field: 'zcCategoryName', title: '资产3级分类', width: 120, sort: true}
 				, {field: 'specification', title: '规格', width: 100, sort: true}
-				, {field: 'model', title: '型号', width: 100, sort: true}
+				, {field: 'model', title: '型号', width: 130, sort: true}
 				, {field: 'useStatusName', title: '使用状态', width: 100, sort: true}
 				, {field: 'glDeptName', title: '管理部门', width: 150, sort: true}
 				, {field: 'unit', title: '单位', width: 100, sort: true}

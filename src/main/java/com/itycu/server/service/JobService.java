@@ -2,7 +2,6 @@ package com.itycu.server.service;
 
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
-
 import com.itycu.server.model.JobModel;
 
 public interface JobService {
@@ -12,4 +11,7 @@ public interface JobService {
 	void doJob(JobDataMap jobDataMap);
 
 	void deleteJob(Long id) throws SchedulerException;
+
+	void calculateZcinfo();
+
 }

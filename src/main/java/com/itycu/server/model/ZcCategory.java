@@ -1,8 +1,5 @@
 package com.itycu.server.model;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 public class ZcCategory extends BaseEntity<Long> {
 
 	/** 资产类别 */
@@ -20,6 +17,11 @@ public class ZcCategory extends BaseEntity<Long> {
 	private String c03;
 	private Long createBy;
 	private Long updateBy;
+
+	private String cateName1;
+	private String cateName2;
+	private String cateName3;
+	private String cateName4;
 
 
 	/**
@@ -128,5 +130,37 @@ public class ZcCategory extends BaseEntity<Long> {
 	}
 	public void setCreator(String creator) {
 		this.creator = creator;
+	}
+
+	public String getCateName1() {
+		return cateName1;
+	}
+
+	public void setCateName1(String cateName1) {
+		this.cateName1 = cateName1;
+	}
+
+	public String getCateName2() {
+		return cateName2;
+	}
+
+	public void setCateName2(String cateName2) {
+		this.cateName2 = cateName2;
+	}
+
+	public String getCateName3() {
+		return cateName3;
+	}
+
+	public void setCateName3(String cateName3) {
+		this.cateName3 = cateName3;
+	}
+
+	public String getCateName4() {
+		return cateName4;
+	}
+
+	public void setCateName4(String cateName4) {
+		this.cateName4 = cateName4;
 	}
 }

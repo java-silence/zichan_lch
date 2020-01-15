@@ -145,4 +145,8 @@ public interface ZcInfoDao {
 
     ZcInfoDto queryZnInfoDtoByEpcId(String epcid);
 
+    void updateList(@Param("list") List<ZcInfo> list);
+
+
+    List<ZcInfo> listByCatType(@Param("catType") Integer catType);
 }

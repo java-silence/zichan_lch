@@ -106,6 +106,7 @@ public class ZcInfo extends BaseEntity<Long> {
     private String zcCoding;
     /** 资产使用人 */
     private Long userId;
+    private Integer catType;
 
 	/**
 	 * 制单人（多表关联查询字段）
@@ -503,5 +504,13 @@ public class ZcInfo extends BaseEntity<Long> {
 
 	public void setZcCoding(String zcCoding) {
 		this.zcCoding = zcCoding;
+	}
+
+	public Integer getCatType() {
+		return catType;
+	}
+
+	public void setCatType(Integer catType) {
+		this.catType = catType;
 	}
 }

@@ -179,6 +179,10 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         List<FlowTodoItem> flowTodoItems = zcBuyCheckDto.getFlowTodoItems();
         Long zcBuyId = zcBuyCheckDto.getZcBuyId();
         ZcBuy zcBuy = zcBuyDao.getById(zcBuyId);
+
+        Long applyUserId = zcBuy.getApplyUserId();
+        SysUserDto applyUser = userDao.getById(applyUserId);
+        Dept applyDept = deptDao.getById(applyUser.getDeptid());
         Long itemStatus = zcBuyCheckDto.getItemStatus();
         Long stepid = zcBuy.getStepid();
         Long flowid = zcBuy.getFlowid();
@@ -264,7 +268,8 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 // 更新报废item
                 zcBuyItemDao.updateListStatus("jujue",1,refuseBfItemIds);
             }
-
+            // 发送消息
+            noticeDao.save(getRefuseNotice(applyDept, applyUser, refuseTodoItems, String.valueOf(applyUser.getId()), zcBuy.getApplyTime()));
         }
         // 处理驳回的
         if (backTodoItems.size()>0){
@@ -328,9 +333,6 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 HashMap<String, Object> user = userList.get(0);
                 String userId = String.valueOf(user.get("id"));
                 // 插入通知消息给财务
-                Long applyUserId = zcBuy.getApplyUserId();
-                SysUserDto applyUser = userDao.getById(applyUserId);
-                Dept applyDept = deptDao.getById(applyUser.getDeptid());
                 noticeDao.save(getNotice(applyDept,applyUser,flowTodoItems,userId,zcBuy.getApplyTime()));
                 Flowstep flowstep1 = getFlowstepById(nextNodeId, flowsteps);
                 // 插入待办信息
@@ -412,6 +414,33 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         Notice notice = new Notice();
         notice.setUserId(Long.parseLong(userId));
         notice.setTitle("【资产购买】");
+        notice.setStatus(0);
+        notice.setUpdateTime(null);
+        notice.setContent(content);
+        return notice;
+    }
+
+    /**
+     * 构建通知消息
+     * @param applyDept
+     * @param applyUser
+     * @param flowTodoItems
+     * @return
+     */
+    private Notice getRefuseNotice(Dept applyDept, SysUserDto applyUser, List<FlowTodoItem> flowTodoItems,String userId,Date date) {
+        List<String> items = new ArrayList<>();
+        for (FlowTodoItem flowTodoItem : flowTodoItems) {
+            String name = flowTodoItem.getName();
+            Integer num = flowTodoItem.getNum();
+            items.add(name+":"+num);
+        }
+        // <p>资产购买申请。【申请部门】：AAA,【申请人】：BBB,【申请时间】：CCC</p>
+        // <p>【资产信息】：DDD</p>
+        String content = "<p>你申请的购买资产已被拒绝。【申请部门】："+applyDept.getDeptname()+",【申请人】："+applyUser.getNickname()+",【申请时间】："+DateUtil.format(date)+"</p>"+
+                "<p>【资产信息】："+String.join("，",items)+"</p>";
+        Notice notice = new Notice();
+        notice.setUserId(Long.parseLong(userId));
+        notice.setTitle("【资产购买】-【拒绝】");
         notice.setStatus(0);
         notice.setUpdateTime(null);
         notice.setContent(content);
