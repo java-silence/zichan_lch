@@ -148,12 +148,12 @@ public interface ZcInfoDao {
 
     void updateList(@Param("list") List<ZcInfo> list);
 
-
-    List<ZcInfo> listByCatType(@Param("catType") Integer catType);
-
     /**
      * 获取app上资产的列表的数据
      */
     List<DealZcInfoVO> getZcBFList(@Param("params") Map<String, Object> params ,@Param("offset") int offset ,@Param("limit") int limit );
+
+    @Select("select * from zc_info where catType = 0 and remainingperiod > 0")
+    List<ZcInfo> listByCatType(@Param("catType") Integer catType);
 
 }

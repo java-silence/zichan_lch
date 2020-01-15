@@ -6,6 +6,7 @@ import com.itycu.server.job.SpringBeanJob;
 import com.itycu.server.model.JobModel;
 import com.itycu.server.model.ZcInfo;
 import com.itycu.server.service.JobService;
+import com.itycu.server.utils.DateUtil;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -120,7 +122,7 @@ public class JobServiceImpl implements JobService {
 
 	/**
 	 * 删除job
-	 * 
+	 *
 	 * @throws SchedulerException
 	 */
 	@Override
@@ -142,33 +144,15 @@ public class JobServiceImpl implements JobService {
 		jobDao.update(jobModel);
 	}
 
-	public static Integer status = 0;
 	@Override
 	//每月1号增加计提数,
-	//@Scheduled(cron = "0 0 1 1 * ?")
-	@Scheduled(cron = "*/5 * * * * ?")
+	@Scheduled(cron = "0 0 1 1 * ?")
+	//@Scheduled(cron = "*/5 * * * * ?")
 	public void calculateZcinfo() {
 
-		if (status == 0) {
-
-			ArrayList<ZcInfo> list = new ArrayList<>();
-			ZcInfo zcInfo1 = new ZcInfo();
-			zcInfo1.setId(1l);
-			zcInfo1.setZcName("柜内清111111");
-			zcInfo1.setSpecification("中联智科1");
-			ZcInfo zcInfo2 = new ZcInfo();
-			zcInfo2.setId(2l);
-			zcInfo2.setZcName("柜内清111222");
-			zcInfo2.setSpecification("中联智科2");
-			list.add(zcInfo1);
-			list.add(zcInfo2);
-
-			zcInfoDao.updateList(list);
-
-		}
-
 		// 1, 查询全部的固定资产(1,固定 2,剩余期限大于0)
-	//	List<ZcInfo> list = zcInfoDao.listByCatType(0);
+		List<ZcInfo> list = zcInfoDao.listByCatType(0);
+		ArrayList<ZcInfo> zcList = new ArrayList<>();
 		// 2,计算值
 		/**
 		 * 计提数加1
@@ -178,10 +162,60 @@ public class JobServiceImpl implements JobService {
 		 * 净残值
 		 * 剩余期限
 		 */
-
+		BigDecimal divide100 = new BigDecimal("100");
+		for (ZcInfo zcInfo : list) {
+			ZcInfo zc = new ZcInfo();
+			zc.setId(zcInfo.getId());
+			// 开始计算
+			BigDecimal originalValue = zcInfo.getOriginalValue();
+			BigDecimal netResidualRate = zcInfo.getNetResidualRate();
+			Date startUseTime = zcInfo.getStartUseTime();
+			Integer useMonths = zcInfo.getUseMonths();
+			if (originalValue != null && netResidualRate != null
+					&& startUseTime != null && useMonths != null ) {
+				// 获取当前时间
+				Date nowDate = new Date();
+				int betweenMonths = DateUtil.getBetweenMonths(startUseTime, nowDate);
+				// 1-残值率
+				BigDecimal subtract = new BigDecimal(1).subtract(netResidualRate.divide(divide100, 2, BigDecimal.ROUND_HALF_UP));
+				// 累计折旧
+				BigDecimal perZj = originalValue.multiply(subtract.divide(new BigDecimal(useMonths), 2, BigDecimal.ROUND_HALF_UP));
+				if ((useMonths-betweenMonths) > 0) {
+					// 已计提数
+					int lastMonth = useMonths - (betweenMonths+1);
+					BigDecimal ljZj = perZj.multiply(new BigDecimal(betweenMonths+1));
+					// 本年折旧
+					int thisYearBetweenMonths = DateUtil.getThisYearBetweenMonths(nowDate);
+					BigDecimal bnZj = perZj.multiply(new BigDecimal(thisYearBetweenMonths+1));
+					zc.setLjZhejiu(ljZj);
+					zc.setBnZhejiu(bnZj);
+					zc.setHaveCount(betweenMonths+1);
+					zc.setRemainingperiod(lastMonth);
+				}else {
+					// 已经使用完成的,考虑本年的折旧
+					// 最后截止日期
+					Date endDate = DateUtil.addMonthDate(startUseTime, String.valueOf(useMonths));
+					if (DateUtil.getBetweenMonths(endDate,nowDate)-12 > 0) {
+						// 今年有
+						int thisYearBetweenMonths = DateUtil.getThisYearBetweenMonths(endDate);
+						BigDecimal bnZj = perZj.multiply(new BigDecimal(thisYearBetweenMonths));
+						zc.setBnZhejiu(bnZj);
+					}
+					// 净残值 净值 净额 累计折旧
+					BigDecimal jcz = originalValue.multiply(netResidualRate).divide(divide100, 2, BigDecimal.ROUND_HALF_UP);
+					BigDecimal ljzhejiu = originalValue.subtract(jcz);
+					zc.setNetResidualValue(jcz);
+					zc.setNetvalue(jcz);
+					zc.setNet(jcz);
+					zc.setLjZhejiu(ljzhejiu);
+					zc.setHaveCount(useMonths);
+					zc.setRemainingperiod(0);
+				}
+			}
+			zcList.add(zc);
+		}
 		// 3,批量更新(只更新特定的几个值)
-
-		status = 1;
+		zcInfoDao.updateList(zcList);
 	}
 
 }

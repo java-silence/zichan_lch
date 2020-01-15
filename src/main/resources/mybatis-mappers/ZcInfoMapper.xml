@@ -1019,13 +1019,27 @@
         <foreach collection="list" item="zcInfo" index="index" open="" close="" separator=";">
             UPDATE zc_info
             <set>
-                lj_zhejiu=#{zcInfo.ljZhejiu},
-                bn_zhejiu=#{zcInfo.bnZhejiu},
-                netvalue=#{zcInfo.netvalue},
-                net=#{zcInfo.net},
-                net_residual_value=#{zcInfo.netResidualValue},
-                have_count=#{zcInfo.haveCount},
-                remainingperiod=#{zcInfo.remainingperiod},
+                <if test="zcInfo.ljZhejiu != null">
+                    lj_zhejiu=#{zcInfo.ljZhejiu},
+                </if>
+                <if test="zcInfo.bnZhejiu != null">
+                    bn_zhejiu=#{zcInfo.bnZhejiu},
+                </if>
+                <if test="zcInfo.netvalue != null">
+                    netvalue=#{zcInfo.netvalue},
+                </if>
+                <if test="zcInfo.net != null">
+                    net=#{zcInfo.net},
+                </if>
+                <if test="zcInfo.netResidualValue != null">
+                    net_residual_value=#{zcInfo.netResidualValue},
+                </if>
+                <if test="zcInfo.haveCount != null">
+                    have_count=#{zcInfo.haveCount},
+                </if>
+                <if test="zcInfo.remainingperiod != null">
+                    remainingperiod=#{zcInfo.remainingperiod}
+                </if>
             </set>
             <where>
                 id = #{zcInfo.id}
