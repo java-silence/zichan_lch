@@ -26,6 +26,7 @@ public class ZcRepairItemVO {
 
 
 
+
     private String startUseTime;
 
     private String useMonths;
@@ -35,5 +36,9 @@ public class ZcRepairItemVO {
     private String  netvalue;
 
 
+    private String imgUrl;
+
+
+    private int status;
 
 }

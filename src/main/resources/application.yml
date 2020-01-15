@@ -83,4 +83,4 @@ server:
 
 DIAN_JIAN_CE_HOST : "http://112.35.81.14:8017"
 #DIAN_JIAN_CE_HOST : "http://10.0.26.27:8011"
-IMAGE_SERVER : "http://10.0.26.42:8888/files/"
+IMAGE_SERVER : "http://localhost:8888/files/"

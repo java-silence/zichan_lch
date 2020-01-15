@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +54,10 @@ public class AppRepairController {
     @Autowired
     private ZcRepairItemDao zcRepairItemDao;
 
+
+
+    @Value("${IMAGE_SERVER}")
+    private String IMAGE_SERVER;
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "获取报修的资产列表", notes = "获取报修的资产列表")
@@ -147,6 +152,7 @@ public class AppRepairController {
                     list.forEach(k -> {
                         ZcRepairItemVO repairItemVO = new ZcRepairItemVO();
                         BeanUtils.copyProperties(k, repairItemVO);
+                        repairItemVO.setImgUrl(IMAGE_SERVER + k.getFrontPicsUrl());
                         itemVOS.add(repairItemVO);
                     });
                 }
