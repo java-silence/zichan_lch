@@ -104,7 +104,7 @@
                             edit ="";
                             del="";
                             startProcess="";
-                            noAction = btnNoAction(id, "", pers);
+                            //noAction = btnNoAction(id, "", pers);
                         }
                         return startProcess + edit + del + noAction;
                     }}
@@ -157,20 +157,20 @@
                 ,{field:'warrantyperiod',title:'保养周期', width:100, sort: true}
                 ,{field:'status',title:'审核状态', width:100, sort: true}
                 ,{field:'bz',title:'备注信息', width:100, sort: true}
-                ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
-                        var id = d.id;
-                        var href = "updateZcBaofei.html?id=" + id;
-                        var startProcess = buttonStartProcess(id, "", pers);
-                        var noAction = "";
-                        if(d.status==0 && d.shbStatus == 3){
-                        	//var audit = buttonAudit(id,"sys:ZcBaofei:audit",pers);
-                        }
-                        if(d.status>0){
-                            startProcess="";
-                            noAction = btnNoAction(id, "", pers);
-                        }
-                        return startProcess + noAction;
-                    }}
+                // ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
+                //         var id = d.id;
+                //         var href = "updateZcBaofei.html?id=" + id;
+                //         var startProcess = buttonStartProcess(id, "", pers);
+                //         var noAction = "";
+                //         if(d.status==0 && d.shbStatus == 3){
+                //         	//var audit = buttonAudit(id,"sys:ZcBaofei:audit",pers);
+                //         }
+                //         if(d.status>0){
+                //             startProcess="";
+                //             noAction = btnNoAction(id, "", pers);
+                //         }
+                //         return startProcess + noAction;
+                //     }}
             ]]
             ,done: function(res, curr, count){
 

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -280,19 +279,19 @@ public class ZcRepairServiceImpl implements ZcRepairService {
 //                updateZcInfoStatus(zcBf);
 
                 //给财务发送消息
-                Dept dept = deptDao.deptByJx("YQ","cwb");
-                if (dept != null && dept.getId() != null){
-                     SysUserDto sysUserDto = userDao.getUserByDeptTop1(dept.getId());
-                     if (sysUserDto != null){
+                //Dept dept = deptDao.deptByJx("YQ","cwb");
+                //if (dept != null && dept.getId() != null){
+                     //SysUserDto sysUserDto = userDao.getUserByDeptTop1(dept.getId());
+                     //if (sysUserDto != null){
                          Notice notice = new Notice();
                          notice.setTitle(flowTodo.getBiaoti());
                          notice.setContent("报修流程审核完成，请及时查阅");
                          notice.setStatus(0);
-                         notice.setUserId(sysUserDto.getId());
+                         notice.setUserId(zcRepair.getApplyUserId());
                          notice.setUpdateTime(null);
                          noticeDao.save1(notice);
-                     }
-                }
+                     //}
+                //}
             }
             if ( stepid == flowsteps.get(1).getId() ) {
                 // 查询报修子表

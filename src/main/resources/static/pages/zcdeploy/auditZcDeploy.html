@@ -77,7 +77,7 @@
         <!--审批操作-->
 		<div class="layui-col-md4">
 			<div class="layui-card">
-				<form class="layui-form form-horizontal" onsubmit="return false" id="form">
+				<form class="layui-form form-horizontal shenhecaozuo" onsubmit="return false" id="form">
 					<input type="hidden" id="id" name="id">
 					<input type="hidden" id="bizid" name="bizid">
 
@@ -134,6 +134,10 @@
         var domain = pro + "//" + host;
         var todoId = getUrlParam("id");
         var deployId = getUrlParam("bizid");
+		var type = getUrlParam("type");
+		if (type == 1) {
+			$('.shenhecaozuo').css("display","none");
+		}
         // 查询角色信息
         // showUserbyRole("userid",6);
         var table;

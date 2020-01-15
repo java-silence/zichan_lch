@@ -378,121 +378,136 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             //params.setNeedVerfiy(true);
             list = ExcelImportUtil.importExcel(file.getInputStream(), GudingZcInfo.class, params);
             if (!CollectionUtils.isEmpty(list)) {
-                List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
-                List<Dept> deptList = deptDao.listDepts();
-                //List<Dict> useStatusList = dictDao.listByType("useStatus");
-                for (int i = 0; i < list.size(); i++) {
-                    GudingZcInfo zcInfo = list.get(i);
-                    if ("合计".equals(zcInfo.getCardNum().trim())) continue;  //卡片编号值如果是合计就跳过
-                    //判断必需的数据是否为空
+                // 资产编码集合
+                List<String> codes = list.stream().map(e -> e.getZcCodenum()).collect(Collectors.toList());
+                List<String> existsCodes = zcInfoDao.listByZcCodeNum(codes);
+                ArrayList<GudingZcInfo> objects = new ArrayList<>();
+                for (GudingZcInfo gudingZcInfo : list) {
+                    String zcCodenum = gudingZcInfo.getZcCodenum();
+                    if (!existsCodes.contains(zcCodenum)) {
+                        objects.add(gudingZcInfo);
+                    }
+                }
+                list = objects;
+                if (list.size()>1) {
+                    List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
+                    List<Dept> deptList = deptDao.listDepts();
+                    //List<Dict> useStatusList = dictDao.listByType("useStatus");
+                    for (int i = 0; i < list.size(); i++) {
+                        GudingZcInfo zcInfo = list.get(i);
+                        if ("合计".equals(zcInfo.getCardNum().trim())) continue;  //卡片编号值如果是合计就跳过
+                        //判断必需的数据是否为空
 //                    if (zcInfo.getEpcid() == null || "".equals(zcInfo.getEpcid())){
 //                        map.put("code","1");
 //                        map.put("msg","第"+(i+6)+"行资产追溯码不能为空");
 //                        return map;
 //                    }
-                    if (zcInfo.getZcName() == null || "".equals(zcInfo.getZcName())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行资产名称不能为空");
-                        return map;
-                    }
-                    if (zcInfo.getZcCategoryCode() == null || "".equals(zcInfo.getZcCategoryCode())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行资产分类不能为空");
-                        return map;
-                    }
-                    List<ZcCategory> zcCategories = findZcCategory(zcCategoryList, zcInfo.getZcCategoryCode());  //根据资产分类名称查找资产分类id
-                    if (CollectionUtils.isEmpty(zcCategories)) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行资产分类不存在");
-                        return map;
-                    }
-                    ZcCategory zcCategory = zcCategories.get(0);
-                    zcInfo.setZcCategoryId(zcCategory.getId());
-
-                    if (zcInfo.getGlDeptName() == null || "".equals(zcInfo.getGlDeptName())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行管理部门不能为空");
-                        return map;
-                    }
-                    List<Dept> glDepts = findDept(deptList, zcInfo.getGlDeptName());  //根据管理部门名称查找管理部门id
-                    if (CollectionUtils.isEmpty(glDepts)) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行管理部门不存在");
-                        return map;
-                    }
-                    Dept glDept = glDepts.get(0);
-                    zcInfo.setGlDeptId(glDept.getId());
-
-                    if (zcInfo.getSyDeptName() == null || "".equals(zcInfo.getSyDeptName())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行使用部门不能为空");
-                        return map;
-                    }
-                    List<Dept> syDepts = findDept(deptList, zcInfo.getSyDeptName());  //根据使用部门名称查找使用部门id
-                    if (CollectionUtils.isEmpty(syDepts)) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行使用部门不存在");
-                        return map;
-                    }
-                    Dept syDept = syDepts.get(0);
-                    Integer quantity1 = zcInfo.getQuantity();
-                    if (zcInfo.getQuantity() > 1) {
-                        BigDecimal originalValue = zcInfo.getOriginalValue();
-                        BigDecimal netvalue = zcInfo.getNetvalue();
-                        BigDecimal net = zcInfo.getNet();
-                        BigDecimal subOriginalValue = originalValue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
-                        BigDecimal subNetvalue = netvalue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
-                        BigDecimal subNet = net.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
-                        zcInfo.setOriginalValue(subOriginalValue);
-                        zcInfo.setNetvalue(subNetvalue);
-                        zcInfo.setNet(subNet);
-                        for (int j = 0; j < quantity1 - 1; j++) {
-                            ZcInfo info = new ZcInfo();
-                            zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-                            zcInfo.setSyDeptId(syDept.getId());
-                            zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-                            zcInfo.setCreateBy(loginUser.getId());
-                            zcInfo.setDel(0);
-                            zcInfo.setBf("0");
-                            zcInfo.setAccountentryStatus(1);
-                            zcInfo.setCardStatus(1);
-                            zcInfo.setUseStatus(1);
-                            BeanUtils.copyProperties(zcInfo, info);
-                            insertlist.add(info);
+                        if (zcInfo.getZcName() == null || "".equals(zcInfo.getZcName())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行资产名称不能为空");
+                            return map;
                         }
-                    }
-                    zcInfo.setSyDeptId(syDept.getId());
-                    zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-                    zcInfo.setCreateBy(loginUser.getId());
-                    zcInfo.setDel(0);
-                    zcInfo.setBf("0");
-                    zcInfo.setAccountentryStatus(1);
-                    zcInfo.setCardStatus(1);
-                    zcInfo.setUseStatus(1);
-                    ZcInfo zc = new ZcInfo();
-                    BeanUtils.copyProperties(zcInfo, zc);
-                    insertlist.add(zc);
-                }
+                        if (zcInfo.getZcCategoryCode() == null || "".equals(zcInfo.getZcCategoryCode())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行资产分类不能为空");
+                            return map;
+                        }
+                        List<ZcCategory> zcCategories = findZcCategory(zcCategoryList, zcInfo.getZcCategoryCode());  //根据资产分类名称查找资产分类id
+                        if (CollectionUtils.isEmpty(zcCategories)) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行资产分类不存在");
+                            return map;
+                        }
+                        ZcCategory zcCategory = zcCategories.get(0);
+                        zcInfo.setZcCategoryId(zcCategory.getId());
 
-                // 资产追溯码
-                ArrayList<ZcEpcCode> zcEpcCodeList = new ArrayList<>();
-                // 插入资产追溯码
-                for (int i = 0; i < insertlist.size(); i++) {
-                    String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
-                    insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
-                    insertlist.get(i).setCatType(0);
-                    ZcEpcCode zcEpcCode = new ZcEpcCode();
-                    zcEpcCode.setEpcid(dept.getSuCode()+epcId);
-                    zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
-                    zcEpcCode.setEnable(0);
-                    zcEpcCode.setCreateTime(new Date());
-                    zcEpcCode.setUpdateTime(new Date());
-                    zcEpcCodeList.add(zcEpcCode);
-                }
-                zcEpcCodeDao.saves(zcEpcCodeList);
-                zcInfoDao.saves(insertlist);
-                map.put("code", "0");
+                        if (zcInfo.getGlDeptName() == null || "".equals(zcInfo.getGlDeptName())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行管理部门不能为空");
+                            return map;
+                        }
+                        List<Dept> glDepts = findDept(deptList, zcInfo.getGlDeptName());  //根据管理部门名称查找管理部门id
+                        if (CollectionUtils.isEmpty(glDepts)) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行管理部门不存在");
+                            return map;
+                        }
+                        Dept glDept = glDepts.get(0);
+                        zcInfo.setGlDeptId(glDept.getId());
+
+                        if (zcInfo.getSyDeptName() == null || "".equals(zcInfo.getSyDeptName())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行使用部门不能为空");
+                            return map;
+                        }
+                        List<Dept> syDepts = findDept(deptList, zcInfo.getSyDeptName());  //根据使用部门名称查找使用部门id
+                        if (CollectionUtils.isEmpty(syDepts)) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行使用部门不存在");
+                            return map;
+                        }
+                        Dept syDept = syDepts.get(0);
+                        Integer quantity1 = zcInfo.getQuantity();
+                        if (zcInfo.getQuantity() > 1) {
+                            BigDecimal originalValue = zcInfo.getOriginalValue();
+                            BigDecimal netvalue = zcInfo.getNetvalue();
+                            BigDecimal net = zcInfo.getNet();
+                            BigDecimal subOriginalValue = originalValue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                            BigDecimal subNetvalue = netvalue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                            BigDecimal subNet = net.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                            zcInfo.setOriginalValue(subOriginalValue);
+                            zcInfo.setNetvalue(subNetvalue);
+                            zcInfo.setNet(subNet);
+                            for (int j = 0; j < quantity1 - 1; j++) {
+                                ZcInfo info = new ZcInfo();
+                                zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                                zcInfo.setSyDeptId(syDept.getId());
+                                zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                                zcInfo.setCreateBy(loginUser.getId());
+                                zcInfo.setDel(0);
+                                zcInfo.setBf("0");
+                                zcInfo.setAccountentryStatus(1);
+                                zcInfo.setCardStatus(1);
+                                zcInfo.setUseStatus(1);
+                                BeanUtils.copyProperties(zcInfo, info);
+                                insertlist.add(info);
+                            }
+                        }
+                        zcInfo.setSyDeptId(syDept.getId());
+                        zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                        zcInfo.setCreateBy(loginUser.getId());
+                        zcInfo.setDel(0);
+                        zcInfo.setBf("0");
+                        zcInfo.setAccountentryStatus(1);
+                        zcInfo.setCardStatus(1);
+                        zcInfo.setUseStatus(1);
+                        ZcInfo zc = new ZcInfo();
+                        BeanUtils.copyProperties(zcInfo, zc);
+                        insertlist.add(zc);
+                    }
+
+                    // 资产追溯码
+                    ArrayList<ZcEpcCode> zcEpcCodeList = new ArrayList<>();
+                    // 插入资产追溯码
+                    for (int i = 0; i < insertlist.size(); i++) {
+                        String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
+                        insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
+                        insertlist.get(i).setCatType(0);
+                        ZcEpcCode zcEpcCode = new ZcEpcCode();
+                        zcEpcCode.setEpcid(dept.getSuCode()+epcId);
+                        zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
+                        zcEpcCode.setEnable(0);
+                        zcEpcCode.setCreateTime(new Date());
+                        zcEpcCode.setUpdateTime(new Date());
+                        zcEpcCodeList.add(zcEpcCode);
+                    }
+                    zcEpcCodeDao.saves(zcEpcCodeList);
+                    zcInfoDao.saves(insertlist);
+                    map.put("code", "0");
 //                fileInfo = fileService.save(file);
+                }else {
+                    map.put("code", "0");
+                }
             }
         } catch (Exception e) {
             map.put("code", "-1");
@@ -525,121 +540,136 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             if (!CollectionUtils.isEmpty(list)) {
                 List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
                 List<Dept> deptList = deptDao.listDepts();
-//                List<Dict> useStatusList = dictDao.listByType("useStatus");
-                for (int i = 0; i < list.size(); i++) {
-                    DizhiZcInfo zcInfo = list.get(i);
-                    if ("合计".equals(zcInfo.getCardNum().trim())) continue;  //资产编号值如果是合计就跳过
-                    //判断必需的数据是否为空
+                // 资产编码集合
+                List<String> codes = list.stream().map(e -> e.getZcCodenum()).collect(Collectors.toList());
+                List<String> existsCodes = zcInfoDao.listByZcCodeNum(codes);
+                ArrayList<DizhiZcInfo> objects = new ArrayList<>();
+                for (DizhiZcInfo dizhiZcInfo : list) {
+                    String zcCodenum = dizhiZcInfo.getZcCodenum();
+                    if (!existsCodes.contains(zcCodenum)) {
+                        objects.add(dizhiZcInfo);
+                    }
+                }
+                list = objects;
+                if (list.size()>1) {
+                    //                List<Dict> useStatusList = dictDao.listByType("useStatus");
+                    for (int i = 0; i < list.size(); i++) {
+                        DizhiZcInfo zcInfo = list.get(i);
+                        if ("合计".equals(zcInfo.getCardNum().trim())) continue;  //资产编号值如果是合计就跳过
+                        //判断必需的数据是否为空
 //                    if (zcInfo.getEpcid() == null || "".equals(zcInfo.getEpcid())){
 //                        map.put("code","1");
 //                        map.put("msg","第"+(i+6)+"行资产追溯码不能为空");
 //                        return map;
 //                    }
-                    if (zcInfo.getZcName() == null || "".equals(zcInfo.getZcName())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行资产名称不能为空");
-                        return map;
-                    }
-                    if (zcInfo.getZcCategoryCode() == null || "".equals(zcInfo.getZcCategoryCode())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行资产分类不能为空");
-                        return map;
-                    }
-                    List<ZcCategory> zcCategories = findZcCategory(zcCategoryList, zcInfo.getZcCategoryCode());  //根据资产分类名称查找资产分类id
-                    if (CollectionUtils.isEmpty(zcCategories)) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行资产分类不存在");
-                        return map;
-                    }
-                    ZcCategory zcCategory = zcCategories.get(0);
-                    zcInfo.setZcCategoryId(zcCategory.getId());
-
-                    if (zcInfo.getGlDeptName() == null || "".equals(zcInfo.getGlDeptName())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行管理部门不能为空");
-                        return map;
-                    }
-                    List<Dept> glDepts = findDeptgl(deptList, zcInfo.getGlDeptName());  //根据管理部门名称查找管理部门id
-                    if (CollectionUtils.isEmpty(glDepts)) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行管理部门不存在");
-                        return map;
-                    }
-                    Dept glDept = glDepts.get(0);
-                    zcInfo.setGlDeptId(glDept.getId());
-
-                    if (zcInfo.getSyDeptName() == null || "".equals(zcInfo.getSyDeptName())) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行使用部门不能为空");
-                        return map;
-                    }
-                    List<Dept> syDepts = findDept(deptList, zcInfo.getSyDeptName());  //根据使用部门名称查找使用部门id
-                    if (CollectionUtils.isEmpty(syDepts)) {
-                        map.put("code", "1");
-                        map.put("msg", "第" + (i + 6) + "行使用部门不存在");
-                        return map;
-                    }
-                    // 处理数量
-                    Dept syDept = syDepts.get(0);
-                    Integer quantity1 = zcInfo.getQuantity();
-                    if (zcInfo.getQuantity() > 1) {
-                        BigDecimal originalValue = zcInfo.getOriginalValue();
-                        BigDecimal netvalue = zcInfo.getNetvalue();
-                        BigDecimal net = zcInfo.getNet();
-                        BigDecimal subOriginalValue = originalValue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
-                        BigDecimal subNetvalue = netvalue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
-                        BigDecimal subNet = net.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
-                        zcInfo.setOriginalValue(subOriginalValue);
-                        zcInfo.setNetvalue(subNetvalue);
-                        zcInfo.setNet(subNet);
-                        for (int j = 0; j < quantity1 - 1; j++) {
-                            ZcInfo info = new ZcInfo();
-                            zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-                            zcInfo.setSyDeptId(syDept.getId());
-                            zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-                            zcInfo.setCreateBy(loginUser.getId());
-                            zcInfo.setDel(0);
-                            zcInfo.setBf("0");
-                            zcInfo.setAccountentryStatus(1);
-                            zcInfo.setCardStatus(1);
-                            zcInfo.setUseStatus(1);
-                            BeanUtils.copyProperties(zcInfo, info);
-                            insertlist.add(info);
+                        if (zcInfo.getZcName() == null || "".equals(zcInfo.getZcName())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行资产名称不能为空");
+                            return map;
                         }
-                    }
-                    zcInfo.setSyDeptId(syDept.getId());
-                    zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
-                    zcInfo.setCreateBy(loginUser.getId());
-                    zcInfo.setDel(0);
-                    zcInfo.setBf("0");
-                    zcInfo.setAccountentryStatus(1);
-                    zcInfo.setCardStatus(1);
-                    zcInfo.setUseStatus(1);
-                    ZcInfo zc = new ZcInfo();
-                    BeanUtils.copyProperties(zcInfo, zc);
-                    insertlist.add(zc);
-                }
+                        if (zcInfo.getZcCategoryCode() == null || "".equals(zcInfo.getZcCategoryCode())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行资产分类不能为空");
+                            return map;
+                        }
+                        List<ZcCategory> zcCategories = findZcCategory(zcCategoryList, zcInfo.getZcCategoryCode());  //根据资产分类名称查找资产分类id
+                        if (CollectionUtils.isEmpty(zcCategories)) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行资产分类不存在");
+                            return map;
+                        }
+                        ZcCategory zcCategory = zcCategories.get(0);
+                        zcInfo.setZcCategoryId(zcCategory.getId());
 
-                // 资产追溯码
-                ArrayList<ZcEpcCode> zcEpcCodeList = new ArrayList<>();
-                // 插入资产追溯码
-                for (int i = 0; i < insertlist.size(); i++) {
-                    String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
-                    insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
-                    insertlist.get(i).setCatType(1);
+                        if (zcInfo.getGlDeptName() == null || "".equals(zcInfo.getGlDeptName())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行管理部门不能为空");
+                            return map;
+                        }
+                        List<Dept> glDepts = findDeptgl(deptList, zcInfo.getGlDeptName());  //根据管理部门名称查找管理部门id
+                        if (CollectionUtils.isEmpty(glDepts)) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行管理部门不存在");
+                            return map;
+                        }
+                        Dept glDept = glDepts.get(0);
+                        zcInfo.setGlDeptId(glDept.getId());
+
+                        if (zcInfo.getSyDeptName() == null || "".equals(zcInfo.getSyDeptName())) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行使用部门不能为空");
+                            return map;
+                        }
+                        List<Dept> syDepts = findDept(deptList, zcInfo.getSyDeptName());  //根据使用部门名称查找使用部门id
+                        if (CollectionUtils.isEmpty(syDepts)) {
+                            map.put("code", "1");
+                            map.put("msg", "第" + (i + 6) + "行使用部门不存在");
+                            return map;
+                        }
+                        // 处理数量
+                        Dept syDept = syDepts.get(0);
+                        Integer quantity1 = zcInfo.getQuantity();
+                        if (zcInfo.getQuantity() > 1) {
+                            BigDecimal originalValue = zcInfo.getOriginalValue();
+                            BigDecimal netvalue = zcInfo.getNetvalue();
+                            BigDecimal net = zcInfo.getNet();
+                            BigDecimal subOriginalValue = originalValue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                            BigDecimal subNetvalue = netvalue.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                            BigDecimal subNet = net.divide(new BigDecimal(quantity1), 2, RoundingMode.HALF_UP);
+                            zcInfo.setOriginalValue(subOriginalValue);
+                            zcInfo.setNetvalue(subNetvalue);
+                            zcInfo.setNet(subNet);
+                            for (int j = 0; j < quantity1 - 1; j++) {
+                                ZcInfo info = new ZcInfo();
+                                zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                                zcInfo.setSyDeptId(syDept.getId());
+                                zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                                zcInfo.setCreateBy(loginUser.getId());
+                                zcInfo.setDel(0);
+                                zcInfo.setBf("0");
+                                zcInfo.setAccountentryStatus(1);
+                                zcInfo.setCardStatus(1);
+                                zcInfo.setUseStatus(1);
+                                BeanUtils.copyProperties(zcInfo, info);
+                                insertlist.add(info);
+                            }
+                        }
+                        zcInfo.setSyDeptId(syDept.getId());
+                        zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
+                        zcInfo.setCreateBy(loginUser.getId());
+                        zcInfo.setDel(0);
+                        zcInfo.setBf("0");
+                        zcInfo.setAccountentryStatus(1);
+                        zcInfo.setCardStatus(1);
+                        zcInfo.setUseStatus(1);
+                        ZcInfo zc = new ZcInfo();
+                        BeanUtils.copyProperties(zcInfo, zc);
+                        insertlist.add(zc);
+                    }
+
                     // 资产追溯码
-                    ZcEpcCode zcEpcCode = new ZcEpcCode();
-                    zcEpcCode.setEpcid(dept.getSuCode()+epcId);
-                    zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
-                    zcEpcCode.setEnable(0);
-                    zcEpcCode.setCreateTime(new Date());
-                    zcEpcCode.setUpdateTime(new Date());
-                    zcEpcCodeList.add(zcEpcCode);
+                    ArrayList<ZcEpcCode> zcEpcCodeList = new ArrayList<>();
+                    // 插入资产追溯码
+                    for (int i = 0; i < insertlist.size(); i++) {
+                        String epcId = EcpIdUtil.getStaticNum(count + (i + 1), 5);
+                        insertlist.get(i).setEpcid(dept.getSuCode() + epcId);
+                        insertlist.get(i).setCatType(1);
+                        // 资产追溯码
+                        ZcEpcCode zcEpcCode = new ZcEpcCode();
+                        zcEpcCode.setEpcid(dept.getSuCode()+epcId);
+                        zcEpcCode.setDeptId(insertlist.get(i).getSyDeptId());
+                        zcEpcCode.setEnable(0);
+                        zcEpcCode.setCreateTime(new Date());
+                        zcEpcCode.setUpdateTime(new Date());
+                        zcEpcCodeList.add(zcEpcCode);
+                    }
+                    zcEpcCodeDao.saves(zcEpcCodeList);
+                    zcInfoDao.saves(insertlist);
+                    map.put("code", "0");
+                    //fileInfo = fileService.save(file);
+                }else {
+                    map.put("code", "0");
                 }
-                zcEpcCodeDao.saves(zcEpcCodeList);
-                zcInfoDao.saves(insertlist);
-                map.put("code", "0");
-                //fileInfo = fileService.save(file);
             }
         } catch (Exception e) {
             map.put("code", "-1");
