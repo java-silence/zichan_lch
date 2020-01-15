@@ -1,6 +1,7 @@
 package com.itycu.server.dao;
 
 import com.itycu.server.app.vo.GlDeptZcCountVO;
+import com.itycu.server.app.vo.chuzhi.DealZcInfoVO;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcInfo;
@@ -149,4 +150,10 @@ public interface ZcInfoDao {
 
 
     List<ZcInfo> listByCatType(@Param("catType") Integer catType);
+
+    /**
+     * 获取app上资产的列表的数据
+     */
+    List<DealZcInfoVO> getZcBFList(@Param("params") Map<String, Object> params ,@Param("offset") int offset ,@Param("limit") int limit );
+
 }

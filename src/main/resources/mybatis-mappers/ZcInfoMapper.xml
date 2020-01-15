@@ -92,12 +92,12 @@
             <if test="params.glRole != null and params.glRole != ''">
                 and (t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.syDeptId})
             </if>
-    <if test="params.searchSyDeptId != null and params.searchSyDeptId != '' and params.syDeptId != null and params.syDeptId != ''">
-        and t.sy_dept_id = #{params.syDeptId}
-    </if>
-    <if test=" params.searchGlDeptId != null and params.searchGlDeptId != '' and  params.glDeptId != null and params.glDeptId != ''">
-        and t.gl_dept_id = #{params.glDeptId}
-    </if>
+            <if test="params.searchSyDeptId != null and params.searchSyDeptId != '' and params.syDeptId != null and params.syDeptId != ''">
+                and t.sy_dept_id = #{params.syDeptId}
+            </if>
+            <if test=" params.searchGlDeptId != null and params.searchGlDeptId != '' and  params.glDeptId != null and params.glDeptId != ''">
+                and t.gl_dept_id = #{params.glDeptId}
+            </if>
             <if test="params.syName != null and params.syName != ''">
                 and t.sy_name = #{params.syName}
             </if>
@@ -201,8 +201,10 @@
                 ${params.dynamicCondition}
             </if>
             <if test="params.daoqi != null and params.daoqi != ''">
-                and <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) <= #{params.daoqi} ]]>
-                and <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) > 0 ]]>
+                and
+                <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) <= #{params.daoqi} ]]>
+                and
+                <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) > 0 ]]>
             </if>
             <if test="params.linbao != null and params.linbao != ''">
                 and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) <= #{params.linbao} ]]>
@@ -421,8 +423,10 @@
                 ${params.dynamicCondition}
             </if>
             <if test="params.daoqi != null and params.daoqi != ''">
-                and <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) <= #{params.daoqi} ]]>
-                and <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) > 0 ]]>
+                and
+                <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) <= #{params.daoqi} ]]>
+                and
+                <![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) > 0 ]]>
             </if>
             <if test="params.linbao != null and params.linbao != ''">
                 and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) <= #{params.linbao} ]]>
@@ -941,7 +945,6 @@
     </select>
 
 
-
     <!-- 查询其他部门下面的资产信息表	-->
     <select id="queryGlDeptZc" resultType="com.itycu.server.dto.ZcInfoDto">
 		SELECT
@@ -956,7 +959,6 @@
 		AND c.bf = 0
 		and d.c03 = #{deptType}
 	</select>
-
 
 
     <select id="queryZnInfoDtoByEpcId" resultType="com.itycu.server.dto.ZcInfoDto">
@@ -977,6 +979,39 @@
         WHERE
             a.del = 0
         AND a.epcid = #{epcid}
+    </select>
+
+
+    <select id="getZcBFList" resultType="com.itycu.server.app.vo.chuzhi.DealZcInfoVO">
+        SELECT
+        id,
+        epcid,
+        a.zc_name AS zcName,
+        ( SELECT e.NAME FROM zc_category AS e WHERE e.id = a.zc_category_id ) AS zcCategoryName,
+        ( SELECT b.deptname FROM t_dept AS b WHERE b.id = a.sy_dept_id ) AS syDeptName,
+        ( SELECT b.deptname FROM t_dept AS b WHERE b.id = a.gl_dept_id ) AS glDeptName,
+        a.start_use_time AS startUseTime,
+        remainingperiod,
+        net,
+        a.original_value AS originalValue,
+        a.sy_dept_id AS syDeptId,
+        a.gl_dept_id AS glDeptId,
+        a.store_address AS storeAddress,
+        a.self_codenum AS zcCodenum,
+        a.net as netvalue
+        FROM
+        zc_info AS a
+        WHERE
+        a.del = 0
+        AND a.gl_dept_id = #{params.glDeptId}
+        <if test="params.keyword!=null and params.keyword!=''">
+            and (
+            a.zc_name like concat ('%',#{params.keyword},'%')
+            or
+            epcid like concat ('%',#{params.keyword},'%')
+            )
+        </if>
+        limit #{offset},#{limit}
     </select>
 
     <!--批量更新-->
