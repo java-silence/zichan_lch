@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class DealZcInfoVO {
 
 
-    public int id;
+    public long  id;
 
 
     /**
@@ -57,12 +57,12 @@ public class DealZcInfoVO {
     /**
      * 使用部门id
      */
-    private int syDeptId;
+    private long syDeptId;
 
     /**
      * 管理部门id
      */
-    private int glDeptId;
+    private long  glDeptId;
 
 
 

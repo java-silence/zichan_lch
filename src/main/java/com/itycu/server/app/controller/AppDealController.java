@@ -73,8 +73,13 @@ public class AppDealController {
             List<DealZcInfoVO> infoVOList = appInsertDataDTO.getZcBfItemList();
             infoVOList.forEach(k -> {
                 ZcBfItem zcBfItem = new ZcBfItem();
-
-
+                zcBfItem.setBz(k.getBz());
+                zcBfItem.setDel(0);
+                zcBfItem.setId(k.getId());
+                zcBfItem.setSyDeptId(k.getSyDeptId());
+                zcBfItem.setGlDeptId(k.getGlDeptId());
+                zcBfItem.setEpcid(k.getEpcid());
+                zcBfItem.setZcName(k.getZcName());
                 zcBfItemList.add(zcBfItem);
             });
             zcBfDto.setZcBfItemList(zcBfItemList);
