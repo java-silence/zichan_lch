@@ -64,4 +64,13 @@ public class DealZcInfoVO {
      */
     private int glDeptId;
 
+
+
+    private String bz;
+
+    /**
+     * 附件地址
+     */
+    private String fileName;
+
 }
