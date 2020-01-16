@@ -5,13 +5,18 @@ import com.itycu.server.app.dto.chuzhi.AppDealListDTO;
 import com.itycu.server.app.dto.chuzhi.AppInsertDataDTO;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.chuzhi.DealZcInfoVO;
+import com.itycu.server.dao.ZcBfDao;
 import com.itycu.server.dao.ZcInfoDao;
 import com.itycu.server.dto.ZcBfDto;
 import com.itycu.server.model.ZcBfItem;
+import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcBfService;
+import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @RestController
@@ -27,11 +33,16 @@ import java.util.*;
 public class AppDealController {
 
 
+    private static Logger logger = LoggerFactory.getLogger(AppDealController.class);
+
     @Autowired
     private ZcInfoDao zcInfoDao;
 
     @Autowired
     private ZcBfService zcBfService;
+
+    @Autowired
+    private ZcBfDao zcBfDao;
 
 
     @PostMapping(value = "/bfList")
@@ -57,8 +68,14 @@ public class AppDealController {
     }
 
 
+    /**
+     * TODO 需要测试
+     *
+     * @param appInsertDataDTO
+     * @return
+     */
     @PostMapping(value = "/insertBfData")
-    @ApiOperation(value = "获取资产报废的列表", notes = "资产报废列表")
+    @ApiOperation(value = "添加报废记录申请", notes = "添加报废记录申请")
     public Map<String, Object> insertBfData(@RequestBody AppInsertDataDTO appInsertDataDTO) {
         try {
             if (CollectionUtils.isEmpty(appInsertDataDTO.getZcBfItemList())) {
@@ -89,8 +106,38 @@ public class AppDealController {
             map.put("code", 0);
             return map;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("添加报废记录申请错误{}", e.getMessage());
             return FailMap.createFailMap();
         }
     }
+
+
+    /**
+     * TODO 需要测试
+     *
+     * @param appInsertDataDTO
+     * @return
+     */
+    @PostMapping(value = "/getBFRecordList")
+    @ApiOperation(value = "获取报废的记录列表", notes = "获取报废的记录列表")
+    public Map<String, Object> getBFRecordList(@RequestBody AppInsertDataDTO appInsertDataDTO,
+                                               PageTableRequest request, HttpServletRequest httpServletRequest) {
+//            if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(), "sys:bfcheck:apply") > 0) {
+//                request.getParams().put("applyUserId", UserUtil.getLoginUser().getId());
+//                request.getParams().put("type", "user");
+//            }
+//            if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(), "sys:bfcheck:sh") > 0) {
+//                request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+//                request.getParams().put("type", "gl");
+//            }
+        Map<String, Object> map = new HashMap<>();
+        Integer page = Integer.valueOf((String) request.getParams().get("offset"));
+        Integer limit = Integer.valueOf((String) request.getParams().get("limit"));
+        List<Map<String, Object>> list = zcBfDao.listZcbf(request.getParams(), page * limit - limit, limit);
+        map.put("data", list);
+        map.put("code", "0");
+        map.put("msg", "");
+        return map;
+    }
+
 }
