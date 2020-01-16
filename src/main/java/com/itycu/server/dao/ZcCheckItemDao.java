@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.itycu.server.app.vo.pandian.CheckItemReportVO;
 import com.itycu.server.app.vo.pandian.CheckItemVO;
+import com.itycu.server.model.ZcCheckDownLoadItemVO;
 import com.itycu.server.model.ZcEpcCheckItem;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -115,4 +116,7 @@ public interface ZcCheckItemDao {
 
     List<CheckItemReportVO> getCheckReportInfoProfitLossList(@Param("params") Map<String, Object> params, @Param("offset") long  offset, @Param("limit") long  limit);
 
+
+
+    List<ZcCheckDownLoadItemVO> getZcInfoDownLoadItemById(@Param("zcCheckId") long  zcCheckId);
 }

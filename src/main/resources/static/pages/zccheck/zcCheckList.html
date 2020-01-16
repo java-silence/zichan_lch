@@ -15,16 +15,17 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
-<!--                <div class="layui-inline">-->
-<!--                    <label class="layui-form-label">盘点部门</label>-->
-<!--                    <div class="layui-input-inline">-->
-<!--                        <div id="checkDept"></div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="layui-inline">-->
+                <!--                    <label class="layui-form-label">盘点部门</label>-->
+                <!--                    <div class="layui-input-inline">-->
+                <!--                        <div id="checkDept"></div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
                 <div class="layui-inline">
-                    <button style="display: none" class="layui-btn  layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search"
+                    <button style="display: none" class="layui-btn  layuiadmin-btn-useradmin" lay-submit
+                            lay-filter="LAY-user-front-search"
                             id="searchBt">
-<!--                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>-->
+                        <!--                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>-->
                     </button>
                     <!--<button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>-->
                     <button class="layui-btn layuiadmin-btn-useradmin" data-type="add" id="addButton" onclick="add()">
@@ -43,6 +44,13 @@
 </body>
 </html>
 <div id="test" style="display: none;"></div>
+<div id="forms">
+    <form class="form-inline " id="form" method="post" action="/zcCheck/download" onsubmit="return false"
+          enctype="multipart/form-data">
+        <input id="token" name="token" type="hidden" />
+        <input id="downId" name="downId" type="input">
+    </form>
+</div>
 <script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="../../js/jq.js"></script>
 <script type="text/javascript" src="../../layuiadmin/layui/layui.js"></script>
@@ -112,7 +120,7 @@
                 deptId: deptidResult
             }
             , cols: [[
-                { type: 'numbers', title: '序号' },
+                {type: 'numbers', title: '序号'},
                 {field: 'id', hide: true}
                 , {field: 'checkDeptName', title: '盘点部门', sort: true}
                 , {field: 'checkTime', title: '盘点时间'}
@@ -165,7 +173,9 @@
                         var del = buttonDel(id, "sys:ZcCheck:del", pers);
                         var href = "zcCheckItemList.html?zc_check_id=" + id + "&type=create";
                         var view = buttonView(href, "sys:ZcCheck:view", pers);
-                        return view + del;
+
+                        var download = buttonDown(id, "sys:ZcCheck:download", pers);
+                        return view + del + download;
                     }
                 }
             ]]
@@ -184,7 +194,7 @@
         });
 
         //监听行单击事件（双击事件为：rowDouble）
-        table.on('row(data)', function(obj){
+        table.on('row(data)', function (obj) {
             var data = obj.data;
             zcCheckId = data.id;
             //标注选中样式
@@ -208,13 +218,6 @@
                     prop: {
                         value: 'id',
                     },
-                    // tree: {
-                    // 	show: true,
-                    // 	showFolderIcon: true,
-                    // 	showLine: true,
-                    // 	indent: 15,
-                    // 	expandedKeys: [ -3 ],
-                    // },
                     filterable: true,
                     height: 'auto',
                     data: data.data
@@ -237,11 +240,11 @@
                 type: 'delete',
                 url: '/zcChecks/' + id,
                 success: function (data) {
-                  //  $('#searchBt').trigger('click');
-                    layer.msg("删除成功",{
-                        icon:1,
-                        time:2000,
-                        end:function(){
+                    //  $('#searchBt').trigger('click');
+                    layer.msg("删除成功", {
+                        icon: 1,
+                        time: 2000,
+                        end: function () {
                             window.location.reload();
                         }
                     });
@@ -298,4 +301,41 @@
     }
 
 
+    function buttonDown(data, permission, pers) {
+        if (permission != "") {
+            if ($.inArray(permission, pers) < 0) {
+                return "";
+            }
+        }
+        var btn = $("<button class='layui-btn layui-btn-xs' title='下载盘点数据' onclick='download(\"" + data + "\")'><i class='layui-icon'>&#xe601;</i></button>");
+        return btn.prop("outerHTML");
+    }
+
+
+    function audit(id) {
+        layer.confirm('确定要审核吗？', {
+            btn: ['确定', '取消']
+        }, function () {
+            $.ajax({
+                type: 'put',
+                url: '/zcChecks/audit/' + id,
+                success: function (data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+
+    function download(id) {
+        $("#token").val(localStorage.getItem("token"))
+        $("#downId").val(id);
+        $("#form").attr("onsubmit", "return true");
+        $("#form").submit();
+
+        $("#form").attr("onsubmit", "return false");
+    }
 </script>

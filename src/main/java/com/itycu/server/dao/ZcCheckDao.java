@@ -6,9 +6,7 @@ import java.util.Map;
 import com.itycu.server.app.vo.pandian.ZcCheckDetailReportVO;
 import com.itycu.server.dto.ZcCheckDto;
 import com.itycu.server.dto.ZcInfoDto;
-import com.itycu.server.model.ZcCheckItem;
-import com.itycu.server.model.ZcInfo;
-import com.itycu.server.model.ZcItemDeptCountInfo;
+import com.itycu.server.model.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,7 +14,6 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.itycu.server.model.ZcCheck;
 import org.springframework.security.core.parameters.P;
 
 @Mapper
@@ -121,4 +118,7 @@ public interface ZcCheckDao {
 
 
     ZcCheckDetailReportVO getCheckReportInfoById(@Param("id") long id);
+
+
+    ZcCheckDownLoadVO getZcInfoDownLoadById(@Param("id") long id);
 }

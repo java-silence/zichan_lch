@@ -693,4 +693,32 @@
             zc_check AS a
         WHERE  a.id = #{id}
     </select>
+
+
+
+    <select id="getZcInfoDownLoadById" resultType="com.itycu.server.model.ZcCheckDownLoadVO">
+        SELECT
+            `id`,
+            `check_dept_id` as checkDeptId,
+            `check_user_id` as checkUserId,
+            `check_time` as checkTime,
+            `total` as total,
+            `status`,
+            `result`,
+            `del`,
+            `bz`,
+            `create_by` as createBy,
+            `update_by` as updateBy,
+            `create_time` as createTime,
+            `update_time` as updateTime,
+            `check_times`as checkTimes,
+            `re_check` as reCheck,
+            `bh`,
+            `profit`
+        FROM
+            zc_check
+        WHERE
+            id = #{id}
+        AND del = 0
+    </select>
 </mapper>
