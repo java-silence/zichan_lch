@@ -1,6 +1,7 @@
 package com.itycu.server.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.dao.ZcCheckDao;
 import com.itycu.server.dao.ZcCheckItemDao;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +57,7 @@ public class ZcCheckUpLoadController {
                     jsonObject.put("ZcCheck", zcCheck);
                     logger.info("获得的数据是{}", jsonObject.toString());
                     String result = jsonObject.toString();
-                    exportJsonData(result, response);
+                    exportJsonData(JSON.toJSONString(zcCheck), response);
                 }
             } else {
                 logger.error("盘点单的数据不存在");
@@ -93,15 +95,34 @@ public class ZcCheckUpLoadController {
     }
 
 
-    private Map<String, Object> updateUploadData(String data) {
+    @Transactional(rollbackFor = Exception.class)
+    Map<String, Object> updateUploadData(String data) {
         Map<String, Object> map = new HashMap<>();
         JSONObject egJo = JSONObject.fromObject(data);
-        ZcCheckDownLoadVO zcCheckDownLoadVO = (ZcCheckDownLoadVO) JSONObject.toBean(egJo, ZcCheckDownLoadVO.class);
-        List<ZcCheckDownLoadItemVO> loadItemVOList = zcCheckDownLoadVO.getZcCheckDownLoadItemVOList();
-        if(!CollectionUtils.isEmpty(loadItemVOList)){
-          //  zcCheckItemDao.updateLoadCheckIem(loadItemVOList);
+        Map classMap = new HashMap();
+        /**
+         * TODO
+         */
+        classMap.put("zcCheckItemList",String.class);
+        com.itycu.server.model.ZcCheck zcCheckDownLoadVO = (ZcCheck) JSONObject.toBean(egJo, com.itycu.server.model.ZcCheck.class);
+        List<com.itycu.server.model.ZcCheckItem> loadItemVOList = zcCheckDownLoadVO.getCheckItemList();
+        if (!CollectionUtils.isEmpty(loadItemVOList)) {
+            loadItemVOList.forEach(k->{
+                System.out.println((ZcCheckItem)k);
+            });
+            zcCheckItemDao.updateLoadCheckIem(loadItemVOList);
+            int result = zcCheckDao.update(zcCheckDownLoadVO);
+            if (result > 0) {
+                map.put("code", 0);
+                map.put("message", "操作成功");
+                map.put("data", null);
+                return map;
+            } else {
+                return FailMap.createFailMapMsg("导入失败");
+            }
+        } else {
+            return FailMap.createFailMapMsg("导入数据失败");
         }
-        return map;
     }
 
 

@@ -119,4 +119,8 @@ public interface ZcCheckItemDao {
 
 
     List<ZcCheckItem> getZcInfoDownLoadItemById(@Param("zcCheckId") long  zcCheckId);
+
+
+    int updateLoadCheckIem(@Param("list") List<ZcCheckItem>loadItemVOList);
+
 }

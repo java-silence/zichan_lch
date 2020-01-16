@@ -407,4 +407,33 @@ where  a.zc_check_id = #{checkId}  AND a.result =0
         left join zc_info i on i.id=t.zc_id
         WHERE t.zc_check_id = #{zcCheckId}
     </select>
+
+    <update id="updateLoadCheckIem">
+        <foreach collection="list" separator=";" item="model">
+            update zc_check_item t
+            <set>
+
+
+                    zc_id = #{model.zcId},
+
+                    result = #{model.result},
+
+                    del = #{model.del},
+
+                    bz = #{model.bz},
+
+                    finish_time = #{model.finishTime},
+
+                    re_check = #{model.reCheck},
+
+                    profit = #{model.profit},
+
+                    gl_dept_id = #{model.glDeptId},
+
+                    sy_dept_id = #{model.syDeptId},
+
+            </set>
+            where t.id = #{model.id}
+        </foreach>
+    </update>
 </mapper>
