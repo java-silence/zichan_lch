@@ -120,5 +120,5 @@ public interface ZcCheckDao {
     ZcCheckDetailReportVO getCheckReportInfoById(@Param("id") long id);
 
 
-    ZcCheckDownLoadVO getZcInfoDownLoadById(@Param("id") long id);
+    ZcCheck getZcInfoDownLoadById(@Param("id") long id);
 }

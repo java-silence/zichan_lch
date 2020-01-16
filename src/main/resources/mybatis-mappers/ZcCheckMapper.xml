@@ -696,29 +696,31 @@
 
 
 
-    <select id="getZcInfoDownLoadById" resultType="com.itycu.server.model.ZcCheckDownLoadVO">
-        SELECT
-            `id`,
-            `check_dept_id` as checkDeptId,
-            `check_user_id` as checkUserId,
-            `check_time` as checkTime,
-            `total` as total,
-            `status`,
-            `result`,
-            `del`,
-            `bz`,
-            `create_by` as createBy,
-            `update_by` as updateBy,
-            `create_time` as createTime,
-            `update_time` as updateTime,
-            `check_times`as checkTimes,
-            `re_check` as reCheck,
-            `bh`,
-            `profit`
-        FROM
-            zc_check
-        WHERE
-            id = #{id}
-        AND del = 0
+    <select id="getZcInfoDownLoadById" resultType="com.itycu.server.model.ZcCheck">
+        select
+            b.deptname AS creator,
+            e.deptname AS checkDeptName ,
+            d. `id`,
+            d. `check_dept_id` as checkDeptId,
+            d. `check_user_id` as checkUserId ,
+            d. `check_time` as checkTime ,
+            d. `total` ,
+            d.`status` ,
+            d.`result`,
+            d. `del` ,
+            d.`bz` ,
+            d.`create_by` as createBy,
+            d.`update_by` as updateBy,
+            d.`create_time` as createTime,
+            d.`update_time` as updateTime,
+            d.`check_times` as checkTimes,
+            d. `re_check` as reCheck,
+            d.`bh`,
+            d.`profit`
+            FROM t_dept AS b
+            LEFT JOIN sys_user as c ON b.id = c.deptid
+            LEFT JOIN zc_check AS d ON c.id = d.create_by
+            LEFT JOIN t_dept AS e ON d.check_dept_id = e.id
+            where d.id = #{id}
     </select>
 </mapper>

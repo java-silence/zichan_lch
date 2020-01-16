@@ -396,24 +396,15 @@ where  a.zc_check_id = #{checkId}  AND a.result =0
     </select>
 
 
-    <select id="getZcInfoDownLoadItemById" resultType="com.itycu.server.model.ZcCheckDownLoadItemVO">
-        SELECT
-            a.id,
-            a.zc_check_id as zcCheckId,
-            a.zc_id as zcId,
-            a.result,
-            a.del,
-            a.finish_time as finishTime,
-            a.gl_dept_id as glDeptId,
-            a.sy_dept_id as syDeptId,
-            a.re_check as reCheck,
-            a.profit,
-            b.epcid
-        FROM
-            `zc_check_item` AS a
-            left join zc_info as b on a.zc_id = b.id
-        WHERE
-            a.zc_check_id = #{zcCheckId}
-            and a.del = 0
+    <select id="getZcInfoDownLoadItemById" resultType="com.itycu.server.model.ZcCheckItem">
+        select t.*,i.zc_name as zcName,
+        i.zc_codenum AS zcNum,
+        i.epcid AS zsNum,
+        i.self_codenum AS kpBm,
+        i.epcid,
+        i.specification,i.model,i.sy_Name syName ,i.store_Address as storeAddress
+        from zc_check_item t
+        left join zc_info i on i.id=t.zc_id
+        WHERE t.zc_check_id = #{zcCheckId}
     </select>
 </mapper>

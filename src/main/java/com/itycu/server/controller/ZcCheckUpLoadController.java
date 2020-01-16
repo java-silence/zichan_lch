@@ -1,12 +1,15 @@
 package com.itycu.server.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.itycu.server.app.util.FailMap;
 import com.itycu.server.dao.ZcCheckDao;
 import com.itycu.server.dao.ZcCheckItemDao;
+import com.itycu.server.model.ZcCheck;
 import com.itycu.server.model.ZcCheckDownLoadItemVO;
 import com.itycu.server.model.ZcCheckDownLoadVO;
+import com.itycu.server.model.ZcCheckItem;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +17,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping(value = "/zcCheck")
 @Controller
@@ -38,11 +46,11 @@ public class ZcCheckUpLoadController {
         try {
             String id = (request.getParameter("downId"));
             logger.info("当前导出的数据是{}", id);
-            ZcCheckDownLoadVO zcCheck = zcCheckDao.getZcInfoDownLoadById(Long.parseLong(id));
+            ZcCheck zcCheck = zcCheckDao.getZcInfoDownLoadById(Long.parseLong(id));
             if (null != zcCheck) {
-                List<ZcCheckDownLoadItemVO> zcCheckItemsList = zcCheckItemDao.getZcInfoDownLoadItemById(Long.parseLong(id));
+                List<ZcCheckItem> zcCheckItemsList = zcCheckItemDao.getZcInfoDownLoadItemById(Long.parseLong(id));
                 if (!CollectionUtils.isEmpty(zcCheckItemsList)) {
-                    zcCheck.setZcCheckDownLoadItemVOList(zcCheckItemsList);
+                    zcCheck.setCheckItemList(zcCheckItemsList);
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("ZcCheck", zcCheck);
                     logger.info("获得的数据是{}", jsonObject.toString());
@@ -58,6 +66,42 @@ public class ZcCheckUpLoadController {
             e.printStackTrace();
         }
 
+    }
+
+
+    @PostMapping(value = "/upload")
+    @ApiOperation(value = "上传盘点之后的结果数据", notes = "上传盘点之后的结果数据")
+    @ResponseBody
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return FailMap.createFailMapMsg("上传失败，请选择文件");
+        }
+        InputStream inputStream = file.getInputStream();
+        StringBuffer buffer = new StringBuffer();
+        String line; // 用来保存每行读取的内容
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        line = reader.readLine(); // 读取第一行
+        while (line != null) { // 如果 line 为空说明读完了
+            buffer.append(line); // 将读到的内容添加到 buffer 中
+            buffer.append("\n"); // 添加换行符
+            line = reader.readLine(); // 读取下一行
+        }
+        reader.close();
+        inputStream.close();
+        logger.info("读取到Json数据是{}", buffer.toString());
+        return updateUploadData(buffer.toString());
+    }
+
+
+    private Map<String, Object> updateUploadData(String data) {
+        Map<String, Object> map = new HashMap<>();
+        JSONObject egJo = JSONObject.fromObject(data);
+        ZcCheckDownLoadVO zcCheckDownLoadVO = (ZcCheckDownLoadVO) JSONObject.toBean(egJo, ZcCheckDownLoadVO.class);
+        List<ZcCheckDownLoadItemVO> loadItemVOList = zcCheckDownLoadVO.getZcCheckDownLoadItemVOList();
+        if(!CollectionUtils.isEmpty(loadItemVOList)){
+          //  zcCheckItemDao.updateLoadCheckIem(loadItemVOList);
+        }
+        return map;
     }
 
 

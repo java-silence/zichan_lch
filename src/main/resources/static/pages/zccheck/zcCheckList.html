@@ -31,6 +31,11 @@
                     <button class="layui-btn layuiadmin-btn-useradmin" data-type="add" id="addButton" onclick="add()">
                         添加
                     </button>
+
+
+                    <button type="button" class="layui-btn" id="test1">
+                        <i class="layui-icon"></i>上传盘点结果
+                    </button>
                 </div>
             </div>
         </div>
@@ -44,10 +49,10 @@
 </body>
 </html>
 <div id="test" style="display: none;"></div>
-<div id="forms">
+<div id="forms" style="display: none">
     <form class="form-inline " id="form" method="post" action="/zcCheck/download" onsubmit="return false"
           enctype="multipart/form-data">
-        <input id="token" name="token" type="hidden" />
+        <input id="token" name="token" type="hidden"/>
         <input id="downId" name="downId" type="input">
     </form>
 </div>
@@ -93,7 +98,7 @@
     //     $("#addButton").show();
     // }
 
-    layui.use(['layer', 'form', 'laydate', 'table'], function () {
+    layui.use(['layer', 'form', 'laydate', 'table', 'upload'], function () {
 
         var layer = layui.layer;
         var form = layui.form;
@@ -101,6 +106,23 @@
 
         var table = layui.table;
         var checkDeptselect;
+
+        var upload = layui.upload;
+        upload.render({
+            elem: '#test1' //绑定元素
+            , accept: 'file' //允许上传的文件类型
+            , exts: 'json|JSON'
+            , url: '/zcCheck/upload'
+            , done: function (res, index, upload) {
+                if (res.code == 1) {
+                    layer.msg("上传失败");
+                } else {
+                    layer.msg("上传成功");
+                }
+            }
+        });
+
+
         tableIns = table.render({
             elem: '#data'
             , url: "/zcChecks/list2"
@@ -337,5 +359,9 @@
         $("#form").submit();
 
         $("#form").attr("onsubmit", "return false");
+    }
+
+    function uploadData() {
+        layer.msg("开发中");
     }
 </script>
