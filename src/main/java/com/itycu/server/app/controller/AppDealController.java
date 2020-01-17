@@ -5,6 +5,7 @@ import com.itycu.server.app.dto.chuzhi.AppDealListDTO;
 import com.itycu.server.app.dto.chuzhi.AppInsertDataDTO;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.chuzhi.DealZcInfoVO;
+import com.itycu.server.app.vo.fenye.PageVO;
 import com.itycu.server.dao.ZcBfDao;
 import com.itycu.server.dao.ZcInfoDao;
 import com.itycu.server.dto.ZcBfDto;
@@ -113,30 +114,22 @@ public class AppDealController {
 
 
     /**
-     * TODO 需要测试
-     *
-     * @param appInsertDataDTO
+     * @param pageVO
      * @return
      */
     @PostMapping(value = "/getBFRecordList")
     @ApiOperation(value = "获取报废的记录列表", notes = "获取报废的记录列表")
-    public Map<String, Object> getBFRecordList(@RequestBody AppInsertDataDTO appInsertDataDTO,
-                                               PageTableRequest request, HttpServletRequest httpServletRequest) {
-//            if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(), "sys:bfcheck:apply") > 0) {
-//                request.getParams().put("applyUserId", UserUtil.getLoginUser().getId());
-//                request.getParams().put("type", "user");
-//            }
-//            if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(), "sys:bfcheck:sh") > 0) {
-//                request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
-//                request.getParams().put("type", "gl");
-//            }
+    public Map<String, Object> getBFRecordList(@RequestBody PageVO pageVO) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("type", "gl");
+        params.put("glDeptId", UserUtil.getLoginUser().getDeptid());
         Map<String, Object> map = new HashMap<>();
-        Integer page = Integer.valueOf((String) request.getParams().get("offset"));
-        Integer limit = Integer.valueOf((String) request.getParams().get("limit"));
-        List<Map<String, Object>> list = zcBfDao.listZcbf(request.getParams(), page * limit - limit, limit);
+        Integer page = pageVO.getOffset();
+        Integer limit = pageVO.getLimit();
+        List<Map<String, Object>> list = zcBfDao.listZcbf(params, page * limit - limit, limit);
         map.put("data", list);
         map.put("code", "0");
-        map.put("msg", "");
+        map.put("msg", "成功");
         return map;
     }
 
