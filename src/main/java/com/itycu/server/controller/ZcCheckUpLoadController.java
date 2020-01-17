@@ -97,31 +97,30 @@ public class ZcCheckUpLoadController {
 
     @Transactional(rollbackFor = Exception.class)
     Map<String, Object> updateUploadData(String data) {
-        Map<String, Object> map = new HashMap<>();
-        JSONObject egJo = JSONObject.fromObject(data);
-        Map classMap = new HashMap();
-        /**
-         * TODO
-         */
-        classMap.put("zcCheckItemList",String.class);
-        com.itycu.server.model.ZcCheck zcCheckDownLoadVO = (ZcCheck) JSONObject.toBean(egJo, com.itycu.server.model.ZcCheck.class);
-        List<com.itycu.server.model.ZcCheckItem> loadItemVOList = zcCheckDownLoadVO.getCheckItemList();
-        if (!CollectionUtils.isEmpty(loadItemVOList)) {
-            loadItemVOList.forEach(k->{
-                System.out.println((ZcCheckItem)k);
-            });
-            zcCheckItemDao.updateLoadCheckIem(loadItemVOList);
-            int result = zcCheckDao.update(zcCheckDownLoadVO);
-            if (result > 0) {
-                map.put("code", 0);
-                map.put("message", "操作成功");
-                map.put("data", null);
-                return map;
+        try {
+            Map<String, Object> map = new HashMap<>();
+            JSONObject egJo = JSONObject.fromObject(data);
+            Map<String, Class<ZcCheckItem>> classMap = new HashMap<>();
+            classMap.put("checkItemList", ZcCheckItem.class);
+            ZcCheck zcCheckDownLoadVO = (ZcCheck) JSONObject.toBean(egJo, ZcCheck.class, classMap);
+            List<ZcCheckItem> loadItemVOList = zcCheckDownLoadVO.getCheckItemList();
+            if (!CollectionUtils.isEmpty(loadItemVOList)) {
+                zcCheckItemDao.updateLoadCheckIem(loadItemVOList);
+                int result = zcCheckDao.update(zcCheckDownLoadVO);
+                if (result > 0) {
+                    map.put("code", 0);
+                    map.put("message", "操作成功");
+                    map.put("data", null);
+                    return map;
+                } else {
+                    return FailMap.createFailMapMsg("导入失败");
+                }
             } else {
-                return FailMap.createFailMapMsg("导入失败");
+                return FailMap.createFailMapMsg("导入数据失败");
             }
-        } else {
-            return FailMap.createFailMapMsg("导入数据失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return FailMap.createFailMapMsg(e.getMessage());
         }
     }
 

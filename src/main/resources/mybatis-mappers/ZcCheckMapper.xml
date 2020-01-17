@@ -113,6 +113,15 @@
             <if test="zcCheck.reCheck != null">
                 re_check = #{zcCheck.reCheck},
             </if>
+            <if test="zcCheck.total != null">
+                total = #{zcCheck.total},
+            </if>
+            <if test="zcCheck.bh != null">
+                bh = #{zcCheck.bh},
+            </if>
+            <if test="zcCheck.profit != null">
+                profit = #{zcCheck.profit},
+            </if>
         </trim>
 
         where id = #{zcCheck.id}
