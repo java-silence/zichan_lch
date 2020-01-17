@@ -2,14 +2,17 @@ package com.itycu.server.dto;
 
 import com.itycu.server.model.ZcBuy;
 import com.itycu.server.model.ZcBuyItem;
+import lombok.ToString;
 
 import java.util.List;
 
 /**
  * 资产购买表单
+ *
  * @author lch
  * @create 2019-12-04 15:56
  */
+@ToString
 public class ZcBuyDto extends ZcBuy {
 
     private List<ZcBuyItem> zcBuyItemList;
