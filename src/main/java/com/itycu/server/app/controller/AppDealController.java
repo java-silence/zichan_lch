@@ -143,15 +143,20 @@ public class AppDealController {
     @PostMapping(value = "/getBFRecordItemList")
     @ApiOperation(value = "获取报废的记录列表下面的详情数据列表", notes = "获取报废的记录列表下面的详情数据列表")
     public Map<String, Object> getBFRecordItemList(@RequestBody AppDealListRecordDetailDTO appDealListRecordDetailDTO) {
-        Map map = new HashMap();
-        List<Map<String, Object>> list = new ArrayList<>();
-        if (0 != appDealListRecordDetailDTO.getZcBfId()) {
-            list = zcBfItemDao.listDetailByZcBfId(appDealListRecordDetailDTO.getZcBfId());
+        try {
+            Map<String, Object> map = new HashMap();
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (0 != appDealListRecordDetailDTO.getZcBfId()) {
+                list = zcBfItemDao.listDetailByZcBfId(appDealListRecordDetailDTO.getZcBfId());
+            }
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "成功");
+            return map;
+        } catch (Exception e) {
+            logger.error("获取报废的记录列表下面的详情数据列表错误{}", e.getMessage());
+            return FailMap.createFailMapMsg("数据列表错误");
         }
-        map.put("data", list);
-        map.put("code", "0");
-        map.put("msg", "成功");
-        return map;
     }
 
 }
