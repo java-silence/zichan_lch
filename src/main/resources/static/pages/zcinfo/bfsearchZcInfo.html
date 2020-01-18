@@ -257,9 +257,9 @@
                 ,{field:'id',hide:true}
                 // ,{field:'cardNum',title:'卡片编号', width:150, sort: true}
                 // ,{field:'zcCodenum',title:'资产编号', width:100, sort: true}
-                ,{field:'epcid',title:'资产追溯码', width:150, sort: true}
-                ,{field:'zcCodenum',title:'资产编码', width:100, }
-                ,{field:'zcName',title:'资产名称', width:100,}
+                ,{field:'epcid',title:'资产追溯码', width:130, sort: true}
+                ,{field:'zcCodenum',title:'资产编码', width:150, }
+                ,{field:'zcName',title:'资产名称', width:130,}
                 // ,{field:'zc_coding',title:'资产编号', width:150, sort: true}
                 ,{field:'zcCategoryName',title:'资产分类', width:100,}
                 ,{field:'specification',title:'规格', width:100, sort: true}
@@ -449,7 +449,7 @@
         });
 
         $.ajax({
-            url : '/depts/xmSelectTree',
+            url : '/depts/eleTreeSelf',
             contentType: "application/json; charset=utf-8",
             success : function(data) {
                 checkDeptselect=	xmSelect.render({

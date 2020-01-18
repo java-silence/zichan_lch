@@ -1,25 +1,23 @@
 package com.itycu.server.controller;
 
-import java.util.List;
-
 import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.TodoDao;
 import com.itycu.server.dao.UserDao;
-import com.itycu.server.model.Todo;
-import com.itycu.server.service.TodoService;
-import com.itycu.server.utils.UserUtil;
 import com.itycu.server.dto.TodoDto;
 import com.itycu.server.dto.TodoVO;
-import com.itycu.server.page.table.PageTableResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.itycu.server.page.table.PageTableRequest;
+import com.itycu.server.model.Todo;
 import com.itycu.server.page.table.PageTableHandler;
 import com.itycu.server.page.table.PageTableHandler.CountHandler;
 import com.itycu.server.page.table.PageTableHandler.ListHandler;
-
+import com.itycu.server.page.table.PageTableRequest;
+import com.itycu.server.page.table.PageTableResponse;
+import com.itycu.server.service.TodoService;
+import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/todos")
@@ -93,7 +91,7 @@ public class TodoController {
         request.getParams().put("auditby", UserUtil.getLoginUser().getId());
         request.getParams().put("orderBy", "ORDER BY id desc");
 
-        return new PageTableHandler(new CountHandler() {
+        PageTableResponse handle = new PageTableHandler(new CountHandler() {
 
             @Override
             public int count(PageTableRequest request) {
@@ -106,6 +104,7 @@ public class TodoController {
                 return todoDao.list(request.getParams(), request.getOffset(), request.getLimit());
             }
         }).handle(request);
+        return handle;
     }
 
     @DeleteMapping("/{id}")

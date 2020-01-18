@@ -94,9 +94,6 @@
 	<update id="update">
 		update flow_todo t
 		<set>
-			<if test="updateTime != null">
-				updateTime = #{updateTime}, 
-			</if>
 			<if test="biaoti != null">
 				biaoti = #{biaoti}, 
 			</if>
@@ -113,8 +110,9 @@
 				memo = #{memo}, 
 			</if>
 			<if test="todoIds != null and todoIds != ''">
-				todoIds = #{todoIds}
+				todoIds = #{todoIds},
 			</if>
+			updateTime = now()
 		</set>
 		where t.id = #{id}
 	</update>

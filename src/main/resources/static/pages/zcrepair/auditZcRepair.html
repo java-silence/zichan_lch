@@ -16,6 +16,9 @@
         .bfmx p{
             margin-left: 15px;
         }
+        .btnfloat button{
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -37,13 +40,18 @@
                                 <!--<p class="layui-text-bottom" id="statusText">申请状态</p>-->
                                 <p class="layui-text-bottom" id="bfdes">报修说明</p>
                                 <p class="layui-text-bottom" id="bfbz">报修备注</p>
-                                <button id="GlprintBt" class="layui-btn layui-btn-normal layuiadmin-btn-useradmin">打印</button>
+                                <!--<button id="GlprintBt" class="layui-btn layui-btn-normal layuiadmin-btn-useradmin">打印</button>-->
                             </div>
                         </div>
                         <!--资产报废设备详细信息-->
                         <div class="layui-col-xs12 layui-col-sm12">
                             <div class="layuiadmin-card-text">
                                 <div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>报修资产信息</div>
+                                <div class="layui-row">
+                                    <div class="layui-col-md12 btnfloat">
+                                        <button id="GlprintBt" class="layui-btn layui-btn-normal layuiadmin-btn-useradmin">打印</button>
+                                    </div>
+                                </div>
                                 <table class="layui-hide" id="datas" lay-filter="datas"></table>
                                 <script type="text/html" id="barDemo">
                                     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -100,7 +108,7 @@
     <form action="" id="fileForm" method="post" style="display: none;"></form>
     <script type="text/html" id="auditReItem">
 <!--        <a class="layui-btn layui-btn-xs" lay-event="viewRepairs">查看</a>-->
-        <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+        <a class="layui-btn layui-btn-xs" lay-event="download">下载附件</a>
         <a class="layui-btn layui-btn-xs" lay-event="createRepairs">维修信息创建</a>
     </script>
 </div>
@@ -167,7 +175,7 @@
                 ,{field:'netvalue',title:'净值(元)', width:110, sort: true}
                 ,{field:'repairDes',title:'报修原因', width:110, sort: true}
                 ,{field:'frontPicsUrl',title:'附件地址', width:110, sort: true,hide:true}
-                ,{field:'frontPics',title:'图片附件', width:120, fixed:'right',sort: true,templet:function(d){
+                ,{field:'frontPics',title:'图片附件', width:150, fixed:'right',sort: true,templet:function(d){
                         if(!d.frontPics) d.frontPics = "";
                         return "<a href='javascript:void(0)' lay-event='viewFile' style='text-decoration:underline;color:blue'>"+d.frontPics+"</a>";
                     }}
@@ -514,7 +522,11 @@
                         html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
                     }
                     // html += "                        <p>审批意见：</p>";
-                    html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+                    var neirong = data[i].neirong;
+                    if (neirong == null) {
+                        neirong = "";
+                    }
+                    html += "                        <p><span class='neir'>审批意见:" + neirong + "</span><br></p>";
                     html += "                        <span>" +data[i].updateTime + "</span>";
                     html += "			</div>";
                     html += "		</dd>";

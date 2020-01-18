@@ -97,7 +97,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
 
     @Override
     public void startProcess(String buyId) {
-
+        LoginUser loginUser = UserUtil.getLoginUser();
         // 购买主流程
         ZcBuy zcBuy = zcBuyDao.getById(Long.parseLong(buyId));
         if (zcBuy.getStatus() !=0 ){
@@ -117,6 +117,16 @@ public class ZcBuyServiceImpl implements ZcBuyService {
             log.info("【报废资产无管理部门】");
             throw new RuntimeException("报废资产无管理部门");
         }
+        // 给自己插入待办信息
+        Long flowTodoId1 = saveFlowTodo(loginUser.getId(), loginUser, zcBuy, flowsteps.get(0),1,"1");
+        for (ZcBuyItem zcBuyItem : zcBuyItems) {
+            // 属于当前部门信息
+            FlowTodoItem flowTodoItem = new FlowTodoItem();
+            flowTodoItem.setFlowTodoId(flowTodoId1);
+            flowTodoItem.setFlowItemId(zcBuyItem.getId());
+            flowTodoItem.setStatus(0);
+            int ressult = flowTodoItemDao.save(flowTodoItem);
+        }
         // 根据报废资产部门ID查询节点人员信息
         Long nextNodeId = getNextNodeId(1,zcBuy.getStepid(), flowsteps);
         // 当前节点角色
@@ -125,7 +135,6 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         //List<FlowDeptUser> flowDeptUsers = flowDeptUserDao.listAllFlowDeptUser(deptIdList,flowId,nextNodeId);
         // 申请人信息
         //SysUserDto user = userDao.getById(zcBf.getApplyUserId());
-        LoginUser loginUser = UserUtil.getLoginUser();
         // 查询所有的部门信息,获取父节点部门信息
         HashMap<Long, String> deptMap = getDeptMap();
         List<Dept> deptList = deptDao.listDeptSAndParent(deptIdList);
@@ -149,7 +158,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
             //String id = String.valueOf(checkUser.get("id"));
             Long id = user.getId();
             // 插入待办任务信息  最后参数为类型  1:流程启动  2:流程审核
-            Long flowTodoId = saveFlowTodo(id, loginUser, zcBuy, getFlowstepById(nextNodeId, flowsteps),2);
+            Long flowTodoId = saveFlowTodo(id, loginUser, zcBuy, getFlowstepById(nextNodeId, flowsteps),2,"0");
             for (ZcBuyItem zcBuyItem : zcBuyItems) {
                 if ( currentId == zcBuyItem.getGlDeptId() && !zcItemIds.contains(zcBuyItem.getId())){
                     // 属于当前部门信息
@@ -240,7 +249,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 Long flowTodoId = flowTodoItem.getFlowTodoId();
                 Todo todo = todoDao.getById(flowTodoId);
                 Long sendby = todo.getSendby();
-                Long aLong = saveFlowTodo(sendby, UserUtil.getLoginUser(), zcBuy, flowsteps.get(1),2);
+                Long aLong = saveFlowTodo(sendby, UserUtil.getLoginUser(), zcBuy, flowsteps.get(1),2,"0");
                 for (FlowTodoItem agreeTodoItem : agreeTodoItems) {
                     // 属于当前部门信息
                     FlowTodoItem item = new FlowTodoItem();
@@ -276,7 +285,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
             // 更改状态 指定任务 更改状态
             flowTodoItemDao.updateListStatus(3,backToDoItemIds);
             // 保存待办主信息
-            Long currentFlowid = saveFlowTodo(flowTodo.getSendby(), (SysUser)loginUser, zcBuy, flowstep,1);
+            Long currentFlowid = saveFlowTodo(flowTodo.getSendby(), (SysUser)loginUser, zcBuy, flowstep,1,"0");
             for (FlowTodoItem backTodoItem : backTodoItems) {
                 // 属于当前部门信息
                 FlowTodoItem flowTodoItem = new FlowTodoItem();
@@ -337,7 +346,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 Flowstep flowstep1 = getFlowstepById(nextNodeId, flowsteps);
                 // 插入待办信息
                 SysUserDto byId = userDao.getById(zcBuy.getApplyUserId());
-                Long aLong = saveFlowTodo(Long.parseLong(userId), userDao.getById(zcBuy.getApplyUserId()), zcBuy, flowstep1,2);
+                Long aLong = saveFlowTodo(Long.parseLong(userId), userDao.getById(zcBuy.getApplyUserId()), zcBuy, flowstep1,2,"0");
                 for (ZcBuyItem zcBuyItem : zcBuyItems) {
                     // 属于当前部门信息
                     FlowTodoItem flowTodoItem = new FlowTodoItem();
@@ -367,17 +376,23 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         Dept dept = deptDao.getById(syDeptId);
         String suCode = dept.getSuCode();
         //int count = zcInfoDao.countByDeptId(syDeptId);
+        Dept pDept = deptDao.getById(dept.getPid());
         // 查询追溯码最后的元素
-        String lastCode = zcEpcCodeDao.findDeptLastCode(syDeptId);
-        String substring = lastCode.substring(suCode.length());
+        String lastCode = zcEpcCodeDao.findDeptLastCode(syDeptId,pDept.getDeptcode());
+        String substring = "";
+        if (lastCode == null) {
+            substring = "0";
+        }else {
+            substring = lastCode.substring(suCode.length());
+        }
         int count = Integer.parseInt(substring);
         int buyNum = zcBuyDao.countByZcBuyId(zcBuy.getId());
         if (buyNum>0) {
-            ArrayList<String> ecpIdLlist = EcpIdUtil.getEcpIdLlist(count, buyNum, null);
+            ArrayList<String> ecpIdLlist = EcpIdUtil.getEcpIdLlist(count, buyNum, dept.getSuCode());
             ArrayList<ZcEpcCode> insertList = new ArrayList<>();
             for (int i = 0; i < ecpIdLlist.size(); i++) {
                 ZcEpcCode zcEpcCode = new ZcEpcCode();
-                zcEpcCode.setEpcid(dept.getSuCode()+ecpIdLlist.get(i));
+                zcEpcCode.setEpcid(ecpIdLlist.get(i));
                 zcEpcCode.setDeptId(dept.getId());
                 zcEpcCode.setEnable(1);
                 zcEpcCode.setCreateTime(new Date());
@@ -536,7 +551,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
      * @param flowstep 流程步骤
      * @return
      */
-    public Long saveFlowTodo( Long auditUserId,SysUser user, ZcBuy zcBuy,Flowstep flowstep ,Integer memo){
+    public Long saveFlowTodo( Long auditUserId,SysUser user, ZcBuy zcBuy,Flowstep flowstep ,Integer memo,String status){
         Todo todo = new Todo();
         todo.setAuditby(auditUserId);
         todo.setSendby(user.getId());
@@ -545,7 +560,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         todo.setBizid(zcBuy.getId());
         todo.setBizcreateby(user.getId());
         todo.setBizdeptid(zcBuy.getSyDeptId());
-        todo.setStatus("0");
+        todo.setStatus(status);
         todo.setFlowid(zcBuy.getFlowid());
         todo.setStepid(flowstep.getId());
         todo.setMemo(String.valueOf(memo));

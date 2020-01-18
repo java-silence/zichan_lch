@@ -698,7 +698,11 @@
                             html += "<p class='agree'>【" + data[i].auditname + "】审批结果:未通过</p>";
                         }
                         // html += "<p>审批意见：</p>";
-                        html += "<p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
+						var neirong = data[i].neirong;
+                        if (neirong == null) {
+							neirong = "";
+						}
+                        html += "<p><span class='neir'>审批意见:" + neirong + "</span><br></p>";
                         html += "<span>" +data[i].updateTime + "</span>";
                         html += "</div>";
                         html += "</dd>";

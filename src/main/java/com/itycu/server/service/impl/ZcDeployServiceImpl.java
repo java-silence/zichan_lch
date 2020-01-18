@@ -2,7 +2,6 @@ package com.itycu.server.service.impl;
 
 import com.itycu.server.dao.*;
 import com.itycu.server.dto.LoginUser;
-import com.itycu.server.dto.SysUserDto;
 import com.itycu.server.dto.ZcDeployCheckDto;
 import com.itycu.server.dto.ZcDeployDto;
 import com.itycu.server.model.*;
@@ -101,7 +100,8 @@ public class ZcDeployServiceImpl implements ZcDeployService {
 
     @Override
     public void startProcess(String deployId) {
-
+        // 当前登录用户
+        LoginUser loginUser = UserUtil.getLoginUser();
         // 调配主单
         ZcDeploy zcDeploy = zcDeployDao.getById(Long.parseLong(deployId));
         if (zcDeploy.getStatus() !=0 ){
@@ -121,12 +121,20 @@ public class ZcDeployServiceImpl implements ZcDeployService {
             log.info("【调配资产无使用部门】");
             throw new RuntimeException("调配资产无使用部门");
         }
+        // 给自己插入待办信息
+        Long flowTodoId1 = saveFlowTodo(loginUser.getId(), loginUser, zcDeploy, flowsteps.get(0),1,"1");
+        for (ZcDeployItem zcDeployItem : zcDeployItems) {
+            // 属于当前部门信息
+            FlowTodoItem flowTodoItem = new FlowTodoItem();
+            flowTodoItem.setFlowTodoId(flowTodoId1);
+            flowTodoItem.setFlowItemId(zcDeployItem.getId());
+            flowTodoItem.setStatus(0);
+            int ressult = flowTodoItemDao.save(flowTodoItem);
+        }
         // 获取上下节点 0:上一个 1:下一个
         Long nextNodeId = getNextNodeId(1,zcDeploy.getStepid(), flowsteps);
         // 调配调出角色
         Long memidByFlowStep = flowmemberDao.getMemidByFlowStep(zcDeploy.getFlowid(), nextNodeId);
-        // 当前登录用户
-        LoginUser loginUser = UserUtil.getLoginUser();
         // 调配子项ID集合
         ArrayList<Long> zcItemIds = new ArrayList<>();
         // 资产集合
@@ -141,7 +149,7 @@ public class ZcDeployServiceImpl implements ZcDeployService {
             }
             Long id = user.getId();
             // 插入待办任务信息
-            Long flowTodoId = saveFlowTodo(id, loginUser, zcDeploy, getFlowstepById(nextNodeId, flowsteps),1);
+            Long flowTodoId = saveFlowTodo(id, loginUser, zcDeploy, getFlowstepById(nextNodeId, flowsteps),0,"0");
             for (ZcDeployItem zcDeployItem : zcDeployItems) {
                 if ( currentId == zcDeployItem.getSyDeptId() && !zcItemIds.contains(zcDeployItem.getId())){
                     // 属于当前部门信息
@@ -165,7 +173,7 @@ public class ZcDeployServiceImpl implements ZcDeployService {
         params.put("updateTime",new Date());
         zcDeployDao.updateStatus(params);
         // 更新资产信息
-        // zcInfoDao.updateStatusList(3,zcids);
+        zcInfoDao.updateStatusList(5,zcids);
     }
 
     @Override
@@ -265,7 +273,7 @@ public class ZcDeployServiceImpl implements ZcDeployService {
                     }
                     Long id = user.getId();
                     // 插入待办任务信息
-                    Long flowTodoId = saveFlowTodo(id, loginUser, zcDeploy, getFlowstepById(nextNodeId, flowsteps),2);
+                    Long flowTodoId = saveFlowTodo(id, loginUser, zcDeploy, getFlowstepById(nextNodeId, flowsteps),2,"0");
                     for (ZcDeployItem zcDeployItem : zcDeployItems) {
                         if ( currentId == zcDeployItem.getBackDeptId() && !zcItemIds.contains(zcDeployItem.getId())){
                             // 属于当前部门信息
@@ -306,7 +314,7 @@ public class ZcDeployServiceImpl implements ZcDeployService {
                 HashMap<String, Object> user = userList.get(0);
                 String userId = String.valueOf(user.get("id"));
                 // 插入待办任务信息
-                Long flowTodoId = saveFlowTodo(Long.parseLong(userId), loginUser, zcDeploy, getFlowstepById(nextNodeId, flowsteps),3);
+                Long flowTodoId = saveFlowTodo(Long.parseLong(userId), loginUser, zcDeploy, getFlowstepById(nextNodeId, flowsteps),3,"0");
                 for (ZcDeployItem zcDeployItem : zcDeployItems) {
                     // 属于当前部门信息
                     FlowTodoItem flowTodoItem = new FlowTodoItem();
@@ -363,7 +371,6 @@ public class ZcDeployServiceImpl implements ZcDeployService {
      * @param zcDeploy
      */
     private void updateZcInfoStatus(ZcDeploy zcDeploy) {
-
         List<ZcDeployItem> zcDeployItems = zcDeployItemDao.listByZcDeployId(zcDeploy.getId());
         for (ZcDeployItem zcDeployItem : zcDeployItems) {
             ZcInfo zcInfo = new ZcInfo();
@@ -415,16 +422,20 @@ public class ZcDeployServiceImpl implements ZcDeployService {
      * @param flowstep 流程步骤
      * @return
      */
-    public Long saveFlowTodo( Long auditUserId,SysUser user, ZcDeploy zcDeploy,Flowstep flowstep,Integer memo ){
+    public Long saveFlowTodo( Long auditUserId,SysUser user, ZcDeploy zcDeploy,Flowstep flowstep,Integer memo,String status ){
         Todo todo = new Todo();
         todo.setAuditby(auditUserId);
         todo.setSendby(user.getId());
         todo.setBiaoti("【"+user.getNickname()+"】申请资产调配");
-        todo.setNeirong(zcDeploy.getDescription());
+        if ("1".equals(status)) {
+            todo.setNeirong("调配发起");
+        }else {
+            todo.setNeirong(zcDeploy.getDescription());
+        }
         todo.setBizid(zcDeploy.getId());
         todo.setBizcreateby(user.getId());
         todo.setBizdeptid(zcDeploy.getApplyDeptId());
-        todo.setStatus("0");
+        todo.setStatus(status);
         todo.setFlowid(zcDeploy.getFlowid());
         todo.setStepid(flowstep.getId());
         todo.setMemo(String.valueOf(memo));

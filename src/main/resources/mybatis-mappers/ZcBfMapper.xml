@@ -87,7 +87,7 @@
 	<select id="listZcbf" parameterType="map" resultType="map">
 		SELECT
 			t.id,
-			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m') createtime,
+			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%i') createtime,
 			t.bf_des bfdes,
 			t.bz,
 			t.status,

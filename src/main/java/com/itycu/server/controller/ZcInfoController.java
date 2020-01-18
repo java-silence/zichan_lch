@@ -146,28 +146,13 @@ public class ZcInfoController {
     @GetMapping("/layuiList3")
     @ApiOperation(value = "列表")
     public Map list3(PageTableRequest request, HttpServletRequest httpServletRequest) {
-
-        // 使用部门
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
-            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
-        }
-        // 管理部门
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
-            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
-            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
-        }
-        // 财务部门
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
-            request.getParams().put("glDeptId", null);
-            request.getParams().put("syDeptId", null);
-        }
         Map map = new HashMap();
         request.getParams().put("del","0");
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
         Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
         DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
-        int count = zcInfoDao.count(request.getParams());
-        List list = zcInfoDao.list(request.getParams(), page*limit-limit, limit);
+        int count = zcInfoDao.bfCount(request.getParams());
+        List list = zcInfoDao.bfList(request.getParams(), page*limit-limit, limit);
 
         if (!CollectionUtils.isEmpty(list)){
             List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
