@@ -6,7 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class BuyItemListVO {
+public class BuyItemListDTO {
 
 
     private int id;

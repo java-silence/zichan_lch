@@ -24,7 +24,7 @@ public class InsertBuyDataDTO {
     private String brand;
     private BigDecimal price;
     private String supplierName;
-    private List<BuyItemListVO> zcBuyItemList;
+    private List<BuyItemListDTO> zcBuyItemList;
 
 
 }

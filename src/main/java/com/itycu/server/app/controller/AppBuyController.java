@@ -1,10 +1,13 @@
 package com.itycu.server.app.controller;
 
 
+import com.itycu.server.app.dto.goumai.BuyItemDetailDTO;
 import com.itycu.server.app.dto.goumai.InsertBuyDataDTO;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.fenye.PageVO;
+import com.itycu.server.dao.ZcBfItemDao;
 import com.itycu.server.dao.ZcBuyDao;
+import com.itycu.server.dao.ZcBuyItemDao;
 import com.itycu.server.dto.ZcBuyDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcBuy;
@@ -22,10 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RequestMapping(value = "/buy")
 @RestController
@@ -40,6 +40,9 @@ public class AppBuyController {
 
     @Autowired
     ZcBuyDao zcBuyDao;
+
+    @Autowired
+    ZcBuyItemDao zcBuyItemDao;
 
 
     @PostMapping(value = "/insertData")
@@ -79,6 +82,27 @@ public class AppBuyController {
             Integer page = pageVO.getOffset();
             Integer limit = pageVO.getLimit();
             List<Map<String, Object>> list = zcBuyDao.listZcBuy(params, page * limit - limit, limit);
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info("增加购买的信息错误{}", e.getMessage());
+            return FailMap.createFailMapMsg("");
+        }
+    }
+
+
+    @PostMapping(value = "/getBuyRecordItemDetailList")
+    @ApiOperation(value = "购买的记录列表下面的详情数据列表", notes = "购买的记录列表下面的详情数据列表")
+    public Map<String, Object> getBuyRecordItemDetailList(@RequestBody BuyItemDetailDTO buyItemDetailDTO) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (null != buyItemDetailDTO.getZcBuyId()) {
+                list = zcBuyItemDao.listDetailByZcBfId(buyItemDetailDTO.getZcBuyId(), buyItemDetailDTO.getCw());
+            }
             map.put("data", list);
             map.put("code", "0");
             map.put("msg", "查询成功");
