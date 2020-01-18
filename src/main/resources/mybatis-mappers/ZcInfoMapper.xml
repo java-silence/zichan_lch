@@ -744,9 +744,9 @@
     <update id="updateStatusList">
         update zc_info t set t.use_status = #{status} where t.id in
         (
-        <foreach collection="zcids" item="fileId" separator=",">
-            #{fileId}
-        </foreach>
+            <foreach collection="zcids" item="fileId" separator=",">
+                #{fileId}
+            </foreach>
         )
     </update>
 

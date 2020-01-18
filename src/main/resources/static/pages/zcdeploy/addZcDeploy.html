@@ -37,7 +37,7 @@
 		}
         select.selectdept{
             height: 28px;
-            width: 133px;
+            width: 200px;
             margin-left: -6px;
             z-index: 1010;
             display: block;
@@ -194,7 +194,7 @@
                 ,{field:'zcCategoryName',title:'资产类别', width:150, sort: true}
                 ,{field:'glDeptName',title:'管理部门', width:150, sort: true}
                 ,{field:'syDeptName',title:'调出部门', width:150, sort: true}
-                ,{field:'drDeptname',title:'调入部门', width:170,templet: '#selectDrDeptName'}
+                ,{field:'drDeptname',title:'调入部门', width:200,templet: '#selectDrDeptName'}
                 ,{field:'backDeptId',title:'调入部门ID', width:150, hide:true}
                 ,{field:'zcFrom',title:'来源', width:100, sort: true}
                 ,{field:'startUseTime',title:'开始使用日期', width:140, sort: true}
@@ -221,7 +221,6 @@
                     var elem = $(item);
                     elem.val(elem.data('value'));
                 });
-
 
                 form.render('select');
                 // $("select[name='drDeptname']").addClass("selectdept");
@@ -290,18 +289,29 @@
         }
         
         // 调入部门是否全选
-		var flag = false;
+		var flag1 = false;
+		var flag2 = false;
+		debugger
         for (var i = 0; i < data.length; i++) {
             var back = data[i].backDeptId;
-            if (back == null || back == ''){
-                flag = true;
+            var syDeptId = data[i].syDeptId;
+            if (back == null || back == '') {
+                flag1 = true;
                 break;
             }
+            if (back == syDeptId) {
+				flag2 = true;
+				break;
+			}
         }
-        if (flag) {
+        if (flag1) {
             layer.msg("请选择调入部门");
             return;
         }
+		if (flag2) {
+			layer.msg("调入部门不能与调出部门相同,请重新选择");
+			return;
+		}
         //var backDeptId = $('#backDeptId').val();
         var backDeptId = "";
         // if (backDeptId == null || backDeptId == ''){

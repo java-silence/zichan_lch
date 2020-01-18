@@ -70,7 +70,7 @@
                                             <div class="layui-col-md6 btnfloat">
                                                 <button id="uploadIdentity" class="layui-btn" style="display: none"></button>
                                                 <!--全部同意操作-->
-                                                <button class="layui-btn" onclick="agreeAll()" >选择全部</button>
+                                                <button class="layui-btn" onclick="agreeAll()" >全部同意</button>
                                                 <button class="layui-btn" onclick="uploadIdentityFile()">鉴定附件批量上传</button>&nbsp;
                                             </div>
                                         </div>
@@ -811,10 +811,14 @@
                             html += "<p class='agree'>【" + data[i].auditname + "】审批结果:拒绝</p>";
                         }
                         // html += "                        <p>审批意见：</p>";
-                        html += "                        <p><span class='neir'>审批意见:" + data[i].neirong + "</span><br></p>";
-                        html += "                        <span>" +data[i].updateTime + "</span>";
-                        html += "			</div>";
-                        html += "		</dd>";
+						var neirong = data[i].neirong;
+						if (neirong == null) {
+							neirong = "";
+						}
+                        html += "<p><span class='neir'>审批意见:" + neirong + "</span><br></p>";
+                        html += "<span>" +data[i].updateTime + "</span>";
+                        html += "</div>";
+                        html += "</dd>";
 
                         $("#shenpidongtai").append(html);
 

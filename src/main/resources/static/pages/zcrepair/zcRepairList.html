@@ -49,14 +49,14 @@
 								<input id="edate" name="edate" type="text" class="form-control layui-input" placeholder="终止日期">
 							</div>
 						</div>
-						<div class="layui-inline">
-							<label class="layui-form-label">使用部门</label>
-							<div class="layui-input-block">
-								<input class="layui-input" type="text" id="syDeptName" data-id=""  placeholder="请选择使用部门" readonly="" autocomplete="off">
-								<div class="eleTree ele5" id="syDeptEleTree" lay-filter="syDeptEleTree"></div>
-								<input class="layui-input" type="hidden" id="syDeptId" name="syDeptId">
-							</div>
-						</div>
+						<!--<div class="layui-inline">-->
+							<!--<label class="layui-form-label">使用部门</label>-->
+							<!--<div class="layui-input-block">-->
+								<!--<input class="layui-input" type="text" id="syDeptName" data-id=""  placeholder="请选择使用部门" readonly="" autocomplete="off">-->
+								<!--<div class="eleTree ele5" id="syDeptEleTree" lay-filter="syDeptEleTree"></div>-->
+								<!--<input class="layui-input" type="hidden" id="syDeptId" name="syDeptId">-->
+							<!--</div>-->
+						<!--</div>-->
 						<div class="layui-inline">
 							<button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
 								<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
@@ -135,7 +135,7 @@ var el1,el2;
             ,even: true //开启隔行背景
             ,size: 'sm' //小尺寸的表格
             ,autoSort:false
-            ,where: {sdate:$('#sdate').val(),edate:$('#edate').val(),applyDeptId:$('#syDeptId').val()}
+            ,where: {sdate:$('#sdate').val(),edate:$('#edate').val()}
             ,page: true
             ,request: {
                 pageName: 'offset' //页码的参数名称，默认：page
@@ -177,7 +177,7 @@ var el1,el2;
             tableIns.reload({
                 initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
                 ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
-					sdate:$('#sdate').val(),edate:$('#edate').val(),applyDeptId:$('#syDeptId').val(),
+					sdate:$('#sdate').val(),edate:$('#edate').val(),
                     orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
                 }
                 ,page:{curr:1}
@@ -279,7 +279,7 @@ var el1,el2;
 		if(!el1){
 			el1=eleTree.render({
 				elem: '#glDeptEleTree',
-				url:'/depts/eleTree',
+				url:'/depts/eleTreeSelf',
 				request: {
 					name: "name",
 				},
@@ -325,7 +325,7 @@ var el1,el2;
 		eleTree.on("nodeClick(syDeptEleTree)",function(d) {
 			$('#syDeptName').trigger('change');
 			$("#syDeptName").val(d.data.currentData.name)
-			$("#syDeptId").val(d.data.currentData.id);
+			// $("#syDeptId").val(d.data.currentData.id);
 			$(".eleTree").hide();
 		})
 		$(document).on("click",function() {
@@ -384,7 +384,10 @@ function del(id){
     }
 
 $("#searchBt").click(function(){
-	tableIns.reload({where: {sdate:$('#sdate').val(),edate:$('#edate').val(),applyDeptId:$('#syDeptId').val()},page:{curr:1}})
+	tableIns.reload({where: {
+			sdate:$('#sdate').val(),
+			edate:$('#edate').val()
+		},page:{curr:1}})
 });
 
 function zcRepairInfoView(data){

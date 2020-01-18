@@ -1,16 +1,11 @@
 package com.itycu.server.dao;
 
+import com.itycu.server.model.ZcEpcCode;
+import org.apache.ibatis.annotations.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
-import com.itycu.server.model.ZcEpcCode;
 
 @Mapper
 public interface ZcEpcCodeDao {
@@ -38,6 +33,6 @@ public interface ZcEpcCodeDao {
 
     void saves(ArrayList<ZcEpcCode> zcEpcCodeList);
 
-    @Select("select epcid from zc_epc_code where deptId = #{syDeptId} order by id desc limit 1")
-    String findDeptLastCode(@Param("syDeptId") Long syDeptId);
+    @Select("SELECT epcid FROM zc_epc_code t LEFT JOIN t_dept p ON t.deptId = p.id WHERE p.deptcode LIKE concat(#{pDeptCode},'%') order by t.id desc limit 1")
+    String findDeptLastCode(@Param("syDeptId") Long syDeptId,@Param("pDeptCode") String pDeptCode);
 }

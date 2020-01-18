@@ -25,6 +25,9 @@
 			background-color: #fff;
 			z-index: 9999999999999;
 		}
+		.useStatus .layui-input{
+			padding-right: 0px!important;
+		}
 	</style>
 </head>
 <body>
@@ -132,10 +135,10 @@
 								</div>
 							</div>
 							<div class="layui-form-item">
-								<div class="layui-inline">
+								<div class="layui-inline useStatus">
 									<label class="layui-form-label">使用状态</label>
 									<div class="layui-input-block">
-										<select id="useStatus" name="useStatus" class="layui-input"></select>
+										<select id="useStatus" name="useStatus" class="form-control"></select>
 									</div>
 								</div>
 								<div class="layui-inline">
@@ -228,7 +231,7 @@
 	}else{
 		syDeptIds = req.id;
 	}
-
+	var deptId = getUrlParam("id");
 	layui.config({
 		base: '../../layuiadmin/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
 	}).extend({
@@ -293,7 +296,7 @@
 		var table = layui.table;
 		tableIns = table.render({
 			elem: '#data'
-			,url:"/zcInfos/layuiList"
+			,url:"/zcInfos/layuiList3"
 			,limit: 20
 			,limits: [20,40,50,100,200,500,1000,2000]
 			,totalRow: true
@@ -302,7 +305,8 @@
 			,even: true //开启隔行背景
 			,size: 'sm' //小尺寸的表格
 			,autoSort:false
-			,where: { epcid:$('#epcid').val(),
+			,where: {
+				epcid:$('#epcid').val(),
 				zcName: $('#zcName').val(),
 				zcCodenum: $('#zcCodenum').val(),
 				sdate: $('#sdate').val(),
@@ -316,7 +320,8 @@
 				netvalue: $('#netvalue').val(),
 				useMonths: $('#useMonths').val(),
 				remainingperiod: $('#remainingperiod').val(),
-				     syDeptId: syDeptIds }
+				syDeptId: syDeptIds
+			}
 			,page: true
 			,request: {
 				pageName: 'offset' //页码的参数名称，默认：page
@@ -503,14 +508,10 @@
 
 	$("#searchBt").click(function(){
 		var glDeptId = $('#glDeptId').val();
-		var syDeptId = $('#syDeptId').val();
+		var syDeptId = syDeptIds;
 		var glName = $('#glDeptName').val();
-		var syName = $('#syDeptName').val();
 		if (glName == null || glName == '') {
 			glDeptId = "";
-		}
-		if (syName == null || syName == '') {
-			syDeptId = "";
 		}
 		tableIns.reload({where: {
 				epcid:$('#epcid').val(),
