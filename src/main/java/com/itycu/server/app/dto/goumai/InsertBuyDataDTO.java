@@ -8,8 +8,6 @@ import java.util.List;
 
 @Data
 public class InsertBuyDataDTO {
-
-
     private int type;
     private String companyName;
     private String fileUrl;
@@ -25,6 +23,4 @@ public class InsertBuyDataDTO {
     private BigDecimal price;
     private String supplierName;
     private List<BuyItemListDTO> zcBuyItemList;
-
-
 }
