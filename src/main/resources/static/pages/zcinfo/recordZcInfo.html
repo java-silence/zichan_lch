@@ -33,7 +33,7 @@
 <div class="layui-fluid" style="margin-top:15px">
     <div class="layui-card">
         <div class="layui-card-header">资产查询</div>
-        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:240px">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:400px">
             <div class="layui-form-item">
                 <form class="form-inline layui-inline" style="margin-top:15px" id="form" method="post" action="/zcInfos/export" onsubmit="return false" enctype="multipart/form-data">
                     <input id="token" name="token" type="hidden" />
@@ -79,6 +79,8 @@
                                 <input id="model" name="model" type="text" class="layui-input" placeholder="型号">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="" style="float:left;text-align: right">开始使用日期</label>
                             <div class="layui-input-block">
@@ -110,6 +112,8 @@
                                 <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
                             </div>
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">原价值</label>
                             <div class="layui-input-block">
