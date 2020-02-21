@@ -293,10 +293,10 @@ public class ZcBfController {
             request.getParams().put("applyUserId", UserUtil.getLoginUser().getId());
             request.getParams().put("type", "user");
         }
-        if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(), "sys:bfcheck:sh") > 0) {
-            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
-            request.getParams().put("type", "gl");
-        }
+//        if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(), "sys:bfcheck:sh") > 0) {
+//            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+//            request.getParams().put("type", "gl");
+//        }
         Map map = new HashMap();
         Integer page = Integer.valueOf((String) request.getParams().get("offset"));
         Integer limit = Integer.valueOf((String) request.getParams().get("limit"));

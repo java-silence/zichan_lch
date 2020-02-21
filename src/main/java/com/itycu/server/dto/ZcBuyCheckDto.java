@@ -18,6 +18,8 @@ public class ZcBuyCheckDto implements Serializable {
 
     private Long zcBuyId;
 
+    private Long todoId;
+
     private Long itemStatus;
 
     /** 是否再次提交. */
@@ -71,5 +73,13 @@ public class ZcBuyCheckDto implements Serializable {
 
     public void setAgainSubmit(Long againSubmit) {
         this.againSubmit = againSubmit;
+    }
+
+    public Long getTodoId() {
+        return todoId;
+    }
+
+    public void setTodoId(Long todoId) {
+        this.todoId = todoId;
     }
 }

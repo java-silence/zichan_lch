@@ -1,35 +1,28 @@
 package com.itycu.server.app.controller;
 
-
-import com.google.common.collect.Lists;
 import com.itycu.server.app.dto.diaopei.DeployZcListDTO;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.diaopei.DeployZcItemRecordDTO;
 import com.itycu.server.app.vo.diaopei.DeployZcListVO;
 import com.itycu.server.app.vo.fenye.PageVO;
 import com.itycu.server.dao.*;
+import com.itycu.server.dto.ZcDeployCheckDto;
 import com.itycu.server.dto.ZcDeployDto;
 import com.itycu.server.dto.ZcInfoDto;
-import com.itycu.server.model.Dept;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcCategory;
 import com.itycu.server.model.ZcDeployItem;
-import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcDeployService;
 import com.itycu.server.service.ZcInfoService;
-import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,20 +40,10 @@ public class AppDeployController {
     private ZcInfoDao zcInfoDao;
 
     @Autowired
-    private ZcInfoService zcInfoService;
-
-    @Autowired
-    private PermissionDao permissionDao;
-
-    @Autowired
     private ZcDeployService zcDeployService;
 
     @Autowired
     private ZcCategoryDao zcCategoryDao;
-
-
-    @Autowired
-    private DeptDao deptDao;
 
     @Autowired
     private ZcDeployDao zcDeployDao;
@@ -150,26 +133,6 @@ public class AppDeployController {
         return collect;
     }
 
-
-    @PostMapping("/dept/subDeptList")
-    @ApiOperation(value = "获取eleTree部门树列表", notes = "获取部门树状表")
-    public Map getSubDept() {
-        Map<String, Object> map = null;
-        try {
-            SysUser sysUser = UserUtil.getLoginUser();
-            map = new HashMap();
-            List<Map<String, Object>> mapList = deptDao.querySubDeptListById(sysUser.getC03());
-            map.put("data", mapList);
-            map.put("code", 0);
-            map.put("message", "成功");
-            return map;
-        } catch (Exception e) {
-            logger.info("获取部门树列表失败{}", e.getMessage());
-            return FailMap.createFailMap();
-        }
-    }
-
-
     @PostMapping("/zc/insertZcDeployData")
     @ApiOperation(value = "添加资产调配的数据信息", notes = "添加资产调配的数据信息")
     public Map<String, Object> insertZcDeployData(@RequestBody List<DeployZcListVO> listVOList) {
@@ -225,9 +188,6 @@ public class AppDeployController {
     }
 
 
-
-
-
     @PostMapping("/listByZcDeployId")
     @ApiOperation(value = "获取调配记录找到子记录数据",notes = "获取调配记录找到子记录数据")
     public Map listByZcDeployId(@RequestBody DeployZcItemRecordDTO deployZcItemRecordDTO) {
@@ -251,4 +211,55 @@ public class AppDeployController {
         }
         return map;
     }
+
+    @PostMapping("/deployCheckMainInfo")
+    @ApiOperation(value = "资产调配审核主信息",notes = "资产调配审核主信息")
+    public Map deployMainInfo(@RequestBody ZcDeployCheckDto zcDeployCheckDto) {
+        Map<String,Object> map = new HashMap();
+        try {
+            HashMap<String, Object> data = zcDeployDao.getZcDeployDetail(zcDeployCheckDto.getDeployId());
+            map.put("data",data);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产调配审核主信息{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
+    @PostMapping("/deployCheckItemList")
+    @ApiOperation(value = "资产调配审核列表信息",notes = "资产调配审核列表信息")
+    public Map deployCheckItemList(@RequestBody ZcDeployCheckDto zcDeployCheckDto) {
+        Map<String,Object> map = new HashMap();
+        try {
+            List<Map<String,Object>> list = zcDeployItemDao.listDetailByFlowTodoIdNew(zcDeployCheckDto.getTodoId());
+            map.put("data",list);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产调配审核列表信息{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
+    @PostMapping("/deployCheck")
+    @ApiOperation(value = "资产调配审核",notes = "资产调配审核")
+    public Map deployCheck(@RequestBody ZcDeployCheckDto zcDeployCheckDto) {
+        Map<String,Object> map = new HashMap();
+        try {
+            String status = zcDeployService.check(zcDeployCheckDto);
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("status",status);
+            map.put("data",data);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产调配审核{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
 }

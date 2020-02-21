@@ -417,7 +417,7 @@
 						"<td style='border-top: 1px solid #000;'>规格</td><td style='border-top: 1px solid #000;'>型号</td>" +
 						"<td style='border-top: 1px solid #000;'>入账时间</td><td style='border-top: 1px solid #000;'>原值（万元）</td>" +
 						"<td style='border-top: 1px solid #000;'>折旧值</td><td style='border-top: 1px solid #000;'>净值</td>" +
-						"<td style='border-top: 1px solid #000;'>处置原因</td></tr>";
+						"<td style='border-top: 1px solid #000;'>处置类型</td><td style='border-top: 1px solid #000;'>处置原因</td></tr>";
 				$.ajax({
 					type : 'get',
 					url : "/zcBfItems/listByZcBfId?zcBfId="+zcBfId,
@@ -426,6 +426,14 @@
 						console.log(datas)
 						for (var i=0;i<datas.data.length;i++){
 							var d = datas.data[i];
+							var cat = d.category;
+							if (cat == 1) {
+							    cat = "报废";
+                            }else if(cat == 2){
+                                cat = "捐赠";
+                            }else if(cat == 3){
+                                cat = "出售";
+                            }
 							var from = d.zcfrom;
 							if (from == null){
 							    from = "";
@@ -470,10 +478,14 @@
                             if (netvalue == null || isNaN(netvalue)){
                                 netvalue = 0;
                             }
+                            var specification = d.specification;
+                            if ( specification == null || specification == '' || isNaN(specification) ) {
+                                specification = "";
+							}
                             formatData(d);
                             html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td>" +
-                                "<td>"+d.specification+"</td><td>"+d.model+"</td><td>"+stime+"</td><td>"+originalvalue/10000+"</td>" +
-                                "<td>"+bn_zhejiu/10000+"</td><td>"+netvalue/10000+"</td><td>"+d.bz+"</td></tr>";
+                                "<td>"+specification+"</td><td>"+d.model+"</td><td>"+stime+"</td><td>"+originalvalue/10000+"</td>" +
+                                "<td>"+bn_zhejiu/10000+"</td><td>"+netvalue/10000+"</td><td>"+cat+"</td><td>"+d.bz+"</td></tr>";
 						}
 					}
 				});

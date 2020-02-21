@@ -58,5 +58,5 @@ public interface TodoDao {
     List<Map<String,Object>> getShenpi(@Param("ids") List<String> ids);
 
 
-    List<Todo> queryAllTodoList(@Param("id")long deptId);
+    List<Todo> queryAllTodoList(@Param("userId")long userId);
 }

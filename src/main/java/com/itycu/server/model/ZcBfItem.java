@@ -15,6 +15,7 @@ public class ZcBfItem extends BaseEntity<Long> {
 	private Long glDeptId;
 	private Integer status;
 	private Integer del;
+    private Integer bfCategory;
 
 	private String fileName;
 	private String fileUrl;
@@ -236,5 +237,13 @@ public class ZcBfItem extends BaseEntity<Long> {
 
     public void setZcName(String zcName) {
         this.zcName = zcName;
+    }
+
+    public Integer getBfCategory() {
+        return bfCategory;
+    }
+
+    public void setBfCategory(Integer bfCategory) {
+        this.bfCategory = bfCategory;
     }
 }

@@ -104,13 +104,149 @@
 		limit #{offset}, #{limit}
 	</select>
 
+	<insert id="insertSingle" useGeneratedKeys="true" keyProperty="id">
+        insert into
+          zc_buy_item
+        (
+            <if test="zcBuyItem.zcBuyId != null">
+                zc_buy_id,
+            </if>
+            <if test="zcBuyItem.applyUserId != null">
+                apply_user_id,
+            </if>
+            <if test="zcBuyItem.glDeptId != null">
+                gl_dept_id,
+            </if>
+            <if test="zcBuyItem.name != null">
+                name,
+            </if>
+            <if test="zcBuyItem.model != null">
+                model,
+            </if>
+            <if test="zcBuyItem.unit != null">
+                unit,
+            </if>
+            <if test="zcBuyItem.brand != null">
+                brand,
+            </if>
+            <if test="zcBuyItem.price != null">
+                price,
+            </if>
+            <if test="zcBuyItem.supplierName != null">
+                supplier_name,
+            </if>
+            <if test="zcBuyItem.useDes != null">
+                use_des,
+            </if>
+            <if test="zcBuyItem.arriveTime != null">
+                arrive_time,
+            </if>
+            <if test="zcBuyItem.zcBz != null">
+                zc_bz,
+            </if>
+            <if test="zcBuyItem.shbStatus != null">
+                shb_status,
+            </if>
+            <if test="zcBuyItem.cwbStatus != null">
+                cwb_status,
+            </if>
+            <if test="zcBuyItem.num != null">
+                num,
+            </if>
+            <if test="zcBuyItem.fileName != null">
+                fileName,
+            </if>
+            <if test="zcBuyItem.fileUrl != null">
+                fileUrl,
+            </if>
+            <if test="zcBuyItem.bz != null">
+                bz,
+            </if>
+            <if test="zcBuyItem.buyBz != null">
+                buyBz,
+            </if>
+            <if test="zcBuyItem.createTime != null">
+                create_time,
+            </if>
+            <if test="zcBuyItem.updateTime != null">
+                update_time
+            </if>
+        )
+        values
+        (
+            <if test="zcBuyItem.zcBuyId != null">
+                #{zcBuyItem.zcBuyId},
+            </if>
+            <if test="zcBuyItem.applyUserId != null">
+                #{zcBuyItem.applyUserId},
+            </if>
+            <if test="zcBuyItem.glDeptId != null">
+                #{zcBuyItem.glDeptId},
+            </if>
+            <if test="zcBuyItem.name != null">
+                #{zcBuyItem.name},
+            </if>
+            <if test="zcBuyItem.model != null">
+                #{zcBuyItem.model},
+            </if>
+            <if test="zcBuyItem.unit != null">
+                #{zcBuyItem.unit},
+            </if>
+            <if test="zcBuyItem.brand != null">
+                #{zcBuyItem.brand},
+            </if>
+            <if test="zcBuyItem.price != null">
+                #{zcBuyItem.price},
+            </if>
+            <if test="zcBuyItem.supplierName != null">
+                #{zcBuyItem.supplierName},
+            </if>
+            <if test="zcBuyItem.useDes != null">
+                #{zcBuyItem.useDes},
+            </if>
+            <if test="zcBuyItem.arriveTime != null">
+                #{zcBuyItem.arriveTime},
+            </if>
+            <if test="zcBuyItem.zcBz != null">
+                #{zcBuyItem.zcBz},
+            </if>
+            <if test="zcBuyItem.shbStatus != null">
+                #{zcBuyItem.shbStatus},
+            </if>
+            <if test="zcBuyItem.cwbStatus != null">
+                #{zcBuyItem.cwbStatus},
+            </if>
+            <if test="zcBuyItem.num != null">
+                #{zcBuyItem.num},
+            </if>
+            <if test="zcBuyItem.fileName != null">
+                #{zcBuyItem.fileName},
+            </if>
+            <if test="zcBuyItem.fileUrl != null">
+                #{zcBuyItem.fileUrl},
+            </if>
+            <if test="zcBuyItem.bz != null">
+                #{zcBuyItem.bz},
+            </if>
+            <if test="zcBuyItem.buyBz != null">
+                #{zcBuyItem.buyBz},
+            </if>
+            <if test="zcBuyItem.createTime != null">
+                #{zcBuyItem.createTime},
+            </if>
+            <if test="zcBuyItem.updateTime != null">
+                #{zcBuyItem.updateTime}
+            </if>
+        )
+    </insert>
+
 	<insert id="saves">
 		INSERT INTO
 		zc_buy_item
-		(zc_buy_id,apply_user_id,gl_dept_id,name,model,unit,brand,price,totalPrice,supplier_name,use_des,arrive_time,zc_bz,shb_status,cwb_status,num,fileName,fileUrl,bz,buyBz,create_time,update_time)
+		(zc_buy_id,apply_user_id,gl_dept_id,name,model,unit,brand,price,supplier_name,use_des,arrive_time,zc_bz,shb_status,cwb_status,num,fileName,fileUrl,bz,buyBz,create_time,update_time)
 		VALUES
 		<foreach collection="zcBuyItemList" item="zcBuyItem" separator=",">
-			(#{zcBuyId},#{applyUserId},#{zcBuyItem.glDeptId},#{zcBuyItem.name},#{zcBuyItem.model},#{zcBuyItem.unit},#{zcBuyItem.brand},#{zcBuyItem.price},#{zcBuyItem.totalPrice},#{zcBuyItem.supplierName},#{zcBuyItem.useDes},#{zcBuyItem.arriveTime},#{zcBuyItem.zcBz},#{zcBuyItem.shbStatus},#{zcBuyItem.cwbStatus},#{zcBuyItem.num},#{zcBuyItem.fileName},#{zcBuyItem.fileUrl},#{zcBuyItem.bz},#{zcBuyItem.buyBz},#{zcBuyItem.createTime},#{zcBuyItem.updateTime})
+			(#{zcBuyId},#{applyUserId},#{zcBuyItem.glDeptId},#{zcBuyItem.name},#{zcBuyItem.model},#{zcBuyItem.unit},#{zcBuyItem.brand},#{zcBuyItem.price},#{zcBuyItem.supplierName},#{zcBuyItem.useDes},#{zcBuyItem.arriveTime},#{zcBuyItem.zcBz},#{zcBuyItem.shbStatus},#{zcBuyItem.cwbStatus},#{zcBuyItem.num},#{zcBuyItem.fileName},#{zcBuyItem.fileUrl},#{zcBuyItem.bz},#{zcBuyItem.buyBz},#{zcBuyItem.createTime},#{zcBuyItem.updateTime})
 		</foreach>
 	</insert>
 

@@ -14,5 +14,5 @@ public interface IndexService {
     List<AppIndexDeptDataInfo> getAllBranchDeptList(long id);
 
 
-    List<Todo> queryAllTodoList(long deptId);
+    List<Todo> queryAllTodoList(long userId);
 }

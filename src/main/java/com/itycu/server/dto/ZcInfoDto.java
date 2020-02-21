@@ -16,6 +16,9 @@ public class ZcInfoDto extends ZcInfo {
     private Long zcCategoryPid; //资产分类上级Id
     private String zcCategoryYiJi; //资产分类一级分类
     private String zcCategoryErJi; //资产分类二级分类
+    private String cateName1;
+    private String cateName2;
+    private String cateName3;
 
     public String getZcCategoryName() {
         return zcCategoryName;
@@ -87,5 +90,29 @@ public class ZcInfoDto extends ZcInfo {
 
     public void setZcCategoryErJi(String zcCategoryErJi) {
         this.zcCategoryErJi = zcCategoryErJi;
+    }
+
+    public String getCateName1() {
+        return cateName1;
+    }
+
+    public void setCateName1(String cateName1) {
+        this.cateName1 = cateName1;
+    }
+
+    public String getCateName2() {
+        return cateName2;
+    }
+
+    public void setCateName2(String cateName2) {
+        this.cateName2 = cateName2;
+    }
+
+    public String getCateName3() {
+        return cateName3;
+    }
+
+    public void setCateName3(String cateName3) {
+        this.cateName3 = cateName3;
     }
 }

@@ -194,7 +194,7 @@
 	<select id="queryAllTodoList" resultType="com.itycu.server.model.Todo">
 		 SELECT * FROM flow_todo
 		 WHERE
-		  auditby  = #{id}
+		  auditby  = #{userId}
 			order by createTime desc
 	</select>
 

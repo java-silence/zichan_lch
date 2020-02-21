@@ -28,6 +28,8 @@ public interface ZcBuyItemDao {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into zc_buy_item(zc_buy_id, gl_dept_id, name, model, unit, brand, price, totalPrice,supplier_name, use_des, arrive_time, zc_bz, shb_status, cwb_status, status, bz, del, create_time, update_time) values(#{zcBuyId}, #{glDeptId}, #{name}, #{model}, #{unit}, #{brand}, #{price}, #{totalPrice},#{supplierName}, #{useDes}, #{arriveTime}, #{zcBz}, #{shbStatus}, #{cwbStatus}, #{status}, #{bz}, #{del}, #{createTime}, #{updateTime})")
     int save(ZcBuyItem zcBuyItem);
+
+    int insertSingle(@Param("zcBuyItem") ZcBuyItem zcBuyItem);
     
     int count(@Param("params") Map<String, Object> params);
 

@@ -11,6 +11,7 @@ import com.itycu.server.dao.ZcBfDao;
 import com.itycu.server.dao.ZcBfItemDao;
 import com.itycu.server.dao.ZcInfoDao;
 import com.itycu.server.dto.ZcBfDto;
+import com.itycu.server.dto.ZcBuyCheckDto;
 import com.itycu.server.model.ZcBfItem;
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.ZcBfService;
@@ -157,6 +158,72 @@ public class AppDealController {
             logger.error("获取报废的记录列表下面的详情数据列表错误{}", e.getMessage());
             return FailMap.createFailMapMsg("数据列表错误");
         }
+    }
+
+    /**
+     * 审核部门
+     * @param zcBuyCheckDto
+     * @return
+     */
+    @PostMapping("/bfCheckMainInfo")
+    @ApiOperation(value = "资产处置审核主信息",notes = "资产处置审核主信息")
+    public Map bfCheckMainInfo(@RequestBody ZcBuyCheckDto zcBuyCheckDto) {
+        Map<String,Object> map = new HashMap();
+        try {
+
+            //map.put("data",data);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产处置审核主信息{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
+
+    /**
+     * 审核部门
+     * @param zcBuyCheckDto
+     * @return
+     */
+    @PostMapping("/bfCheckItemList")
+    @ApiOperation(value = "资产处置审核列表信息",notes = "资产处置审核列表信息")
+    public Map bfCheckItemList(@RequestBody ZcBuyCheckDto zcBuyCheckDto) {
+        Map<String,Object> map = new HashMap();
+        try {
+
+            //map.put("data",list);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产处置审核列表信息{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
+
+    /**
+     * 审核部门
+     * @param zcBuyCheckDto
+     * @return
+     */
+    @PostMapping("/buyCheck")
+    @ApiOperation(value = "资产处置审核",notes = "资产处置审核")
+    public Map buyCheck(@RequestBody ZcBuyCheckDto zcBuyCheckDto) {
+        Map<String,Object> map = new HashMap();
+        try {
+//            HashMap<String, Object> data = new HashMap<>();
+//            data.put("status",itemStatus);
+//            map.put("data",data);
+            map.put("code","0");
+            map.put("message","请求成功");
+        } catch (Exception e) {
+            logger.info("资产处置审核{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
     }
 
 }

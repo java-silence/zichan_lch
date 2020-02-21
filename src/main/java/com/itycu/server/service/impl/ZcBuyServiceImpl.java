@@ -84,7 +84,18 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         zcBuy.setStepid(flowsteps.get(0).getId());
         zcBuyDao.save(zcBuy);
         if (!CollectionUtils.isEmpty(zcBuyItemList)){
-            zcBuyItemDao.saves(zcBuyItemList,zcBuy.getId(),user.getId());
+            for (int i = 0; i < zcBuyItemList.size(); i++) {
+                ZcBuyItem zcBuyItem = zcBuyItemList.get(i);
+                zcBuyItem.setZcBuyId(zcBuy.getId());
+                zcBuyItem.setApplyUserId(user.getId());
+                zcBuyItemDao.insertSingle(zcBuyItem);
+            }
+//            for (ZcBuyItem zcBuyItem : zcBuyItemList) {
+//                zcBuyItem.setZcBuyId(zcBuy.getId());
+//                zcBuyItem.setApplyUserId(user.getId());
+//                zcBuyItemDao.insertSingle(zcBuyItem);
+//            }
+            //zcBuyItemDao.saves(zcBuyItemList,zcBuy.getId(),user.getId());
         }
         log.debug("新增购买申请单{}", user.getId());
         // 类别判断

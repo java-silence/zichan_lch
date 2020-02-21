@@ -33,7 +33,7 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public List<Todo> queryAllTodoList(long deptId) {
-        return todoDao.queryAllTodoList(deptId);
+    public List<Todo> queryAllTodoList(long userId) {
+        return todoDao.queryAllTodoList(userId);
     }
 }

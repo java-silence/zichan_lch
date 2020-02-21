@@ -47,7 +47,6 @@
 			<if test="params.updateTime != null and params.updateTime != ''">
 				and t.update_time = #{params.updateTime} 
 			</if>
-		
 		</where>
 	</sql>
 
@@ -106,12 +105,54 @@
 		LEFT JOIN t_dept d ON t.apply_dept_id = d.id
 		LEFT JOIN flow f ON t.flowid = f.id
 		LEFT JOIN flowstep s ON t.stepid = s.id
-        <where>
-            <if test="params.nickname != null and params.nickname != ''">
-                and u.nickname like concat('%',#{params.nickname},'%')
-            </if>
-        </where>
-        ${params.orderBy}
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id}
+			</if>
+			<if test="params.applyUserId != null and params.applyUserId != ''">
+				and t.apply_user_id = #{params.applyUserId}
+			</if>
+			<if test="params.applyDeptId != null and params.applyDeptId != ''">
+				and t.apply_dept_id = #{params.applyDeptId}
+			</if>
+			<if test="params.zcIds != null and params.zcIds != ''">
+				and t.zc_ids = #{params.zcIds}
+			</if>
+			<if test="params.bfDes != null and params.bfDes != ''">
+				and t.bf_des = #{params.bfDes}
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz}
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and t.flowid = #{params.flowid}
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and t.stepid = #{params.stepid}
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status}
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del}
+			</if>
+			<if test="params.createBy != null and params.createBy != ''">
+				and t.create_by = #{params.createBy}
+			</if>
+			<if test="params.updateBy != null and params.updateBy != ''">
+				and t.update_by = #{params.updateBy}
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.create_time = #{params.createTime}
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime}
+			</if>
+			<if test="params.nickname != null and params.nickname != ''">
+				and u.nickname like concat('%',#{params.nickname},'%')
+			</if>
+		</where>
+        order by t.create_time
         limit #{offset}, #{limit}
 	</select>
 

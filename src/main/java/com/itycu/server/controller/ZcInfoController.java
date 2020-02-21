@@ -250,6 +250,7 @@ public class ZcInfoController {
         request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
         Map map = new HashMap();
         request.getParams().put("del","0");
+        request.getParams().put("useStatus","1");
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
         Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
         DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
