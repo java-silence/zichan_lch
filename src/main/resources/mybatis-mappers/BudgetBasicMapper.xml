@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.BudgetBasicDao">
+
+	<sql id="where">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id} 
+			</if>
+			<if test="params.buggetBasicNum != null and params.buggetBasicNum != ''">
+				and t.buggetBasicNum = #{params.buggetBasicNum} 
+			</if>
+			<if test="params.basicWage != null and params.basicWage != ''">
+				and t.basicWage = #{params.basicWage} 
+			</if>
+			<if test="params.allowance != null and params.allowance != ''">
+				and t.allowance = #{params.allowance} 
+			</if>
+			<if test="params.reward != null and params.reward != ''">
+				and t.reward = #{params.reward} 
+			</if>
+			<if test="params.socialSecurity != null and params.socialSecurity != ''">
+				and t.socialSecurity = #{params.socialSecurity} 
+			</if>
+			<if test="params.retirementPay != null and params.retirementPay != ''">
+				and t.retirementPay = #{params.retirementPay} 
+			</if>
+			<if test="params.eldAllowance != null and params.eldAllowance != ''">
+				and t.eldAllowance = #{params.eldAllowance} 
+			</if>
+			<if test="params.retirementCosts != null and params.retirementCosts != ''">
+				and t.retirementCosts = #{params.retirementCosts} 
+			</if>
+			<if test="params.pension != null and params.pension != ''">
+				and t.pension = #{params.pension} 
+			</if>
+			<if test="params.livingAllowance != null and params.livingAllowance != ''">
+				and t.livingAllowance = #{params.livingAllowance} 
+			</if>
+			<if test="params.userId != null and params.userId != ''">
+				and t.userId = #{params.userId} 
+			</if>
+			<if test="params.applyDeptId != null and params.applyDeptId != ''">
+				and t.applyDeptId = #{params.applyDeptId} 
+			</if>
+			<if test="params.applyTime != null and params.applyTime != ''">
+				and t.applyTime = #{params.applyTime} 
+			</if>
+			<if test="params.flowid != null and params.flowid != ''">
+				and t.flowid = #{params.flowid} 
+			</if>
+			<if test="params.stepid != null and params.stepid != ''">
+				and t.stepid = #{params.stepid} 
+			</if>
+			<if test="params.flowStatus != null and params.flowStatus != ''">
+				and t.flowStatus = #{params.flowStatus} 
+			</if>
+			<if test="params.step1 != null and params.step1 != ''">
+				and t.step1 = #{params.step1} 
+			</if>
+			<if test="params.step2 != null and params.step2 != ''">
+				and t.step2 = #{params.step2} 
+			</if>
+			<if test="params.step3 != null and params.step3 != ''">
+				and t.step3 = #{params.step3} 
+			</if>
+			<if test="params.step4 != null and params.step4 != ''">
+				and t.step4 = #{params.step4} 
+			</if>
+			<if test="params.status != null and params.status != ''">
+				and t.status = #{params.status} 
+			</if>
+			<if test="params.type != null and params.type != ''">
+				and t.type = #{params.type} 
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del} 
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and t.createTime = #{params.createTime} 
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.updateTime = #{params.updateTime} 
+			</if>
+		</where>
+	</sql>
+
+	<select id="getById" resultType="BudgetBasic">
+		select t.*
+		from budget_basic t
+		where t.id = #{id}
+	</select>
+
+	<select id="count" resultType="int">
+		select count(1) from budget_basic t
+		<include refid="where" />
+	</select>
+
+	<select id="list" resultType="BudgetBasic">
+		select t.*
+		from budget_basic t
+		<include refid="where" />
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+	<update id="update">
+		update budget_basic t
+		<set>
+			<if test="buggetBasicNum != null">
+				buggetBasicNum = #{buggetBasicNum}, 
+			</if>
+			<if test="basicWage != null">
+				basicWage = #{basicWage}, 
+			</if>
+			<if test="allowance != null">
+				allowance = #{allowance}, 
+			</if>
+			<if test="reward != null">
+				reward = #{reward}, 
+			</if>
+			<if test="socialSecurity != null">
+				socialSecurity = #{socialSecurity}, 
+			</if>
+			<if test="retirementPay != null">
+				retirementPay = #{retirementPay}, 
+			</if>
+			<if test="eldAllowance != null">
+				eldAllowance = #{eldAllowance}, 
+			</if>
+			<if test="retirementCosts != null">
+				retirementCosts = #{retirementCosts}, 
+			</if>
+			<if test="pension != null">
+				pension = #{pension}, 
+			</if>
+			<if test="livingAllowance != null">
+				livingAllowance = #{livingAllowance}, 
+			</if>
+			<if test="userId != null">
+				userId = #{userId}, 
+			</if>
+			<if test="applyDeptId != null">
+				applyDeptId = #{applyDeptId}, 
+			</if>
+			<if test="applyTime != null">
+				applyTime = #{applyTime}, 
+			</if>
+			<if test="flowid != null">
+				flowid = #{flowid}, 
+			</if>
+			<if test="stepid != null">
+				stepid = #{stepid}, 
+			</if>
+			<if test="flowStatus != null">
+				flowStatus = #{flowStatus}, 
+			</if>
+			<if test="step1 != null">
+				step1 = #{step1}, 
+			</if>
+			<if test="step2 != null">
+				step2 = #{step2}, 
+			</if>
+			<if test="step3 != null">
+				step3 = #{step3}, 
+			</if>
+			<if test="step4 != null">
+				step4 = #{step4}, 
+			</if>
+			<if test="status != null">
+				status = #{status}, 
+			</if>
+			<if test="type != null">
+				type = #{type}, 
+			</if>
+			<if test="del != null">
+				del = #{del}, 
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime}, 
+			</if>
+		</set>
+		where t.id = #{id}
+	</update>
+
+</mapper>

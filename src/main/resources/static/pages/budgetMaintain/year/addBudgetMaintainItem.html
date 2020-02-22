@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
+</head>
+<body>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
+                <button class="layui-btn" type="submit" onclick="add()"><i class="fa fa-save"></i> 保存</button>
+			</div>
+		</div>
+	</div>
+<hr style="height:3px;">
+	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>预算维修ID</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='预算维修ID' type='text' name='budgetMaintainId' id='budgetMaintainId' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>资产ID</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='资产ID' type='text' name='zcId' id='zcId' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>资产追溯码</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='资产追溯码' type='text' name='epcid' id='epcid' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>资产编码</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='资产编码' type='text' name='zcCodenum' id='zcCodenum' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>资产名称</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='资产名称' type='text' name='zcName' id='zcName' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>类别ID</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='类别ID' type='text' name='zcCategoryId' id='zcCategoryId' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>规格</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='规格' type='text' name='specification' id='specification' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>型号</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='型号' type='text' name='model' id='model' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>数量</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='数量' type='text' name='num' id='num' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>维修单价</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='维修单价' type='text' name='maintainPrice' id='maintainPrice' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>维修总价</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='维修总价' type='text' name='maintainTotalPrice' id='maintainTotalPrice' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>维修原因</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='维修原因' type='text' name='maintainReason' id='maintainReason' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>fileName</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='fileName' type='text' name='fileName' id='fileName' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>fileUrl</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='fileUrl' type='text' name='fileUrl' id='fileUrl' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>审核步骤1</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='审核步骤1' type='text' name='step1' id='step1' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>审核步骤2</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='审核步骤2' type='text' name='step2' id='step2' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>审核步骤3</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='审核步骤3' type='text' name='step3' id='step3' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>审核步骤4</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='审核步骤4' type='text' name='step4' id='step4' >
+					</div>
+				</div>
+			</div>
+			<div class='layui-form-item'>
+				<div class='layui-inline'>
+					<label class='layui-form-label'>类型 0:年度 1:月度</label>
+					<div class='layui-input-inline'>
+						<input class='layui-input' placeholder='类型 0:年度 1:月度' type='text' name='type' id='type' >
+					</div>
+				</div>
+			</div>
+
+
+	</form>
+</div>
+	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/jq.js"></script>
+	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript" src="../../layui/layui.js"></script>
+	<script type="text/javascript" src="../../js/dict.js"></script>
+	<script type="text/javascript">
+
+	//var appStatus = showStepSelect("stepid", "1", true);
+
+		layui.use(['layer','form','laydate'], function(){
+		    var layer = layui.layer;
+            var form = layui.form;
+		});
+		
+		function add() {
+			$('#form').bootstrapValidator();
+			var bootstrapValidator = $("#form").data('bootstrapValidator');
+			bootstrapValidator.validate();
+		    if(!bootstrapValidator.isValid()){
+			   return;
+		    }
+		    
+		    var formdata = $("#form").serializeObject();
+
+			$.ajax({
+				type : 'post',
+				url : '/budgetMaintainItems',
+				contentType: "application/json; charset=utf-8",  
+				data : JSON.stringify(formdata),
+				success : function(data) {
+					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                        location.href = "budgetMaintainItemList.html";
+                    });
+				}
+			});
+		}
+		
+	</script>
+</body>
+</html>

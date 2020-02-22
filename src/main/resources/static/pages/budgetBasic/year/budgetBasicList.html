@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>表单列表</title>
+	<link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">id</label>
+					<div class="layui-input-block">
+						<input id="id" type="text" class="form-control layui-input" placeholder="id">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+						<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+					</button>
+					<!--<button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>-->
+					<button class="layui-btn layuiadmin-btn-useradmin" data-type="add" onclick="location.href='addBudgetBasic.html?type=1'">添加</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-card-body">
+			<!--<div style="padding-bottom: 10px;"></div>-->
+			<table class="layui-hide" id="data" lay-filter="data"></table>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript" src="../../../js/libs/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../../js/jq.js"></script>
+<script type="text/javascript" src="../../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="../../../js/my/permission.js"></script>
+<script type="text/javascript" src="../../../js/common.js"></script>
+<!--<script type="text/javascript" src="../../js/user.js"></script>-->
+<!--<script type="text/javascript" src="../../js/dept.js"></script>-->
+<script type="text/javascript">
+
+    var pers = checkPermission();
+    //showStepSelect("stepid", "1", true);
+    //showDeptSelect("deptid", "dept", true);
+    //showUserSelect("createby", "user", true);
+    var tableIns;
+
+    layui.use(['layer','form','laydate','table'], function(){
+
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+
+        var table = layui.table;
+        tableIns = table.render({
+            elem: '#data'
+            ,url:"/budgetBasics/list2"
+            ,limit: 20
+            ,limits: [20,40,50,100,200,500,1000,2000]
+            ,totalRow: true
+            ,toolbar: 'defaultX'
+            ,height:  'full-200'
+            //,skin: 'line' //行边框风格
+            ,even: true //开启隔行背景
+            ,size: 'sm' //小尺寸的表格
+            ,autoSort:false
+            ,where: {id:$('#id').val()}
+            ,page: true
+            ,request: {
+                pageName: 'offset' //页码的参数名称，默认：page
+            }
+            ,cols: [[
+                {field:'id',hide:true}
+				,{field:'buggetBasicNum',title:'基础预算单号', width:100, sort: true}
+				,{field:'basicWage',title:'基本工资', width:100, sort: true}
+				,{field:'allowance',title:'津贴补助', width:100, sort: true}
+				,{field:'reward',title:'奖金', width:100, sort: true}
+				,{field:'socialSecurity',title:'社保', width:100, sort: true}
+				,{field:'retirementPay',title:'退休工资', width:100, sort: true}
+				,{field:'eldAllowance',title:'高龄补贴', width:100, sort: true}
+				,{field:'retirementCosts',title:'退职费', width:100, sort: true}
+				,{field:'pension',title:'抚恤金', width:100, sort: true}
+				,{field:'livingAllowance',title:'生活补助', width:100, sort: true}
+				,{field:'userId',title:'用户ID', width:100, sort: true}
+				,{field:'applyDeptId',title:'申请部门ID', width:100, sort: true}
+				,{field:'applyTime',title:'申请时间', width:100, sort: true}
+				,{field:'flowid',title:'流程ID', width:100, sort: true}
+				,{field:'stepid',title:'流程步骤', width:100, sort: true}
+				,{field:'flowStatus',title:'流程状态', width:100, sort: true}
+				,{field:'step1',title:'审核流程1', width:100, sort: true}
+				,{field:'step2',title:'审核流程2', width:100, sort: true}
+				,{field:'step3',title:'审核流程3', width:100, sort: true}
+				,{field:'step4',title:'审核流程4', width:100, sort: true}
+				,{field:'type',title:'类型 0:年度 1:月度', width:100, sort: true}
+                ,{field:'creator',title:'制单人', width:100, sort: true}
+                ,{field:'auditor',title:'审核人', width:100, sort: true}
+                ,{field:'caozuo', title: '操作',fixed:'right',align:'center', width:140,templet: function(d){
+                    var id = d.id;
+                    var href = "updateBudgetBasic.html?id=" + id;
+                    var edit = buttonEdit(href, "", pers);
+                    var del = buttonDel(id, "", pers);
+                    if(d.status==0){
+                       var audit = buttonAudit(id,"sys:BudgetBasic:audit",pers);
+                    }else{
+                       var audit = buttonUnAudit(id,"sys:BudgetBasic:audit",pers);
+                    }
+                    if(d.status>0){
+                        edit ="";
+                        del="";
+                    }
+                    return edit + del + audit  ;
+                }}
+            ]]
+        });
+
+        //监听排序事件
+        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    id:$('#id').val(),
+                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+                }
+                ,page:{curr:1}
+            });
+        });
+
+        //form.on('select(deptChange)', function(data){
+        //    showClassSelect("classid", "class", true, data.value);
+        //    renderForm()
+        //})
+    });
+
+    function del(id){
+        layer.confirm('确定要删除吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'delete',
+                url : '/budgetBasics/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("删除成功");
+                }
+            });
+            layer.close(1);
+        });
+    }
+
+    function audit(id){
+        layer.confirm('确定要审核吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/budgetBasics/audit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("审核成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    function unaudit(id){
+        layer.confirm('确定要弃审吗？', {
+            btn : [ '确定', '取消' ]
+        }, function() {
+            $.ajax({
+                type : 'put',
+                url : '/budgetBasics/unaudit/'+id,
+                success : function(data) {
+                    $('#searchBt').trigger('click');
+                    layer.msg("弃审成功");
+                }
+            });
+
+            layer.close(1);
+        });
+    }
+
+    $("#searchBt").click(function(){
+        tableIns.reload({where: {id:$('#id').val()},page:{curr:1}})
+    });
+
+</script>
