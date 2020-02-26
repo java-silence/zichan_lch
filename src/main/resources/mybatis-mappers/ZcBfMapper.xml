@@ -152,7 +152,7 @@
 				and u.nickname like concat('%',#{params.nickname},'%')
 			</if>
 		</where>
-        order by t.create_time
+        order by t.create_time desc
         limit #{offset}, #{limit}
 	</select>
 

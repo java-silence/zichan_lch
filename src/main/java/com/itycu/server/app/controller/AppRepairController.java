@@ -1,6 +1,6 @@
 package com.itycu.server.app.controller;
 
-
+import com.itycu.server.app.dto.baoxiu.APPZcRepairDTO;
 import com.itycu.server.app.dto.baoxiu.RepairInsertDataDTO;
 import com.itycu.server.app.dto.baoxiu.RepairZcInfoListDTO;
 import com.itycu.server.app.dto.baoxiu.RepairZcItemRecordListDTO;
@@ -15,7 +15,6 @@ import com.itycu.server.dto.ZcRepairDto;
 import com.itycu.server.dto.ZcRepairItemDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcRepairItem;
-import com.itycu.server.service.RepairService;
 import com.itycu.server.service.ZcRepairService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
@@ -26,7 +25,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +55,6 @@ public class AppRepairController {
 
     @Autowired
     private ZcRepairItemDao zcRepairItemDao;
-
-
 
     @Value("${IMAGE_SERVER}")
     private String IMAGE_SERVER;
@@ -198,6 +198,57 @@ public class AppRepairController {
         } catch (Exception e) {
             logger.info("提交上传的报修的信息==>{}", e.getMessage());
             return FailMap.createFailMapMsg("提交上传的报修的信息失败");
+        }
+        return map;
+    }
+
+    @PostMapping("/repairCheckMainInfo")
+    @ApiOperation(value = "资产维修审核主信息",notes = "资产维修审核主信息")
+    public Map repairCheckMainInfo(@RequestBody APPZcRepairDTO zcRepairDTO) {
+        Map<String,Object> map = new HashMap();
+        try {
+            ZcRepairDto repairDto = zcRepairDao.getById(zcRepairDTO.getZcRepairId());
+            map.put("data",repairDto);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产维修审核主信息{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
+    @PostMapping("/repairCheckItemList")
+    @ApiOperation(value = "资产维修审核列表信息",notes = "资产维修审核列表信息")
+    public Map repairCheckItemList(@RequestBody APPZcRepairDTO zcRepairDTO) {
+        Map<String,Object> map = new HashMap();
+        try {
+            List<ZcRepairItemDto> list = zcRepairItemDao.
+                    listDetailByFlowTodoIdNew(zcRepairDTO.getFlowTodoId());
+            map.put("data",list);
+            map.put("code","0");
+            map.put("message","成功");
+        } catch (Exception e) {
+            logger.info("资产维修审核列表信息{}", e.getMessage());
+            return FailMap.createFailMap();
+        }
+        return map;
+    }
+
+    @PostMapping("/repairCheck")
+    @ApiOperation(value = "资产维修审核",notes = "资产维修审核")
+    public Map repairCheck(@RequestBody APPZcRepairDTO zcRepairDTO) {
+        Map<String,Object> map = new HashMap();
+        try {
+            String itemStatus = zcRepairService.appCheck(zcRepairDTO);
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("status",itemStatus);
+            map.put("data",data);
+            map.put("code","0");
+            map.put("message","请求成功");
+        } catch (Exception e) {
+            logger.info("资产维修审核{}", e.getMessage());
+            return FailMap.createFailMap();
         }
         return map;
     }

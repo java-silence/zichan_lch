@@ -521,10 +521,10 @@
 			<if test="params.price != null and params.price != ''">
 				and t.price like concat('%',#{params.price},'%')
 			</if>
-			<if test="params.glDeptId != null and params.glDeptId != '' ">
-				and t.gl_dept_id = #{params.glDeptId}
+			<if test="params.type == 'gl'">
+				and t.gl_dept_id = #{params.glDeptId} or z.sy_dept_id = #{params.syDeptId}
 			</if>
-			<if test="params.syDeptId != null and params.syDeptId != '' ">
+			<if test="params.type == 'sy'">
 				and z.sy_dept_id = #{params.syDeptId}
 			</if>
 			<if test="params.buyNum != null and params.buyNum != '' ">
@@ -583,12 +583,12 @@
             <if test="params.price != null and params.price != ''">
                 and t.price like concat('%',#{params.price},'%')
             </if>
-            <if test="params.glDeptId != null and params.glDeptId != '' ">
-                and t.gl_dept_id = #{params.glDeptId}
-            </if>
-            <if test="params.syDeptId != null and params.syDeptId != '' ">
-                and z.sy_dept_id = #{params.syDeptId}
-            </if>
+			<if test="params.type == 'gl'">
+				and t.gl_dept_id = #{params.glDeptId} or z.sy_dept_id = #{params.syDeptId}
+			</if>
+			<if test="params.type == 'sy'">
+				and z.sy_dept_id = #{params.syDeptId}
+			</if>
             <if test="params.buyNum != null and params.buyNum != '' ">
                 and z.buyNum = #{params.buyNum}
             </if>

@@ -53,16 +53,26 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private ZcInspectDao zcInspectDao;
 
 
-
     @Override
-    public ZcInfo save(ZcInfo zcInfo) {
+    public Map save(ZcInfo zcInfo) {
+        Map map = new HashMap();
+        LoginUser loginUser = UserUtil.getLoginUser();
+        long deptid = loginUser.getDeptid();
+        Dept dept = deptDao.getById(deptid);
+        Dept pDept = deptDao.getById(dept.getPid());
+        int count = zcInfoDao.countByDeptcode(pDept.getDeptcode());
+        String epcId = EcpIdUtil.getStaticNum(count + (1), 5);
         zcInfo.setSelfCodenum(ZiChanCodeUtil.getZiChanCode());
         zcInfo.setCreateBy(UserUtil.getLoginUser().getId());
         zcInfo.setDel(0);
         zcInfo.setBf("0");
+        zcInfo.setEpcid(epcId);
         zcInfoDao.save(zcInfo);
         log.debug("新增资产档案{}", zcInfo.getCreateBy() + zcInfo.getZcName());
-        return zcInfo;
+        map.put("data",zcInfo);
+        map.put("code","0");
+        map.put("msg","");
+        return map;
     }
 
 
@@ -91,7 +101,6 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         if(null!=inspectTime && 0!= inspectTime){
             insertInspectRecode(zcInfo);
         }
-
         return zcInfo;
     }
 

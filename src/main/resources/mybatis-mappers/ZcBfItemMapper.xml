@@ -264,6 +264,7 @@
 		t.shDeptname,
 		t.cwUsername,
 		t.cwDeptname,
+		zb.bf_category category,
 		u1.nickname uname,
 		p3.deptname udeptname,
 		c.zc_codenum zcCodenum,
@@ -292,6 +293,7 @@
 		c.warrantyperiod
 		FROM
 		zc_bf_item t
+		left join zc_bf zb on zb.id = t.zc_bf_id
 		LEFT JOIN v_zc_info c ON t.zc_id = c.id
 		LEFT JOIN t_dept d1 ON c.sy_dept_id = d1.id
 		LEFT JOIN t_dept d2 ON c.gl_dept_id = d2.id

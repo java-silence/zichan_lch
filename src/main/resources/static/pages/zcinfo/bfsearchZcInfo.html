@@ -483,16 +483,14 @@
     });
 
     $("#searchBt").click(function(){
+        var catId = selectZcCategory.getValue('valueStr');
+        var sdate = $("#sdate").val();
+        var edate = $("#edate").val();
         tableIns.reload({where: {
-              //  zcName:$('#zcName').val(),
-              //  syDeptId:checkDeptselect.getValue('valueStr'),
-              //  zcCodenum:$('#zcCodenum').val(),
-              //  cardNum:$('#cardNum').val(),
-
                 epcid: $("#epcid").val(),
                 zcCodenum: $('#zcCodenum').val(),
                 zcName: $('#zcName').val(),
-                zcCategoryId:$('#zcCategoryId').val(),
+                zcCategoryId:catId,
                 specification: $("#specification").val(),
                 model: $("#model").val(),
                 sdate: $("#sdate").val(),
@@ -503,8 +501,6 @@
                 netvalue: $("#netvalue").val(),
                 useMonths: $("#useMonths").val(),
                 remainingperiod: $("#remainingperiod").val(),
-
-
                 catId:catId,
                 catCode:catCode
             },

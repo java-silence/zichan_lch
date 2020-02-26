@@ -749,7 +749,7 @@
                                 }
                                 html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td>" +
                                     "<td>"+spe+"</td><td>"+model+"</td><td>"+stime+"</td><td>"+originalvalue+"</td>" +
-                                    "<td>"+bn_zhejiu+"</td><td>"+netvalue+"</td><td class='bzSize'>"+cat+"</td><td class='bzSize'>\"+d.bz+\"</td></tr>";
+                                    "<td>"+bn_zhejiu+"</td><td>"+netvalue+"</td><td class='bzSize'>"+cat+"</td><td class='bzSize'>"+d.bz+"</td></tr>";
                             }
                         }
                     });
@@ -850,7 +850,7 @@
                         "<td style='border-top: 1px solid #000;'>规格</td><td style='border-top: 1px solid #000;'>型号</td>" +
                         "<td style='border-top: 1px solid #000;'>入账时间</td><td style='border-top: 1px solid #000;'>原值（万元）</td>" +
                         "<td style='border-top: 1px solid #000;'>折旧值</td><td style='border-top: 1px solid #000;'>净值</td>" +
-                        "<td style='border-top: 1px solid #000;'>处置原因</td></tr>";
+                        "<td style='border-top: 1px solid #000;'>处置类型</td><td style='border-top: 1px solid #000;'>处置原因</td></tr>";
                     $.ajax({
                         type : 'get',
                         url : "/zcBfItems/listtodoid?todoid="+todoId+"&cw=2",
@@ -859,6 +859,14 @@
                             for (var i=0;i<datas.data.length;i++){
                                 var d = datas.data[i];
                                 formatData(d);
+                                var cat = d.category;
+                                if (cat == 1) {
+                                    cat = "报废";
+                                }else if(cat == 2){
+                                    cat = "捐赠";
+                                }else if(cat == 3){
+                                    cat = "出售";
+                                }
                                 var from = d.zcfrom;
                                 if (from == null){
                                     from = "";
@@ -913,7 +921,7 @@
                                 }
                                 html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+ep+"</td><td>"+d.zcCodenum+"</td><td>"+d.zcName+"</td>" +
                                     "<td>"+spe+"</td><td>"+model+"</td><td>"+stime+"</td><td>"+originalvalue+"</td>" +
-                                    "<td>"+bn_zhejiu+"</td><td>"+netvalue+"</td><td class='bzSize'>"+d.bz+"</td></tr>";
+                                    "<td>"+bn_zhejiu+"</td><td>"+netvalue+"</td><td class='bzSize'>"+cat+"</td><td class='bzSize'>"+d.bz+"</td></tr>";
                             }
                         }
                     });

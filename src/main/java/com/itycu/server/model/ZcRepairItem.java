@@ -28,6 +28,7 @@ public class ZcRepairItem extends BaseEntity<Long> {
 	private Integer del;
 	private String bz;
 	private Integer shbStatus;
+	/** 确认结果，0:不合格  1:合格.*/
 	private Integer qrStatus;
 	private Long createBy;
 	private Long updateBy;

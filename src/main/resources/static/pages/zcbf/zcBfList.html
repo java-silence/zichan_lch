@@ -93,26 +93,21 @@
                     }}
                 ,{field:'createtime',title:'申请时间', width:160, sort: true}
                 // ,{field:'bz',title:'处置备注', width:150, sort: true}
-				,{field:'caozuo', title: '操作',fixed:'right', width:150,align:"center",templet: function(d){
-						var id = d.id;
-						var href = "updateZcBf.html?id=" + id;
-                        var startProcess = buttonStartProcess(id, "", pers);
-						var edit = buttonEdit(href, "", pers);
-						var del = buttonDel(id, "", pers);
-						var noAction = "";
-						// if(d.status==0){
-						// 	var audit = buttonAudit(id,"sys:ZcBaofei:audit",pers);
-						// }else{
-						// 	var audit = buttonUnAudit(id,"sys:ZcBaofei:audit",pers);
-						// }
-						if(d.status>0){
-							edit ="";
-							del="";
-                            startProcess="";
-                            //noAction = btnNoAction(id, "", pers);
-						}
-						return startProcess + edit + del + noAction;
-					}}
+                // ,{field:'caozuo', title: '操作',fixed:'right', width:150,align:"center",templet: function(d){
+					// 	var id = d.id;
+					// 	var href = "updateZcBf.html?id=" + id;
+                //         var startProcess = buttonStartProcess(id, "", pers);
+					// 	var edit = buttonEdit(href, "", pers);
+					// 	var del = buttonDel(id, "", pers);
+					// 	var noAction = "";
+					// 	if(d.status>0){
+					// 		edit ="";
+					// 		del="";
+                //             startProcess="";
+                //             //noAction = btnNoAction(id, "", pers);
+					// 	}
+					// 	return startProcess + edit + del + noAction;
+					// }}
 			]]
 		});
 

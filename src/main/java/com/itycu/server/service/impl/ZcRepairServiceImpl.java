@@ -1,5 +1,6 @@
 package com.itycu.server.service.impl;
 
+import com.itycu.server.app.dto.baoxiu.APPZcRepairDTO;
 import com.itycu.server.dao.*;
 import com.itycu.server.dto.LoginUser;
 import com.itycu.server.dto.SysUserDto;
@@ -365,6 +366,127 @@ public class ZcRepairServiceImpl implements ZcRepairService {
             }
 //        }
         return zcRepairDto;
+    }
+
+    @Override
+    public String appCheck(APPZcRepairDTO zcRepairDto){
+        // 当前登录用户
+        LoginUser loginUser = UserUtil.getLoginUser();
+        //List<FlowTodoItem> flowTodoItems = zcRepairDto.getFlowTodoItems();
+        List<ZcRepairItem> zcRepairItems = zcRepairDto.getZcRepairItemList();
+        if (!CollectionUtils.isEmpty(zcRepairItems)){
+            //更新报修子表
+            for (ZcRepairItem zcRepairItem:zcRepairItems){
+                zcRepairItemDao.update(zcRepairItem);
+            }
+        }
+        Long zcRepairId = zcRepairDto.getZcRepairId();
+        ZcRepair zcRepair = zcRepairDao.getById(zcRepairId);
+        Long stepid = zcRepair.getStepid();
+        Long flowid = zcRepair.getFlowid();
+        List<Flowstep> flowsteps = flowstepDao.listSteps(flowid);
+        Flowstep flowstep = getFlowstepById(stepid,flowsteps);
+        //-------------------------------------------------------------
+        Long flowTodoId = zcRepairDto.getFlowTodoId();
+        Todo flowTodo = todoDao.getById(flowTodoId);
+        // 修改当TODO前状态
+        flowTodo.setNeirong(zcRepairDto.getNeirong());
+        // 待办中两种状态 0:待办理 1:已办理
+        flowTodo.setStatus("1");
+        todoDao.update(flowTodo);
+        Flowstep lastFlowstep = flowsteps.get(flowsteps.size() - 1);
+        if ( stepid == lastFlowstep.getId() ){
+            // 流程已经处理完毕
+            Map<String, Object> params = new HashMap<>();
+            params.put("status",2);
+            params.put("zcReId",zcRepairId);
+            params.put("confirmTime",new Date());
+            params.put("confirmBy",UserUtil.getLoginUser().getId());
+            params.put("confirmDept", UserUtil.getLoginUser().getDeptid());
+            zcRepairDao.updateStatus(params);
+            // 更改报修子项的状态
+            Map<String, Object> paramsItem = new HashMap<>();
+            paramsItem.put("zcReId",zcRepair.getId());
+            paramsItem.put("status",4);
+            zcRepairItemDao.updateStatus(paramsItem);
+            // 更新资产信息
+            Notice notice = new Notice();
+            notice.setTitle(flowTodo.getBiaoti());
+            notice.setContent("报修流程审核完成，请及时查阅");
+            notice.setStatus(0);
+            notice.setUserId(zcRepair.getApplyUserId());
+            notice.setUpdateTime(null);
+            noticeDao.save1(notice);
+        }
+        if ( stepid == flowsteps.get(1).getId() ) {
+            // 查询报修子表
+            List<ZcRepairItemDto> zcRepairItemList = zcRepairItemDao.listByZcReId(zcRepairId);
+            if (zcRepairItemList.size()==0){
+                // 审核部全部拒绝
+                // 流程已经处理完毕
+                Map<String, Object> params = new HashMap<>();
+                params.put("status",2);
+                params.put("zcReId",zcRepairId);
+                params.put("confirmTime",new Date());
+                params.put("confirmBy",UserUtil.getLoginUser().getId());
+                params.put("confirmDept", UserUtil.getLoginUser().getDeptid());
+                zcRepairDao.updateStatus(params);
+                // 更新资产信息
+                //updateZcInfoStatus(zcBf);
+                return null;
+            }
+            // 获取使用部门ID
+            Dept sydept = deptDao.getById(zcRepairItemList.get(0).getApplyDeptId());
+            Dept parentDept = deptDao.getById(sydept.getPid());
+            String deptcode = parentDept.getDeptcode();
+            // 当前节点角色信息
+            // 获取下一级step
+            Long nextNodeId = getNextNodeId(1, stepid, flowsteps);
+            Flowstep flowstep1 = getFlowstepById(nextNodeId, flowsteps);
+            // 插入待办信息
+            SysUserDto byId = userDao.getById(zcRepair.getApplyUserId());
+            if (!CollectionUtils.isEmpty(zcRepairItems)){  //更新报修子表
+                for (ZcRepairItem zcRepairItem:zcRepairItems){
+                    // 更改报修子项的状态
+                    Map<String, Object> paramsItem = new HashMap<>();
+                    paramsItem.put("zcReId",zcRepair.getId());
+                    paramsItem.put("status",3);
+                    paramsItem.put("auditTime",new Date());
+                    paramsItem.put("id",zcRepairItem.getId());
+                    paramsItem.put("auditBy",UserUtil.getLoginUser().getId());
+                    zcRepairItemDao.updateStatus(paramsItem);
+                }
+            }
+            List<ZcRepairItemDto> zcRepairItemList1 = zcRepairItemDao.listByZcReId(zcRepairId);
+            if (!CollectionUtils.isEmpty(zcRepairItemList1)){
+                boolean isAllAudit = true;
+                for (ZcRepairItemDto zcRepairItemDto:zcRepairItemList1){
+                    if (new Integer(2).equals(zcRepairItemDto.getStatus())){
+                        isAllAudit = false;
+                    }
+                }
+                if (isAllAudit){
+                    Long aLong = saveFlowTodo(zcRepair.getApplyUserId(), loginUser.getId(), zcRepair, flowstep1,userDao.getById(zcRepair.getApplyUserId()));
+                    for (ZcRepairItem zcRepairItem : zcRepairItemList) {
+                        Long syDeptId = zcRepairItem.getApplyDeptId();
+                        // 属于当前部门信息
+                        FlowTodoItem flowTodoItem = new FlowTodoItem();
+                        flowTodoItem.setFlowTodoId(aLong);
+                        flowTodoItem.setFlowItemId(zcRepairItem.getId());
+                        flowTodoItem.setStatus(0);
+                        int ressult = flowTodoItemDao.save(flowTodoItem);
+                    }
+
+                    // 更新报修的状态
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("zcReId",zcRepair.getId());
+                    params.put("stepid",nextNodeId);
+                    zcRepairDao.updateStatus(params);
+                }
+            }
+
+        }
+        return null;
     }
 
     /**

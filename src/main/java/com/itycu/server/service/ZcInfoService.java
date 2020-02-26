@@ -14,7 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface ZcInfoService {
-    ZcInfo save(ZcInfo zcInfo);
+
+    /**
+     * 资产新增
+     * @param zcInfo
+     * @return
+     */
+    Map save(ZcInfo zcInfo);
+
     ZcInfo update(ZcInfo zcInfo);
     void delete(Long id);
     void export(PageTableRequest request, HttpServletResponse response);

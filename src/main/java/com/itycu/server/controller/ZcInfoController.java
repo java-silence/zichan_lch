@@ -49,7 +49,7 @@ public class ZcInfoController {
     @PostMapping
     @ApiOperation(value = "保存资产档案")
     @PreAuthorize("hasAuthority('sys:zcInfo:add')")
-    public ZcInfo save(@RequestBody ZcInfo zcInfo) {
+    public Map save(@RequestBody ZcInfo zcInfo) {
         return zcInfoService.save(zcInfo);
     }
 

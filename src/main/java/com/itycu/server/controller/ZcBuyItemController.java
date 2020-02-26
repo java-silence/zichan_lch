@@ -159,28 +159,30 @@ public class ZcBuyItemController {
     @ApiOperation(value = "列表")
     public Map layuiList(PageTableRequest request,HttpServletRequest httpServletRequest) {
 
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:apply") > 0){
+        //if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:apply") > 0){
             //request.getParams().put("applyUserId", UserUtil.getLoginUser().getId());
             //request.getParams().put("type","user");
+        //}
+        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buyInfo:glquery") > 0){
+            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("type","gl");
+        }else if (permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buyInfo:cwquery") > 0){
+            request.getParams().put("type","cw");
+        }else {
+            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+            request.getParams().put("type","sy");
         }
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:sh") > 0){
-            //request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
-            //request.getParams().put("type","gl");
-        }
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:cw") > 0){
+        //if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:cw") > 0){
             //request.getParams().put("cwUserId", UserUtil.getLoginUser().getDeptid());
             //request.getParams().put("type","cw");
-        }
+        //}
         Map map = new HashMap();
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
         Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
         DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
-
-
         int count = zcBuyItemDao.countFinish(request.getParams());
         List<Map<String,Object>> list = zcBuyItemDao.listZcBuyFinish(request.getParams(), page*limit-limit, limit);
-
-
         map.put("data",list);
         map.put("count",count);
         map.put("code","0");
