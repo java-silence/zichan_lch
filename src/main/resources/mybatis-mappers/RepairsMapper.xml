@@ -139,9 +139,39 @@
 		where t.id = #{id}
 	</update>
 
+    <select id="getRepairVOList" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
+        SELECT
+        c.id,
+        c.epcid,
+        c.zc_name AS zcName,
+        c.zc_codenum AS zcCodenum,
+        c.store_address AS storeAddress,
+        ( SELECT b.deptname FROM t_dept AS b WHERE b.id = c.sy_dept_id ) AS syDeptName,
+        ( SELECT b.deptname FROM t_dept AS b WHERE b.id = c.gl_dept_id ) AS glDeptName,
+        c.gl_dept_id AS glDeptId,
+        c.create_time AS createTime,
+        c.sy_dept_id AS syDeptId
+        FROM
+        v_zc_repair_item AS c
+        <where>
+            <if test="params.syDeptId != null and params.syDeptId != ''">
+                c.sy_dept_id = #{params.syDeptId}
+            </if>
+            <if test="params.glDeptId != null and params.glDeptId != ''">
+                and c.gl_dept_id = #{params.glDeptId} or c.sy_dept_id = #{params.glDeptId}
+            </if>
+            <if test="params.keyword!=null and params.keyword!=''">
+                and (c.zc_name like concat ('%',#{params.keyword},'%')
+                or
+                c.epcid like  ('%',#{params.keyword},'%')
+                )
+            </if>
+            AND c.del = 0
+        </where>
+        limit #{offset}, #{limit}
+    </select>
 
-
-	<select id="getRepairVOList" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
+	<select id="getRepairVOList1" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
 		SELECT
 			c.id,
 			c.epcid,
@@ -155,15 +185,22 @@
 			c.sy_dept_id AS syDeptId
 		FROM
 			zc_info AS c
-		WHERE
-			c.gl_dept_id = #{params.id}
-			AND c.del = 0
+		<where>
+			<if test="params.syDeptId != null and params.syDeptId != ''">
+				c.sy_dept_id = #{params.syDeptId}
+			</if>
+			<if test="params.glDeptId != null and params.glDeptId != ''">
+				and c.gl_dept_id = #{params.glDeptId} or c.sy_dept_id = #{params.glDeptId}
+			</if>
 			<if test="params.keyword!=null and params.keyword!=''">
 				and (c.zc_name like concat ('%',#{params.keyword},'%')
 				or
 				c.epcid like  ('%',#{params.keyword},'%')
 				)
 			</if>
-		  limit #{offset}, #{limit}
+			AND c.del = 0
+		</where>
+		limit #{offset}, #{limit}
 	</select>
+
 </mapper>

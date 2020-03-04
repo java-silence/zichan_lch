@@ -6,14 +6,11 @@ import lombok.Data;
 @Data
 public class RepairZcInfoListVO {
 
-
     private int id;
-
 
     private String zcName;
 
     private String storeAddress;
-
 
     private String syDeptName;
 
@@ -23,18 +20,14 @@ public class RepairZcInfoListVO {
 
     private String epcid;
 
-
-
     /**
      * 使用部门id
      */
     public long syDeptId;
 
-
     /**
      * 管理部门id
      */
     public long  glDeptId;
-
 
 }

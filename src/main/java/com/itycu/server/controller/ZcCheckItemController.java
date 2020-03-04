@@ -364,10 +364,6 @@ public class ZcCheckItemController {
         return map;
     }
 
-
-
-
-
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除")
     public void delete(@PathVariable Long id) {

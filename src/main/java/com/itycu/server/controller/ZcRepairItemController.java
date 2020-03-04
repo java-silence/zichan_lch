@@ -4,8 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.itycu.server.annotation.LogAnnotation;
+import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.PermissionDao;
 import com.itycu.server.dto.ZcRepairItemDto;
+import com.itycu.server.model.Dept;
+import com.itycu.server.model.SysUser;
 import com.itycu.server.utils.ExcelUtil;
 import com.itycu.server.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +33,12 @@ public class ZcRepairItemController {
 
     @Autowired
     private ZcRepairItemDao zcRepairItemDao;
+
     @Autowired
     private PermissionDao permissionDao;
+
+    @Autowired
+    private DeptDao deptDao;
 
     //@Autowired
     //private ZcRepairItemService zcRepairItemService;
@@ -62,10 +69,6 @@ public class ZcRepairItemController {
     @ApiOperation(value = "审核")
     public ZcRepairItem audit(@PathVariable Long id) {
         ZcRepairItem zcRepairItem = zcRepairItemDao.getById(id);
-
-//        zcRepairItem.setAuditby(UserUtil.getLoginUser().getId());
-//        zcRepairItem.setAuditTime(new Date());
-//        zcRepairItem.setStatus("1");
         zcRepairItemDao.update(zcRepairItem);
         return zcRepairItem;
     }
@@ -74,56 +77,45 @@ public class ZcRepairItemController {
     @ApiOperation(value = "弃审")
     public ZcRepairItem unaudit(@PathVariable Long id) {
         ZcRepairItem zcRepairItem = zcRepairItemDao.getById(id);
-
-//        zcRepairItem.setAuditby(null);
-//        zcRepairItem.setAuditTime(null);
-//        zcRepairItem.setStatus("0");
         zcRepairItemDao.update(zcRepairItem);
         return zcRepairItem;
     }
 
-//    @GetMapping
-//    @ApiOperation(value = "列表")
-//    public PageTableResponse list(PageTableRequest request) {
-//        return new PageTableHandler(new CountHandler() {
-//
-//            @Override
-//            public int count(PageTableRequest request) {
-//                return zcRepairItemDao.count(request.getParams());
-//            }
-//        }, new ListHandler() {
-//
-//            @Override
-//            public List<ZcRepairItem> list(PageTableRequest request) {
-//                return zcRepairItemDao.list(request.getParams(), request.getOffset(), request.getLimit());
-//            }
-//        }).handle(request);
-//    }
-
-        @GetMapping("/list2")
-        @ApiOperation(value = "列表")
-    //    @PreAuthorize("hasAuthority('sys:jjxx:query')")
-        public Map list2(PageTableRequest request) {
-            if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcRepair:querydept") > 0){
-                request.getParams().put("applyDeptId", UserUtil.getLoginUser().getDeptid());
-            }
-
-            Map map = new HashMap();
-
-            Integer page = Integer.valueOf((String)request.getParams().get("offset"));
-            Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
-
-            int count = zcRepairItemDao.count(request.getParams());
-
-            List list = zcRepairItemDao.list(request.getParams(), page*limit-limit, limit);
-
-            map.put("data",list);
-            map.put("count",count);
-            map.put("code","0");
-            map.put("msg","");
-
-            return map;
+    @GetMapping("/list2")
+    @ApiOperation(value = "列表")
+    public Map list2(PageTableRequest request) {
+        //if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcRepair:querydept") > 0){
+        //    request.getParams().put("applyDeptId", UserUtil.getLoginUser().getDeptid());
+        //}
+        Map map = new HashMap();
+        request.getParams().put("del","0");
+        SysUser sysUser = UserUtil.getLoginUser();
+        Dept dept = deptDao.getById(sysUser.getDeptid());
+        String zhfhgl = dept.getZhfhgl();
+        String c03 = dept.getC03();
+        if ( "cwb".equalsIgnoreCase(c03) ) {
+            // 财务部
+        }else if ( "1".equalsIgnoreCase(zhfhgl) || "2".equalsIgnoreCase(zhfhgl) ) {
+            // 使用部门
+            request.getParams().put("sy", "sy");
+            request.getParams().put("syDeptId", sysUser.getDeptid());
+        }else if ( "3".equalsIgnoreCase(zhfhgl) ) {
+            // 管理部门
+            request.getParams().put("gl", "gl");
+            request.getParams().put("glDeptId", sysUser.getDeptid());
+            request.getParams().put("syDeptId", sysUser.getDeptid());
         }
+        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+        int count = zcRepairItemDao.count(request.getParams());
+        List list = zcRepairItemDao.list(request.getParams(), page*limit-limit, limit);
+
+        map.put("data",list);
+        map.put("count",count);
+        map.put("code","0");
+        map.put("msg","");
+        return map;
+    }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除")

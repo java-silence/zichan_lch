@@ -8,11 +8,13 @@ import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO;
 import com.itycu.server.app.vo.baoxiu.RepairZcInfoRecordVO;
 import com.itycu.server.app.vo.baoxiu.ZcRepairItemVO;
+import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.RepairsDao;
 import com.itycu.server.dao.ZcRepairDao;
 import com.itycu.server.dao.ZcRepairItemDao;
 import com.itycu.server.dto.ZcRepairDto;
 import com.itycu.server.dto.ZcRepairItemDto;
+import com.itycu.server.model.Dept;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcRepairItem;
 import com.itycu.server.service.ZcRepairService;
@@ -56,6 +58,9 @@ public class AppRepairController {
     @Autowired
     private ZcRepairItemDao zcRepairItemDao;
 
+    @Autowired
+    private DeptDao deptDao;
+
     @Value("${IMAGE_SERVER}")
     private String IMAGE_SERVER;
 
@@ -68,7 +73,20 @@ public class AppRepairController {
             int limit = repairZcInfoListDTO.getLimit();
             Map<String, Object> params = new HashMap<>();
             SysUser sysUser = UserUtil.getLoginUser();
-            params.put("id", sysUser.getDeptid());
+            Dept dept = deptDao.getById(sysUser.getDeptid());
+            String zhfhgl = dept.getZhfhgl();
+            String c03 = dept.getC03();
+            if ( "cwb".equalsIgnoreCase(c03) ) {
+                // 财务部
+            }else if ( "1".equalsIgnoreCase(zhfhgl) || "2".equalsIgnoreCase(zhfhgl) ) {
+                // 使用部门
+                params.put("syDeptId", sysUser.getDeptid());
+            }else if ( "3".equalsIgnoreCase(zhfhgl) ) {
+                // 管理部门
+                params.put("glDeptId", sysUser.getDeptid());
+                params.put("syDeptId", sysUser.getDeptid());
+            }
+            //params.put("id", sysUser.getDeptid());
             params.put("keyword", repairZcInfoListDTO.getKeyword());
             List<RepairZcInfoListVO> listVOS = repairDao.getRepairVOList(params, page * limit - limit, limit);
             map.put("data", listVOS);

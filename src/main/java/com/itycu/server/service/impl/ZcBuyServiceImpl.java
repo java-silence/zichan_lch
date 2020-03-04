@@ -213,17 +213,17 @@ public class ZcBuyServiceImpl implements ZcBuyService {
         Long todoId = flowTodoItem1.getFlowTodoId();
         Todo flowTodo = todoDao.getById(todoId);
         // 1,修改购买子项分类别
-        List<FlowTodoItem> agreeTodoItems = new ArrayList<>();        // 1审核为同意   2财务为同意  3再次提交的
+        List<FlowTodoItem> agreeTodoItems = new ArrayList<>();        // 1审核同意   2财务同意  3再次提交的
         List<Long> agreeToDoItemIds = new ArrayList<>();
-        List<Long> agreeBfItemIds = new ArrayList<>();
+        List<Long> agreeBuyItemIds = new ArrayList<>();
 
-        List<FlowTodoItem> refuseTodoItems = new ArrayList<>();       // 1审核为拒绝    2财务为拒绝  3再次提交删除
+        List<FlowTodoItem> refuseTodoItems = new ArrayList<>();       // 1审核拒绝   2财务拒绝  3再次提交删除
         List<Long> refuseToDoItemIds = new ArrayList<>();
-        List<Long> refuseBfItemIds = new ArrayList<>();
+        List<Long> refuseBuyItemIds = new ArrayList<>();
 
-        List<FlowTodoItem> backTodoItems = new ArrayList<>();
+        List<FlowTodoItem> backTodoItems = new ArrayList<>();         // 1审核驳回   2财务驳回
         List<Long> backToDoItemIds = new ArrayList<>();
-        List<Long> backBfItemIds = new ArrayList<>();
+        List<Long> backBuyItemIds = new ArrayList<>();
 
         for (FlowTodoItem flowTodoItem : flowTodoItems) {
             // 更新购买子项信息
@@ -231,29 +231,30 @@ public class ZcBuyServiceImpl implements ZcBuyService {
             if ( flowTodoItem.getStatus() == 1 ){
                 agreeTodoItems.add(flowTodoItem);
                 agreeToDoItemIds.add(flowTodoItem.getId());
-                agreeBfItemIds.add(flowTodoItem.getFlowItemId());
+                agreeBuyItemIds.add(flowTodoItem.getFlowItemId());
             }else if ( flowTodoItem.getStatus() == 2 ) {
                 refuseTodoItems.add(flowTodoItem);
                 refuseToDoItemIds.add(flowTodoItem.getId());
-                refuseBfItemIds.add(flowTodoItem.getFlowItemId());
+                refuseBuyItemIds.add(flowTodoItem.getFlowItemId());
             }else if ( flowTodoItem.getStatus() == 3 ) {
                 backTodoItems.add(flowTodoItem);
                 backToDoItemIds.add(flowTodoItem.getId());
-                backBfItemIds.add(flowTodoItem.getFlowItemId());
+                backBuyItemIds.add(flowTodoItem.getFlowItemId());
             }
         }
+
         // 处理同意的
         if (agreeTodoItems.size()>0){
             if ( itemStatus == 3 ) {
                 // 更新todoItem
                 flowTodoItemDao.updateListStatus(1,agreeToDoItemIds);
                 // 更新更新购买Item
-                zcBuyItemDao.updateListStatus("cwb",1,agreeBfItemIds);
+                zcBuyItemDao.updateListStatus("cwb",1,agreeBuyItemIds);
             }else if ( itemStatus == 2 && zcBuyCheckDto.getAgainSubmit() == null ) {
                 // 更新todoItem
                 flowTodoItemDao.updateListStatus(1,agreeToDoItemIds);
                 // 更新购买子项
-                zcBuyItemDao.updateListStatus("shb",1,agreeBfItemIds);
+                zcBuyItemDao.updateListStatus("shb",1,agreeBuyItemIds);
             }
             if (zcBuyCheckDto.getAgainSubmit() != null && zcBuyCheckDto.getAgainSubmit() == 3) {
                 FlowTodoItem flowTodoItem = agreeTodoItems.get(0);
@@ -281,12 +282,12 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 flowTodoItemDao.updateListStatus(3,refuseToDoItemIds);
                 // 更新报废item
                 //zcBuyItemDao.updateListStatus("cwb",2,refuseBfItemIds);
-                zcBuyItemDao.updateListStatus("jujue",1,refuseBfItemIds);
+                zcBuyItemDao.updateListStatus("jujue",1,refuseBuyItemIds);
             }else if ( itemStatus == 2 ){
                 // 更新todoItem
                 flowTodoItemDao.updateListStatus(3,refuseToDoItemIds);
                 // 更新报废item
-                zcBuyItemDao.updateListStatus("jujue",1,refuseBfItemIds);
+                zcBuyItemDao.updateListStatus("jujue",1,refuseBuyItemIds);
             }
             // 发送消息
             noticeDao.save(getRefuseNotice(applyDept, applyUser, refuseTodoItems, String.valueOf(applyUser.getId()), zcBuy.getApplyTime()));
@@ -306,7 +307,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 int ressult = flowTodoItemDao.save(flowTodoItem);
             }
             // 更新报废子项
-            zcBuyItemDao.updateListStatus("shb",3,backBfItemIds);
+            zcBuyItemDao.updateListStatus("shb",3,backBuyItemIds);
         }
         // 2,修改当TODO前状态
         flowTodo.setNeirong(zcBuyCheckDto.getNeirong());

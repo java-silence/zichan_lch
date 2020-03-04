@@ -117,7 +117,7 @@ public class ZcDeployController {
         shenqing.put("username", zcDeployDetail.get("username"));
         shenqing.put("nickname", zcDeployDetail.get("nickname"));
         shenqing.put("deptname", zcDeployDetail.get("uDeptName"));
-        List<Map<String, Object>> diaochu = todoDao.findShenheList(id, actionUrl, "1");
+        List<Map<String, Object>> diaochu = todoDao.findShenheList(id, actionUrl, "0");
         List<Map<String, Object>> diaoru = todoDao.findShenheList(id, actionUrl, "2");
         List<Map<String, Object>> shenhe = todoDao.findShenheList(id, actionUrl, "3");
         map.put("zcDeploy", zcDeploy);

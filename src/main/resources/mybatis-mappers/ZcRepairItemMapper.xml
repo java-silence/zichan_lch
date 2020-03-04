@@ -17,11 +17,12 @@
 			<if test="params.repairDes != null and params.repairDes != ''">
 				and t.repair_des = #{params.repairDes} 
 			</if>
-			<if test="params.applyId != null and params.applyId != ''">
-				and t.apply_id = #{params.applyId} 
+			<if test="params.sy != null and params.sy != ''">
+				and t.apply_dept_id = #{params.applyDeptId}
 			</if>
-			<if test="params.applyDeptId != null and params.applyDeptId != ''">
-				and t.apply_dept_id = #{params.applyDeptId} 
+			<if test="params.gl != null and params.gl != ''">
+				and t.apply_dept_id = #{params.applyDeptId} or
+				t.gl_dept_id = #{params.glDeptId}
 			</if>
 			<if test="params.repairMode != null and params.repairMode != ''">
 				and t.repair_mode = #{params.repairMode} 
@@ -89,11 +90,11 @@
 			<if test="params.repairAddress != null and params.repairAddress != ''">
 				and t.repairAddress = #{params.repairAddress}
 			</if>
-			<if test="params.glDeptId != null and params.glDeptId != ''">
-				and t.gl_dept_id = #{params.glDeptId}
+			<if test="params.repairStartTime != null and params.repairStartTime != ''">
+				and <![CDATA[ t.update_time >= #{params.repairStartTime}]]>
 			</if>
-			<if test="params.sdate != null and params.sdate != '' and params.edate != null and params.edate != ''">
-				and <![CDATA[ t.repairStartTime >= #{params.sdate} and t.repairStartTime < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			<if test="params.repairEndTime != null and params.repairEndTime != ''">
+				and <![CDATA[t.update_time < DATE_FORMAT(DATE_ADD(#{params.repairEndTime},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
 			</if>
 			<if test="params.repairStatus != null and params.repairStatus != ''">
 				and t.repairStatus = #{params.repairStatus}
@@ -106,12 +107,6 @@
 			</if>
 			<if test="params.zcCodenum != null and params.zcCodenum != ''">
 				and t.zc_codenum = #{params.zcCodenum}
-			</if>
-			<if test="params.repairStartTime != null and params.repairStartTime != ''">
-				and t.repairStartTime = #{params.repairStartTime}
-			</if>
-			<if test="params.repairEndTime != null and params.repairEndTime != ''">
-				and t.repairEndTime = #{params.repairEndTime}
 			</if>
 			<if test="params.originalValue != null and params.originalValue != ''">
 				and t.original_value = #{params.originalValue}

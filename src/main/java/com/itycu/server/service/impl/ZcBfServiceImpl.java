@@ -165,6 +165,9 @@ public class ZcBfServiceImpl implements ZcBfService {
             //String id = String.valueOf(checkUser.get("id"));
             Long id = user.getId();
 
+
+            // 给自己插入待办信息
+            Long flowTodoId1 = saveFlowTodo(loginUser.getId(), loginUser, 0,zcBf, flowsteps.get(0),1,zcBf.getId(),"start");
             // 查询该用户,报废资产的待办任务
             Todo todo = todoDao.getNewTodoNoBfid(id,0,0,bfActionUrl);
             Long flowTodoId = null;
@@ -234,6 +237,8 @@ public class ZcBfServiceImpl implements ZcBfService {
         List<Long> backToDoItemIds = new ArrayList<>();
         List<Long> backBfItemIds = new ArrayList<>();
 
+        // 记录审核同意的个数
+        int count = 0;
         // 审核部处理的
         for (FlowTodoItem flowTodoItem : flowTodoItems) {
             // 更新报废子项信息
@@ -244,6 +249,7 @@ public class ZcBfServiceImpl implements ZcBfService {
                 agreeTodoItems.add(flowTodoItem);
                 agreeToDoItemIds.add(flowTodoItem.getId());
                 agreeBfItemIds.add(flowTodoItem.getFlowItemId());
+                count++;
             }else if ( flowTodoItem.getStatus() == 2 && flowTodoItem.getShbStatus() == null ) {
                 refuseTodoItems.add(flowTodoItem);
                 refuseToDoItemIds.add(flowTodoItem.getId());
@@ -363,7 +369,7 @@ public class ZcBfServiceImpl implements ZcBfService {
             zcBfItemDao.updateListStatus("shb",3,backBfItemIds,loginUser.getNickname(),dept.getDeptname());
         }
         // 判断是不是再次提交的
-        if (flowTodo.getType() == 1) {
+        if (flowTodo.getType() == 1 || count == 0) {
             flowTodo.setNeirong(zcBfCheckDto.getNeirong());
             // 待办中两种状态 0:待办理 1:已办理
             flowTodo.setStatus("1");
@@ -396,35 +402,41 @@ public class ZcBfServiceImpl implements ZcBfService {
         List<FlowTodoItem> flowTodoItems = zcBfCheckDto.getFlowTodoItems();
         ArrayList<Long> list = new ArrayList<>();
         TreeSet<Long> ids = new TreeSet<>();
+        int count = 0;
         for (FlowTodoItem flowTodoItem : flowTodoItems) {
             ids.add(flowTodoItem.getFlowItemId());
+            if( flowTodoItem.getShbStatus().equals(1) ) {
+                count++;
+            }
         }
-        list.addAll(ids);
-        // 查询财务人员本年是否有未完成的待办任务
-        Todo cwTodo = todoDao.getNewTodoNoBfid(Long.parseLong(userId),0,0,cwbfActionUrl);
-        Long aLong = null;
-        if (cwTodo == null){
-            ZcBf zcBf = new ZcBf();
-            zcBf.setFlowid(flowid);
-            aLong = saveFlowTodo(Long.parseLong(userId), loginUser, 0,zcBf, flowstep1,2,todo.getBizid(),String.valueOf(id));
-        }else {
-            aLong = cwTodo.getId();
-            // 更新财务的待办列表
-            String todoIds = cwTodo.getTodoIds();
-            todoIds = todoIds+","+String.valueOf(id);
-            cwTodo.setTodoIds(todoIds);
-            int update = todoDao.update(cwTodo);
+        if (count>0) {
+            list.addAll(ids);
+            // 查询财务人员本年是否有未完成的待办任务
+            Todo cwTodo = todoDao.getNewTodoNoBfid(Long.parseLong(userId),0,0,cwbfActionUrl);
+            Long aLong = null;
+            if (cwTodo == null){
+                ZcBf zcBf = new ZcBf();
+                zcBf.setFlowid(flowid);
+                aLong = saveFlowTodo(Long.parseLong(userId), loginUser, 0,zcBf, flowstep1,2,todo.getBizid(),String.valueOf(id));
+            }else {
+                aLong = cwTodo.getId();
+                // 更新财务的待办列表
+                String todoIds = cwTodo.getTodoIds();
+                todoIds = todoIds+","+String.valueOf(id);
+                cwTodo.setTodoIds(todoIds);
+                int update = todoDao.update(cwTodo);
+            }
+            for (Long zcBfItemId : list) {
+                // 属于当前部门信息
+                FlowTodoItem flowTodoItem = new FlowTodoItem();
+                flowTodoItem.setFlowTodoId(aLong);
+                flowTodoItem.setFlowItemId(zcBfItemId);
+                flowTodoItem.setStatus(0);
+                int ressult = flowTodoItemDao.save(flowTodoItem);
+            }
+            // 更改报废子项的状态
+            zcBfItemDao.updateListStatus("status",3,list,loginUser.getNickname(),sydept.getDeptname());
         }
-        for (Long zcBfItemId : list) {
-            // 属于当前部门信息
-            FlowTodoItem flowTodoItem = new FlowTodoItem();
-            flowTodoItem.setFlowTodoId(aLong);
-            flowTodoItem.setFlowItemId(zcBfItemId);
-            flowTodoItem.setStatus(0);
-            int ressult = flowTodoItemDao.save(flowTodoItem);
-        }
-        // 更改报废子项的状态
-        zcBfItemDao.updateListStatus("status",3,list,loginUser.getNickname(),sydept.getDeptname());
         // 更改待办的任务状态
         todo.setStatus("1");
         todo.setUpdateTime(new Date());
@@ -794,7 +806,11 @@ public class ZcBfServiceImpl implements ZcBfService {
         todo.setBizid(bizid);
         todo.setBizcreateby(user.getId());
         todo.setBizdeptid(zcBf.getApplyDeptId());
-        todo.setStatus("0");
+        if ("start".equalsIgnoreCase(id)) {
+            todo.setStatus("1");
+        }else {
+            todo.setStatus("0");
+        }
         todo.setFlowid(zcBf.getFlowid());
         todo.setStepid(flowstep.getId());
         todo.setMemo(String.valueOf(memo));

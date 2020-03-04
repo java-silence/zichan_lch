@@ -157,4 +157,7 @@ public interface ZcInfoDao {
     List<ZcInfo> listByCatType(@Param("catType") Integer catType);
 
     List<String> listByZcCodeNum(@Param("codes") List<String> codes);
+
+    List<ZcInfoDto> xunjianList(@Param("params") Map<String, Object> params);
+
 }

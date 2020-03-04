@@ -97,7 +97,7 @@
 		LEFT OUTER JOIN sys_user c_user ON t.confirm_by=c_user.id
 		LEFT OUTER JOIN t_dept c_dept ON t.confirm_dept=c_dept.id
 		<include refid="where" />
-		${params.orderBy}
+		order by t.create_time desc
 		limit #{offset}, #{limit}
 	</select>
 
@@ -203,7 +203,7 @@
 
 	<select id="queryDeptZcRepairById" resultType="int">
 		SELECT
-			count( 1 )
+			count(*)
 		FROM
 			t_dept AS a
 			LEFT JOIN zc_repair AS b ON a.id = b.apply_dept_id
@@ -212,7 +212,269 @@
 			<if test="id!=null and id!=''">
 				and a.id = #{id}
 			</if>
-
 			and DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
 	</select>
+
+
+	<!--查询维修资产 2020-03-03-->
+	<sql id="zcRepairWhere">
+		<where>
+			<if test="params.id != null and params.id != ''">
+				and t.id = #{params.id}
+			</if>
+			<if test="params.selfCodenum != null and params.selfCodenum != ''">
+				and t.self_codenum = #{params.selfCodenum}
+			</if>
+			<if test="params.zcCodenum != null and params.zcCodenum != ''">
+				and t.zc_codenum = #{params.zcCodenum}
+			</if>
+			<if test="params.cardNum != null and params.cardNum != ''">
+				and t.card_num = #{params.cardNum}
+			</if>
+			<if test="params.zcName != null and params.zcName != ''">
+				and t.zc_name like concat('%', #{params.zcName}, '%')
+			</if>
+			<if test="params.keyword != null and params.keyword != ''">
+				and t.zc_name like concat('%', #{params.keyword}, '%')
+			</if>
+			<if test="params.zcCategoryId != null and params.zcCategoryId != ''">
+				and t.zc_category_id = #{params.zcCategoryId}
+			</if>
+			<if test="params.specification != null and params.specification != ''">
+				and t.specification = #{params.specification}
+			</if>
+			<if test="params.model != null and params.model != ''">
+				and t.model = #{params.model}
+			</if>
+			<if test="params.factory != null and params.factory != ''">
+				and t.factory = #{params.factory}
+			</if>
+			<if test="params.brand != null and params.brand != ''">
+				and t.brand = #{params.brand}
+			</if>
+			<if test="params.supportName != null and params.supportName != ''">
+				and t.support_name = #{params.supportName}
+			</if>
+			<if test="params.supportPhone != null and params.supportPhone != ''">
+				and t.support_phone = #{params.supportPhone}
+			</if>
+			<if test="params.installationFactory != null and params.installationFactory != ''">
+				and t.installation_factory = #{params.installationFactory}
+			</if>
+			<if test="params.depreciationTime != null and params.depreciationTime != ''">
+				and t.depreciation_time = #{params.depreciationTime}
+			</if>
+			<if test="params.jcz != null and params.jcz != ''">
+				and t.jcz = #{params.jcz}
+			</if>
+			<if test="params.stockTime != null and params.stockTime != ''">
+				and t.stock_time = #{params.stockTime}
+			</if>
+			<if test="params.unit != null and params.unit != ''">
+				and t.unit = #{params.unit}
+			</if>
+			<if test="params.zcFrom != null and params.zcFrom != ''">
+				and t.zc_from = #{params.zcFrom}
+			</if>
+			<if test="params.useStatus != null and params.useStatus != ''">
+				and t.use_status = #{params.useStatus}
+			</if>
+			<if test="params.accountentryStatus != null and params.accountentryStatus != ''">
+				and t.accountentry_status = #{params.accountentryStatus}
+			</if>
+			<if test="params.accountentryTime != null and params.accountentryTime != ''">
+				and t.accountentry_time = #{params.accountentryTime}
+			</if>
+			<if test="params.accountantNum != null and params.accountantNum != ''">
+				and t.accountant_num = #{params.accountantNum}
+			</if>
+			<if test="params.originalValue != null and params.originalValue != ''">
+				and t.original_value = #{params.originalValue}
+			</if>
+			<if test="params.cardStatus != null and params.cardStatus != ''">
+				and t.card_status = #{params.cardStatus}
+			</if>
+			<if test="params.cardTime != null and params.cardTime != ''">
+				and t.card_time = #{params.cardTime}
+			</if>
+			<if test="params.responsible != null and params.responsible != ''">
+				and t.responsible = #{params.responsible}
+			</if>
+			<if test="params.syRole != null and params.syRole != ''">
+				and t.sy_dept_id = #{params.syDeptId}
+			</if>
+			<if test="params.glRole != null and params.glRole != ''">
+				and (t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.syDeptId})
+			</if>
+
+			<if test="params.firstSearch != null and params.deptType == 'sy'">
+				and t.sy_dept_id = #{params.syDeptId}
+			</if>
+            <if test="params.secondSearch != null and params.deptType == 'sy' and  params.glDeptId != null">
+                and t.sy_dept_id = #{params.syDeptId} and t.gl_dept_id = #{params.glDeptId}
+            </if>
+            <if test="params.secondSearch != null and params.deptType == 'sy'">
+                and t.sy_dept_id = #{params.syDeptId}
+            </if>
+			<if test="params.firstSearch != null and params.deptType == 'gl'">
+				and t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.glDeptId}
+			</if>
+            <if test="params.secondSearch != null and params.deptType == 'gl' and params.syDeptId != null">
+                and t.gl_dept_id = #{params.glDeptId} and t.sy_dept_id = #{params.syDeptId}
+            </if>
+            <if test="params.secondSearch != null and params.deptType == 'gl'">
+                and t.gl_dept_id = #{params.glDeptId}
+            </if>
+
+			<if test="params.syName != null and params.syName != ''">
+				and t.sy_name = #{params.syName}
+			</if>
+			<if test="params.storeAddress != null and params.storeAddress != ''">
+				and t.store_address = #{params.storeAddress}
+			</if>
+			<if test="params.startUseTime != null and params.startUseTime != ''">
+				and t.start_use_time = #{params.startUseTime}
+			</if>
+			<if test="params.predictYears != null and params.predictYears != ''">
+				and t.predict_years = #{params.predictYears}
+			</if>
+			<if test="params.maintainCycle != null and params.maintainCycle != ''">
+				and t.maintain_cycle = #{params.maintainCycle}
+			</if>
+			<if test="params.laveTime != null and params.laveTime != ''">
+				and t.lave_time = #{params.laveTime}
+			</if>
+			<if test="params.maintainDeadline != null and params.maintainDeadline != ''">
+				and t.maintain_deadline = #{params.maintainDeadline}
+			</if>
+			<if test="params.lastMaintainTime != null and params.lastMaintainTime != ''">
+				and t.last_maintain_time = #{params.lastMaintainTime}
+			</if>
+			<if test="params.ljZhejiu != null and params.ljZhejiu != ''">
+				and t.lj_zhejiu = #{params.ljZhejiu}
+			</if>
+			<if test="params.bnZhejiu != null and params.bnZhejiu != ''">
+				and t.bn_zhejiu = #{params.bnZhejiu}
+			</if>
+			<if test="params.netvalue != null and params.netvalue != ''">
+				and t.netvalue = #{params.netvalue}
+			</if>
+			<if test="params.jzzb != null and params.jzzb != ''">
+				and t.jzzb = #{params.jzzb}
+			</if>
+			<if test="params.net != null and params.net != ''">
+				and t.net = #{params.net}
+			</if>
+			<if test="params.netResidualRate != null and params.netResidualRate != ''">
+				and t.net_residual_rate = #{params.netResidualRate}
+			</if>
+			<if test="params.netResidualValue != null and params.netResidualValue != ''">
+				and t.net_residual_value = #{params.netResidualValue}
+			</if>
+			<if test="params.useMonths != null and params.useMonths != ''">
+				and t.use_months = #{params.useMonths}
+			</if>
+			<if test="params.haveCount != null and params.haveCount != ''">
+				and t.have_count = #{params.haveCount}
+			</if>
+			<if test="params.remainingperiod != null and params.remainingperiod != ''">
+				and t.remainingperiod = #{params.remainingperiod}
+			</if>
+			<if test="params.cname != null and params.cname != ''">
+				and t.cname = #{params.cname}
+			</if>
+			<if test="params.venperson != null and params.venperson != ''">
+				and t.venperson = #{params.venperson}
+			</if>
+			<if test="params.venphone != null and params.venphone != ''">
+				and t.venphone = #{params.venphone}
+			</if>
+			<if test="params.venaddress != null and params.venaddress != ''">
+				and t.venaddress = #{params.venaddress}
+			</if>
+			<if test="params.warrantyperiod != null and params.warrantyperiod != ''">
+				and t.warrantyperiod = #{params.warrantyperiod}
+			</if>
+			<if test="params.del != null and params.del != ''">
+				and t.del = #{params.del}
+			</if>
+			<if test="params.bf != null and params.bf != ''">
+				and t.bf = #{params.bf}
+			</if>
+			<if test="params.bz != null and params.bz != ''">
+				and t.bz = #{params.bz}
+			</if>
+			<if test="params.c01 != null and params.c01 != ''">
+				and t.c01 = #{params.c01}
+			</if>
+			<if test="params.c02 != null and params.c02 != ''">
+				and t.c02 = #{params.c02}
+			</if>
+			<if test="params.c03 != null and params.c03 != ''">
+				and t.c03 = #{params.c03}
+			</if>
+			<if test="params.createBy != null and params.createBy != ''">
+				and t.create_by = #{params.createBy}
+			</if>
+			<if test="params.updateBy != null and params.updateBy != ''">
+				and t.update_by = #{params.updateBy}
+			</if>
+			<if test="params.createTime != null and params.createTime != ''">
+				and to_days(t.create_time) = to_days(#{params.createTime})
+			</if>
+			<if test="params.updateTime != null and params.updateTime != ''">
+				and t.update_time = #{params.updateTime}
+			</if>
+			<if test="params.dynamicCondition != null and params.dynamicCondition != ''">
+				${params.dynamicCondition}
+			</if>
+			<if test="params.daoqi != null and params.daoqi != ''">
+				and
+				<![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) <= #{params.daoqi} ]]>
+				and
+				<![CDATA[ timestampdiff(DAY, DATE_ADD(start_use_time,INTERVAL IFNULL(predict_years,0) year), now()) > 0 ]]>
+			</if>
+			<if test="params.linbao != null and params.linbao != ''">
+				and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) <= #{params.linbao} ]]>
+				and <![CDATA[ timestampdiff(DAY,now(),maintain_deadline) > 0 ]]>
+			</if>
+			<if test="params.sdate != null and params.sdate != ''">
+				and <![CDATA[ t.start_use_time >= #{params.sdate}]]>
+			</if>
+			<if test="params.edate != null and params.edate != ''">
+				and <![CDATA[t.start_use_time < DATE_FORMAT(DATE_ADD(#{params.edate},INTERVAL 1 DAY),'%Y-%m-%d') ]]>
+			</if>
+			<if test="params.catCode != null and params.catCode != ''">
+				and t.cat_code like concat('',#{params.catCode},'%')
+			</if>
+			<if test="params.daixunjian != null and params.daixunjian != ''">
+				and (FLOOR(timestampdiff(DAY,start_use_time,now())/inspect_time) =
+				timestampdiff(DAY,start_use_time,now())/inspect_time) = 1 and inspect_time is not null and
+				timestampdiff(DAY,start_use_time,now()) > 0
+			</if>
+			<if test="params.epcid != null and params.epcid != ''">
+				and t.epcid = #{params.epcid}
+			</if>
+			<if test="params.zcCoding != null and params.zcCoding != ''">
+				and t.zc_coding = #{params.zcCoding}
+			</if>
+		</where>
+	</sql>
+
+	<select id="zcRepairCount" resultType="int">
+		select count(1) from v_zc_info t
+		<include refid="zcRepairWhere"/>
+	</select>
+
+	<select id="zcRepairCList" resultType="com.itycu.server.dto.ZcInfoDto">
+		select t.*
+		,t_creator.nickname as creator
+		from v_zc_info t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		<include refid="zcRepairWhere"/>
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
+
 </mapper>

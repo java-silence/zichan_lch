@@ -264,6 +264,7 @@
 		t.shDeptname,
 		t.cwUsername,
 		t.cwDeptname,
+		t.del,
 		zb.bf_category category,
 		u1.nickname uname,
 		p3.deptname udeptname,

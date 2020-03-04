@@ -2,6 +2,7 @@ package com.itycu.server.app.service;
 
 import com.itycu.server.app.dto.xunjian.XunJianSubmitDTO;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
+import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcInfo;
 import com.itycu.server.model.ZcInspectRecord;
@@ -16,7 +17,7 @@ public interface XunJianService {
      * 获取巡检的列表数据
      * @return
      */
-    List<XunJianVO> getXunjianList(SysUser sysUser);
+    List<ZcInfoDto> getXunjianList(SysUser sysUser);
 
 
     /**

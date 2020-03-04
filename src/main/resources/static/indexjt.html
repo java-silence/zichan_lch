@@ -121,7 +121,12 @@
 
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script type="text/javascript">
+    // 获取点击的ID
+    var deptId = getUrlParam("a");
     var deptCode="01";
+    if (deptId == null || deptId == '') {
+        deptId = deptCode;
+    }
     //饼状图
     var cllfx = function (timeType) {
         var CLLChart = echarts.init(document.getElementById('cllReport'));
@@ -237,7 +242,7 @@
             table.render({
                 elem: '#XunJianTable'
                 , height: 300
-                , url: "/index/queryBenYueXunjianDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                , url: "/index/queryBenYueXunjianDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
                     {field: 'xunjianCompany', title: '巡检单位',align: 'center',}
@@ -257,12 +262,12 @@
             table.render({
                 elem: '#baofeiTable'
                 , height: 300
-                , url: "/index/queryBenYueBaoFeiDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                , url: "/index/queryBenYueBaoFeiDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
                     {field: 'baofeiCompany', title: '处置单位',align: 'center', }
                     , {field: 'baofeiCount', title: '处置单总数', width:100}
-                    , {field: 'baofeiTime', title: '处置时间',  width:100}
+                    //, {field: 'baofeiTime', title: '处置时间',  width:100}
                     , {field: 'wanCheng', title: '已完成', width:100}
                     , {field: 'weiWanCheng', title: '未完成', width:100}
                     //, {field: 'baofeiText', title: '处置结果', width:100 }
@@ -277,7 +282,7 @@
             table.render({
                 elem: '#DiaoPeiTable'
                 , height: 300
-                , url: "/index/queryJtBenYueDiaoPeiDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                , url: "/index/queryJtBenYueDiaoPeiDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
                     {field: 'diaoPeiCompany', title: '调配单位',align: 'center', }
@@ -306,7 +311,7 @@
             table.render({
                 elem: '#CaigouTable'
                 , height: 300
-                , url: "/index/queryJtBenYueBuyDataInfo/" + deptCode + "?v=" + new Date().getDate()
+                , url: "/index/queryJtBenYueBuyDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
                     {field: 'buyCompany', title: '采购单位',align: 'center',}

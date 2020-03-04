@@ -341,7 +341,7 @@
 			where a.deptcode = #{deptId}
 			and c.use_status = 7  and a.zhfhgl = 0
 			and  DATE_FORMAT(c.update_time,'%Y%m') = DATE_FORMAT(CURRENT_DATE,'%Y%m')
-			GROUP BY b.deptname-->
+			GROUP BY b.deptname
 			select
 			c.create_time as baofeiTime,
 			sum(CASE c.status WHEN 1 THEN 1 ELSE 0 END ) wanCheng,
@@ -356,9 +356,29 @@
 			a.deptcode = #{deptId}
 			and DATE_FORMAT(c.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
 			GROUP BY a.deptname
-			order by c.create_time desc
+			order by c.create_time desc-->
 
-
+			SELECT
+				t.deptname baofeiCompany,
+				IFNULL(b.wanCheng,0) wanCheng,
+				IFNULL(b.weiWanCheng,0) weiWanCheng,
+				IFNULL(b.baofeiCount,0) baofeiCount,
+				b.apply_user_id
+			FROM t_dept t
+			LEFT JOIN sys_user u ON u.deptid = t.id
+			LEFT JOIN (
+			SELECT
+			count(*) baofeiCount,
+			sum(CASE  WHEN t.cwb_status IS NOT NULL THEN 1 ELSE 0 END ) wanCheng,
+			sum(CASE  WHEN t.cwb_status IS NULL THEN 1 ELSE 0 END ) weiWanCheng,
+			apply_user_id
+			FROM
+			zc_bf_item t
+			WHERE DATE_FORMAT(t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE() , '%Y%m' )
+			GROUP BY
+			apply_user_id
+			) b ON b.apply_user_id = u.id
+			WHERE t.pid = #{deptId}
 
 		</if>
 	</select>

@@ -10,6 +10,7 @@ import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.ZcInfoDao;
 import com.itycu.server.dao.ZcInspectDao;
 import com.itycu.server.dao.ZcInspectRecordDao;
+import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.*;
 import com.itycu.server.utils.UserUtil;
 import org.slf4j.Logger;
@@ -17,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
 import java.util.*;
 
 
@@ -42,18 +41,16 @@ public class XunjianServiceImpl implements XunJianService {
 
 
     @Override
-    public List<XunJianVO> getXunjianList(SysUser sysUser) {
+    public List<ZcInfoDto> getXunjianList(SysUser sysUser) {
         if (SystemConstant.BWB.equals(sysUser.getC03()) || SystemConstant.ZHB.equals(sysUser.getC03()) ||
                 SystemConstant.YYB.equals(sysUser.getC03()) ||
                 SystemConstant.KJB.equals(sysUser.getC03())) {
             Map<String, Object> map = new HashMap<>();
-            map.put("deptid", sysUser.getDeptid());
-            List<XunJianVO> xunJianVOList = zcInfoDao.queryZcXunJianList(map);
-            if (!CollectionUtils.isEmpty(xunJianVOList)) {
-                xunJianVOList.forEach(k -> {
-                    k.setStatus(0);
-                });
-            }
+            map.put("glDeptId", sysUser.getDeptid());
+            map.put("daixunjian", "1");
+            map.put("useStatus","1");
+            map.put("del","0");
+            List<ZcInfoDto> xunJianVOList = zcInfoDao.xunjianList(map);
             return xunJianVOList;
         } else {
             logger.info("当前用户的身份不是管理部门,部门id===={}", sysUser.getDeptid());

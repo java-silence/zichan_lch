@@ -192,10 +192,12 @@
 
 
 	<select id="queryAllTodoList" resultType="com.itycu.server.model.Todo">
-		 SELECT * FROM flow_todo
+		 SELECT
+		 	*
+		 FROM flow_todo
 		 WHERE
-		  auditby  = #{userId}
-			order by createTime desc
+		  	auditby  = #{userId} and status = 0
+		 order by createTime desc
 	</select>
 
 </mapper>

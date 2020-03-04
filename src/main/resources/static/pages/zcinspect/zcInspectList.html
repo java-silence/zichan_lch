@@ -254,7 +254,7 @@
 		var table = layui.table;
 		tableIns = table.render({
 			elem: '#data'
-			,url:"/zcInfos/layuiList"
+			,url:"/zcInfos/inspectlayuiList"
 			,limit: 20
 			,limits: [20,40,50,100,200,500,1000,2000]
 			,totalRow: true
@@ -323,35 +323,6 @@
 				,{field:'creator',title:'创建人', width:100, sort: true}
 				,{field:'createTime',title:'创建时间', width:150, sort: true}
 				,{field:'bz',title:'备注', width:100, sort: true}
-
-				// ,{field:'factory',title:'厂家', width:100, sort: true}
-				// ,{field:'brand',title:'品牌', width:100, sort: true}
-				// ,{field:'supportName',title:'技术支持人员', width:100, sort: true}
-				// ,{field:'supportPhone',title:'技术支持电话', width:100, sort: true}
-				// ,{field:'installationFactory',title:'安装单位', width:100, sort: true}
-				// ,{field:'depreciationTime',title:'折旧年限(月份)', width:100, sort: true}
-				// ,{field:'jcz',title:'净参值(5%)', width:100, sort: true}
-				// ,{field:'stockTime',title:'采购日期', width:100, sort: true}
-				// ,{field:'accountentryStatus',title:'入账状态', width:100, sort: true}
-				// ,{field:'accountentryTime',title:'入账日期', width:100, sort: true}
-				// ,{field:'accountantNum',title:'会计凭证号', width:100, sort: true}
-				// ,{field:'cardStatus',title:'发卡状态', width:100, sort: true}
-				// ,{field:'cardTime',title:'发卡日期', width:100, sort: true}
-				// ,{field:'responsible',title:'责任人(填写)', width:100, sort: true}
-				// ,{field:'predictYears',title:'预计使用年限', width:100, sort: true}
-				// ,{field:'laveTime',title:'剩余期限', width:100, sort: true}
-				// ,{field:'maintainDeadline',title:'临保时间', width:100, sort: true}
-				// ,{field:'lastMaintainTime',title:'保养日期', width:100, sort: true}
-				// ,{field:'bf',title:'是否报废  0:未报废 1:已报废', width:100, sort: true}
-				//
-				// ,{field:'caozuo', title: '操作',fixed:'right', width:140,templet: function(d){
-				//         var id = d.id;
-				//         var href = "updateZcInfo.html?id=" + id;
-				//         var edit = buttonEdit(href, "sys:zcInfo:edit", pers);
-				//         var del = buttonDel(id, "sys:zcInfo:del", pers);
-				//
-				//         return edit + del;
-				//     }}
 			]]
 		});
 
@@ -401,7 +372,7 @@
 		if(!el1){
 			el1=eleTree.render({
 				elem: '#glDeptEleTree',
-				url:'/depts/eleTree',
+				url:'/depts/eleTreeSelf',
 				request: {
 					name: "name",
 				},

@@ -6,6 +6,7 @@ import com.itycu.server.app.dto.xunjian.XunJianSubmitDTO;
 import com.itycu.server.app.service.XunJianService;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
+import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcInfo;
 import com.itycu.server.model.ZcInspectRecord;
@@ -49,9 +50,9 @@ public class AppXunJianController {
         try {
             SysUser sysUser = UserUtil.getLoginUser();
             if (null != sysUser) {
-                List<XunJianVO> list = xunJianService.getXunjianList(sysUser);
+                List<ZcInfoDto> list = xunJianService.getXunjianList(sysUser);
                 map.put("code", 0);
-                map.put("message", "成功");
+                map.put("message", "成功"+list.size());
                 map.put("data", list);
             }
         } catch (Exception e) {

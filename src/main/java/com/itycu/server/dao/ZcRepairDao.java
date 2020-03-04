@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.dto.ZcRepairDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -15,6 +16,12 @@ import com.itycu.server.model.ZcRepair;
 
 @Mapper
 public interface ZcRepairDao {
+
+    /** 资产维修总数 */
+    int zcRepairCount(@Param("params") Map<String, Object> params);
+
+    /** 资产维修列表 */
+    List<ZcInfoDto> zcRepairCList(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     //@Select("select * from zc_repair t where t.id = #{id}")
     ZcRepairDto getById(Long id);
@@ -45,8 +52,8 @@ public interface ZcRepairDao {
 
     int countByDeptThisYear(@Param("deptcode") String deptcode);
 
-
     int queryZcRepairById(@Param("id") long  id);
 
     int queryDeptZcRepairById(@Param("id") long  id);
+
 }

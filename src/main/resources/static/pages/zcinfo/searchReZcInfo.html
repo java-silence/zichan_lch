@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>表单列表</title>
+    <title>资产维修搜索页面</title>
     <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="../../layuiadmin/eleTree/eleTree.css" media="all">
     <style>
@@ -112,6 +112,19 @@
                                         <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
                                     </div>
                                 </div>
+
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">使用部门</label>
+                                    <div class="layui-input-block">
+                                        <input class="layui-input" type="text" id="syDeptName" data-id="" placeholder="请选择使用部门"
+                                               readonly="" autocomplete="off">
+                                        <div class="eleTree ele5" id="syDeptEleTree" lay-filter="syDeptEleTree"></div>
+                                        <input class="layui-input" type="hidden" id="syDeptId" name="syDeptId">
+                                    </div>
+                                </div>
+
+
                                 <div class="layui-inline">
                                     <label class="layui-form-label">原价值</label>
                                     <div class="layui-input-block">
@@ -119,6 +132,9 @@
                                                placeholder="原价值">
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="layui-form-item">
                                 <div class="layui-inline">
                                     <label class="layui-form-label">净值</label>
                                     <div class="layui-input-block">
@@ -126,8 +142,6 @@
                                                placeholder="净值">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="layui-form-item">
                                 <div class="layui-inline">
                                     <label class="layui-form-label">使用月限</label>
                                     <div class="layui-input-block">
@@ -159,14 +173,6 @@
                 <div class="layui-card-body">
                     <table class="layui-hide" id="data" lay-filter="data"></table>
                 </div>
-                <!--<div class="layui-form-item layui-layout-admin">-->
-                    <!--<div class="layui-input-block">-->
-                        <!--<div class="layui-footer demoTable" style="left: 0;">-->
-                            <!--<button class="layui-btn"  data-type="save">保存</button>-->
-                            <!--<button type="reset" class="layui-btn layui-btn-primary" data-type="close">关闭</button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
             </div>
 </div>
 
@@ -182,7 +188,7 @@
 
     var useStatus = showDictSelect("useStatus", "useStatus", true);
     var tableIns;
-    var el,el1;
+    var el,el1,el2;
     var catId;
     var catCode
     var type = getUrlParam("type");
@@ -205,7 +211,7 @@
         var table = layui.table;
         tableIns = table.render({
             elem: '#data'
-            ,url:"/zcInfos/layuiList"
+            ,url:"/zcRepairs/zcInfoList"
             ,limit: 20
             ,limits: [20,40,50,100,200,500,1000,2000]
             ,height:  'full-200'
@@ -219,13 +225,18 @@
                 edate: $('#edate').val(),
                 catCode: $('#catCode').val(),
                 glDeptId: $('#glDeptId').val(),
+                syDeptId: $('#syDeptId').val(),
                 specification: $('#specification').val(),
                 model:$('#model').val(),
-                useStatus: $('#useStatus').val(),
+                useStatus: 1,
                 originalValue: $('#originalValue').val(),
                 netvalue: $('#netvalue').val(),
                 useMonths: $('#useMonths').val(),
-                remainingperiod: $('#remainingperiod').val(),bf:'0',type:type}
+                remainingperiod: $('#remainingperiod').val(),
+                bf:'0',
+                type:type,
+                firstSearch:'true'
+            }
             ,page: true
             ,request: {
                 pageName: 'offset' //页码的参数名称，默认：page
@@ -306,7 +317,20 @@
                 expandOnClickNode: false,
                 highlightCurrent: true,
                 done: function (res) {
-
+                }
+            });
+        }
+        if (!el2) {
+            el2 = eleTree.render({
+                elem: '#syDeptEleTree',
+                url: '/depts/xmSelectTree',
+                request: {
+                    name: "name",
+                },
+                emptText: "暂无使用部门",
+                expandOnClickNode: false,
+                highlightCurrent: true,
+                done: function (res) {
                 }
             });
         }
@@ -338,6 +362,16 @@
             $('#glDeptName').trigger('change');
             $("#glDeptName").val(d.data.currentData.name)
             $("#glDeptId").val(d.data.currentData.id);
+            $(".eleTree").hide();
+        })
+        $("#syDeptName").on("click", function (e) {
+            e.stopPropagation();
+            $(this).next(".eleTree").toggle();
+        })
+        eleTree.on("nodeClick(syDeptEleTree)", function (d) {
+            $('#syDeptName').trigger('change');
+            $("#syDeptName").val(d.data.currentData.name)
+            $("#syDeptId").val(d.data.currentData.id);
             $(".eleTree").hide();
         })
         $(document).on("click", function () {
@@ -417,7 +451,8 @@
     });
 
     $("#searchBt").click(function(){
-        tableIns.reload({where: {
+        tableIns.reload({
+            where: {
                 epcid:$('#epcid').val(),
                 zcName: $('#zcName').val(),
                 zcCodenum: $('#zcCodenum').val(),
@@ -425,16 +460,18 @@
                 edate: $('#edate').val(),
                 catCode: $('#catCode').val(),
                 glDeptId: $('#glDeptId').val(),
+                syDeptId: $('#syDeptId').val(),
                 specification: $('#specification').val(),
                 model:$('#model').val(),
-                useStatus: $('#useStatus').val(),
+                useStatus: 1,
                 originalValue: $('#originalValue').val(),
                 netvalue: $('#netvalue').val(),
                 useMonths: $('#useMonths').val(),
-                remainingperiod: $('#remainingperiod').val()
-                                },
-                        page:{curr:1}
-                        })
+                remainingperiod: $('#remainingperiod').val(),
+                secondSearch:'true' // 区分初始化搜索还是条件搜索
+            },
+            page:{curr:1}
+        })
     });
 
     // 判断报废子单是否重复

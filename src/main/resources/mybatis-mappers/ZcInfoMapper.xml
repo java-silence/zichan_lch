@@ -495,6 +495,16 @@
         limit #{offset}, #{limit}
     </select>
 
+    <!--巡检列表-->
+    <select id="xunjianList" resultType="com.itycu.server.dto.ZcInfoDto">
+        select t.*
+        ,t_creator.nickname as creator
+        from v_zc_info t
+        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        <include refid="export"/>
+        ${params.orderBy}
+    </select>
+
     <select id="listByCondition" resultType="com.itycu.server.dto.ZcInfoDto">
         select t.*
         ,t_creator.nickname as creator
@@ -930,10 +940,16 @@
         FROM
             zc_inspect_relation AS a
             LEFT JOIN zc_info AS info ON a.zc_id = info.id
-        WHERE
-            a.STATUS = 0
-            and info.gl_dept_id = #{deptid}
+        <where>
+            <if test="daixunjian != null and daixunjian != ''">
+                (FLOOR(timestampdiff(DAY,start_use_time,now())/inspect_time) =
+                timestampdiff(DAY,start_use_time,now())/inspect_time) = 1 and inspect_time is not null and
+                timestampdiff(DAY,start_use_time,now()) > 0
+            </if>
+                and info.gl_dept_id = #{deptid}
+        </where>
     </select>
+    <!--a.STATUS = 0-->
 
 
     <update id="updateInspectStatus">

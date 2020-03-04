@@ -1,9 +1,11 @@
 package com.itycu.server.controller;
 
 import com.itycu.server.annotation.LogAnnotation;
+import com.itycu.server.app.constant.SystemConstant;
 import com.itycu.server.dao.PermissionDao;
 import com.itycu.server.dao.ZcCategoryDao;
 import com.itycu.server.dao.ZcInfoDao;
+import com.itycu.server.dto.LoginUser;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcCategory;
 import com.itycu.server.model.ZcInfo;
@@ -165,42 +167,42 @@ public class ZcInfoController {
         return map;
     }
 
-    @GetMapping("/layuiList4")
-    @ApiOperation(value = "列表")
-    public Map list4(PageTableRequest request, HttpServletRequest httpServletRequest) {
-
-        // 使用部门
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
-            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
-        }
-        // 管理部门
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
-            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
-            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
-        }
-        // 财务部门
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
-            request.getParams().put("glDeptId", null);
-            request.getParams().put("syDeptId", null);
-        }
-        Map map = new HashMap();
-        request.getParams().put("del","0");
-        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
-        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
-        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
-        int count = zcInfoDao.count(request.getParams());
-        List list = zcInfoDao.list(request.getParams(), page*limit-limit, limit);
-
-        if (!CollectionUtils.isEmpty(list)){
-            List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
-            findZcCategorys(list,zcCategoryList);
-        }
-        map.put("data",list);
-        map.put("count",count);
-        map.put("code","0");
-        map.put("msg","");
-        return map;
-    }
+//    @GetMapping("/layuiList4")
+//    @ApiOperation(value = "列表")
+//    public Map list4(PageTableRequest request, HttpServletRequest httpServletRequest) {
+//
+//        // 使用部门
+//        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querysydept") > 0){
+//            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+//        }
+//        // 管理部门
+//        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:querygldept") > 0){
+//            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+//            request.getParams().put("syDeptId", UserUtil.getLoginUser().getDeptid());
+//        }
+//        // 财务部门
+//        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:zcInfo:queryall") > 0){
+//            request.getParams().put("glDeptId", null);
+//            request.getParams().put("syDeptId", null);
+//        }
+//        Map map = new HashMap();
+//        request.getParams().put("del","0");
+//        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+//        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+//        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+//        int count = zcInfoDao.count(request.getParams());
+//        List list = zcInfoDao.list(request.getParams(), page*limit-limit, limit);
+//
+//        if (!CollectionUtils.isEmpty(list)){
+//            List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
+//            findZcCategorys(list,zcCategoryList);
+//        }
+//        map.put("data",list);
+//        map.put("count",count);
+//        map.put("code","0");
+//        map.put("msg","");
+//        return map;
+//    }
 
     //找到资产分类的一级分类，二级分类
     void findZcCategorys(List<ZcInfoDto> zcInfoDtoList, List<ZcCategory> zcCategoryList){
@@ -260,6 +262,68 @@ public class ZcInfoController {
         map.put("count",count);
         map.put("code","0");
         map.put("msg","");
+        return map;
+    }
+
+    /**
+     * 针对调配资产提交,查询本部门
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @GetMapping("/dplayuiList")
+    @ApiOperation(value = "列表")
+    public Map dplayuiList(PageTableRequest request, HttpServletRequest httpServletRequest) {
+        request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+        Map map = new HashMap();
+        request.getParams().put("del","0");
+        request.getParams().put("useStatus","1");
+        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+        int count = zcInfoDao.bfCount(request.getParams());
+        List list = zcInfoDao.bfList(request.getParams(), page*limit-limit, limit);
+        map.put("data",list);
+        map.put("count",count);
+        map.put("code","0");
+        map.put("msg","");
+        return map;
+    }
+
+    /**
+     * 针对调配资产提交,查询本部门
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @GetMapping("/inspectlayuiList")
+    @ApiOperation(value = "列表")
+    public Map inspectlayuiList(PageTableRequest request, HttpServletRequest httpServletRequest) {
+
+        Map map = new HashMap();
+        LoginUser sysUser = UserUtil.getLoginUser();
+        if (SystemConstant.BWB.equals(sysUser.getC03()) || SystemConstant.ZHB.equals(sysUser.getC03()) ||
+                SystemConstant.YYB.equals(sysUser.getC03()) ||
+                SystemConstant.KJB.equals(sysUser.getC03())) {
+            request.getParams().put("glDeptId", sysUser.getDeptid());
+            request.getParams().put("del","0");
+            request.getParams().put("useStatus","1");
+            request.getParams().put("daixunjian","1");
+            Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+            Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+            DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+            int count = zcInfoDao.bfCount(request.getParams());
+            List list = zcInfoDao.bfList(request.getParams(), page*limit-limit, limit);
+            map.put("data",list);
+            map.put("count",count);
+            map.put("code","0");
+            map.put("msg","");
+        }else {
+            map.put("data",new ArrayList<>());
+            map.put("count",0);
+            map.put("code","0");
+            map.put("msg","");
+        }
         return map;
     }
 
