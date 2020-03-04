@@ -610,7 +610,7 @@
                         "<td style='border-top: 1px solid #000;'>单位(件)</td><td style='border-top: 1px solid #000;'>采购单价(元)</td>" +
                         "<td style='border-top: 1px solid #000;'>采购数量</td><td style='border-top: 1px solid #000;'>采购总价(元)</td>" +
                         "<td style='border-top: 1px solid #000;'>供应商</td><td style='border-top: 1px solid #000;'>管理部门</td>" +
-                        "<td style='border-top: 1px solid #000;'>用途</td></tr>";
+                        "<td style='border-top: 1px solid #000;'>审批结果</td><td style='border-top: 1px solid #000;'>用途</td></tr>";
                     $.ajax({
                         type : 'get',
                         url : url,
@@ -626,12 +626,20 @@
                                     pri = 0;
 								}
                                 formatData(d);
+                                // 购买审批结果
+								var del = d.del;
+								var cwbStatus = d.cwbStatus;
+								if (del == 1) {
+								    del = "拒绝";
+                                }else if( cwbStatus == 1 ) {
+                                    del = "同意";
+                                }
                                 var imoney = d.price*d.num;
                                 if (isNaN(imoney)){
                                     imoney = 0;
 								}
                                 html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+d.name+"</td><td>"+d.brand+"</td><td>"+d.model+"</td><td>"+d.unit+"</td><td>"+pri+"</td>" +
-                                    "<td>"+d.num+"</td><td>"+imoney+"</td><td>"+d.supplierName+"</td><td>"+d.gldeptname+"</td><td>"+d.useDes+"</td></tr>";
+                                    "<td>"+d.num+"</td><td>"+imoney+"</td><td>"+d.supplierName+"</td><td>"+d.gldeptname+"</td><td>"+del+"</td><td>"+d.useDes+"</td></tr>";
                                 allIprice = parseFloat((Number(d.price) + Number(allIprice)).toFixed(2))
                                 allNum = parseFloat((Number(d.num) + Number(allNum)).toFixed(2))
                                 allImoney = parseFloat((Number(imoney) + Number(allImoney)).toFixed(2))

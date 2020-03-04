@@ -393,6 +393,8 @@
 			t.use_des useDes,
 			t.status,
 			t.num,
+            t.del,
+            t.cwb_status cwbStatus,
 			IFNULL(t.price,0)*t.num totalPrice,
 			t.fileName,
 			t.fileUrl,
@@ -408,11 +410,13 @@
 			<if test="zcBuyId != null and zcBuyId != ''">
 				t.zc_buy_id = #{zcBuyId}
 			</if>
+		</where>
+	</select>
+	<!--
 			<if test="cw != null and cw != ''">
 				and t.cwb_status = 1 and t.del = 0
 			</if>
-		</where>
-	</select>
+	-->
 
 	<!--根据待办查询资产购买子项-->
 	<select id="listDetailByFlowTodoIdNew" parameterType="long" resultType="map">
