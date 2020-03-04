@@ -153,6 +153,7 @@
     function getApi() {
         //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
         setTimeout(getApi,1*1000*60*5);
+        //setTimeout(getApi,1*1000*6);
         $.ajax({
             url: '/users/countTodo',
             async: false,
@@ -162,10 +163,17 @@
             success: function (data) {
                 if ( data.num > 0 ) {
                     var layer = layui.layer;
+                    var content = '你有待办任务需要处理，请到【协同管理】-【待办事宜】进行办理!';
                     layer.open({
                         type:0,
-                        content: '你有待办任务需要处理，请到【协同管理】-【待办事宜】进行办理!'
+                        content: content
                     })
+                    //询问框
+                    // layer.confirm(content, {
+                    //     btn: ['去办理','关闭'] //按钮
+                    // }, function(){
+                    //     location.href = "/todo/todoList.html";
+                    // });
                 }
             }
         })
