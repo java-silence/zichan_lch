@@ -175,6 +175,9 @@
             <if test="params.status != null and params.status != ''">
                 and t.status = #{params.status}
             </if>
+			<if test="params.syDeptId != null and params.syDeptId != ''">
+				and t.sy_dept_id = #{params.syDeptId}
+			</if>
         </where>
         order by t.create_time desc
         limit #{offset}, #{limit}

@@ -1,12 +1,11 @@
 package com.itycu.server.controller;
 
 import com.itycu.server.annotation.LogAnnotation;
-import com.itycu.server.dao.PermissionDao;
-import com.itycu.server.dao.TodoDao;
-import com.itycu.server.dao.ZcBuyDao;
-import com.itycu.server.dao.ZcBuyItemDao;
+import com.itycu.server.dao.*;
 import com.itycu.server.dto.ZcBuyCheckDto;
 import com.itycu.server.dto.ZcBuyDto;
+import com.itycu.server.model.Dept;
+import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcBuy;
 import com.itycu.server.page.table.PageTableHandler;
 import com.itycu.server.page.table.PageTableHandler.CountHandler;
@@ -49,6 +48,10 @@ public class ZcBuyController {
 
     @Autowired
     private ZcBuyItemDao zcBuyItemDao;
+
+    @Autowired
+    private DeptDao deptDao;
+
 
     @LogAnnotation
     @PostMapping
@@ -175,50 +178,52 @@ public class ZcBuyController {
         }).handle(request);
     }
 
-        @GetMapping("/list2")
-        @ApiOperation(value = "列表")
-    //    @PreAuthorize("hasAuthority('sys:jjxx:query')")
-        public Map list2(PageTableRequest request) {
-
-
-            Map map = new HashMap();
-
-            Integer page = Integer.valueOf((String)request.getParams().get("offset"));
-            Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
-
-            int count = zcBuyDao.count(request.getParams());
-
-            List list = zcBuyDao.list(request.getParams(), page*limit-limit, limit);
-
-            map.put("data",list);
-            map.put("count",count);
-            map.put("code","0");
-            map.put("msg","");
-
-            return map;
-        }
+    @GetMapping("/list2")
+    @ApiOperation(value = "列表")
+    public Map list2(PageTableRequest request) {
+        Map map = new HashMap();
+        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+        Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
+        int count = zcBuyDao.count(request.getParams());
+        List list = zcBuyDao.list(request.getParams(), page*limit-limit, limit);
+        map.put("data",list);
+        map.put("count",count);
+        map.put("code","0");
+        map.put("msg","请求成功");
+        return map;
+    }
 
     @GetMapping("/layuiList")
     @ApiOperation(value = "列表")
     public Map layuiList(PageTableRequest request,HttpServletRequest httpServletRequest) {
 
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:apply") > 0){
-            request.getParams().put("applyUserId", UserUtil.getLoginUser().getId());
-            request.getParams().put("type","user");
-        }
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:sh") > 0){
-            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
-            request.getParams().put("type","gl");
-        }
-        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:cw") > 0){
-            request.getParams().put("cwUserId", UserUtil.getLoginUser().getDeptid());
-            request.getParams().put("type","cw");
-        }
+//        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:apply") > 0){
+//            request.getParams().put("applyUserId", UserUtil.getLoginUser().getId());
+//            request.getParams().put("type","user");
+//        }
+//        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:sh") > 0){
+//            request.getParams().put("glDeptId", UserUtil.getLoginUser().getDeptid());
+//            request.getParams().put("type","gl");
+//        }
+//        if(permissionDao.hasPermission(UserUtil.getLoginUser().getId(),"sys:buycheck:cw") > 0){
+//            request.getParams().put("cwUserId", UserUtil.getLoginUser().getDeptid());
+//            request.getParams().put("type","cw");
+//        }
         Map map = new HashMap();
         Integer page = Integer.valueOf((String)request.getParams().get("offset"));
         Integer limit = Integer.valueOf((String)request.getParams().get("limit"));
         DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
-        // todo 此处需要添加权限
+
+        SysUser sysUser = UserUtil.getLoginUser();
+        Dept dept = deptDao.getById(sysUser.getDeptid());
+        String zhfhgl = dept.getZhfhgl();
+        String c03 = dept.getC03();
+        if ( "cwb".equalsIgnoreCase(c03) ) {
+            // 财务部
+        }else if ( "1".equalsIgnoreCase(zhfhgl) || "2".equalsIgnoreCase(zhfhgl) ) {
+            // 使用部门
+            request.getParams().put("syDeptId", sysUser.getDeptid());
+        }
         int count = zcBuyDao.count(request.getParams());
         List<Map<String,Object>> list = zcBuyDao.listZcBuy(request.getParams(), page*limit-limit, limit);
         map.put("data",list);

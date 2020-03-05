@@ -582,6 +582,7 @@
                 layer.msg('请选择采购单');
                 return
             }
+            var countNum = 0;
             var url = "";
             if (type == 1) {
                 url = "/zcBuyItems/listByZcBuyId?zcBuyId="+buyId;
@@ -619,6 +620,7 @@
                             var allIprice = 0;
                             var allNum = 0;
                             var allImoney = 0;
+                            countNum = datas.data.length;
                             for (var i=0;i<datas.data.length;i++){
                                 var d = datas.data[i];
                                 var pri = d.price;
@@ -669,23 +671,25 @@
                 }
             });
 
-            $("#test").print({
-                //Use Global styles
-                globalStyles : false,
-                //Add link with attrbute media=print
-                mediaPrint : false,
-                //Print in a hidden iframe
-                iframe : false,
-                //Don't print this
-                noPrintSelector : ".avoid-this",
-                //Add this at top
-                prepend : html,
-                //Add this on bottom
-                append : "",
-                //Log to console when printing is done via a deffered callback
-                deferred: $.Deferred().done(function() {}),
-                stylesheet:'../../css/fahuoprint.css'
-            });
+            if (countNum>0) {
+                $("#test").print({
+                    //Use Global styles
+                    globalStyles : false,
+                    //Add link with attrbute media=print
+                    mediaPrint : false,
+                    //Print in a hidden iframe
+                    iframe : false,
+                    //Don't print this
+                    noPrintSelector : ".avoid-this",
+                    //Add this at top
+                    prepend : html,
+                    //Add this on bottom
+                    append : "",
+                    //Log to console when printing is done via a deffered callback
+                    deferred: $.Deferred().done(function() {}),
+                    stylesheet:'../../css/fahuoprint.css'
+                });
+            }
         }
 
         //显示审批动态
