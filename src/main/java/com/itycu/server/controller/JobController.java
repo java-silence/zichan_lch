@@ -37,14 +37,14 @@ public class JobController {
 	@PostMapping
 	@PreAuthorize("hasAuthority('job:add')")
 	public void add(@RequestBody JobModel jobModel) {
-		jobModel.setMethodName("calculateZcinfo");
-		JobModel model = jobDao.getByName(jobModel.getJobName());
-		if (model != null) {
-			throw new IllegalArgumentException(jobModel.getJobName() + "已存在");
-		}
-
-		jobModel.setIsSysJob(false);
-		jobService.saveJob(jobModel);
+		//jobModel.setMethodName("calculateZcinfo");
+//		JobModel model = jobDao.getByName(jobModel.getJobName());
+//		if (model != null) {
+//			throw new IllegalArgumentException(jobModel.getJobName() + "已存在");
+//		}
+//
+//		jobModel.setIsSysJob(false);
+//		jobService.saveJob(jobModel);
 	}
 
 	@LogAnnotation

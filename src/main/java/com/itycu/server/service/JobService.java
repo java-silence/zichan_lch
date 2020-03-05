@@ -12,6 +12,4 @@ public interface JobService {
 
 	void deleteJob(Long id) throws SchedulerException;
 
-	void calculateZcinfo();
-
 }

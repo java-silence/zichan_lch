@@ -515,38 +515,38 @@
 
     <insert id="saves">
         insert into zc_info
-        (self_codenum, zc_codenum, zc_name, zc_category_id, specification, model, factory, brand, support_name,
-        support_phone, installation_factory,
-        depreciation_time, jcz, stock_time, unit, zc_from, use_status, accountentry_status, accountentry_time,
-        accountant_num, original_value,
-        card_status, card_time, responsible, gl_dept_id, sy_dept_id, sy_name, store_address, start_use_time,
-        predict_years, maintain_cycle,
-        lave_time, maintain_deadline, last_maintain_time, lj_zhejiu, bn_zhejiu, netvalue, jzzb, net, net_residual_rate,
-        net_residual_value,
-        use_months, have_count, remainingperiod, cname, venperson, venphone, venaddress, warrantyperiod, catType ,del, bf, bz,
-        c01, c02, c03, create_by,
-        update_by, create_time, update_time,card_num,inspect_time,epcid,zc_coding) values
+        (
+            self_codenum,
+            zc_codenum, zc_name, zc_category_id, specification,
+            model, factory, brand, support_name,support_phone,
+            installation_factory,depreciation_time, jcz, stock_time, unit,
+            zc_from, use_status, accountentry_status, accountentry_time,accountant_num,
+            original_value,card_status, card_time, responsible, gl_dept_id,
+            sy_dept_id, sy_name, store_address, start_use_time,predict_years,
+            maintain_cycle,lave_time, maintain_deadline, last_maintain_time, lj_zhejiu,
+            bn_zhejiu, netvalue, jzzb, net, net_residual_rate,
+            net_residual_value,use_months, have_count, remainingperiod, cname,
+            venperson, venphone, venaddress, warrantyperiod, catType ,
+            del, bf, bz,c01, c02,
+            c03, create_by,update_by, create_time, update_time,
+            card_num,inspect_time,epcid,zc_coding
+        ) values
         <foreach collection="list" item="zcInfo" separator=",">
-            (#{zcInfo.selfCodenum}, #{zcInfo.zcCodenum}, #{zcInfo.zcName}, #{zcInfo.zcCategoryId},
-            #{zcInfo.specification}, #{zcInfo.model}, #{zcInfo.factory},
-            #{zcInfo.brand}, #{zcInfo.supportName}, #{zcInfo.supportPhone}, #{zcInfo.installationFactory},
-            #{zcInfo.depreciationTime}, #{zcInfo.jcz},
-            #{zcInfo.stockTime}, #{zcInfo.unit}, #{zcInfo.zcFrom}, #{zcInfo.useStatus}, #{zcInfo.accountentryStatus},
-            #{zcInfo.accountentryTime},
-            #{zcInfo.accountantNum}, #{zcInfo.originalValue}, #{zcInfo.cardStatus}, #{zcInfo.cardTime},
-            #{zcInfo.responsible}, #{zcInfo.glDeptId},
-            #{zcInfo.syDeptId}, #{zcInfo.syName}, #{zcInfo.storeAddress}, #{zcInfo.startUseTime},
-            #{zcInfo.predictYears}, #{zcInfo.maintainCycle},
-            #{zcInfo.laveTime}, #{zcInfo.maintainDeadline}, #{zcInfo.lastMaintainTime}, #{zcInfo.ljZhejiu},
-            #{zcInfo.bnZhejiu}, #{zcInfo.netvalue},
-            #{zcInfo.jzzb}, #{zcInfo.net}, #{zcInfo.netResidualRate}, #{zcInfo.netResidualValue}, #{zcInfo.useMonths},
-            #{zcInfo.haveCount},
-            #{zcInfo.remainingperiod}, #{zcInfo.cname}, #{zcInfo.venperson}, #{zcInfo.venphone}, #{zcInfo.venaddress},
-            #{zcInfo.warrantyperiod},#{zcInfo.catType},
-            #{zcInfo.del}, #{zcInfo.bf}, #{zcInfo.bz}, #{zcInfo.c01}, #{zcInfo.c02}, #{zcInfo.c03}, #{zcInfo.createBy},
-            #{zcInfo.updateBy},
-            #{zcInfo.createTime},
-            #{zcInfo.updateTime},#{zcInfo.cardNum},#{zcInfo.inspectTime},#{zcInfo.epcid},#{zcInfo.zcCoding})
+            (
+            #{zcInfo.selfCodenum}, #{zcInfo.zcCodenum}, #{zcInfo.zcName}, #{zcInfo.zcCategoryId},#{zcInfo.specification},
+            #{zcInfo.model}, #{zcInfo.factory},#{zcInfo.brand}, #{zcInfo.supportName}, #{zcInfo.supportPhone},
+            #{zcInfo.installationFactory},#{zcInfo.depreciationTime}, #{zcInfo.jcz},#{zcInfo.stockTime}, #{zcInfo.unit},
+            #{zcInfo.zcFrom}, #{zcInfo.useStatus}, #{zcInfo.accountentryStatus},#{zcInfo.accountentryTime}, #{zcInfo.accountantNum},
+            #{zcInfo.originalValue}, #{zcInfo.cardStatus}, #{zcInfo.cardTime},#{zcInfo.responsible}, #{zcInfo.glDeptId},
+            #{zcInfo.syDeptId}, #{zcInfo.syName}, #{zcInfo.storeAddress}, #{zcInfo.startUseTime},#{zcInfo.predictYears},
+            #{zcInfo.maintainCycle},#{zcInfo.laveTime}, #{zcInfo.maintainDeadline}, #{zcInfo.lastMaintainTime}, #{zcInfo.ljZhejiu},
+            #{zcInfo.bnZhejiu}, #{zcInfo.netvalue},#{zcInfo.jzzb}, #{zcInfo.net}, #{zcInfo.netResidualRate},
+            #{zcInfo.netResidualValue}, #{zcInfo.useMonths},#{zcInfo.haveCount},#{zcInfo.remainingperiod}, #{zcInfo.cname},
+            #{zcInfo.venperson}, #{zcInfo.venphone}, #{zcInfo.venaddress},#{zcInfo.warrantyperiod},#{zcInfo.catType},
+            #{zcInfo.del}, #{zcInfo.bf}, #{zcInfo.bz}, #{zcInfo.c01}, #{zcInfo.c02},
+            #{zcInfo.c03}, #{zcInfo.createBy},#{zcInfo.updateBy},#{zcInfo.createTime},#{zcInfo.updateTime},
+            #{zcInfo.cardNum},#{zcInfo.inspectTime},#{zcInfo.epcid},#{zcInfo.zcCoding}
+            )
         </foreach>
     </insert>
 

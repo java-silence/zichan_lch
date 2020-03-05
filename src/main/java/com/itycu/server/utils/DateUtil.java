@@ -24,6 +24,23 @@ public class DateUtil {
     public static final String DATE_FOMATE_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
     public static final String Message_TIME = "yyyy年MM月dd日HH点mm分";
 
+
+    /**
+     * String日期->Date日期
+     * @param stringDate
+     * @return
+     */
+    public static Date getDefaultFormatTime(String stringDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_FORMAT);
+        Date date = null;
+        try {
+            date = sdf.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
     /**
      * 获取当前系统的年份
      * @return
