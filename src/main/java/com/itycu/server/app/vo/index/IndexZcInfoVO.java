@@ -48,5 +48,6 @@ public class IndexZcInfoVO {
     private BigDecimal originalValue;
 
 
+    private String zcCodenum;
 
 }
