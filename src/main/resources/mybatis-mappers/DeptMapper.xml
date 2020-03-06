@@ -217,4 +217,14 @@
 			AND b.id != a.id
 	</select>
 
+	<!--根据用户查询部门信息-->
+	<select id="findDeptByUsers" resultType="String">
+		select distinct p.deptname from sys_user t
+		left join t_dept p on p.id = t.deptid
+		where t.id in
+		<foreach collection="users" item="userId" index="index" open="(" separator="," close=")">
+			#{userId}
+		</foreach>
+	</select>
+
 </mapper>

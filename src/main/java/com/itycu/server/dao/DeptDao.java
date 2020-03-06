@@ -59,7 +59,6 @@ public interface DeptDao {
     @Select("select * from t_dept t where t.pid = #{pid}")
     List<Dept> listByPid(@Param("pid") Long pid);
 
-
     /**
      * 查询盘点单位的简写
      * @param checkId
@@ -86,4 +85,7 @@ public interface DeptDao {
 
 
     List<Map<String,Object>> querySubDeptListById(@Param("type") String type);
+
+    /** 根据用户查询部门信息 */
+    List<String> findDeptByUsers(@Param("users") List<Long> users);
 }

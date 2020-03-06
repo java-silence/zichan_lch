@@ -328,7 +328,7 @@
                             $('#downLoad').css("display","inline-block");
                         }
                         $('#buymx').text("申请人:" + data.nickname + "  申请部门：" + data.deptname + "  申请时间："+data.createTime);
-                        $('#companyName').text("公司名称:" + data.companyName);
+                        $('#companyName').text("部门名称:" + data.companyName);
                         $('#flowid').val(data.flowid);
                         $('#stepid').val(data.stepid);
                         shenpidongtai(data.id,data.flowid);	//提取审批动态
@@ -653,19 +653,25 @@
                                 allImoney = 0;
                             }
                             html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td></td>" +
-                                "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td></tr>";
+                                "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td><td></td></tr>";
                         }
                     });
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>申请</span></td></tr>";
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='4'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>申请</span></td></tr>";
                     if (shenhe == null || JSON.stringify(shenhe) == "{}"){
-                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span></td></tr>";
-                    } else{
-                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
-                    }
+                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='4'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span></td></tr>";
+                    } else if (shenhe.length == 1) {
+                    	var shenhe = shenhe[0];
+                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='4'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+                    }else if (shenhe.length > 1 ) {
+                    	for ( var i = 0; i < shenhe.length; i++ ) {
+                    		var item = shenhe[i];
+							html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门"+(i+1)+"：</span>"+item.deptname+"</td><td class='qianzi' colspan='4'><span class='songti' >审批人：</span>【"+item.username+"】"+item.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+item.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+						}
+					}
                     if (caiwu == null || JSON.stringify(caiwu) == "{}"){
-                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span></td></tr>";
+                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='4'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span></td></tr>";
                     } else{
-                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>"+caiwu.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+caiwu.username+"】"+caiwu.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核时间：</span>"+caiwu.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+                        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>"+caiwu.deptname+"</td><td class='qianzi' colspan='4'><span class='songti' >审核人：</span>【"+caiwu.username+"】"+caiwu.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核时间：</span>"+caiwu.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
                     }
                     html += "</table>"
                 }

@@ -13,6 +13,7 @@ import com.itycu.server.service.ZcBfService;
 import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.ExcelUtil;
 import com.itycu.server.utils.UserUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -232,11 +233,20 @@ public class ZcBfController {
             // 已有的是否全部完成
             List<FlowTodoItem> flowTodoItems = flowTodoItemDao.listByToDoId(id);
             ArrayList<Long> list = new ArrayList<>();
+            ArrayList<Long> users = new ArrayList<>();
             TreeSet<Long> ids = new TreeSet<>();
+            TreeSet<Long> applyUsers = new TreeSet<>();
             for (FlowTodoItem flowTodoItem : flowTodoItems) {
                 ids.add(flowTodoItem.getFlowItemId());
+                applyUsers.add(flowTodoItem.getSendby());
             }
             list.addAll(ids);
+            users.addAll(applyUsers);
+            List<String> deptNames = deptDao.findDeptByUsers(users);
+            if (deptNames.size()>0) {
+                String deptName = StringUtils.join(deptNames, "，");
+                map.put("applyDeptName",deptName);
+            }
             // 统计审核部门是否全部完成
             int result = zcBfItemDao.countByIds(list);
             if (result > 0) {

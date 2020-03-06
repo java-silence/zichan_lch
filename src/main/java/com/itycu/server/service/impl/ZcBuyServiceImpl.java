@@ -327,6 +327,14 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 zcBuyDao.updateStatus(params);
                 // 往资产表插入信息
                 //saveWaitBuyZcInfo(zcBuy);
+                // 通知申请人
+                Notice notice = new Notice();
+                notice.setUserId(zcBuy.getApplyUserId());
+                notice.setTitle("【资产购买】");
+                notice.setStatus(0);
+                notice.setUpdateTime(null);
+                notice.setContent("你申请的购买资产已经审核完成，申请时间："+DateUtil.format(zcBuy.getCreateTime()));
+                noticeDao.save(notice);
                 // 生成ECPID
                 generateEcpId(zcBuy);
             }
@@ -354,7 +362,7 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 HashMap<String, Object> user = userList.get(0);
                 String userId = String.valueOf(user.get("id"));
                 // 插入通知消息给财务
-                noticeDao.save(getNotice(applyDept,applyUser,flowTodoItems,userId,zcBuy.getApplyTime()));
+                noticeDao.save(getNotice(applyDept,applyUser,zcBuyId,userId,zcBuy.getApplyTime()));
                 Flowstep flowstep1 = getFlowstepById(nextNodeId, flowsteps);
                 // 插入待办信息
                 SysUserDto byId = userDao.getById(zcBuy.getApplyUserId());
@@ -424,14 +432,14 @@ public class ZcBuyServiceImpl implements ZcBuyService {
      * 构建通知消息
      * @param applyDept
      * @param applyUser
-     * @param flowTodoItems
      * @return
      */
-    private Notice getNotice(Dept applyDept, SysUserDto applyUser, List<FlowTodoItem> flowTodoItems,String userId,Date date) {
+    private Notice getNotice(Dept applyDept, SysUserDto applyUser, Long zcBuyId,String userId,Date date) {
         List<String> items = new ArrayList<>();
-        for (FlowTodoItem flowTodoItem : flowTodoItems) {
-            String name = flowTodoItem.getName();
-            Integer num = flowTodoItem.getNum();
+        List<ZcBuyItem> zcBuyItems = zcBuyItemDao.listByZcBuyId(zcBuyId);
+        for (ZcBuyItem zcBuyItem : zcBuyItems) {
+            String name = zcBuyItem.getName();
+            Integer num = zcBuyItem.getNum();
             items.add(name+":"+num);
         }
         // <p>资产购买申请。【申请部门】：AAA,【申请人】：BBB,【申请时间】：CCC</p>

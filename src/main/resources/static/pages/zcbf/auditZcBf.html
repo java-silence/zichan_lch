@@ -503,8 +503,7 @@
 					success : function(data) {
 					    var ta = data;
                         var data = data.data;
-                        $('#bfmx').text("申请人:" + data.nickname + "  申请部门：" + data.deptname + "  申请时间："+data.createTime);
-                        //$('#statusText').text("审核状态:" + data.statusText);
+                        $('#bfmx').text("申请部门：" + ta.applyDeptName);
                         var bfdes = data.bfdes;
                         var bfbz = data.bfbz;
                         if ( data.bfdes == null ) {

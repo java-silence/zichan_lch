@@ -24,6 +24,7 @@ public class ZcBfServiceImpl implements ZcBfService {
     private static final Logger log = LoggerFactory.getLogger("adminLogger");
     public static final String bfActionUrl = "zcbf/auditZcBf.html";
     public static final String cwbfActionUrl = "zcbf/cwauditZcBf.html";
+
     @Autowired
     private ZcBfDao zcBfDao;
     @Autowired
@@ -164,8 +165,6 @@ public class ZcBfServiceImpl implements ZcBfService {
             //HashMap<String, Object> checkUser = userList.get(0);
             //String id = String.valueOf(checkUser.get("id"));
             Long id = user.getId();
-
-
             // 给自己插入待办信息
             Long flowTodoId1 = saveFlowTodo(loginUser.getId(), loginUser, 0,zcBf, flowsteps.get(0),1,zcBf.getId(),"start");
             // 查询该用户,报废资产的待办任务
@@ -226,6 +225,7 @@ public class ZcBfServiceImpl implements ZcBfService {
         FlowTodoItem flowTodoItem1 = flowTodoItems.get(0);
         Long todoId = flowTodoItem1.getFlowTodoId();
         Todo flowTodo = todoDao.getById(todoId);
+        List<FlowTodoItem> allFlowTodoItems = flowTodoItemDao.listByToDoId(todoId);
         // 1,修改报废子项分类别
         List<FlowTodoItem> agreeTodoItems = new ArrayList<>();        // 1审核为同意   2财务为报废  3再次提交的
         List<Long> agreeToDoItemIds = new ArrayList<>();

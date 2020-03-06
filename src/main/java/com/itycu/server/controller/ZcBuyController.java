@@ -102,7 +102,7 @@ public class ZcBuyController {
         Map map = new HashMap<>();
         ZcBuy zcBuy = zcBuyDao.getById(id);
         Map<String, Object> shenqing = new HashMap<>();
-        Map<String, Object> shenhe = new HashMap<>();
+        List<Map<String, Object>> shenhe = new ArrayList<>();
         Map<String, Object> caiwu = new HashMap<>();
         // 申请人信息
         HashMap<String, Object> zcBuyDetail = zcBuyDao.getZcBuyDetail(id);
@@ -113,17 +113,18 @@ public class ZcBuyController {
         // 审核人信息
         List<Map<String,Object>> list = todoDao.findAuditors(id,actionUrl);
         for (int i = 0; i < list.size(); i++) {
-            if (i == 0){
-                shenhe.put("updateTime",list.get(i).get("updateTime"));
-                shenhe.put("username",list.get(i).get("username"));
-                shenhe.put("nickname",list.get(i).get("nickname"));
-                shenhe.put("deptname",list.get(i).get("deptname"));
-            }
-            if (i == 1){
+            if (i == (list.size()-1)){
                 caiwu.put("updateTime",list.get(i).get("updateTime"));
                 caiwu.put("username",list.get(i).get("username"));
                 caiwu.put("nickname",list.get(i).get("nickname"));
                 caiwu.put("deptname",list.get(i).get("deptname"));
+            }else {
+                Map<String, Object> item = new HashMap<>();
+                item.put("updateTime",list.get(i).get("updateTime"));
+                item.put("username",list.get(i).get("username"));
+                item.put("nickname",list.get(i).get("nickname"));
+                item.put("deptname",list.get(i).get("deptname"));
+                shenhe.add(item);
             }
         }
         map.put("zcBuy",zcBuy);

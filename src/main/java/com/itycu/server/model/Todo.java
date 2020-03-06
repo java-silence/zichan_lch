@@ -32,9 +32,6 @@ public class Todo extends BaseEntity<Long> {
     private String todoIds;
 
 
-
-
-
     public Integer getType() {
         return type;
     }
