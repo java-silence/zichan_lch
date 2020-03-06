@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class IndexZcInfoVO {
 
-    private int    id;
+    private Integer    id;
 
     private String epcid;
 
@@ -35,7 +35,7 @@ public class IndexZcInfoVO {
     private Date  startUseTime;
 
 
-    private int  remainingperiod;
+    private Integer  remainingperiod;
 
     /**
      * 净额
