@@ -992,6 +992,7 @@
             a.zc_from AS zcFrom,
             a.start_use_time AS startUseTime,
             remainingperiod,
+            zc_codenum as zcCodenum,
             net,
             a.original_value AS originalValue
         FROM

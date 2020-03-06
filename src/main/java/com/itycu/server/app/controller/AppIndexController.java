@@ -140,9 +140,10 @@ public class AppIndexController {
     public Map<String, Object> getZcInfo(@RequestBody ZcInfoEpcIdDTO zcInfoEpcIdDTO) {
         Map<String, Object> map = new HashMap<>();
         try {
-            IndexZcInfoVO zcInfoVO = new IndexZcInfoVO();
+            IndexZcInfoVO zcInfoVO = null;
             ZcInfoDto zcInfoDto = zcInfoService.queryZnInfoDtoByEpcId(zcInfoEpcIdDTO.getEpcid());
             if (null != zcInfoDto) {
+                zcInfoVO = new IndexZcInfoVO();
                 BeanUtils.copyProperties(zcInfoVO, zcInfoDto);
             }
             map.put("code", 0);
