@@ -236,9 +236,10 @@ public class ZcBfServiceImpl implements ZcBfService {
         List<FlowTodoItem> backTodoItems = new ArrayList<>();
         List<Long> backToDoItemIds = new ArrayList<>();
         List<Long> backBfItemIds = new ArrayList<>();
-
         // 记录审核同意的个数
-        int count = 0;
+        int agreeCount = 0;
+        int refuseCount = 0;
+        int backCount = 0;
         // 审核部处理的
         for (FlowTodoItem flowTodoItem : flowTodoItems) {
             // 更新报废子项信息
@@ -249,11 +250,12 @@ public class ZcBfServiceImpl implements ZcBfService {
                 agreeTodoItems.add(flowTodoItem);
                 agreeToDoItemIds.add(flowTodoItem.getId());
                 agreeBfItemIds.add(flowTodoItem.getFlowItemId());
-                count++;
+                agreeCount++;
             }else if ( flowTodoItem.getStatus() == 2 && flowTodoItem.getShbStatus() == null ) {
                 refuseTodoItems.add(flowTodoItem);
                 refuseToDoItemIds.add(flowTodoItem.getId());
                 refuseBfItemIds.add(flowTodoItem.getFlowItemId());
+                refuseCount++;
             }else if ( flowTodoItem.getStatus() == 3 && flowTodoItem.getShbStatus() == null ) {
                 backTodoItems.add(flowTodoItem);
                 backToDoItemIds.add(flowTodoItem.getId());
@@ -345,6 +347,7 @@ public class ZcBfServiceImpl implements ZcBfService {
             flowTodoItemDao.updateListStatus(3,backToDoItemIds);
             // 驳回的资产中多个发起部门的信息
             // Long currentFlowid = saveFlowTodo(flowTodo.getSendby(), (SysUser)loginUser, zcBf, flowstep);
+            TreeSet<Long> users = new TreeSet<>();
             for (FlowTodoItem backTodoItem : backTodoItems) {
                 // 获取发起人信息
                 Long sendby = backTodoItem.getSendby();
@@ -364,12 +367,23 @@ public class ZcBfServiceImpl implements ZcBfService {
                 flowTodoItem.setFlowItemId(backTodoItem.getFlowItemId());
                 flowTodoItem.setStatus(0);
                 int ressult = flowTodoItemDao.save(flowTodoItem);
+                if (!users.contains(sendby)) {
+                    users.add(sendby);
+                    // 发送驳回的消息
+                    Notice notice = new Notice();
+                    notice.setUserId(sendby);
+                    notice.setTitle("【资产处置驳回】");
+                    notice.setStatus(0);
+                    notice.setUpdateTime(null);
+                    notice.setContent("【驳回内容】:"+(ObjectUtils.isEmpty(zcBfCheckDto.getNeirong())?"无":zcBfCheckDto.getNeirong()));
+                    noticeDao.save(notice);
+                }
             }
             // 更新报废子项
             zcBfItemDao.updateListStatus("shb",3,backBfItemIds,loginUser.getNickname(),dept.getDeptname());
         }
         // 判断是不是再次提交的
-        if (flowTodo.getType() == 1 || count == 0) {
+        if (flowTodo.getType() == 1 || (refuseCount == allFlowTodoItems.size())) {
             flowTodo.setNeirong(zcBfCheckDto.getNeirong());
             // 待办中两种状态 0:待办理 1:已办理
             flowTodo.setStatus("1");

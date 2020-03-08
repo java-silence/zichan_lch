@@ -311,7 +311,7 @@
                             }
                             return status;
                         }}
-                    ,{field:'caozuo',width:260, title: '操作',fixed:'right',align:'center', toolbar: '#auditBfItem'}
+                    ,{field:'caozuo',width:300, title: '操作',fixed:'right',align:'center', toolbar: '#auditBfItem'}
                 ]]
                 , done: function(res, curr, count){
                     if ($('#scrollDiv').find(".layui-table-main") && $("#scrollTop").val())
@@ -324,6 +324,20 @@
                     var tableElem = this.elem;
                     // table render出来实际显示的table组件
                     var tableViewElem = tableElem.next();
+                    upload.render({
+                        elem: tableViewElem.find('.up_route_btn') //绑定元素
+                        ,accept: 'file|images' //允许上传的文件类型
+                        ,exts: 'jpg|png|jpeg|pdf'
+                        ,url: '/files' //上传接口
+                        ,done: function(res, index, upload){
+                            var url = res.url;
+                            layer.msg("上传成功");
+                            // 上传图片-----------------------------
+                            table.cache[tableId][this.item.closest("tr").data('index')]["fileName"] = res.filename;
+                            table.cache[tableId][this.item.closest("tr").data('index')]["fileUrl"] = url
+                            table.reload(tableId,{data:table.cache[tableId]});
+                        }
+                    });
                     upload.render({
                         elem: tableViewElem.find('.up_route_btn1') //绑定元素
                         ,accept: 'file|images' //允许上传的文件类型
@@ -356,10 +370,6 @@
                                     table.reload(tableId,{data:table.cache[tableId]});
                                 }
                             });
-                            // 上传图片-----------------------------
-                            //table.cache[tableId][this.item.closest("tr").data('index')]["identifyFileName"] = res.filename;
-                            //table.cache[tableId][this.item.closest("tr").data('index')]["identifyFileUrl"] = url
-                            //table.reload(tableId,{data:table.cache[tableId]});
                         }
                     });
                 }
@@ -501,9 +511,10 @@
 					url : '/zcBfs/getZcBfDetail?id='+id+'&bfzcid='+bfzcid,
 					async : false,
 					success : function(data) {
+					    debugger
 					    var ta = data;
                         var data = data.data;
-                        $('#bfmx').text("申请部门：" + ta.applyDeptName);
+                        $('#bfmx').text("申请部门：" + data.deptname);
                         var bfdes = data.bfdes;
                         var bfbz = data.bfbz;
                         if ( data.bfdes == null ) {
