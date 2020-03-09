@@ -210,19 +210,28 @@ public class ZcBfItemController {
      */
     @GetMapping("/listtodoid")
     @ApiOperation(value = "根据报废主表找到子表数据")
-    public Map listtodoid(@RequestParam(value = "todoid",required = false) Long todoid) {
-        Map map = new HashMap();
-        //List<ZcBfItem> list = zcBfItemDao.listByZcBfId(zcBfId);
+    public Map listtodoid(@RequestParam(value = "todoid",required = false) Long todoid,
+                          @RequestParam(value = "cw",required = false) String cw) {
 
+        Map map = new HashMap();
         List<FlowTodoItem> flowTodoItems = flowTodoItemDao.listByToDoId(todoid);
         List<Long> bfitemids = flowTodoItems.stream().map(e -> e.getFlowItemId()).collect(Collectors.toList());
-
         List<Map<String,Object>> list = new ArrayList<>();
-//        if ( zcBfId != null ) {
-//            list = zcBfItemDao.listDetailByZcBfId(zcBfId);
-//        }
         list = zcBfItemDao.listByItemIds(bfitemids);
-
+        if (!ObjectUtils.isEmpty(cw)) {
+            List<Map<String,Object>> data = new ArrayList<>();
+            for (Map<String, Object> item : list) {
+                int del = Integer.parseInt(item.get("del").toString());
+                Object cwbStatus = item.get("cwbStatus");
+                if (0 == del && "1".equals(cwbStatus)) {
+                    data.add(item);
+                }
+            }
+            map.put("data",data);
+            map.put("code","0");
+            map.put("msg","成功");
+            return map;
+        }
         map.put("data",list);
         map.put("code","0");
         map.put("msg","成功");

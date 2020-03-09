@@ -159,17 +159,33 @@
 				,{field:'syDeptName',title:'使用部门', width:200, sort: true}
 				,{field:'storeAddress',title:'存放地点', width:200, sort: true}
 				,{field:'inspectTime',title:'巡检周期', width:110, sort: true}
-				,{field:'content',title:'巡检内容', width:110, sort: true}
-				,{field:'bz',title:'备注', width:110, sort: true}
-				,{field:'result',title:'巡检结果', width:100, sort: true,templet:function(d){
+				,{field:'opinion',title:'巡检意见', width:110, sort: true}
+				//,{field:'bz',title:'备注', width:110, sort: true}
+				,{field:'appearance',title:'外观状况', width:100, sort: true,templet:function(d){
 						formatData(d);
-						if (d.result == "异常"){
-							return "<span style='color:red'>"+d.result+"</span>"
-						} else{
-							return d.result;
+						if (d.appearance == 0){
+							return "<span style='color:red'>损坏</span>"
+						} else if(d.appearance == 1){
+							return "<span style='color:green'>完好</span>"
 						}
 					}}
-				,{field:'zgjg',title:'整改结果', width:110, sort: true}
+				,{field:'funct',title:'功能状况', width:100, sort: true,templet:function(d){
+						formatData(d);
+						if (d.funct == 0){
+							return "<span style='color:red'>异常</span>"
+						} else if(d.funct == 1){
+							return "<span style='color:green'>正常</span>"
+						}
+					}}
+				,{field:'result',title:'巡检结果', width:100, sort: true,templet:function(d){
+						formatData(d);
+						if (d.result == 0){
+							return "<span style='color:red'>不达标</span>"
+						} else if(d.result == 1){
+							return "<span style='color:green'>达标</span>"
+						}
+					}}
+				//,{field:'zgjg',title:'整改结果', width:110, sort: true}
 			]]
 		});
 

@@ -243,6 +243,7 @@
                 ,data:[]
                 ,url:"/zcBfItems/listByZcBfIdNew?todoId="+todoId
                 //,height: 'full-200'
+				,limit:10000
                 ,page: false
                 ,totalRow: true
                 ,cols: [[
@@ -514,7 +515,7 @@
 					    debugger
 					    var ta = data;
                         var data = data.data;
-                        $('#bfmx').text("申请部门：" + data.deptname);
+                        $('#bfmx').text("申请部门：" + ta.applyDeptName);
                         var bfdes = data.bfdes;
                         var bfbz = data.bfbz;
                         if ( data.bfdes == null ) {

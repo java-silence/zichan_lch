@@ -220,9 +220,10 @@
                 and t.cat_code like concat('',#{params.catCode},'%')
             </if>
             <if test="params.daixunjian != null and params.daixunjian != ''">
-                and (FLOOR(timestampdiff(DAY,start_use_time,now())/inspect_time) =
-                timestampdiff(DAY,start_use_time,now())/inspect_time) = 1 and inspect_time is not null and
-                timestampdiff(DAY,start_use_time,now()) > 0
+                AND (FLOOR(timestampdiff(DAY,start_use_time,now())/inspect_time) =
+                    timestampdiff(DAY,start_use_time,now())/inspect_time) = 1
+                AND inspect_time is not null
+                AND timestampdiff(DAY,start_use_time,now()) > 0
             </if>
             <if test="params.epcid != null and params.epcid != ''">
                 and t.epcid = #{params.epcid}
@@ -445,8 +446,10 @@
             </if>
             <if test="params.daixunjian != null and params.daixunjian != ''">
                 and (FLOOR(timestampdiff(DAY,start_use_time,now())/inspect_time) =
-                timestampdiff(DAY,start_use_time,now())/inspect_time) = 1 and inspect_time is not null and
-                timestampdiff(DAY,start_use_time,now()) > 0
+                    timestampdiff(DAY,start_use_time,now())/inspect_time) = 1
+                and inspect_time is not null
+                and timestampdiff(DAY,start_use_time,now()) > 0
+                AND (b.create_time IS NULL OR datediff(b.create_time,now()) &lt; 0)
             </if>
             <if test="params.epcid != null and params.epcid != ''">
                 and t.epcid = #{params.epcid}
@@ -482,6 +485,9 @@
 
     <select id="bfCount" resultType="int">
         select count(1) from v_zc_info t
+        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        left join (SELECT * FROM (SELECT zc_id,create_time FROM zc_inspect_record ORDER BY create_time DESC) z GROUP BY z.zc_id ) b
+        on t.id = b.zc_id
         <include refid="export"/>
     </select>
 
@@ -490,6 +496,8 @@
         ,t_creator.nickname as creator
         from v_zc_info t
         LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        left join (SELECT * FROM (SELECT zc_id,create_time FROM zc_inspect_record ORDER BY create_time DESC) z GROUP BY z.zc_id ) b
+        on t.id = b.zc_id
         <include refid="export"/>
         ${params.orderBy}
         limit #{offset}, #{limit}
@@ -500,7 +508,9 @@
         select t.*
         ,t_creator.nickname as creator
         from v_zc_info t
-        LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+        LEFT JOIN sys_user t_creator ON t.create_by=t_creator.id
+        left join (SELECT * FROM (SELECT zc_id,create_time FROM zc_inspect_record ORDER BY create_time DESC) z GROUP BY z.zc_id ) b
+                  on t.id = b.zc_id
         <include refid="export"/>
         ${params.orderBy}
     </select>
