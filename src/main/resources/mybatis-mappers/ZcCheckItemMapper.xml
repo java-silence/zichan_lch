@@ -412,12 +412,22 @@ where  a.zc_check_id = #{checkId}  AND a.result =0
         <foreach collection="list" separator=";" item="model">
             update zc_check_item t
             <set>
-                zc_id = #{model.zcId},
-                result = #{model.result},
-                del = #{model.del},
+                <if test="model.zcId!=null">
+                    zc_id = #{model.zcId},
+                </if>
+                <if test="model.result!=null">
+                    result = #{model.result},
+                </if>
+                <if test="model.del！=null ">
+                    del = #{model.del},
+                </if>
+                <if test="model.reCheck！=null ">
+                    re_check = #{model.reCheck},
+                </if>
+                <if test="model.profit！=null ">
+                    profit = #{model.profit},
+                </if>
                 finish_time = now(),
-                re_check = #{model.reCheck},
-                profit = #{model.profit},
             </set>
             where t.id = #{model.id}
         </foreach>
