@@ -423,7 +423,11 @@
                         // if (status == 1) {
                         //     card = "<button class='layui-btn layui-btn-xs' title='发卡' lay-event='card'>发卡</button>"
                         // }
-                        return edit + del + card;
+                        var allButton = edit + del + card;
+                        if (allButton == '') {
+                            allButton = "<button class='layui-btn layui-btn-xs' title='无权限操作' lay-event='card'>暂无权限</button>";
+                        }
+                        return allButton;
                     }
                 }
             ]]

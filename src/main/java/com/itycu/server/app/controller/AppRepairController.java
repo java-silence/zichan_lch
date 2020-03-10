@@ -111,6 +111,7 @@ public class AppRepairController {
             int limit = repairZcInfoListDTO.getLimit();
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("del", "0");
+            params.put("status", "2");
             List<ZcRepairDto> list = zcRepairDao.list(params, page * limit - limit, limit);
             if (!CollectionUtils.isEmpty(list)) {
                 list.forEach(k -> {
@@ -120,6 +121,7 @@ public class AppRepairController {
                     recordVO.setNickname(k.getNickname());
                     recordVO.setCode(k.getCode());
                     recordVO.setCreateTime(k.getCreateTime());
+
                     listVO.add(recordVO);
                 });
             }

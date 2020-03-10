@@ -36,4 +36,10 @@ public class IndexServiceImpl implements IndexService {
     public List<Todo> queryAllTodoList(long userId) {
         return todoDao.queryAllTodoList(userId);
     }
+
+    @Override
+    public List<Todo> appQueryAllTodoList(Long userId) {
+        return todoDao.appQueryAllTodoList(userId);
+    }
+
 }

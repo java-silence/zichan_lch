@@ -1,20 +1,21 @@
 package com.itycu.server.app.vo.baoxiu;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 维修完成记录
+ */
 @Data
-public class RepairZcInfoRecordVO {
+public class RepairZcInfoRecordVO implements Serializable{
 
     private int id;
 
-
     private String code;
-
 
     private String nickname;
 

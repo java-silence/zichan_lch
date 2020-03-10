@@ -123,7 +123,7 @@ public class AppIndexController {
         Map<String, Object> map = new HashMap<>();
         SysUser sysUser = UserUtil.getLoginUser();
         try {
-            List<Todo> list = indexService.queryAllTodoList(sysUser.getId());
+            List<Todo> list = indexService.appQueryAllTodoList(sysUser.getId());
             map.put("code", 0);
             map.put("message", "成功");
             map.put("data", list);

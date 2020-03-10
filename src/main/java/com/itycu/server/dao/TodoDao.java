@@ -59,4 +59,6 @@ public interface TodoDao {
 
 
     List<Todo> queryAllTodoList(@Param("userId")long userId);
+
+    List<Todo> appQueryAllTodoList(@Param("userId")long userId);
 }

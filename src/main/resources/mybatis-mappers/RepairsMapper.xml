@@ -139,7 +139,7 @@
 		where t.id = #{id}
 	</update>
 
-    <select id="getRepairVOList" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
+    <select id="getRepairVOList1" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
         SELECT
         c.id,
         c.epcid,
@@ -171,7 +171,7 @@
         limit #{offset}, #{limit}
     </select>
 
-	<select id="getRepairVOList1" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
+	<select id="getRepairVOList" resultType="com.itycu.server.app.vo.baoxiu.RepairZcInfoListVO">
 		SELECT
 			c.id,
 			c.epcid,

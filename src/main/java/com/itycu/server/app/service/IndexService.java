@@ -15,4 +15,6 @@ public interface IndexService {
 
 
     List<Todo> queryAllTodoList(long userId);
+
+    List<Todo> appQueryAllTodoList(Long userId);
 }

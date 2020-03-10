@@ -6,8 +6,6 @@ import com.itycu.server.app.util.FailMap;
 import com.itycu.server.dao.ZcCheckDao;
 import com.itycu.server.dao.ZcCheckItemDao;
 import com.itycu.server.model.ZcCheck;
-import com.itycu.server.model.ZcCheckDownLoadItemVO;
-import com.itycu.server.model.ZcCheckDownLoadVO;
 import com.itycu.server.model.ZcCheckItem;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
@@ -67,7 +65,6 @@ public class ZcCheckUpLoadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -127,10 +124,14 @@ public class ZcCheckUpLoadController {
 
     private void exportJsonData(String data, HttpServletResponse response) throws IOException {
         File file = File.createTempFile("PanDian", ".json");
-        FileOutputStream outputStream = new FileOutputStream(file.getPath(), true);
-        outputStream.write(data.getBytes());
-        outputStream.flush();
-        outputStream.close();
+        OutputStreamWriter oStreamWriter = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+        oStreamWriter.append(data);
+        oStreamWriter.flush();
+        oStreamWriter.close();
+        //FileOutputStream outputStream = new FileOutputStream(file.getPath(), true);
+        //outputStream.write(data.getBytes());
+        //outputStream.flush();
+        //outputStream.close();
         response.reset();
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/octet-stream");

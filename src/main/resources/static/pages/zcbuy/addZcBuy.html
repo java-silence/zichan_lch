@@ -59,6 +59,9 @@
                     <i class="layui-icon">&#xe67c;</i>上传附件
                 </button>
                 <span id="fileImgDiv"></span><span class="layui-btn" onclick="download()">下载附件</span>
+
+                <!--<span id="fileImgDiv1"></span><span class="layui-btn" onclick="downloadTest()">下载附件111111</span>-->
+
                 <!--<span id="111"></span><span class="layui-btn" onclick="download3()">下载ceshi</span>-->
                 <input type="hidden" name="fileUrl" id="fileUrl"/>
                 <input type="hidden" name="fileName" id="fileName"/>
@@ -324,6 +327,14 @@
                 $('#companyName').val(data.deptName);
             }
         });
+    }
+
+    // 下载
+    function downloadTest() {
+        var $form = $("#fileForm");
+        var u = '/zcCheck/download?downId=1';
+        $form.attr("action",u);
+        $form.submit();
     }
 
     // 下载

@@ -190,13 +190,24 @@
         )
 	</select>
 
-
 	<select id="queryAllTodoList" resultType="com.itycu.server.model.Todo">
 		 SELECT
 		 	*
 		 FROM flow_todo
 		 WHERE
 		  	auditby  = #{userId} and status = 0
+		 order by createTime desc
+	</select>
+
+	<!--APP待办列表 2020-03-10-->
+	<select id="appQueryAllTodoList" resultType="com.itycu.server.model.Todo">
+		 SELECT
+		 	t.*,
+		 	u.username,u.nickname
+		 FROM flow_todo t
+		 left join sys_user u on t.bizcreateby = u.id
+		 WHERE
+		  	t.auditby  = #{userId} and t.status = 0
 		 order by createTime desc
 	</select>
 
