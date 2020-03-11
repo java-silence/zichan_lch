@@ -6,6 +6,7 @@ import java.util.Map;
 import com.itycu.server.model.Todo;
 import com.itycu.server.dto.TodoVO;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 
 @Mapper
 public interface TodoDao {
@@ -61,4 +62,9 @@ public interface TodoDao {
     List<Todo> queryAllTodoList(@Param("userId")long userId);
 
     List<Todo> appQueryAllTodoList(@Param("userId")long userId);
+
+    @Select("select id from flow_todo where bizid = #{bizid} and url = #{actionUrl}")
+    List<Long> getByBizidAndUrl(@Param("bizid") Long bizid, @Param("actionUrl") String actionUrl);
+
+    List<Map<String, Object>> findAgreeAuditors(@Param("strFlowItemIds") String strFlowItemIds, @Param("strTodoIds") String strTodoIds);
 }

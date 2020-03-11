@@ -79,4 +79,6 @@ public interface ZcBuyItemDao {
     int countFinish(@Param("params") Map<String,Object> params);
 
     List<Map<String,Object>> listZcBuyFinish(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    List<Long> listAllPass(@Param("params") Map<String, Object> params);
 }

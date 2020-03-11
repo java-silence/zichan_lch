@@ -223,6 +223,7 @@
 <script type="text/javascript" src="../../js/UHF.js"></script>
 <script type="text/javascript" src="../../js/dict.js"></script>
 <script type="text/javascript">
+
     var pers = checkPermission();
     var useStatus = showDictSelect("useStatus","useStatus",false)
     var status = 0;
@@ -420,6 +421,7 @@
                         var edit = buttonEdit(href, "sys:zcInfo:edit", pers);
                         var del = buttonDel(id, "sys:zcInfo:del", pers);
                         var card = "";
+                        // 发卡功能
                         // if (status == 1) {
                         //     card = "<button class='layui-btn layui-btn-xs' title='发卡' lay-event='card'>发卡</button>"
                         // }

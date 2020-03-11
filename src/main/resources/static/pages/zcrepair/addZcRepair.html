@@ -17,8 +17,8 @@
 	<div class="form-actions">
 		<div class="row">
 			<div class="col-md-12">
-<!--				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>-->
-<!--				<button class="layui-btn" type="submit" onclick="addAndSava()"><i class="fa fa-save"></i>保存</button>-->
+				<!--<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>-->
+				<!--<button class="layui-btn" type="submit" onclick="addAndSava()"><i class="fa fa-save"></i>保存</button>-->
 				<button class="layui-btn" type="submit" onclick="addAndCommit()"><i class="fa fa-save"></i>保存并提交</button>
 			</div>
 		</div>
@@ -27,20 +27,6 @@
 	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
 		<input id="type" name="type" type="hidden" />
 		<input id="id" name="id" type="hidden" />
-<!--		<div class='layui-form-item'>-->
-<!--			<div class='layui-inline'>-->
-<!--				<label class='layui-form-label'>报修描述</label>-->
-<!--				<div class='layui-input-inline'>-->
-<!--					<input class='layui-input' placeholder='报修描述' type='text' name='repairDes' id='repairDes'>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--			<div class='layui-inline'>-->
-<!--				<label class='layui-form-label'>备注信息</label>-->
-<!--				<div class='layui-input-inline'>-->
-<!--					<input class='layui-input' placeholder='备注信息' type='text' name='bz' id='bz' >-->
-<!--				</div>-->
-<!--			</div>-->
-<!--		</div>-->
 	</form>
 	<br>
 	<form class="layui-form layui-table-tool" onsubmit="return false">
@@ -91,7 +77,6 @@
 				,{field:'zcId',title:'资产ID', width:100, sort: true,hide:true}
 				,{field:'applyDeptId',title:'申请部门ID', width:100, sort: true,hide:true}
 				,{field:'glDeptId',title:'管理部门ID', width:100, sort: true,hide:true}
-
 				,{field:'epcid',title:'资产追溯码', width:150, sort: true}
 				// ,{field:'cardNum',title:'卡片编号', width:150, sort: true}
 				,{field:'zcCodenum',title:'资产编码', width:150, sort: true}

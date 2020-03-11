@@ -201,9 +201,23 @@
                     ,{field:'buyBz',title:'备注', width:100,edit:'text'}
                     ,{field:'status',title:'状态', align:'center',width:100, fixed:'right',templet: function(d){
                             var status = "";
-                            if (type == 1){
-                                status = "<span style='color: #009688'>已处理</span>";
-							} else {
+                            debugger
+                            if (type == 1){  // 跟踪事宜
+                                //status = "<span style='color: #009688'>已处理</span>";
+                                // 待处理 处理中 处理完成
+								if ((d.shbStatus==null || d.shbStatus=='') && (d.cwbStatus==null || d.cwbStatus=='') ) {
+									status = "<span style='color: red'>待处理</span>";
+								}
+								if (d.del == 1) {
+									status = "<span style='color: #FFB800'>拒绝</span>";
+								}
+								if (d.cwbStatus == 1) {
+									status = "<span style='color: #009688'>同意</span>";
+								}
+								if (d.cwbStatus == 3 || d.shbStatus == 3) {
+									status = "<span style='color: #009688'>处理中</span>";
+								}
+							} else if (type == 0) { // 待办事宜
                                 if (d.status == 0 ){
                                     status = "<span style='color: red'>待处理</span>";
                                 }else if (d.status == 1 && d.itemStatus != 3 && d.shbStatus !=3 ){

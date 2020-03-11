@@ -17,10 +17,10 @@ import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.ExcelUtil;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -100,6 +100,7 @@ public class ZcBuyController {
     @ApiOperation(value = "根据id获取")
     public Map get(@PathVariable Long id) {
         Map map = new HashMap<>();
+
         ZcBuy zcBuy = zcBuyDao.getById(id);
         Map<String, Object> shenqing = new HashMap<>();
         List<Map<String, Object>> shenhe = new ArrayList<>();
@@ -110,9 +111,22 @@ public class ZcBuyController {
         shenqing.put("username",zcBuyDetail.get("username"));
         shenqing.put("nickname",zcBuyDetail.get("nickname"));
         shenqing.put("deptname",zcBuyDetail.get("deptname"));
+
+        // 查询全部通过的购买资产ID
+        Map<String, Object> params = new HashMap<>();
+        params.put("del","0");
+        params.put("cwbStatus","1");
+        params.put("zcBuyId","1");
+        List<Long> flowItemIds = zcBuyItemDao.listAllPass(params);
+        List<Long> todoIds = todoDao.getByBizidAndUrl(id,actionUrl);
+
+        String strFlowItemIds = StringUtils.join(flowItemIds, ",");
+        String strTodoIds = StringUtils.join(todoIds, ",");
         // 审核人信息
-        List<Map<String,Object>> list = todoDao.findAuditors(id,actionUrl);
+        //List<Map<String,Object>> list = todoDao.findAuditors(id,actionUrl);
+        List<Map<String,Object>> list = todoDao.findAgreeAuditors(strFlowItemIds,strTodoIds);
         for (int i = 0; i < list.size(); i++) {
+            if (i == 0) continue;
             if (i == (list.size()-1)){
                 caiwu.put("updateTime",list.get(i).get("updateTime"));
                 caiwu.put("username",list.get(i).get("username"));
@@ -305,7 +319,7 @@ public class ZcBuyController {
         for (Map zcInfo : list) {
             String applyTime = (String) zcInfo.get("applyTime");
             String useTime = "";
-            if (zcInfo.get("startUseTime") != null && !StringUtils.isEmpty(zcInfo.get("startUseTime"))) {
+            if (zcInfo.get("startUseTime") != null && !ObjectUtils.isEmpty(zcInfo.get("startUseTime"))) {
                 useTime = s.format((Date) zcInfo.get("startUseTime"));
             }
             Object[] objects = new Object[]{

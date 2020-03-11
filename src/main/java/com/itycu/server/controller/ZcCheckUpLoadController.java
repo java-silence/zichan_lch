@@ -103,6 +103,7 @@ public class ZcCheckUpLoadController {
             List<ZcCheckItem> loadItemVOList = zcCheckDownLoadVO.getCheckItemList();
             if (!CollectionUtils.isEmpty(loadItemVOList)) {
                 zcCheckItemDao.updateLoadCheckIem(loadItemVOList);
+                zcCheckDownLoadVO.setStatus(2);
                 int result = zcCheckDao.update(zcCheckDownLoadVO);
                 if (result > 0) {
                     map.put("code", 0);

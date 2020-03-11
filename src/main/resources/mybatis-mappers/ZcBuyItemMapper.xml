@@ -600,4 +600,9 @@
 		limit #{offset}, #{limit}
 	</select>
 
+	<!--查询审核通过的购买资产ID集合-->
+	<select id="listAllPass" resultType="long">
+		select id from zc_buy_item where zc_buy_id = #{params.zcBuyId} and del = #{params.del} and cwb_status = #{params.cwbStatus}
+	</select>
+
 </mapper>

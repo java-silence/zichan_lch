@@ -135,29 +135,6 @@ public class AppRepairController {
         return map;
     }
 
-
-//    @PostMapping(value = "/repair/record/zcList")
-//    @ApiOperation(value = "获取报修记录的【资产列表】", notes = "获取报修记录的【资产列表】")
-//    public Map<String, Object> getRepairRecordItemList(@RequestBody RepairZcInfoListDTO repairZcInfoListDTO) {
-//        Map<String, Object> map = new HashMap<>();
-//        try {
-//
-//            int page = repairZcInfoListDTO.getOffset();
-//            int limit = repairZcInfoListDTO.getLimit();
-//            Map<String, Object> params = new HashMap<String, Object>();
-//            params.put("del", "0");
-//            List<ZcRepairDto> list = zcRepairDao.list(params, page * limit - limit, limit);
-//            map.put("data", list);
-//            map.put("code", "0");
-//            map.put("msg", "成功");
-//        } catch (Exception e) {
-//            logger.info("获取报修的【记录列表】==>{}", e.getMessage());
-//            return FailMap.createFailMapMsg("获取报修的记录列表失败");
-//        }
-//        return map;
-//    }
-
-
     @PostMapping(value = "/listByZcReId")
     @ApiOperation(value = "根据报修记录资产数据列表", notes = "根据报修记录资产数据列表")
     public Map<String, Object> listByZcReId(@RequestBody RepairZcItemRecordListDTO repairZcItemRecordListDTO) {

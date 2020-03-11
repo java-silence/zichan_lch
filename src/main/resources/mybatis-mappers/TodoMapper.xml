@@ -143,6 +143,24 @@
         LEFT JOIN t_dept p ON p.id = u.deptid
 	</select>
 
+	<select id="findAgreeAuditors" parameterType="map" resultType="map">
+		SELECT
+			DATE_FORMAT(t.updateTime,'%Y-%m-%d %H:%i:%s') updateTime,
+			u.username,
+			u.nickname,
+			p.deptname
+		FROM
+		(SELECT
+			f.id,f.auditby,f.updateTime
+		FROM
+			flow_todo_item t
+		LEFT JOIN flow_todo f ON t.flow_todo_id = f.id
+		WHERE f.id in ( ${strTodoIds} ) AND t.flow_item_id in ( ${strFlowItemIds} )
+		ORDER BY f.createTime) t
+		LEFT JOIN sys_user u ON u.id = t.auditby
+		LEFT JOIN t_dept p ON u.deptid = p.id
+	</select>
+
     <!--查询审核信息-->
 	<select id="findShenheList" parameterType="map" resultType="map">
         SELECT

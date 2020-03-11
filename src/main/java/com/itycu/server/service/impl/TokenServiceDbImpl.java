@@ -77,7 +77,7 @@ public class TokenServiceDbImpl implements TokenService {
 		String jwtToken = createJWTToken(loginUser);
 
 
-		return new Token(jwtToken, loginUser.getLoginTime());
+		return new Token(jwtToken, loginUser.getLoginTime(),loginUser.getDeptid());
 	}
 
 	/**

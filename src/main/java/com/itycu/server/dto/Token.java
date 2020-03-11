@@ -14,13 +14,23 @@ public class Token implements Serializable {
 	private static final long serialVersionUID = 6314027741784310221L;
 
 	private String token;
+
 	/** 登陆时间戳（毫秒） */
 	private Long loginTime;
+
+	private Long deptId;
 
 	public Token(String token, Long loginTime) {
 		super();
 		this.token = token;
 		this.loginTime = loginTime;
+	}
+
+	public Token(String token, Long loginTime,Long deptId) {
+		super();
+		this.token = token;
+		this.loginTime = loginTime;
+		this.deptId = deptId;
 	}
 
 	public String getToken() {
@@ -39,4 +49,11 @@ public class Token implements Serializable {
 		this.loginTime = loginTime;
 	}
 
+	public Long getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
+	}
 }
