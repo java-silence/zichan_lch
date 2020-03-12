@@ -36,16 +36,18 @@ $("#printBt").click(function(){
                         var startUseTime = d.startUseTime?getSpecifyDate(d.startUseTime):'';
                         var laveTime = d.laveTime?getSpecifyDate(d.laveTime):'';
                         var qrStatus = "";
-                        if (d.qrStatus == "0"){
+                        if (d.qrStatus == null){
                             qrStatus = ""
                         } else if(d.qrStatus == "1"){
                             qrStatus = "合格"
+                        } else if (d.qrStatus == "0") {
+                            qrStatus = "不合格"
                         }
-                        if (d.status != 4){
-                            qrStatus = ""
-                        } else if(d.status == 4){
-                            qrStatus = "合格"
-                        }
+                        // if (d.status != 4){
+                        //     qrStatus = ""
+                        // } else if(d.status == 4){
+                        //     qrStatus = "合格"
+                        // }
                         html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+d.zcName+"</td><td>"+d.epcid+"</td><td>"+d.zcCodenum+"</td>" +
                             "<td>"+startUseTime+"</td><td>"+laveTime+"</td><td>"+d.warrantyperiod+"</td><td>"+parseFloat((d.originalValue))+"</td><td>"+parseFloat((d.netvalue))+"</td>" +
                             "<td>"+d.repairDes+"</td><td>"+qrStatus+"</td></tr>";
@@ -93,8 +95,8 @@ $("#printBt").click(function(){
                         var auditTime = dest[i].auditTime?dest[i].auditTime:'';
                         html += "<tr><td class='qianzi' colspan='3'><span class='songti ' >审批部门"+(i+1)+"：</span>"+dest[i].glDeptName+"</td><td class='qianzi' colspan='3'><span class='songti ' >审批人"+(i+1)+"：</span>"+dest[i].auditor+"</td><td class='qianzi' colspan='2'><span class='songti ' >审批时间"+(i+1)+"：</span>"+auditTime+"</td><td align='left' class='qianzi' colspan='3'><span class='dayin4'>"+qrStatus+"</span></td></tr>";
                     }
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti ' >确认部门：</span>"+data.confirmDeptname+"</td><td class='qianzi' colspan='3'><span class='songti ' >确认人：</span>"+data.confirmNickname+"</td><td class='qianzi' colspan='2'><span class='songti ' >确认时间：</span>"+confirmTime+"</td><td align='left' class='qianzi' colspan='3'><span class='dayin4'>"+qrStatus+"</span></td></tr>";
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti ' >验收部门：</span>"+data.confirmDeptname+"</td><td class='qianzi' colspan='3'><span class='songti ' >验收人：</span>"+data.confirmNickname+"</td><td class='qianzi' colspan='2'><span class='songti ' >验收时间：</span>"+confirmTime+"</td><td align='left' class='qianzi' colspan='3'><span class='dayin4'>"+qrStatus+"</span></td></tr>";
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti ' >确认部门：</span>"+data.confirmDeptname+"</td><td class='qianzi' colspan='3'><span class='songti ' >确认人：</span>"+data.confirmNickname+"</td><td class='qianzi' colspan='2'><span class='songti ' >确认时间：</span>"+confirmTime+"</td><td align='left' class='qianzi' colspan='3'><span class='dayin4'>已维修</span></td></tr>";
+                    html += "<tr><td class='qianzi' colspan='3'><span class='songti ' >验收部门：</span>"+data.confirmDeptname+"</td><td class='qianzi' colspan='3'><span class='songti ' >验收人：</span>"+data.confirmNickname+"</td><td class='qianzi' colspan='2'><span class='songti ' >验收时间：</span>"+confirmTime+"</td><td align='left' class='qianzi' colspan='3'><span class='dayin4'>已确认</span></td></tr>";
                 }
             });
             html += "</table>"
@@ -150,21 +152,19 @@ $("#GlprintBt").click(function(){
                     var allOri = 0;
                     var allNet = 0;
                     // var allImoney = 0;
+                    debugger
                     for (var i=0;i<datas.data.length;i++){
                         var d = datas.data[i];
                         formatData(d);
                         var startUseTime = d.startUseTime?getSpecifyDate(d.startUseTime):'';
                         var laveTime = d.laveTime?getSpecifyDate(d.laveTime):'';
                         var qrStatus = "";
-                        if (d.qrStatus == "0"){
+                        if (d.qrStatus == null){
                             qrStatus = ""
                         } else if(d.qrStatus == "1"){
                             qrStatus = "合格"
-                        }
-                        if (finishType == 0){
-                            qrStatus = ""
-                        } else if(finishType == 1){
-                            qrStatus = "合格"
+                        } else if (d.qrStatus == "0") {
+                            qrStatus = "不合格"
                         }
                         console.log(qrStatus)
                         html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+d.zcName+"</td><td>"+d.epcid+"</td><td>"+d.zcCodenum+"</td>" +

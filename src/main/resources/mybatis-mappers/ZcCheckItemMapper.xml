@@ -364,6 +364,41 @@ where  a.zc_check_id = #{checkId}  AND a.result =0
         limit #{offset}, #{limit}
     </select>
 
+    <select id="queryCheckItemListByIdNew" resultType="com.itycu.server.app.vo.pandian.CheckItemVO">
+        SELECT
+            c.epcid,
+            c.zc_codenum,
+            ( SELECT deptname FROM t_dept WHERE id = b.check_dept_id ) AS glDeptName,
+            (
+                SELECT
+                    deptname
+                FROM
+                    sys_user AS x
+                    LEFT JOIN t_dept AS y ON x.deptid = y.id
+            WHERE
+                x.id = b.create_by
+            ) AS syDeptName,
+            c.zc_name AS zcName,
+            c.store_address AS storeAddress,
+            a.id,
+            a.zc_id AS zcId,
+            a.zc_check_id AS zcCheckId
+            FROM
+                zc_check_item AS a
+                LEFT JOIN zc_check AS b ON a.zc_check_id = b.id
+                LEFT JOIN zc_info AS c ON a.zc_id = c.id
+         <where>
+             <if test="params.type == 0">
+                 a.result = 0
+             </if>
+             <if test="params.type == 1">
+                 and a.result = 1 or a.result = 2
+             </if>
+              and a.zc_check_id =#{params.id}
+         </where>
+            limit #{offset}, #{limit}
+    </select>
+
 
     <select id="getCheckReportInfoProfitLossList" resultType="com.itycu.server.app.vo.pandian.CheckItemReportVO">
         SELECT

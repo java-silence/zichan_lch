@@ -156,7 +156,7 @@
 			flow_todo_item t
 		LEFT JOIN flow_todo f ON t.flow_todo_id = f.id
 		WHERE f.id in ( ${strTodoIds} ) AND t.flow_item_id in ( ${strFlowItemIds} )
-		ORDER BY f.createTime) t
+		GROUP BY f.auditby ORDER BY f.createTime) t
 		LEFT JOIN sys_user u ON u.id = t.auditby
 		LEFT JOIN t_dept p ON u.deptid = p.id
 	</select>

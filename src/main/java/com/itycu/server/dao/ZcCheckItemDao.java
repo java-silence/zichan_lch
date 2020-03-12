@@ -1,5 +1,6 @@
 package com.itycu.server.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -112,7 +113,7 @@ public interface ZcCheckItemDao {
 
     List<CheckItemVO> queryCheckItemListById(@Param("id") long  id, @Param("offset") long  offset, @Param("limit") long  limit);
 
-
+    List<CheckItemVO> queryCheckItemListByIdNew(@Param("params")HashMap params, @Param("offset") long  offset, @Param("limit") long  limit);
 
     List<CheckItemReportVO> getCheckReportInfoProfitLossList(@Param("params") Map<String, Object> params, @Param("offset") long  offset, @Param("limit") long  limit);
 

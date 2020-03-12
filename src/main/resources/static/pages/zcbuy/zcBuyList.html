@@ -424,6 +424,7 @@
                 formatData(shenqing);
                 formatData(shenhe);
                 formatData(caiwu);
+                debugger
                 html += "<div class='zctitle'>垣曲农村商业银行采购申请单</div>"+
                     "<table class='print-zctable'><tr><td style='border:none;text-align: left' colspan='6'>采购单号："+zcBuy.buyNum+"</td>" +
                     "<td style='border:none;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
@@ -472,8 +473,15 @@
                 html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td></tr>";
                 if (shenhe == null || JSON.stringify(shenhe) == "{}"){
                     html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'>审批时间：</span></td></tr>";
-                } else{
+                } else if (shenhe.length == 1) {
+                	shenhe = shenhe[0];
                     html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td></tr>";
+                }else if (shenhe.length > 1) {
+					for ( var i = 0; i < shenhe.length; i++ ) {
+						var item = shenhe[i];
+						html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门"+(i+1)+"：</span>"+item.deptname+"</td><td class='qianzi' colspan='4'><span class='songti' >审批人：</span>【"+item.username+"】"+item.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+item.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+					}
+                    // html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td></tr>";
                 }
                 if (caiwu == null || JSON.stringify(caiwu) == "{}"){
                     html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'>审核时间：</span></td></tr>";

@@ -237,7 +237,9 @@ public class AppZcCheckController {
         int year = cal.get(Calendar.YEAR);
         String danHao = jx + "-PD" + year + "-" + pdNum;
         HashMap<String, Object> params = new HashMap<>();
-        List<CheckItemVO> zcCheckItems = zcCheckItemDao.queryCheckItemListById(id, offset * limit - limit, limit);
+        params.put("id",id);
+        params.put("type",zxCheckListItemDTO.getType());
+        List<CheckItemVO> zcCheckItems = zcCheckItemDao.queryCheckItemListByIdNew(params, offset * limit - limit, limit);
         params.put("zcCheckItems", zcCheckItems);
         params.put("danhao", danHao);
         map.put("data", zcCheckItems);

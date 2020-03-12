@@ -3,8 +3,10 @@ package com.itycu.server.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.itycu.server.app.util.FailMap;
+import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.ZcCheckDao;
 import com.itycu.server.dao.ZcCheckItemDao;
+import com.itycu.server.model.Dept;
 import com.itycu.server.model.ZcCheck;
 import com.itycu.server.model.ZcCheckItem;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +42,9 @@ public class ZcCheckUpLoadController {
     @Autowired
     private ZcCheckItemDao zcCheckItemDao;
 
+    @Autowired
+    private DeptDao deptDao;
+
     @PostMapping(value = "/download")
     @ApiOperation(value = "导出创建的盘点单数据", notes = "导出的创建盘点单的数据")
     public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -47,6 +52,9 @@ public class ZcCheckUpLoadController {
             String id = (request.getParameter("downId"));
             logger.info("当前导出的数据是{}", id);
             ZcCheck zcCheck = zcCheckDao.getZcInfoDownLoadById(Long.parseLong(id));
+            String checkDeptId = zcCheck.getCheckDeptId();
+            Dept dept = deptDao.getById(Long.parseLong(checkDeptId));
+            String deptname = dept.getDeptname();
             if (null != zcCheck) {
                 List<ZcCheckItem> zcCheckItemsList = zcCheckItemDao.getZcInfoDownLoadItemById(Long.parseLong(id));
                 if (!CollectionUtils.isEmpty(zcCheckItemsList)) {
@@ -55,7 +63,7 @@ public class ZcCheckUpLoadController {
                     jsonObject.put("ZcCheck", zcCheck);
                     logger.info("获得的数据是{}", jsonObject.toString());
                     String result = jsonObject.toString();
-                    exportJsonData(JSON.toJSONString(zcCheck), response);
+                    exportJsonData(JSON.toJSONString(zcCheck),deptname, response);
                 }
             } else {
                 logger.error("盘点单的数据不存在");
@@ -123,8 +131,8 @@ public class ZcCheckUpLoadController {
     }
 
 
-    private void exportJsonData(String data, HttpServletResponse response) throws IOException {
-        File file = File.createTempFile("PanDian", ".json");
+    private void exportJsonData(String data, String deptName, HttpServletResponse response) throws IOException {
+        File file = File.createTempFile("PanDian"+deptName, ".json");
         OutputStreamWriter oStreamWriter = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
         oStreamWriter.append(data);
         oStreamWriter.flush();
@@ -137,7 +145,9 @@ public class ZcCheckUpLoadController {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/octet-stream");
         //3.设置content-disposition响应头控制浏览器以下载的形式打开文件
-        response.addHeader("Content-Disposition", "attachment;filename=" + new String(file.getName().getBytes(), "utf-8"));
+        String fileName = "PanDian"+deptName+System.currentTimeMillis()+".json";
+        //response.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(), "utf-8"));
+        response.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"),"ISO8859-1"));
         //获取文件输入流
         InputStream in = new FileInputStream(file.getPath());
         int len = 0;
@@ -149,4 +159,5 @@ public class ZcCheckUpLoadController {
         }
         in.close();
     }
+
 }
