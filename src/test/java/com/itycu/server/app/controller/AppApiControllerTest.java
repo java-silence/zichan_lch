@@ -16,5 +16,5 @@ public class AppApiControllerTest {
     public void getUserInfo() {
         SysUser sysUser = UserUtil.getLoginUser();
         System.out.println(sysUser);
-
-    }}
+    }
+}
