@@ -116,7 +116,7 @@ public class ZcBuyController {
         Map<String, Object> params = new HashMap<>();
         params.put("del","0");
         params.put("cwbStatus","1");
-        params.put("zcBuyId","1");
+        params.put("zcBuyId",zcBuy.getId());
         List<Long> flowItemIds = zcBuyItemDao.listAllPass(params);
         List<Long> todoIds = todoDao.getByBizidAndUrl(id,actionUrl);
 

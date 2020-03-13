@@ -198,7 +198,7 @@ public class ZcRepairServiceImpl implements ZcRepairService {
         params.put("stepid",flowsteps.get(1).getId());
         zcRepairDao.updateStatus(params);
         // 更新资产信息
-        zcInfoDao.updateStatusList(3,zcids);
+        zcInfoDao.updateStatusList(9,zcids);
     }
 
     /**

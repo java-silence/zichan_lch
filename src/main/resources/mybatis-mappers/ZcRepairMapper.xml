@@ -301,17 +301,12 @@
 			<if test="params.responsible != null and params.responsible != ''">
 				and t.responsible = #{params.responsible}
 			</if>
-			<if test="params.syRole != null and params.syRole != ''">
-				and t.sy_dept_id = #{params.syDeptId}
-			</if>
-			<if test="params.glRole != null and params.glRole != ''">
-				and (t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.syDeptId})
-			</if>
+
 
 			<if test="params.firstSearch != null and params.deptType == 'sy'">
 				and t.sy_dept_id = #{params.syDeptId}
 			</if>
-            <if test="params.secondSearch != null and params.deptType == 'sy' and  params.glDeptId != null">
+            <if test="params.secondSearch != null and params.deptType == 'sy' and  params.glDeptId != null and  params.glDeptId != ''">
                 and t.sy_dept_id = #{params.syDeptId} and t.gl_dept_id = #{params.glDeptId}
             </if>
             <if test="params.secondSearch != null and params.deptType == 'sy'">
@@ -320,12 +315,13 @@
 			<if test="params.firstSearch != null and params.deptType == 'gl'">
 				and t.gl_dept_id = #{params.glDeptId} or t.sy_dept_id = #{params.glDeptId}
 			</if>
-            <if test="params.secondSearch != null and params.deptType == 'gl' and params.syDeptId != null">
+            <if test="params.secondSearch != null and params.deptType == 'gl' and params.syDeptId != null and params.syDeptId != ''">
                 and t.gl_dept_id = #{params.glDeptId} and t.sy_dept_id = #{params.syDeptId}
             </if>
             <if test="params.secondSearch != null and params.deptType == 'gl'">
                 and t.gl_dept_id = #{params.glDeptId}
             </if>
+
 
 			<if test="params.syName != null and params.syName != ''">
 				and t.sy_name = #{params.syName}

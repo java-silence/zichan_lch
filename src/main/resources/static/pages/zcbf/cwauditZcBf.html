@@ -345,7 +345,8 @@
 					    var name2 = data.havenames;
 					    $('#tjbm').text("【提交部门】："+name2);
 					    $('#wtjbm').text("【未提交部门】："+name1);
-                        // shenpidongtai(data.id,data.flowid);	//提取审批动态
+					    debugger
+						shenpidongtai(data.id,data.flowid);	//提取审批动态
                         // initbxFiles(data.id,data.biztype);	//调出本待办事宜审批人自己上传的附件
                         if (type == 0){
                             $('.agreeAll').css("display","inline");

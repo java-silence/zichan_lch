@@ -392,7 +392,7 @@ where  a.zc_check_id = #{checkId}  AND a.result =0
                  a.result = 0
              </if>
              <if test="params.type == 1">
-                 and a.result = 1 or a.result = 2
+                 and (a.result = 1 or a.result = 2)
              </if>
               and a.zc_check_id =#{params.id}
          </where>

@@ -237,7 +237,6 @@
     if ($.inArray("sys:zcInfo:add", pers) < 0) {
         $("#addBtn").hide();
     }
-    debugger
     if ($.inArray("sys:zcinfo:card", pers) > 0) {
         status = 1;
     }
@@ -636,6 +635,12 @@
     }
 
     $("#searchBt").click(function () {
+
+        var catCode = "";
+        var zcCategoryName = $('#zcCategoryName').val();
+        if (zcCategoryName!=null && zcCategoryName != '') {
+            catCode = $('#catCode').val();
+        }
         var glDeptId = $('#glDeptId').val();
         var syDeptId = $('#syDeptId').val();
         var glName = $('#glDeptName').val();
@@ -653,7 +658,7 @@
                 zcCodenum: $('#zcCodenum').val(),
                 sdate: $('#sdate').val(),
                 edate: $('#edate').val(),
-                catCode: $('#catCode').val(),
+                catCode: catCode,
                 glDeptId: glDeptId,
                 syDeptId: syDeptId,
                 specification: $('#specification').val(),

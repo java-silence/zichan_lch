@@ -207,6 +207,8 @@ public class ZcBfController {
         map.put("havenames", havenames);
         map.put("code", "0");
         map.put("msg", "成功");
+        map.put("id",todo.getBizid());
+        map.put("flowid",todo.getFlowid());
         return map;
     }
 
