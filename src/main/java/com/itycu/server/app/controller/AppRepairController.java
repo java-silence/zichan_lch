@@ -149,7 +149,7 @@ public class AppRepairController {
                     list.forEach(k -> {
                         ZcRepairItemVO repairItemVO = new ZcRepairItemVO();
                         BeanUtils.copyProperties(k, repairItemVO);
-                        repairItemVO.setImgUrl(IMAGE_SERVER + k.getFrontPicsUrl());
+                        repairItemVO.setImgUrl(k.getFrontPicsUrl());
                         itemVOS.add(repairItemVO);
                     });
                 }
