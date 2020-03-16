@@ -2,6 +2,7 @@ package com.itycu.server.app.service.impl;
 
 import com.itycu.server.app.model.AppIndexDeptDataInfo;
 import com.itycu.server.app.service.IndexService;
+import com.itycu.server.app.vo.todovo.AppTodoVO;
 import com.itycu.server.dao.DeptDao;
 import com.itycu.server.dao.TodoDao;
 import com.itycu.server.model.Todo;
@@ -38,7 +39,7 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public List<Todo> appQueryAllTodoList(Long userId) {
+    public List<AppTodoVO> appQueryAllTodoList(Long userId) {
         return todoDao.appQueryAllTodoList(userId);
     }
 

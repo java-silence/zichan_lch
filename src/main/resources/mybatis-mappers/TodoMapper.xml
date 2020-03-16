@@ -218,12 +218,15 @@
 	</select>
 
 	<!--APP待办列表 2020-03-10-->
-	<select id="appQueryAllTodoList" resultType="com.itycu.server.model.Todo">
+	<select id="appQueryAllTodoList" resultType="com.itycu.server.app.vo.todovo.AppTodoVO">
 		 SELECT
 		 	t.*,
-		 	u.username,u.nickname
+		 	u.username,
+		 	u.nickname,
+		 	p.deptname applyDeptName
 		 FROM flow_todo t
 		 left join sys_user u on t.bizcreateby = u.id
+		 left join t_dept p on p.id = u.deptid
 		 WHERE
 		  	t.auditby  = #{userId} and t.status = 0
 		 order by createTime desc

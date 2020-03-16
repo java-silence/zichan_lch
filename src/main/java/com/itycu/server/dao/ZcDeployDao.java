@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.dto.ZcInfoDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -59,4 +60,7 @@ public interface ZcDeployDao {
 
 
     int  queryDeptDeployCountById(@Param("id") long id );
+
+    /** app资产调配查询 2020-03-16 */
+    List<ZcInfoDto> appList(@Param("params") Map<String, Object> params, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }

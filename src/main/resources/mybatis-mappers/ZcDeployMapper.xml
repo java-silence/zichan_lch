@@ -378,4 +378,31 @@
 	</if>
 	  and DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
 	</select>
+
+	<!--app调配资产查询 2020-03-16-->
+	<sql id="dpWhere">
+		<where>
+			<if test="params.glDeptId != null">
+			   t.gl_dept_id = #{params.glDeptId}
+			</if>
+			<if test="params.keyword != null and params.keyword != ''">
+				and (
+						t.zc_name like concat('%', #{params.keyword}, '%')
+						or t.zc_codenum like concat('%',#{params.keyword}, '%')
+						or t.card_num like concat('%',#{params.keyword}, '%')
+						or t.epcid like concat('%',#{params.keyword}, '%')
+					)
+			</if>
+		</where>
+	</sql>
+	<select id="appList" resultType="com.itycu.server.dto.ZcInfoDto">
+		select t.*
+		,t_creator.nickname as creator
+		from v_zc_info t
+		LEFT OUTER JOIN sys_user t_creator ON t.create_by=t_creator.id
+		<include refid="dpWhere"/>
+		${params.orderBy}
+		limit #{offset}, #{limit}
+	</select>
+
 </mapper>

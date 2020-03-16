@@ -65,7 +65,8 @@ public class AppDeployController {
             params.put("glDeptId", UserUtil.getLoginUser().getDeptid());
             Integer page = deployZcListDTO.getOffset();
             Integer limit = deployZcListDTO.getLimit();
-            List<ZcInfoDto> list = zcInfoDao.list(params, page * limit - limit, limit);
+            // 查询调配资产
+            List<ZcInfoDto> list = zcDeployDao.appList(params, page * limit - limit, limit);
             if (!CollectionUtils.isEmpty(list)) {
                 List<ZcCategory> zcCategoryList = zcCategoryDao.listAll();
                 findZcCategorys(list, zcCategoryList);

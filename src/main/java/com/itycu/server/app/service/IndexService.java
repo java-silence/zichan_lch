@@ -1,6 +1,7 @@
 package com.itycu.server.app.service;
 
 import com.itycu.server.app.model.AppIndexDeptDataInfo;
+import com.itycu.server.app.vo.todovo.AppTodoVO;
 import com.itycu.server.model.Todo;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface IndexService {
 
     List<Todo> queryAllTodoList(long userId);
 
-    List<Todo> appQueryAllTodoList(Long userId);
+    List<AppTodoVO> appQueryAllTodoList(Long userId);
 }

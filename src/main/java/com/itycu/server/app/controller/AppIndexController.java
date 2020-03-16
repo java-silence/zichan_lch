@@ -1,6 +1,5 @@
 package com.itycu.server.app.controller;
 
-
 import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.dto.index.ZcInfoEpcIdDTO;
 import com.itycu.server.app.model.AppIndexDeptDataInfo;
@@ -8,10 +7,9 @@ import com.itycu.server.app.model.AppIndexZcValueAndNumber;
 import com.itycu.server.app.service.IndexService;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.index.IndexZcInfoVO;
+import com.itycu.server.app.vo.todovo.AppTodoVO;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
-import com.itycu.server.model.Todo;
-import com.itycu.server.model.ZcInfo;
 import com.itycu.server.service.ZcInfoService;
 import com.itycu.server.utils.UserUtil;
 import io.swagger.annotations.Api;
@@ -123,7 +121,7 @@ public class AppIndexController {
         Map<String, Object> map = new HashMap<>();
         SysUser sysUser = UserUtil.getLoginUser();
         try {
-            List<Todo> list = indexService.appQueryAllTodoList(sysUser.getId());
+            List<AppTodoVO> list = indexService.appQueryAllTodoList(sysUser.getId());
             map.put("code", 0);
             map.put("message", "成功");
             map.put("data", list);

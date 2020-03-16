@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.itycu.server.app.vo.todovo.AppTodoVO;
 import com.itycu.server.model.Todo;
 import com.itycu.server.dto.TodoVO;
 import org.apache.ibatis.annotations.*;
@@ -61,7 +62,7 @@ public interface TodoDao {
 
     List<Todo> queryAllTodoList(@Param("userId")long userId);
 
-    List<Todo> appQueryAllTodoList(@Param("userId")long userId);
+    List<AppTodoVO> appQueryAllTodoList(@Param("userId")long userId);
 
     @Select("select id from flow_todo where bizid = #{bizid} and url = #{actionUrl}")
     List<Long> getByBizidAndUrl(@Param("bizid") Long bizid, @Param("actionUrl") String actionUrl);
