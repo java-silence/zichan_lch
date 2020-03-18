@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.BudgetDataDao">
+
+    <sql id="where">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and t.id = #{params.id}
+            </if>
+            <if test="params.budgetBuyNum != null and params.budgetBuyNum != ''">
+                and t.budgetBuyNum = #{params.budgetBuyNum}
+            </if>
+            <if test="params.userId != null and params.userId != ''">
+                and t.userId = #{params.userId}
+            </if>
+            <if test="params.applyDeptId != null and params.applyDeptId != ''">
+                and t.applyDeptId = #{params.applyDeptId}
+            </if>
+            <if test="params.applyTime != null and params.applyTime != ''">
+                and t.applyTime = #{params.applyTime}
+            </if>
+            <if test="params.flowid != null and params.flowid != ''">
+                and t.flowid = #{params.flowid}
+            </if>
+            <if test="params.stepid != null and params.stepid != ''">
+                and t.stepid = #{params.stepid}
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and t.status = #{params.status}
+            </if>
+            <if test="params.type != null and params.type != ''">
+                and t.type = #{params.type}
+            </if>
+            <if test="params.del != null and params.del != ''">
+                and t.del = #{params.del}
+            </if>
+            <if test="params.createTime != null and params.createTime != ''">
+                and t.createTime = #{params.createTime}
+            </if>
+            <if test="params.updateTime != null and params.updateTime != ''">
+                and t.updateTime = #{params.updateTime}
+            </if>
+
+        </where>
+    </sql>
+
+    <insert id="saveBudgetDataInfo" useGeneratedKeys="true" keyProperty="id">
+			INSERT INTO `budget_data` (
+			`budgetDataId`,
+			`userId`,
+			`applyDeptId`,
+			`applyTime`,
+			`flowid`,
+			`stepid`,
+			`status`,
+			`budget_kind`,
+			`del`,
+			`createTime`,
+			`updateTime` )
+			VALUES
+			(
+			#{budgetData.budgetDataId},
+			#{budgetData.userId},
+			#{budgetData.applyDeptId},
+			now(),
+			#{budgetData.flowid},
+			#{budgetData.stepid},
+			0,
+			#{budgetData.budgetKind},
+			0,
+			now(),
+			now());
+	</insert>
+
+
+    <insert id="saveBudgetDataItemInfo" parameterType="list">
+        INSERT INTO
+     `budget_data_item` (
+        `budget_data_id`,
+        `budget_period`,
+        `budget_type`,
+        `budget_kind`,
+        `budget_num`,
+        `budget_price`,
+        `property`,
+        `budget_unit`,
+        `budget_money`,
+        `budget_manager_dept_id`,
+        `budget_manager_name`,
+        `brand`,
+        `model`,
+        `file_url`,
+        `remark`,
+        `create_time`,
+        `update_time`,
+        `budget_status`,
+        `budget_dept_id`,
+        `budget_dept_name`,
+        `budget_c01`,
+        `budget_c02`,
+        `budget_c03`
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.budgetDataId},
+            #{item.budgetPeriod},
+            #{item.budgetType},
+            #{item.budgetKind},
+            #{item.budgetNum},
+            #{item.budgetPrice},
+            #{item.property},
+            #{item.budgetUnit},
+            #{item.budgetMoney},
+            #{item.budgetManagerDeptId},
+            #{item.budgetManagerName},
+            #{item.brand},
+            #{item.model},
+            #{item.fileUrl},
+            #{item.remark},
+            now(),
+            now(),
+            0,
+            #{item.budgetDeptId},
+            #{item.budgetDeptName},
+            #{item.budgetC01},
+            #{item.budgetC02},
+            #{item.budgetC03}
+            )
+        </foreach>
+    </insert>
+
+</mapper>
