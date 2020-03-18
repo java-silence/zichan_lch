@@ -1,239 +1,239 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">
-    <link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />
-</head>
-<body>
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-	<div class="form-actions">
-		<div class="row">
-			<div class="col-md-12">
-				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>
-                <button class="layui-btn" type="submit" onclick="add()"><i class="fa fa-save"></i> 保存</button>
-			</div>
-		</div>
-	</div>
-<hr style="height:3px;">
-	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">-->
+<!--    <meta name="apple-mobile-web-app-capable" content="yes">-->
+<!--    <meta name="apple-mobile-web-app-status-bar-style" content="black">-->
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="../../css/bootstrap.min.css">-->
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="../../layuiadmin/layui/css/layui.css">-->
+<!--    <link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.css" media="all" />-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
+<!--	<div class="form-actions">-->
+<!--		<div class="row">-->
+<!--			<div class="col-md-12">-->
+<!--				<button class="layui-btn" onclick="javascript:history.back(-1);">返回</button>-->
+<!--                <button class="layui-btn" type="submit" onclick="add()"><i class="fa fa-save"></i> 保存</button>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+<!--<hr style="height:3px;">-->
+<!--	<form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">-->
 
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>基础预算单号</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='基础预算单号' type='text' name='buggetBasicNum' id='buggetBasicNum' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>basicWage</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='basicWage' type='text' name='basicWage' id='basicWage' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>allowance</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='allowance' type='text' name='allowance' id='allowance' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>reward</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='reward' type='text' name='reward' id='reward' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>socialSecurity</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='socialSecurity' type='text' name='socialSecurity' id='socialSecurity' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>retirementPay</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='retirementPay' type='text' name='retirementPay' id='retirementPay' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>eldAllowance</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='eldAllowance' type='text' name='eldAllowance' id='eldAllowance' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>retirementCosts</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='retirementCosts' type='text' name='retirementCosts' id='retirementCosts' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>pension</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='pension' type='text' name='pension' id='pension' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>livingAllowance</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='livingAllowance' type='text' name='livingAllowance' id='livingAllowance' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>用户ID</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='用户ID' type='text' name='userId' id='userId' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>申请部门ID</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='申请部门ID' type='text' name='applyDeptId' id='applyDeptId' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>申请时间</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='申请时间' type='text' name='applyTime' id='applyTime' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>流程ID</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='流程ID' type='text' name='flowid' id='flowid' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>流程步骤</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='流程步骤' type='text' name='stepid' id='stepid' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>流程状态</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='流程状态' type='text' name='flowStatus' id='flowStatus' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>审核流程1</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='审核流程1' type='text' name='step1' id='step1' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>审核流程2</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='审核流程2' type='text' name='step2' id='step2' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>审核流程3</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='审核流程3' type='text' name='step3' id='step3' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>审核流程4</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='审核流程4' type='text' name='step4' id='step4' >
-					</div>
-				</div>
-			</div>
-			<div class='layui-form-item'>
-				<div class='layui-inline'>
-					<label class='layui-form-label'>类型 0:年度 1:月度</label>
-					<div class='layui-input-inline'>
-						<input class='layui-input' placeholder='类型 0:年度 1:月度' type='text' name='type' id='type' >
-					</div>
-				</div>
-			</div>
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>基础预算单号</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='基础预算单号' type='text' name='buggetBasicNum' id='buggetBasicNum' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>basicWage</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='basicWage' type='text' name='basicWage' id='basicWage' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>allowance</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='allowance' type='text' name='allowance' id='allowance' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>reward</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='reward' type='text' name='reward' id='reward' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>socialSecurity</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='socialSecurity' type='text' name='socialSecurity' id='socialSecurity' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>retirementPay</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='retirementPay' type='text' name='retirementPay' id='retirementPay' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>eldAllowance</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='eldAllowance' type='text' name='eldAllowance' id='eldAllowance' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>retirementCosts</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='retirementCosts' type='text' name='retirementCosts' id='retirementCosts' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>pension</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='pension' type='text' name='pension' id='pension' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>livingAllowance</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='livingAllowance' type='text' name='livingAllowance' id='livingAllowance' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>用户ID</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='用户ID' type='text' name='userId' id='userId' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>申请部门ID</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='申请部门ID' type='text' name='applyDeptId' id='applyDeptId' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>申请时间</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='申请时间' type='text' name='applyTime' id='applyTime' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>流程ID</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='流程ID' type='text' name='flowid' id='flowid' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>流程步骤</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='流程步骤' type='text' name='stepid' id='stepid' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>流程状态</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='流程状态' type='text' name='flowStatus' id='flowStatus' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>审核流程1</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='审核流程1' type='text' name='step1' id='step1' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>审核流程2</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='审核流程2' type='text' name='step2' id='step2' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>审核流程3</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='审核流程3' type='text' name='step3' id='step3' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>审核流程4</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='审核流程4' type='text' name='step4' id='step4' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class='layui-form-item'>-->
+<!--				<div class='layui-inline'>-->
+<!--					<label class='layui-form-label'>类型 0:年度 1:月度</label>-->
+<!--					<div class='layui-input-inline'>-->
+<!--						<input class='layui-input' placeholder='类型 0:年度 1:月度' type='text' name='type' id='type' >-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
 
 
-	</form>
-</div>
-	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>
-	<script type="text/javascript" src="../../js/jq.js"></script>
-	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
-	<script type="text/javascript" src="../../js/common.js"></script>
-	<script type="text/javascript" src="../../layui/layui.js"></script>
-	<script type="text/javascript" src="../../js/dict.js"></script>
-	<script type="text/javascript">
+<!--	</form>-->
+<!--</div>-->
+<!--	<script type="text/javascript" src="../../js/libs/jquery-2.1.1.min.js"></script>-->
+<!--	<script type="text/javascript" src="../../js/jq.js"></script>-->
+<!--	<script type="text/javascript" src="../../js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>-->
+<!--	<script type="text/javascript" src="../../js/common.js"></script>-->
+<!--	<script type="text/javascript" src="../../layui/layui.js"></script>-->
+<!--	<script type="text/javascript" src="../../js/dict.js"></script>-->
+<!--	<script type="text/javascript">-->
 
-	    //var appStatus = showStepSelect("stepid", "1", true);
-        // 增加类别 0:年度 1:月度
-        var type = getUrlParam("type");
+<!--	    //var appStatus = showStepSelect("stepid", "1", true);-->
+<!--        // 增加类别 0:年度 1:月度-->
+<!--        var type = getUrlParam("type");-->
 
-		layui.use(['layer','form','laydate'], function(){
-		    var layer = layui.layer;
-            var form = layui.form;
-		});
-		
-		function add() {
-			$('#form').bootstrapValidator();
-			var bootstrapValidator = $("#form").data('bootstrapValidator');
-			bootstrapValidator.validate();
-		    if(!bootstrapValidator.isValid()){
-			   return;
-		    }
-		    
-		    var formdata = $("#form").serializeObject();
+<!--		layui.use(['layer','form','laydate'], function(){-->
+<!--		    var layer = layui.layer;-->
+<!--            var form = layui.form;-->
+<!--		});-->
+<!--		-->
+<!--		function add() {-->
+<!--			$('#form').bootstrapValidator();-->
+<!--			var bootstrapValidator = $("#form").data('bootstrapValidator');-->
+<!--			bootstrapValidator.validate();-->
+<!--		    if(!bootstrapValidator.isValid()){-->
+<!--			   return;-->
+<!--		    }-->
+<!--		    -->
+<!--		    var formdata = $("#form").serializeObject();-->
 
-			$.ajax({
-				type : 'post',
-				url : '/budgetBasics',
-				contentType: "application/json; charset=utf-8",  
-				data : JSON.stringify(formdata),
-				success : function(data) {
-					layer.msg("添加成功", {shift: -1, time: 1000}, function(){
-                        location.href = "budgetBasicList.html";
-                    });
-				}
-			});
-		}
-		
-	</script>
-</body>
-</html>
+<!--			$.ajax({-->
+<!--				type : 'post',-->
+<!--				url : '/budgetBasics',-->
+<!--				contentType: "application/json; charset=utf-8",  -->
+<!--				data : JSON.stringify(formdata),-->
+<!--				success : function(data) {-->
+<!--					layer.msg("添加成功", {shift: -1, time: 1000}, function(){-->
+<!--                        location.href = "budgetBasicList.html";-->
+<!--                    });-->
+<!--				}-->
+<!--			});-->
+<!--		}-->
+<!--		-->
+<!--	</script>-->
+<!--</body>-->
+<!--</html>-->
