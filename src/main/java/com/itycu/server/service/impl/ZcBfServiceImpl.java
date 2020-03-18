@@ -227,13 +227,15 @@ public class ZcBfServiceImpl implements ZcBfService {
         Todo flowTodo = todoDao.getById(todoId);
         List<FlowTodoItem> allFlowTodoItems = flowTodoItemDao.listByToDoId(todoId);
         // 1,修改报废子项分类别
-        List<FlowTodoItem> agreeTodoItems = new ArrayList<>();        // 1审核为同意   2财务为报废  3再次提交的
+        List<FlowTodoItem> agreeTodoItems = new ArrayList<>();        // 1审核为同意    3再次提交的
         List<Long> agreeToDoItemIds = new ArrayList<>();
         List<Long> agreeBfItemIds = new ArrayList<>();
-        List<FlowTodoItem> refuseTodoItems = new ArrayList<>();       // 1审核为拒绝    2财务为正常  3再次提交删除的
+
+        List<FlowTodoItem> refuseTodoItems = new ArrayList<>();       // 1审核为拒绝    3再次提交删除的
         List<Long> refuseToDoItemIds = new ArrayList<>();
         List<Long> refuseBfItemIds = new ArrayList<>();
-        List<FlowTodoItem> backTodoItems = new ArrayList<>();
+
+        List<FlowTodoItem> backTodoItems = new ArrayList<>();        // 拒绝
         List<Long> backToDoItemIds = new ArrayList<>();
         List<Long> backBfItemIds = new ArrayList<>();
         // 记录审核同意的个数
@@ -322,7 +324,7 @@ public class ZcBfServiceImpl implements ZcBfService {
                 }
             }
         }
-        // 审核部处理拒绝的   财务部处理正常的
+        // 审核部处理拒绝的
         if (refuseTodoItems.size()>0){
             if ( itemStatus == 3 ){
                 // 更新todoItem
