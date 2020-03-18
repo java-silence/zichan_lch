@@ -80,7 +80,8 @@
                 <label class='layui-form-label'><span class="layui-badge-dot"
                                                       style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>预算类别</label>
                 <div class='layui-input-inline'>
-                    <input class='layui-input' placeholder='预算类别' type='text' name='budgetType' id='budgetType'>
+<!--                    <input class='layui-input' placeholder='预算类别' type='text' name='budgetType' id='budgetType'>-->
+                    <select id="budgetType" name="budgetType" class="form-control layui-input"></select>
                 </div>
             </div>
             <div class='layui-inline'>
@@ -185,6 +186,8 @@
 <script type="text/javascript" src="../../../layuiadmin/layui/layui.js"></script>
 <script type="text/javascript" src="../../../js/dict.js"></script>
 <script type="text/javascript">
+
+    var budget_type = showDictSelect("budgetType","budgetType",false);
     var pro = window.location.protocol;
     var host = window.location.host;
     var domain = pro + "//" + host;
@@ -277,7 +280,6 @@
                 , {field: 'property', title: '资产名称', width: 120, edit: "text"}
                 , {field: 'brand', title: '品牌', width: 100, edit: "text"}
                 , {field: 'model', title: '规格型号', width: 100}
-                // , {field: 'buyBz', title: '附件', width: 100, sort: true, edit: "text"}
                 , {field: 'remark', title: '备注', width: 100,  edit: "text"}
                 , {field: 'caozuo', fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#barDemo'}
             ]]
