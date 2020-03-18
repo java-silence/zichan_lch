@@ -12,31 +12,21 @@ import java.util.Date;
 public class IndexBenYueXunJianCountVO {
 
 
-    /**
-     * 巡检单位
-     */
+    /** 巡检单位 */
     private String xunjianCompany;
 
-    /**
-     * 巡检数量
-     */
+    /** 巡检数量 */
     private Integer xunjianCount;
 
-    /**
-     * 巡检时间
-     */
+    /** 巡检时间 */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date xunjianTime;
 
-    /**
-     * 巡检状态
-     */
+    /** 巡检状态 */
     private Integer xunjianStatus;
 
-    /**
-     * 巡检状态汉字值
-     */
+    /** 巡检状态汉字值 */
     private String xunjianText;
 
 

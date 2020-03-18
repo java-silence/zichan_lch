@@ -386,10 +386,10 @@
 	<select id="queryBenYueXunjianDataInfo" resultType="com.itycu.server.model.IndexBenYueXunJianCountVO">
 		<if test="deptId=='01'">
 			SELECT
-			a.deptname,
+			a.deptname xunjianCompany,
 			c.create_time AS xunjianTime,
 			c.STATUS xunjianStatus,
-			( SELECT count( 1 ) FROM zc_inspect_record AS e WHERE e.zc_inspect_id = c.id ) AS count
+			( SELECT count( 1 ) FROM zc_inspect_record AS e WHERE e.zc_inspect_id = c.id ) AS xunjianCount
 			FROM
 			t_dept AS a
 			LEFT JOIN t_dept AS b ON a.id = b.pid
