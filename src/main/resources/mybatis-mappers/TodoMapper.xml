@@ -21,7 +21,7 @@
 				and updateTime = #{params.updateTime} 
 			</if>
 			<if test="params.biaoti != null and params.biaoti != ''">
-				and biaoti = #{params.biaoti} 
+				and biaoti like concat('%',#{params.biaoti},'%')
 			</if>
 			<if test="params.neirong != null and params.neirong != ''">
 				and neirong = #{params.neirong} 
