@@ -13,7 +13,7 @@
 
 <!-- 内容主体区域 -->
 <div style="padding: 10px;">
-    <div class="layui-row" style="height: 400px;">
+    <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;height: 400px;">
         <div class="layui-col-xs3" style="height: 100%;padding-right: 5px;">
             <div class="grid-demo " style="height: 100%;background-color: #fff;">
                 <div style="height: 50px;font-size: 18px;background: linear-gradient(to right,#fff,#fff);line-height: 50px;color: #0a80e6;padding-left: 20px;">资产类别分布图</div>
@@ -34,11 +34,10 @@
             <div class="grid-demo" style="height: 100%;background-color: #fff;">
                 <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">各分行资产数量柱状图</div>
                 <div id="ajReport" style="width:100%;height:300px;"></div>
-
             </div>
         </div>
     </div>
-    <div class="layui-row" style="height: 400px;margin-top: 10px;">
+    <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;margin-top: 10px;">
         <div class="layui-col-xs3" style="height: 100%;padding-right: 5px;">
             <div class="grid-demo " style="height: 100%;background-color: #fff;">
                 <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">各县市资产分布图</div>
@@ -48,8 +47,8 @@
             </div>
         </div>
         <div class="layui-col-xs9" style="padding-left: 5px;height: 100%;">
-            <div class="grid-demo" style="height: 100%;background-color: #fff;">
-                <div class="layui-col-xs6" style="height: 100%;">
+            <div class="grid-demo" style="background-color: #fff;">
+                <div class="" style="height: 100%;">
                     <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月采购</div>
                     <div class="layui-form" style="height: 300px;margin-left: 20px;">
                         <table class="layui-table" lay-even="" lay-skin="line" id="CaigouTable">
@@ -57,7 +56,12 @@
                         </table>
                     </div>
                 </div>
-
+            </div>
+        </div>
+    </div>
+    <div class="layui-row" style="height: 400px;margin-top: 10px;">
+        <div class="layui-col-xs12" style="height: 100%;">
+            <div class="grid-demo" style="background-color: #fff;">
                 <div class="layui-col-xs6" style="height: 100%;">
                     <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月调配</div>
                     <div class="layui-form" style="height: 300px;margin-left: 20px;">
@@ -65,47 +69,39 @@
                         </table>
                     </div>
                 </div>
-
             </div>
-        </div>
-    </div>
-    <div class="layui-row" style="height: 400px;margin-top: 10px;">
-        <div class="layui-col-xs12" style="height: 100%;">
             <div class="grid-demo " style="height: 100%;background-color: #fff;">
-
-                <div class="layui-col-xs4" style="height: 100%;">
+                <div class="layui-col-xs6" style="height: 100%;">
                     <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月报修</div>
                     <div class="layui-form" style="height: 300px;margin-left: 20px;">
                         <table class="layui-table" id="BaoXiuTable" lay-even="" lay-skin="line">
                         </table>
                     </div>
                 </div>
-
-
-                <div class="layui-col-xs4" style="height: 100%;">
+            </div>
+        </div>
+    </div>
+    <div class="layui-row" style="height: 400px;margin-top: 10px;">
+        <div class="layui-col-xs12" style="height: 100%;">
+            <div class="grid-demo " style="height: 100%;background-color: #fff;">
+                <div class="layui-col-xs6" style="height: 100%;">
                     <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月巡检</div>
                     <div class="layui-form" style="height: 300px;margin-left: 20px;">
                         <table class="layui-table" lay-even="" lay-skin="line" id="XunJianTable">
                         </table>
                     </div>
                 </div>
-
-                <div class="layui-col-xs4" style="height: 100%;">
+                <div class="layui-col-xs6" style="height: 100%;">
                     <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月处置</div>
                     <div class="layui-form" style="height: 300px;margin-left: 20px;">
                         <table class="layui-table" lay-even="" lay-skin="line" id="baofeiTable">
                         </table>
                     </div>
                 </div>
-
-
             </div>
         </div>
-
     </div>
 </div>
-
-
 </body>
 </html>
 
