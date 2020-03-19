@@ -355,10 +355,12 @@ public class DeptController {
         long deptid = UserUtil.getLoginUser().getDeptid();
         Dept dept = deptDao.getById(deptid);
         map.put("deptName", dept.getDeptname());
+        map.put("deptId", dept.getId());
         if (dept.getPid() != null) {
             Dept pDept = deptDao.getById(dept.getPid());
             if (pDept != null) {
                 map.put("pDeptName", pDept.getDeptname());
+                map.put("pDeptId", pDept.getId());
             }
         }
         return map;

@@ -43,7 +43,8 @@ function initMenu(){
 function setChild(parentElement, child){
     if(child != null && child.length > 0){
         $.each(child, function(j,item2){
-            var ca = $("<a layadmin-event='refresh' href='javascript:;'></a>");
+        	// layadmin-event='refresh'
+            var ca = $("<a  href='javascript:;'></a>");
             if(item2.href){
                 ca.attr("lay-href", item2.href);
 			}
