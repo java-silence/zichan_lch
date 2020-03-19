@@ -71,4 +71,9 @@ public class DeployZcListVO {
      */
     private int glDeptId;
 
+    /**
+     * 调配说明
+     */
+    private String bz;
+
 }

@@ -153,6 +153,7 @@ public class AppDeployController {
                 zcDeployItem.setBackDeptId(new Long(deployZcListVO.getBackDeptId()));
                 zcDeployItem.setSyDeptId((long) (deployZcListVO.getSyDeptId()));
                 zcDeployItem.setDel(0);
+                zcDeployItem.setBz(deployZcListVO.getBz());
                 zcDeployItemList.add(zcDeployItem);
             }
             zcDeployDto.setZcDeployItems(zcDeployItemList);

@@ -233,7 +233,8 @@
 		p3.deptname backdeptname,
 		c.store_address storeaddress,
 		c.inspect_time inspecttime,
-		c.warrantyperiod
+		c.warrantyperiod,
+		c.epcid
 		FROM
 		flow_todo_item t
 		LEFT JOIN zc_deploy_item p ON t.flow_item_id = p.id
