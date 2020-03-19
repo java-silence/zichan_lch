@@ -95,6 +95,9 @@ public class BudgetDataServiceImpl implements BudgetDataService {
             String budgetDataId = createNum();
             budgetData.setUserId(UserUtil.getLoginUser().getId().intValue());
             budgetData.setApplyDeptId(list.get(0).getBudgetDeptId());
+            budgetData.setApplyDeptName(list.get(0).getBudgetDeptName());
+            budgetData.setGlDeptId(String.valueOf(list.get(0).getBudgetManagerDeptId()));
+            budgetData.setGlDeptName(list.get(0).getBudgetManagerName());
             budgetData.setBudgetDataId(budgetDataId);
             int result = budgetDataDao.saveBudgetDataInfo(budgetData);
             if (result>0) {
@@ -104,6 +107,9 @@ public class BudgetDataServiceImpl implements BudgetDataService {
                     budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0,budgetDataItem.getBudgetType().indexOf(" ")));
                 }
             }
+            /**
+             * TODO 需要插入流程id数据
+             */
             return budgetDataDao.saveBudgetDataItemInfo(list);
         }
         return 0;

@@ -16,38 +16,96 @@ import java.util.List;
  */
 @Data
 public class BudgetData implements Serializable {
-    private static final long serialVersionUID = 643027673464907098L;
-
-
-    private int  id;
-
-    /** 预算购买单号. */
+    private static final long serialVersionUID = 61834331984962282L;
+    /**
+     * 主键ID
+     */
+    private Integer id;
+    /**
+     * 预算购买单号
+     */
     private String budgetDataId;
-
-    /** 申请用户ID. */
-    private int userId;
-
-    /** 申请部门ID. */
+    /**
+     * 用户ID
+     */
+    private Integer userId;
+    /**
+     * 申请部门ID
+     */
     private Integer applyDeptId;
-
-    /** 申请时间. */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date applyTime;
-
-    /** 流程ID. */
+    /**
+     * 申请部门名称
+     */
+    private String applyDeptName;
+    /**
+     * 管理部门Id
+     */
+    private String glDeptId;
+    /**
+     * 管理部门名称
+     */
+    private String glDeptName;
+    /**
+     * 申请时间
+     */
+    private Date applytime;
+    /**
+     * 流程ID
+     */
     private Integer flowid;
-
-    /** 流程步骤ID. */
+    /**
+     * 流程步骤
+     */
     private Integer stepid;
-
-    /** 审核状态 0:初始 1:审核中 2:审核完成. */
+    /**
+     * 审核状态  0:待提交 1:审核中 2:审核完毕
+     */
     private Integer status;
-
-    /** 类型 0:年度 1:月度. */
+    /**
+     * 类型 0:年度 1:月度
+     */
     private Integer budgetKind;
-
-    /** 删除 0:正常 1:删除. */
+    /**
+     * 删除 0:正常 1:删除
+     */
     private Integer del;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+    /**
+     * 文件名称
+     */
+    private String fileName;
+    /**
+     * 文件地址
+     */
+    private String fileUrl;
+    /**
+     * 审核意见
+     */
+    private String opinion;
+    /**
+     * 备注信息
+     */
+    private String mark;
+    /**
+     * 预留字段1
+     */
+    private String dataC01;
+    /**
+     * 预留字段2
+     */
+    private String dataC02;
+    /**
+     * 预留字段3
+     */
+    private String dataC03;
+
 
 
     private List<BudgetDataItem> budgetDataList;

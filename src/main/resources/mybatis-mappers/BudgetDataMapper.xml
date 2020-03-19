@@ -47,28 +47,38 @@
 
     <insert id="saveBudgetDataInfo" useGeneratedKeys="true" keyProperty="id">
 			INSERT INTO `budget_data` (
-			`budgetDataId`,
+			`budget_data_id`,
 			`userId`,
-			`applyDeptId`,
+			`apply_dept_id`,
+			`apply_dept_name`,
 			`applyTime`,
 			`flowid`,
 			`stepid`,
 			`status`,
 			`budget_kind`,
 			`del`,
-			`createTime`,
-			`updateTime` )
+		     filename,
+		     fileurl,
+		     gl_dept_id,
+		     gl_dept_name,
+			`create_time`,
+			`update_time` )
 			VALUES
 			(
 			#{budgetData.budgetDataId},
 			#{budgetData.userId},
 			#{budgetData.applyDeptId},
+			#{budgetData.applyDeptName},
 			now(),
 			#{budgetData.flowid},
 			#{budgetData.stepid},
 			0,
 			#{budgetData.budgetKind},
 			0,
+			#{budgetData.fileName},
+			#{budgetData.fileUrl},
+			#{budgetData.glDeptId},
+			#{budgetData.glDeptName},
 			now(),
 			now());
 	</insert>
