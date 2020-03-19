@@ -2,6 +2,7 @@ package com.itycu.server.dao;
 
 import java.util.*;
 
+import com.itycu.server.app.vo.chuzhi.DealZcInfoVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -62,5 +63,8 @@ public interface ZcBfDao {
 
 
     int queryDeptBaoFeiCountById(@Param("id") long  id);
+
+    /** app获取资产处置数据 2020-03-19 */
+    List<DealZcInfoVO> getZcBFList(@Param("params") Map<String, Object> params , @Param("offset") int offset , @Param("limit") int limit );
 
 }

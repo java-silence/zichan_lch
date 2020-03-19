@@ -71,9 +71,9 @@ public class AppDealController {
             Map<String, Object> map = new HashMap<>();
             Map<String, Object> paramsMap = new HashMap<>();
             paramsMap.put("del", 0);
-            paramsMap.put("glDeptId", UserUtil.getLoginUser().getDeptid());
+            paramsMap.put("syDeptId", UserUtil.getLoginUser().getDeptid());
             paramsMap.put("keyword", appDealListDTO.getKeyword());
-            List<DealZcInfoVO> dealZcInfoVOList = zcInfoDao.getZcBFList(paramsMap, offset * limit - limit, limit);
+            List<DealZcInfoVO> dealZcInfoVOList = zcBfDao.getZcBFList(paramsMap, offset * limit - limit, limit);
             map.put("data", dealZcInfoVOList);
             map.put("message", "操作成功");
             map.put("code", 0);

@@ -437,4 +437,37 @@
 		</if>
 		AND DATE_FORMAT( b.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ), '%Y%m' )
 	</select>
+
+	<!--app获取资产处置数据 2020-03-19-->
+	<select id="getZcBFList" resultType="com.itycu.server.app.vo.chuzhi.DealZcInfoVO">
+		SELECT
+			id,
+			epcid,
+			a.zc_name AS zcName,
+			( SELECT e.NAME FROM zc_category AS e WHERE e.id = a.zc_category_id ) AS zcCategoryName,
+			( SELECT b.deptname FROM t_dept AS b WHERE b.id = a.sy_dept_id ) AS syDeptName,
+			( SELECT b.deptname FROM t_dept AS b WHERE b.id = a.gl_dept_id ) AS glDeptName,
+			a.start_use_time AS startUseTime,
+			remainingperiod,
+			net,
+			a.original_value AS originalValue,
+			a.sy_dept_id AS syDeptId,
+			a.gl_dept_id AS glDeptId,
+			a.store_address AS storeAddress,
+			a.self_codenum AS zcCodenum,
+			a.net as netvalue
+		FROM
+			zc_info AS a
+		WHERE
+		a.del = 0
+		AND a.sy_dept_id = #{params.syDeptId}
+		<if test="params.keyword!=null and params.keyword!=''">
+			and (
+			a.zc_name like concat ('%',#{params.keyword},'%')
+			or
+			epcid like concat ('%',#{params.keyword},'%')
+			)
+		</if>
+		limit #{offset},#{limit}
+	</select>
 </mapper>
