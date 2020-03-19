@@ -187,7 +187,7 @@
 <script type="text/javascript" src="../../../js/dict.js"></script>
 <script type="text/javascript">
 
-    var budget_type = showDictSelect("budgetType","budgetType",false);
+    var budget_type_result = showDictSelect("budgetType","budgetType",false);
     var pro = window.location.protocol;
     var host = window.location.host;
     var domain = pro + "//" + host;
@@ -381,10 +381,7 @@
             layer.msg("请添加预算数据");
             return;
         }
-       // formdata.bz = $('#buyBz').val();
         formdata.budgetDataList = data;
-        //var fileUrl = $('#fileUrl').val();
-        //var fileName = $('#fileName').val();
         formdata.fileName = $('#fileName').val();
         formdata.fileUrl = $('#fileUrl').val();
         $.ajax({
@@ -393,11 +390,12 @@
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(formdata),
             success: function (data) {
-                if (data.code == 0) {
+                console.log(data);
+                if (data.code == 200) {
                     // 清除table数据
                     table.reload("data", {data: []});
                     layer.msg("添加成功", {shift: -1, time: 1000}, function () {
-                        location.href = "addZcBuy.html";
+                        location.href = "monthBudget.html";
                     });
                 } else {
                     layer.msg(data.msg, {shift: -1, time: 1000});
@@ -415,6 +413,9 @@
 
     // 动态添加表格
     function tianjia() {
+
+
+
         var datas = [];
         var tableData = table.cache["data"];
         //不为空先遍历表格中数据在追加数据
@@ -498,11 +499,17 @@
 
         var budgetDeptId = $("#budgetDeptId").val();
         var budgetDeptName = $("#companyName").val();
+
+
+
+        var result = "" + budgetType;
+        var str = budget_type_result[result];
+        console.log(str);
         //初始,追加单行数据
         datas.push({
             id: '',
             budgetManagerDeptId: budgetManagerDeptId,
-            budgetType: budgetType,
+            budgetType: budgetType + " " + str,
             budgetNum: budgetNum,
             budgetUnit: budgetUnit,
             budgetPrice: budgetPrice,

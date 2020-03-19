@@ -101,6 +101,7 @@ public class BudgetDataServiceImpl implements BudgetDataService {
                 for (BudgetDataItem budgetDataItem : list) {
                     budgetDataItem.setBudgetDataId(budgetDataId);
                     budgetDataItem.setBudgetKind(String.valueOf(budgetData.getBudgetKind()));
+                    budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0,budgetDataItem.getBudgetType().indexOf(" ")));
                 }
             }
             return budgetDataDao.saveBudgetDataItemInfo(list);
