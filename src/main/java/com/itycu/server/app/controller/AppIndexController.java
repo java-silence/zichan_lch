@@ -8,6 +8,7 @@ import com.itycu.server.app.service.IndexService;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.index.IndexZcInfoVO;
 import com.itycu.server.app.vo.todovo.AppTodoVO;
+import com.itycu.server.dto.AppDealStatus;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.service.ZcInfoService;
@@ -18,10 +19,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +120,23 @@ public class AppIndexController {
         SysUser sysUser = UserUtil.getLoginUser();
         try {
             List<AppTodoVO> list = indexService.appQueryAllTodoList(sysUser.getId());
+            map.put("code", 0);
+            map.put("message", "成功");
+            map.put("data", list);
+        } catch (Exception e) {
+            logger.error("待办事项列表,{}", e.getMessage());
+            map = FailMap.createFailMap();
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "待办事项列表", notes = "待办事项列表")
+    @PostMapping(value = "/getAppAllWailDealList")
+    public Map<String, Object> getAppAllWailDealList(@RequestBody AppDealStatus appDealStatus) {
+        Map<String, Object> map = new HashMap<>();
+        SysUser sysUser = UserUtil.getLoginUser();
+        try {
+            List<AppTodoVO> list = indexService.appQueryAllTodoList(sysUser.getId(),appDealStatus.getStatus());
             map.put("code", 0);
             map.put("message", "成功");
             map.put("data", list);

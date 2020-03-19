@@ -64,6 +64,8 @@ public interface TodoDao {
 
     List<AppTodoVO> appQueryAllTodoList(@Param("userId")long userId);
 
+    List<AppTodoVO> appQueryTodoList(@Param("userId")Long userId,@Param("status")Integer status);
+
     @Select("select id from flow_todo where bizid = #{bizid} and url = #{actionUrl}")
     List<Long> getByBizidAndUrl(@Param("bizid") Long bizid, @Param("actionUrl") String actionUrl);
 

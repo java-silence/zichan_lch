@@ -232,4 +232,19 @@
 		 order by createTime desc
 	</select>
 
+	<!--APP待办列表 2020-03-10-->
+	<select id="appQueryTodoList" resultType="com.itycu.server.app.vo.todovo.AppTodoVO">
+		 SELECT
+		 	t.*,
+		 	u.username,
+		 	u.nickname,
+		 	p.deptname applyDeptName
+		 FROM flow_todo t
+		 left join sys_user u on t.bizcreateby = u.id
+		 left join t_dept p on p.id = u.deptid
+		 WHERE
+		  	t.auditby  = #{userId} and t.status = #{status}
+		 order by createTime desc
+	</select>
+
 </mapper>
