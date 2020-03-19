@@ -108,6 +108,7 @@ public class ZcInfo extends BaseEntity<Long> {
     private Long userId;
     private Integer catType;
 
+
 	/**
 	 * 制单人（多表关联查询字段）
 	 */
