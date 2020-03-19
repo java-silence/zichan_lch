@@ -90,12 +90,6 @@ public class ZcBuyServiceImpl implements ZcBuyService {
                 zcBuyItem.setApplyUserId(user.getId());
                 zcBuyItemDao.insertSingle(zcBuyItem);
             }
-//            for (ZcBuyItem zcBuyItem : zcBuyItemList) {
-//                zcBuyItem.setZcBuyId(zcBuy.getId());
-//                zcBuyItem.setApplyUserId(user.getId());
-//                zcBuyItemDao.insertSingle(zcBuyItem);
-//            }
-            //zcBuyItemDao.saves(zcBuyItemList,zcBuy.getId(),user.getId());
         }
         log.debug("新增购买申请单{}", user.getId());
         // 类别判断

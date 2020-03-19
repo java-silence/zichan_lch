@@ -84,27 +84,32 @@
 		limit #{offset}, #{limit}
 	</select>
 
+
+	<!--公告栏消息-->
+	<sql id="noticeWhere">
+		<where>
+			<if test="params.title != null and params.title != ''">
+				t.title like concat('%', #{params.title}, '%')
+			</if>
+			<if test="params.beginTime != null and params.beginTime != ''">
+				and t.createTime &gt;= #{params.beginTime}
+			</if>
+			<if test="params.userId != null and params.userId != ''">
+				and t.userId = #{params.userId}
+			</if>
+			<if test="params.endTime != null and params.endTime != ''">
+				and DATE(t.createTime) &lt;= #{params.endTime}
+			</if>
+			<if test="params.isRead != null">
+				and t.status = #{params.isRead}
+			</if>
+		</where>
+	</sql>
     <select id="listNoticeByUser" resultType="com.itycu.server.dto.NoticeReadVO">
         select
           t.*
         from t_notice t
-        <where>
-            <if test="params.title != null and params.title != ''">
-                t.title like concat('%', #{params.title}, '%')
-            </if>
-            <if test="params.beginTime != null and params.beginTime != ''">
-                and t.updateTime &gt;= #{params.beginTime}
-            </if>
-            <if test="params.userId != null and params.userId != ''">
-                and t.userId = #{params.userId}
-            </if>
-            <if test="params.endTime != null and params.endTime != ''">
-                and DATE(t.updateTime) &lt;= #{params.endTime}
-            </if>
-			<if test="params.status != null">
-				and t.status = #{params.status}
-			</if>
-        </where>
+		<include refid="noticeWhere" />
         order by t.status asc , t.createTime desc
         limit #{offset}, #{limit}
     </select>
@@ -112,13 +117,6 @@
 	<!--查询消息数量-->
 	<select id="countNoticeByUser" parameterType="map" resultType="int">
 		select count(1) from t_notice t
-		<where>
-			<if test="params.userId != null">
-				t.userId = #{params.userId}
-			</if>
-			<if test="params.status != null">
-				and t.status = #{params.status}
-			</if>
-		</where>
+		<include refid="noticeWhere" />
 	</select>
 </mapper>
