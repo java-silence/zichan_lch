@@ -23,6 +23,7 @@ public class DeptController {
 
     @Autowired
     private DeptDao deptDao;
+
     @Autowired
     private PermissionDao permissionDao;
 
@@ -185,6 +186,28 @@ public class DeptController {
         List<Map> list = new LinkedList<>();
         // 查询下级所有的管理部门
         List<Dept> depts = deptDao.listChildGlDept(11l, 3l);
+        for (Dept dept : depts) {
+            Map map1 = new HashMap();
+            map1.put("name", dept.getDeptname());
+            map1.put("id", dept.getId());
+            map1.put("deptcode", dept.getDeptcode());
+            list.add(map1);
+        }
+        map.put("data", list);
+        map.put("code", 0);
+        return map;
+    }
+
+    /**
+     * 查询所有的使用部门
+     * @return
+     */
+    @GetMapping("/allSyDeptList")
+    @ApiOperation(value = "查询所有的使用部门")
+    public Map allSyDeptList() {
+        Map map = new HashMap();
+        List<Map> list = new LinkedList<>();
+        List<Dept> depts = deptDao.listByPid(11l);
         for (Dept dept : depts) {
             Map map1 = new HashMap();
             map1.put("name", dept.getDeptname());

@@ -94,8 +94,8 @@ public class ZcCheckServiceImpl implements ZcCheckService {
         int insertResult = 0;
         String[] ids = checkDeptId.split(",");
         List<String> idList = Arrays.asList(ids);
-        Map<String, Object> map = new HashMap();
 
+        Map<String, Object> map = new HashMap();
         map.put("del", 0);//查询没有删除的数据
         map.put("bf", 0);//查询没有报废的数据
         if (null != sysUser) {
@@ -109,6 +109,7 @@ public class ZcCheckServiceImpl implements ZcCheckService {
                     map.put("syDeptId", idList.get(i));
                     map.put("pid", dept.getPid());
                     log.info("sysDeptId===={},pid===={}", idList.get(i), deptid);
+
                     List<ZcInfoDto> zcInfoList = zcInfoDao.queryCwbZcInfoList(map);
                     if (!CollectionUtils.isEmpty(zcInfoList)) {
                         int size = zcInfoList.size();
@@ -195,8 +196,17 @@ public class ZcCheckServiceImpl implements ZcCheckService {
 
     @Override
     public Map pdeSaveCheck(String deptId,int profit) {
+
         long userId = UserUtil.getLoginUser().getId();
-        int resultCount = checkHasCreatedByCreateByAndDept2(userId, Long.parseLong(deptId),profit);
+        // 财务得判断自己部门创建的
+        //Dept dept = deptDao.getById(Long.parseLong(deptId));
+        //String zhfhgl = dept.getZhfhgl();
+        int resultCount = 0;
+       // if ("cwb".equals(dept.getZhfhgl())) {
+            //resultCount = zcCheckDao.countCwCreated(userId, Long.parseLong(deptId),profit);
+        //}else {
+            resultCount = checkHasCreatedByCreateByAndDept2(userId, Long.parseLong(deptId),profit);
+        //}
         Map<String, Object> map = new HashMap<>();
         if (resultCount > 0) {
             map.put("code", "500");
@@ -241,6 +251,12 @@ public class ZcCheckServiceImpl implements ZcCheckService {
                 map.put("code", "500");
                 map.put("message", "失败");
             }
+        }else {
+            Map<String, Object> data = new HashMap<>();
+            map.put("code", "500");
+            map.put("message", "该部门无资产");
+            map.put("data",null);
+            return data;
         }
         return map;
     }
