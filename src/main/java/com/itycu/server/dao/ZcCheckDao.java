@@ -121,4 +121,6 @@ public interface ZcCheckDao {
 
 
     ZcCheck getZcInfoDownLoadById(@Param("id") long id);
+
+    int countCwCreated(@Param("userId") Long userId,@Param("parseLong") Long deptId,@Param("profit") Integer profit);
 }
