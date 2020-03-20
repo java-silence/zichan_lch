@@ -732,4 +732,13 @@
             LEFT JOIN t_dept AS e ON d.check_dept_id = e.id
             where d.id = #{id}
     </select>
+
+
+    <select id="countCwCreated" resultType="int">
+        select count(*)
+        from zc_check as a  where
+        a.create_by = #{creteBy} and a.check_dept_id  = #{deptId}
+        and a.profit=#{profit}
+        and a.status !=2
+    </select>
 </mapper>

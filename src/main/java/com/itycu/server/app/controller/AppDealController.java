@@ -73,6 +73,7 @@ public class AppDealController {
             paramsMap.put("del", 0);
             paramsMap.put("syDeptId", UserUtil.getLoginUser().getDeptid());
             paramsMap.put("keyword", appDealListDTO.getKeyword());
+            paramsMap.put("status", 1);
             List<DealZcInfoVO> dealZcInfoVOList = zcBfDao.getZcBFList(paramsMap, offset * limit - limit, limit);
             map.put("data", dealZcInfoVOList);
             map.put("message", "操作成功");

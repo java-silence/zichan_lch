@@ -459,7 +459,7 @@
 		FROM
 			zc_info AS a
 		WHERE
-		a.del = 0
+		a.del = 0 and a.use_status = 1
 		AND a.sy_dept_id = #{params.syDeptId}
 		<if test="params.keyword!=null and params.keyword!=''">
 			and (

@@ -85,7 +85,7 @@ public interface BudgetDataDao {
                                                     @Param("limit") int limit);
 
 
-    List<Map<String, Object>>  budgetItemRecordListById(@Param("params")  Map<String, Object> param,
+    List<Map<String, Object>>  budgetItemRecordListById(@Param("params") Map<String, Object> param,
                                        @Param("offset") int offset,
                                        @Param("limit") int limit);
 }

@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<title>预算申请确认列表</title>
-	<link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
-	<link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>预算申请确认列表</title>
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
 </head>
 <body>
 
 <div class="layui-fluid">
-	<div class="layui-card">
-		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-			<div class="layui-form-item">
-<!--				<div class="layui-inline">-->
-<!--					<button id="printBt" class="layui-btn layui-btn-normal layuiadmin-btn-useradmin">打印</button>-->
-<!--				</div>-->
-			</div>
-		</div>
+  <div class="layui-card">
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+      <div class="layui-form-item">
+        <!--				<div class="layui-inline">-->
+        <!--					<button id="printBt" class="layui-btn layui-btn-normal layuiadmin-btn-useradmin">打印</button>-->
+        <!--				</div>-->
+      </div>
+    </div>
 
-		<div class="layui-card-body">
-			<table class="layui-hide" id="data" lay-filter="data"></table>
-			<table class="layui-hide" id="datas" lay-filter="datas"></table>
-		</div>
-	</div>
-	<form action="" id="fileForm" method="post" style="display: none;"></form>
+    <div class="layui-card-body">
+      <table class="layui-hide" id="data" lay-filter="data"></table>
+      <table class="layui-hide" id="datas" lay-filter="datas"></table>
+    </div>
+  </div>
+  <form action="" id="fileForm" method="post" style="display: none;"></form>
 
-    <script type="text/html" id="barDemo">
-        {{# if(d.fileName != null && d.fileName != '') { }}
-            <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
-        {{# } }}
-    </script>
+  <script type="text/html" id="barDemo">
+    {{# if(d.fileName != null && d.fileName != '') { }}
+    <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+    {{# } }}
+  </script>
 </div>
 </body>
 </html>
@@ -45,436 +45,444 @@
 <script type="text/javascript" src="../../../js/dict.js"></script>
 <script type="text/javascript" src="../../../js/jQuery.print.min.js"></script>
 <script type="text/javascript">
-    var pers = checkPermission();
-    var pro = window.location.protocol;
-    var host = window.location.host;
-    var domain = pro + "//" + host;
-    var processStatus = showDictSelect("status", "processStatus", true);
-    var tableIns;
-    var zcBuyId;
-    layui.use(['layer','form','laydate','table'], function(){
+  var pers = checkPermission();
+  var pro = window.location.protocol;
+  var host = window.location.host;
+  var domain = pro + "//" + host;
+  var processStatus = showDictSelect("status", "processStatus", true);
+  var tableIns;
+  var zcBuyId;
+  layui.use(['layer', 'form', 'laydate', 'table'], function () {
 
-        var layer = layui.layer;
-        var form = layui.form;
-        var laydate = layui.laydate;
-        var table = layui.table;
-        tableIns = table.render({
-            elem: '#data'
-            ,url:"/budgetData/budgetRecordList"
-            ,limit: 10
-            ,limits: [20,40,50,100,200,500,1000,2000]
-            ,totalRow: true
-            ,height:  300
-            //,skin: 'line' //行边框风格
-            ,even: true //开启隔行背景
-            ,size: 'sm' //小尺寸的表格
-            ,autoSort:false
-            ,where: {id:$('#id').val()}
-            ,page: true
-            ,request: {
-                pageName: 'offset' //页码的参数名称，默认：page
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    tableIns = table.render({
+      elem: '#data'
+      , url: "/budgetData/budgetRecordList"
+      , limit: 10
+      , limits: [20, 40, 50, 100, 200, 500, 1000, 2000]
+      , totalRow: true
+      , height: 300
+      //,skin: 'line' //行边框风格
+      , even: true //开启隔行背景
+      , size: 'sm' //小尺寸的表格
+      , autoSort: false
+      , where: {id: $('#id').val()}
+      , page: true
+      , request: {
+        pageName: 'offset' //页码的参数名称，默认：page
+      }
+      , cols: [[
+        {type: 'numbers', title: '序号'}
+        , {field: 'id', hide: true}
+        , {field: 'budgetDataId', title: '预算单号', width: 150}
+        , {field: 'applyDeptName', title: '申请部门名称', width: 150}
+        , {field: 'applyTime', title: '申请时间', width: 150}
+        , {
+          field: 'status', title: '审核状态', width: 150, templet: function (d) {
+            if (d.status == 0) {
+              return "待提交";
+            } else if (d.status == 1) {
+              return "<p style='color: red'>审核中</p>";
+            } else {
+              return "<p style='color: green'>审核完成</p>";
             }
-            ,cols: [[
-                 {type:'numbers',title:'序号'}
-                ,{field:'id',hide:true}
-                ,{field:'budgetDataId',title:'预算单号', width:150}
-                ,{field:'applyDeptName',title:'申请部门名称', width:150}
-                ,{field:'applyTime',title:'申请时间', width:150}
-                ,{field:'status',title:'审核状态', width:150, templet:function(d){
-						if(d.status==0){
-							return "待提交";
-						}else if(d.status==1){
-							return "<p style='color: red'>审核中</p>";
-						}else{
-							return "<p style='color: green'>审核完成</p>";
-						}
-					}
-				}
-				,{field:'budgetKind',title:'审核类型', width:150, templet:function(d){
-						if(d.budgetKind==0){
-							return "<p style='color: red'>年度预算</p>";
-						}else if(d.budgetKind==1){
-							return "<p style='color: green'>月度预算</p>";
-						}
-					}
-				}
-                ,{field:'stepname',title:'流程环节', width:150}
-                ,{field:'createTime',title:'创建时间', width:150}
-                ,{field:'caozuo', title: '操作',fixed:'right', width:145,align:"center",templet: function(d){
-                        var id = d.id;
-                        var fileName = d.fileName;
-                        var href = "updateZcBuy.html?id=" + id;
-                        var startProcess = buttonStartProcess(id, "", pers);
-                        var edit = buttonEdit(href, "", pers);
-                        var del = buttonDel(id, "", pers);
-                        var noAction = "";
-                        var prePrint = "";
-                        if(d.status>0){
-                            edit ="";
-                            del="";
-                            startProcess="";
-                            //noAction = btnNoAction(id, "", pers);
-                            prePrint = prePrintAction(id, "", pers);
-                        }
-                        return startProcess + edit + del + noAction + prePrint;
-                    }}
-            ]]
-        });
-
-        //监听行单击事件（双击事件为：rowDouble）
-        table.on('row(data)', function(obj){
-            $(".layui-table-body tr ").attr({"style":"background:#FFFFFF"});//其他tr恢复原样
-            console.log(obj.tr.selector) //得到当前点击的tr
-            $(obj.tr.selector).attr({"style":"background:#50bda8"});//改变当前tr颜色
-            var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
-            zcBuyId = data.id;
-            tableIns2.reload({where: {zcBuyId:zcBuyId}});
-            //标注选中样式
-            obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
-        });
-
-        //监听工具条
-        table.on('tool(data)', function(obj){
-            var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
-            switch(event){
-                case "viewFile":
-                    layer.open({
-                        type: 1
-                        , title: '查看附件'
-                        , content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.fileUrl + '">'
-                        , area: ['80%', '80%']
-                        , end: function () {
-
-                        }
-                    });
-                    break;
-                case "download":
-                    var oldData =  table.cache["data"];
-                    var url = data.fileUrl;
-                    var name = data.fileName;
-                    // 下载
-                    var $form = $("#fileForm");
-                    var u = '/files/download?fileUrl='+url+'&fileName='+name;
-                    $form.attr("action",u);
-                    $form.submit();
-                    break;
-            }
-        });
-
-        //监听排序事件
-        table.on('sort(data)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-            var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
-            tableIns.reload({
-                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
-                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
-                    id:$('#id').val(),
-                    orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
-                }
-                ,page:{curr:1}
-            });
-        });
-
-        tableIns.reload({where: {zcName:$('#zcName').val()},page:{curr:1}})
-        tableIns2 = table.render({
-            elem: '#datas'
-            ,url:"/budgetData/budgetItemRecordListById"
-            ,page: false
-            //,height: 'full-520'
-            ,limit: 10000
-            ,totalRow: true
-            ,cols: [[
-                {type:'numbers'}
-                ,{field:'id',hide: true}
-                ,{field:'zcBuyId',hide: true}
-                ,{field:'budgetDataId',title:'预算单号', width:170}
-                ,{field:'budget_data_id',title:'预算周期', width:130}
-                ,{field:'price',title:'数量', width:140}
-                ,{field:'num',title:'单位', width:120}
-                ,{field:'totalPrice',title:'', width:140}
-                ,{field:'budgetKind',title:'预算种类', width:100}
-                ,{field:'budgetNum',title:'数量', width:120}
-                ,{field:'budgetPrice',title:'单价', width:140}
-                ,{field:'budgetMoney',title:'预算金额', width:100}
-				,{field:'budget_ept_name',title:'预算申请部门', width:100}
-                ,{field:'budget_manager_name',title:'预算管理部门', width:100}
-                ,{field:'brand',title:'附件地址', width:100, sort: true,hide:true}
-                ,{field:'model',title:'产品品牌', width:100, sort: true}
-                ,{field:'createTime',title:'供应商名称', width:100, sort: true}
-                ,{field:'buyBz',title:'备注', width:100, sort: true}
-                ,{field:'status',hide:true,title:'审核状态', width:100, sort: true}
-
-            ]]
-            ,done: function(res, curr, count){
-
-            }
-        });
-    });
-
-    // 删除主信息
-    function del(id){
-        layer.confirm('确定要删除吗？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'delete',
-                url : '/zcBfs/'+id,
-                success : function(data) {
-                    $('#searchBt').trigger('click');
-                    layer.msg("删除成功");
-                }
-            });
-
-            layer.close(1);
-        });
-    }
-
-    // 下载
-    function download(data) {
-        var str = data.split("-");
-        var name = str[0];
-        var url = str[1];
-        var $form = $("#fileForm");
-        var u = '/files/download?fileUrl='+url+'&fileName='+name;
-        $form.attr("action",u);
-        $form.submit();
-    }
-
-    // 删除子信息
-    function delItem(data){
-        var da = data.split("_");
-        var id = da[0];
-        var zcbfid = da[1];
-        layer.confirm('确定要删除吗？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'get',
-                url : '/zcBfItems/delItem/'+id,
-                success : function(data) {
-                    $('#searchBt').trigger('click');
-                    tableIns2.reload({where: {zcBfId:zcbfid}});
-                    layer.msg("删除成功");
-                }
-            });
-            layer.close(1);
-        });
-    }
-
-    // 资产恢复正常
-    function huifuZcInfo(data) {
-        var da = data.split("_");
-        var id = da[0];
-        var zcbfid = da[1];
-        layer.confirm('确定恢复正常？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'get',
-                url : '/zcBfItems/huifu/'+id,
-                success : function(data) {
-                    $('#searchBt').trigger('click');
-                    tableIns2.reload({where: {zcBfId:zcbfid}});
-                    layer.msg("资产恢复正常");
-                }
-            });
-            layer.close(1);
-        });
-    }
-
-    // 流程启动
-    function startProcess(id){
-        layer.confirm('确定启动该购买流程？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'get',
-                url : '/zcBuys/startBuyProcess/'+id,
-                success : function(data) {
-                    if (data.code == "0"){
-                        $('#searchBt').trigger('click');
-                        layer.msg("流程启动成功");
-                    } else {
-                        layer.msg(data.msg);
-                    }
-                }
-            });
-            layer.close(1);
-        });
-    }
-
-    // 拒绝后再次提交报废子项
-    function startItemProcess(data){
-        var da = data.split("_");
-        var id = da[0];
-        var zcbfid = da[1];
-        var bz = da[2];
-        layer.confirm('确定再次启动该报废流程？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'post',
-                url : '/zcBfItems/startItemProcess',
-                dataType: 'json',
-                data:{
-                    id : id,
-                    bz : bz
-                },
-                success : function(data) {
-                    $('#searchBt').trigger('click');
-                    tableIns2.reload({where: {zcBfId:zcbfid}});
-                    layer.msg("流程启动成功");
-                }
-            });
-            layer.close(1);
-        });
-    }
-
-    function audit(id){
-        layer.confirm('确定要审核吗？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'put',
-                url : '/zcBfs/audit/'+id,
-                success : function(data) {
-                    $('#searchBt').trigger('click');
-                    layer.msg("审核成功");
-                }
-            });
-
-            layer.close(1);
-        });
-    }
-
-    function unaudit(id){
-        layer.confirm('确定要弃审吗？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                type : 'put',
-                url : '/zcBfs/unaudit/'+id,
-                success : function(data) {
-                    $('#searchBt').trigger('click');
-                    layer.msg("弃审成功");
-                }
-            });
-
-            layer.close(1);
-        });
-    }
-
-    $("#searchBt").click(function(){
-        tableIns.reload({where: {nickname:$('#nickname').val()},page:{curr:1}})
-    });
-
-    $("#printBt").click(function(){
-        aPrint(zcBuyId);
-    });
-
-    // 打印
-    function aPrint(zcBuyId) {
-        if (!zcBuyId){
-            layer.msg('请选择采购单');
-            return
+          }
         }
-
-        var html = "";
-        $.ajax({
-            type : 'get',
-            url : '/zcBuys/' + zcBuyId ,
-            async : false,
-            success : function(data) {
-                var zcBuy = data.zcBuy;
-                var shenqing = data.shenqing;
-                var shenhe = data.shenhe;
-                var caiwu = data.caiwu;
-                formatData(zcBuy);
-                formatData(shenqing);
-                formatData(shenhe);
-                formatData(caiwu);
-                debugger
-                html += "<div class='zctitle'>垣曲农村商业银行采购申请单</div>"+
-                    "<table class='print-zctable'><tr><td style='border:none;text-align: left' colspan='6'>采购单号："+zcBuy.buyNum+"</td>" +
-                    "<td style='border:none;text-align: right' colspan='5'>"+getDate()+"</td></tr>"+
-                    "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
-                    "<td style='border-top: 1px solid #000;'>产品品牌</td><td style='border-top: 1px solid #000;'>规格型号</td>" +
-                    "<td style='border-top: 1px solid #000;'>单位（件）</td><td style='border-top: 1px solid #000;'>采购单价</td>" +
-                    "<td style='border-top: 1px solid #000;'>采购数量</td><td style='border-top: 1px solid #000;'>金额（元）</td>" +
-                    "<td style='border-top: 1px solid #000;'>供应商</td><td style='border-top: 1px solid #000;'>管理部门</td>" +
-                    "<td style='border-top: 1px solid #000;'>用途</td></tr>";
-                $.ajax({
-                    type : 'get',
-                    url : "/zcBuyItems/listByZcBuyId?zcBuyId="+zcBuyId,
-                    async : false,
-                    success : function(datas) {
-                        console.log(datas)
-                        var allIprice = 0;
-                        var allNum = 0;
-                        var allImoney = 0;
-                        for (var i=0;i<datas.data.length;i++){
-                            var d = datas.data[i];
-                            formatData(d);
-                            var imoney = d.price*d.num;
-                            var pri = d.price;
-                            if (pri == null){
-                                pri = 0;
-                            }
-                            if(isNaN(imoney)){
-                                imoney = 0;
-                            }
-                            html += "<tr><td style='border-left: 1px solid #000;'>"+(i+1)+"</td><td>"+d.name+"</td><td>"+d.brand+"</td><td>"+d.model+"</td><td>"+d.unit+"</td><td>"+pri+"</td>" +
-                                "<td>"+d.num+"</td><td>"+imoney+"</td><td>"+d.supplierName+"</td><td>"+d.gldeptname+"</td><td>"+d.useDes+"</td></tr>";
-                            allIprice = parseFloat((Number(d.price) + Number(allIprice)).toFixed(2))
-                            allNum = parseFloat((Number(d.num) + Number(allNum)).toFixed(2))
-                            allImoney = parseFloat((Number(imoney) + Number(allImoney)).toFixed(2))
-                        }
-                        if (allIprice == null || isNaN(allIprice)){
-                            allIprice = 0;
-                        }
-                        if (allImoney == null || isNaN(allImoney)){
-                            allImoney = 0;
-                        }
-                        html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td></td>" +
-                            "<td>"+allNum+"</td><td>"+allImoney+"</td><td></td><td></td><td></td></tr>";
-                    }
-                });
-                html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>"+shenqing.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【"+shenqing.username+"】"+shenqing.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >申请时间：</span>"+shenqing.updateTime+"</td></tr>";
-                if (shenhe == null || JSON.stringify(shenhe) == "{}"){
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'>审批时间：</span></td></tr>";
-                } else if (shenhe.length == 1) {
-                	shenhe = shenhe[0];
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td></tr>";
-                }else if (shenhe.length > 1) {
-					for ( var i = 0; i < shenhe.length; i++ ) {
-						var item = shenhe[i];
-						html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门"+(i+1)+"：</span>"+item.deptname+"</td><td class='qianzi' colspan='4'><span class='songti' >审批人：</span>【"+item.username+"】"+item.nickname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>"+item.updateTime+"</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
-					}
-                    // html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td></tr>";
-                }
-                if (caiwu == null || JSON.stringify(caiwu) == "{}"){
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'>审核时间：</span></td></tr>";
-                } else{
-                    html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>"+caiwu.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【"+caiwu.username+"】"+caiwu.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span>"+caiwu.updateTime+"</td></tr>";
-                }
-                html += "</table>"
+        , {
+          field: 'budgetKind', title: '审核类型', width: 150, templet: function (d) {
+            if (d.budgetKind == 0) {
+              return "<p style='color: red'>年度预算</p>";
+            } else if (d.budgetKind == 1) {
+              return "<p style='color: green'>月度预算</p>";
             }
-        });
-        $("#test").print({
-            //Use Global styles
-            globalStyles : false,
-            //Add link with attrbute media=print
-            mediaPrint : false,
-            //Print in a hidden iframe
-            iframe : false,
-            //Don't print this
-            noPrintSelector : ".avoid-this",
-            //Add this at top
-            prepend : html,
-            //Add this on bottom
-            append : "",
-            //Log to console when printing is done via a deffered callback
-            deferred: $.Deferred().done(function() {}),
-            stylesheet:'../../css/fahuoprint.css'
-        });
+          }
+        }
+        , {field: 'stepname', title: '流程环节', width: 150}
+        , {field: 'createTime', title: '创建时间', width: 150}
+        , {
+          field: 'caozuo', title: '操作', fixed: 'right', width: 145, align: "center", templet: function (d) {
+            var id = d.id;
+            var fileName = d.fileName;
+            var href = "updateZcBuy.html?id=" + id;
+            var startProcess = buttonStartProcess(id, "", pers);
+            var edit = buttonEdit(href, "", pers);
+            var del = buttonDel(id, "", pers);
+            var noAction = "";
+            var prePrint = "";
+            if (d.status > 0) {
+              edit = "";
+              del = "";
+              startProcess = "";
+              //noAction = btnNoAction(id, "", pers);
+              prePrint = prePrintAction(id, "", pers);
+            }
+            return startProcess + edit + del + noAction + prePrint;
+          }
+        }
+      ]]
+    });
+
+    //监听行单击事件（双击事件为：rowDouble）
+    table.on('row(data)', function (obj) {
+      $(".layui-table-body tr ").attr({"style": "background:#FFFFFF"});//其他tr恢复原样
+      console.log(obj.tr.selector) //得到当前点击的tr
+      $(obj.tr.selector).attr({"style": "background:#50bda8"});//改变当前tr颜色
+      var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+      zcBuyId = data.id;
+      tableIns2.reload({where: {zcBuyId: zcBuyId}});
+      //标注选中样式
+      obj.tr.addClass('clickRow').siblings().removeClass('clickRow');
+    });
+
+    //监听工具条
+    table.on('tool(data)', function (obj) {
+      var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+      switch (event) {
+        case "viewFile":
+          layer.open({
+            type: 1
+            , title: '查看附件'
+            , content: '<img style="width:100%;height:100%" src="' + domain + '/statics' + data.fileUrl + '">'
+            , area: ['80%', '80%']
+            , end: function () {
+            }
+
+
+          });
+          break;
+        case "download":
+          var oldData = table.cache["data"];
+          var url = data.fileUrl;
+          var name = data.fileName;
+          // 下载
+          var $form = $("#fileForm");
+          var u = '/files/download?fileUrl=' + url + '&fileName=' + name;
+          $form.attr("action", u);
+          $form.submit();
+          break;
+      }
+    });
+
+    //监听排序事件
+    table.on('sort(data)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+      var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+      tableIns.reload({
+        initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+        , where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+          id: $('#id').val(),
+          orderBy: "order by " + obj.field + " " + obj.type//排序字段 + 排序方式
+        }
+        , page: {curr: 1}
+      });
+    });
+
+    tableIns.reload({where: {zcName: $('#zcName').val()}, page: {curr: 1}})
+    tableIns2 = table.render({
+      elem: '#datas'
+      , url: "/budgetData/budgetItemRecordListById"
+      , page: false
+      //,height: 'full-520'
+      , limit: 10000
+      , totalRow: true
+      , cols: [[
+        {type: 'numbers'}
+        , {field: 'id', hide: true}
+        , {field: 'zcBuyId', hide: true}
+        , {field: 'budgetDataId', title: '预算单号', width: 140}
+        , {field: 'budgetPeriod', title: '预算周期', width: 120}
+				, {field: 'typeName', title: '预算类别名称', width: 150}
+        , {
+          field: 'budgetKind', title: '预算种类', width: 120, templet: function (d) {
+            if (d.budgetKind == 0) {
+              return "<p style='color: red'>年度预算</p>";
+            } else if (d.budgetKind == 1) {
+              return "<p style='color: green'>月度预算</p>";
+            }
+          }
+        }
+        , {field: 'budgetPrice', title: '单价', width: 120}
+        , {field: 'budgetNum', title: '数量', width: 120}
+        , {field: 'budgetUnit', title: '单位', width: 120}
+        , {field: 'budgetMoney', title: '预算金额', width: 100}
+        , {field: 'budgetDeptName', title: '预算申请部门', width: 140}
+        , {field: 'budgetManagerName', title: '预算管理部门', width: 140}
+        , {field: 'brand', title: '品牌', width: 100,  hide: true}
+        , {field: 'model', title: '规格', width: 100,}
+      ]]
+      , done: function (res, curr, count) {
+      }
+    });
+  });
+
+  // 删除主信息
+  function del(id) {
+    layer.confirm('确定要删除吗？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'delete',
+        url: '/zcBfs/' + id,
+        success: function (data) {
+          $('#searchBt').trigger('click');
+          layer.msg("删除成功");
+        }
+      });
+
+      layer.close(1);
+    });
+  }
+
+  // 下载
+  function download(data) {
+    var str = data.split("-");
+    var name = str[0];
+    var url = str[1];
+    var $form = $("#fileForm");
+    var u = '/files/download?fileUrl=' + url + '&fileName=' + name;
+    $form.attr("action", u);
+    $form.submit();
+  }
+
+  // 删除子信息
+  function delItem(data) {
+    var da = data.split("_");
+    var id = da[0];
+    var zcbfid = da[1];
+    layer.confirm('确定要删除吗？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'get',
+        url: '/zcBfItems/delItem/' + id,
+        success: function (data) {
+          $('#searchBt').trigger('click');
+          tableIns2.reload({where: {zcBfId: zcbfid}});
+          layer.msg("删除成功");
+        }
+      });
+      layer.close(1);
+    });
+  }
+
+  // 资产恢复正常
+  function huifuZcInfo(data) {
+    var da = data.split("_");
+    var id = da[0];
+    var zcbfid = da[1];
+    layer.confirm('确定恢复正常？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'get',
+        url: '/zcBfItems/huifu/' + id,
+        success: function (data) {
+          $('#searchBt').trigger('click');
+          tableIns2.reload({where: {zcBfId: zcbfid}});
+          layer.msg("资产恢复正常");
+        }
+      });
+      layer.close(1);
+    });
+  }
+
+  // 流程启动
+  function startProcess(id) {
+    layer.confirm('确定启动该购买流程？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'get',
+        url: '/zcBuys/startBuyProcess/' + id,
+        success: function (data) {
+          if (data.code == "0") {
+            $('#searchBt').trigger('click');
+            layer.msg("流程启动成功");
+          } else {
+            layer.msg(data.msg);
+          }
+        }
+      });
+      layer.close(1);
+    });
+  }
+
+  // 拒绝后再次提交报废子项
+  function startItemProcess(data) {
+    var da = data.split("_");
+    var id = da[0];
+    var zcbfid = da[1];
+    var bz = da[2];
+    layer.confirm('确定再次启动该报废流程？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'post',
+        url: '/zcBfItems/startItemProcess',
+        dataType: 'json',
+        data: {
+          id: id,
+          bz: bz
+        },
+        success: function (data) {
+          $('#searchBt').trigger('click');
+          tableIns2.reload({where: {zcBfId: zcbfid}});
+          layer.msg("流程启动成功");
+        }
+      });
+      layer.close(1);
+    });
+  }
+
+  function audit(id) {
+    layer.confirm('确定要审核吗？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'put',
+        url: '/zcBfs/audit/' + id,
+        success: function (data) {
+          $('#searchBt').trigger('click');
+          layer.msg("审核成功");
+        }
+      });
+
+      layer.close(1);
+    });
+  }
+
+  function unaudit(id) {
+    layer.confirm('确定要弃审吗？', {
+      btn: ['确定', '取消']
+    }, function () {
+      $.ajax({
+        type: 'put',
+        url: '/zcBfs/unaudit/' + id,
+        success: function (data) {
+          $('#searchBt').trigger('click');
+          layer.msg("弃审成功");
+        }
+      });
+
+      layer.close(1);
+    });
+  }
+
+  $("#searchBt").click(function () {
+    tableIns.reload({where: {nickname: $('#nickname').val()}, page: {curr: 1}})
+  });
+
+  $("#printBt").click(function () {
+    aPrint(zcBuyId);
+  });
+
+  // 打印
+  function aPrint(zcBuyId) {
+    if (!zcBuyId) {
+      layer.msg('请选择采购单');
+      return
     }
+
+    var html = "";
+    $.ajax({
+      type: 'get',
+      url: '/zcBuys/' + zcBuyId,
+      async: false,
+      success: function (data) {
+        var zcBuy = data.zcBuy;
+        var shenqing = data.shenqing;
+        var shenhe = data.shenhe;
+        var caiwu = data.caiwu;
+        formatData(zcBuy);
+        formatData(shenqing);
+        formatData(shenhe);
+        formatData(caiwu);
+        debugger
+        html += "<div class='zctitle'>垣曲农村商业银行采购申请单</div>" +
+          "<table class='print-zctable'><tr><td style='border:none;text-align: left' colspan='6'>采购单号：" + zcBuy.buyNum + "</td>" +
+          "<td style='border:none;text-align: right' colspan='5'>" + getDate() + "</td></tr>" +
+          "<tr><td style='border-left: 1px solid #000;border-top: 1px solid #000;'>序号</td><td style='border-top: 1px solid #000;'>资产名称</td>" +
+          "<td style='border-top: 1px solid #000;'>产品品牌</td><td style='border-top: 1px solid #000;'>规格型号</td>" +
+          "<td style='border-top: 1px solid #000;'>单位（件）</td><td style='border-top: 1px solid #000;'>采购单价</td>" +
+          "<td style='border-top: 1px solid #000;'>采购数量</td><td style='border-top: 1px solid #000;'>金额（元）</td>" +
+          "<td style='border-top: 1px solid #000;'>供应商</td><td style='border-top: 1px solid #000;'>管理部门</td>" +
+          "<td style='border-top: 1px solid #000;'>用途</td></tr>";
+        $.ajax({
+          type: 'get',
+          url: "/zcBuyItems/listByZcBuyId?zcBuyId=" + zcBuyId,
+          async: false,
+          success: function (datas) {
+            console.log(datas)
+            var allIprice = 0;
+            var allNum = 0;
+            var allImoney = 0;
+            for (var i = 0; i < datas.data.length; i++) {
+              var d = datas.data[i];
+              formatData(d);
+              var imoney = d.price * d.num;
+              var pri = d.price;
+              if (pri == null) {
+                pri = 0;
+              }
+              if (isNaN(imoney)) {
+                imoney = 0;
+              }
+              html += "<tr><td style='border-left: 1px solid #000;'>" + (i + 1) + "</td><td>" + d.name + "</td><td>" + d.brand + "</td><td>" + d.model + "</td><td>" + d.unit + "</td><td>" + pri + "</td>" +
+                "<td>" + d.num + "</td><td>" + imoney + "</td><td>" + d.supplierName + "</td><td>" + d.gldeptname + "</td><td>" + d.useDes + "</td></tr>";
+              allIprice = parseFloat((Number(d.price) + Number(allIprice)).toFixed(2))
+              allNum = parseFloat((Number(d.num) + Number(allNum)).toFixed(2))
+              allImoney = parseFloat((Number(imoney) + Number(allImoney)).toFixed(2))
+            }
+            if (allIprice == null || isNaN(allIprice)) {
+              allIprice = 0;
+            }
+            if (allImoney == null || isNaN(allImoney)) {
+              allImoney = 0;
+            }
+            html += "<tr><td style='border-left: 1px solid #000;'>合计：</td><td></td><td></td><td></td><td></td><td></td>" +
+              "<td>" + allNum + "</td><td>" + allImoney + "</td><td></td><td></td><td></td></tr>";
+          }
+        });
+        html += "<tr><td class='qianzi' colspan='3'><span class='songti' >使用部门：</span>" + shenqing.deptname + "</td><td class='qianzi' colspan='3'><span class='songti' >申请人：</span>【" + shenqing.username + "】" + shenqing.nickname + "</td><td class='qianzi' colspan='5'><span class='songti' >申请时间：</span>" + shenqing.updateTime + "</td></tr>";
+        if (shenhe == null || JSON.stringify(shenhe) == "{}") {
+          html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span></td><td class='qianzi' colspan='5'>审批时间：</span></td></tr>";
+        } else if (shenhe.length == 1) {
+          shenhe = shenhe[0];
+          html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>" + shenhe.deptname + "</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【" + shenhe.username + "】" + shenhe.nickname + "</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>" + shenhe.updateTime + "</td></tr>";
+        } else if (shenhe.length > 1) {
+          for (var i = 0; i < shenhe.length; i++) {
+            var item = shenhe[i];
+            html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门" + (i + 1) + "：</span>" + item.deptname + "</td><td class='qianzi' colspan='4'><span class='songti' >审批人：</span>【" + item.username + "】" + item.nickname + "</td><td class='qianzi' colspan='3'><span class='songti' >审批时间：</span>" + item.updateTime + "</td><td align='left' class='qianzi' colspan='2'><span class='dayin4'>同意</span></td></tr>";
+          }
+          // html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审批部门：</span>"+shenhe.deptname+"</td><td class='qianzi' colspan='3'><span class='songti' >审批人：</span>【"+shenhe.username+"】"+shenhe.nickname+"</td><td class='qianzi' colspan='5'><span class='songti' >审批时间：</span>"+shenhe.updateTime+"</td></tr>";
+        }
+        if (caiwu == null || JSON.stringify(caiwu) == "{}") {
+          html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span></td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span></td><td class='qianzi' colspan='5'>审核时间：</span></td></tr>";
+        } else {
+          html += "<tr><td class='qianzi' colspan='3'><span class='songti' >审核部门：</span>" + caiwu.deptname + "</td><td class='qianzi' colspan='3'><span class='songti' >审核人：</span>【" + caiwu.username + "】" + caiwu.nickname + "</td><td class='qianzi' colspan='5'><span class='songti' >审核时间：</span>" + caiwu.updateTime + "</td></tr>";
+        }
+        html += "</table>"
+      }
+    });
+    $("#test").print({
+      //Use Global styles
+      globalStyles: false,
+      //Add link with attrbute media=print
+      mediaPrint: false,
+      //Print in a hidden iframe
+      iframe: false,
+      //Don't print this
+      noPrintSelector: ".avoid-this",
+      //Add this at top
+      prepend: html,
+      //Add this on bottom
+      append: "",
+      //Log to console when printing is done via a deffered callback
+      deferred: $.Deferred().done(function () {
+      }),
+      stylesheet: '../../css/fahuoprint.css'
+    });
+  }
 </script>

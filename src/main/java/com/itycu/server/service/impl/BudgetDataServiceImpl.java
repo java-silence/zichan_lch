@@ -26,168 +26,153 @@ import java.util.Map;
  */
 @Service("budgetDataService")
 public class BudgetDataServiceImpl implements BudgetDataService {
-    @Resource
-    private BudgetDataDao budgetDataDao;
+  @Resource
+  private BudgetDataDao budgetDataDao;
 
 
-    @Autowired
-    FlowDao flowDao;
+  @Autowired
+  FlowDao flowDao;
 
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param id 主键
-     * @return 实例对象
-     */
-    @Override
-    public BudgetDataItem queryById(Integer id) {
-        return this.budgetDataDao.queryById(id);
-    }
+  /**
+   * 通过ID查询单条数据
+   *
+   * @param id 主键
+   * @return 实例对象
+   */
+  @Override
+  public BudgetDataItem queryById(Integer id) {
+    return this.budgetDataDao.queryById(id);
+  }
 
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<BudgetDataItem> queryAllByLimit(int offset, int limit) {
-        return this.budgetDataDao.queryAllByLimit(offset, limit);
-    }
+  /**
+   * 查询多条数据
+   *
+   * @param offset 查询起始位置
+   * @param limit  查询条数
+   * @return 对象列表
+   */
+  @Override
+  public List<BudgetDataItem> queryAllByLimit(int offset, int limit) {
+    return this.budgetDataDao.queryAllByLimit(offset, limit);
+  }
 
-    /**
-     * 新增数据
-     *
-     * @param budgetDataItem 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public BudgetDataItem insert(BudgetDataItem budgetDataItem) {
-        this.budgetDataDao.insert(budgetDataItem);
-        return budgetDataItem;
-    }
+  /**
+   * 新增数据
+   *
+   * @param budgetDataItem 实例对象
+   * @return 实例对象
+   */
+  @Override
+  public BudgetDataItem insert(BudgetDataItem budgetDataItem) {
+    this.budgetDataDao.insert(budgetDataItem);
+    return budgetDataItem;
+  }
 
-    /**
-     * 修改数据
-     *
-     * @param budgetDataItem 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public BudgetDataItem update(BudgetDataItem budgetDataItem) {
-        this.budgetDataDao.update(budgetDataItem);
-        return this.queryById(budgetDataItem.getId());
-    }
+  /**
+   * 修改数据
+   *
+   * @param budgetDataItem 实例对象
+   * @return 实例对象
+   */
+  @Override
+  public BudgetDataItem update(BudgetDataItem budgetDataItem) {
+    this.budgetDataDao.update(budgetDataItem);
+    return this.queryById(budgetDataItem.getId());
+  }
 
-    /**
-     * 通过主键删除数据
-     *
-     * @param id 主键
-     * @return 是否成功
-     */
-    @Override
-    public boolean deleteById(Integer id) {
-        return this.budgetDataDao.deleteById(id) > 0;
-    }
+  /**
+   * 通过主键删除数据
+   * @param id 主键
+   * @return 是否成功
+   */
+  @Override
+  public boolean deleteById(Integer id) {
+    return this.budgetDataDao.deleteById(id) > 0;
+  }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int saveBudgetDataInfo(BudgetData budgetData) {
-        if (null != budgetData) {
-            List<BudgetDataItem> list = budgetData.getBudgetDataList();
-            if (CollectionUtils.isEmpty(list)) {
-                return 0;
-            }
-
-            //开启流程
-            startBudgetFlow();
-
-            //创建预算编号
-            String budgetDataId = createNum();
-
-            //设置基本的信息插入到budget_data表中
-            budgetData.setStatus(1);//状态审核中
-            budgetData.setUserId(UserUtil.getLoginUser().getId().intValue());
-            budgetData.setApplyDeptId(list.get(0).getBudgetDeptId());
-            budgetData.setApplyDeptName(list.get(0).getBudgetDeptName());
-            budgetData.setGlDeptId(String.valueOf(list.get(0).getBudgetManagerDeptId()));
-            budgetData.setGlDeptName(list.get(0).getBudgetManagerName());
-            budgetData.setBudgetDataId(budgetDataId);
-            int result = budgetDataDao.saveBudgetDataInfo(budgetData);
-
-
-            if (result > 0) {
-                for (BudgetDataItem budgetDataItem : list) {
-                    budgetDataItem.setBudgetDataId(budgetDataId);
-                    budgetDataItem.setBudgetKind(String.valueOf(budgetData.getBudgetKind()));
-                    budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
-                }
-            }
-            /**
-             * TODO 需要插入流程id数据
-             */
-            //基本数据信息插入到budget_data_item表格中
-            return budgetDataDao.saveBudgetDataItemInfo(list);
-        }
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int saveBudgetDataInfo(BudgetData budgetData) {
+    if (null != budgetData) {
+      List<BudgetDataItem> list = budgetData.getBudgetDataList();
+      if (CollectionUtils.isEmpty(list)) {
         return 0;
-    }
+      }
 
-    @Override
-    public int countBudgetRecord(Map<String, Object> map) {
-        return budgetDataDao.countBudgetRecord(map);
-    }
+      //开启流程
+      Flow flow = getFlowByName();
+      if (null != flow) {
+        budgetData.setFlowid(flow.getId().intValue());
+      }
 
-    @Override
-    public List<Map<String, Object>> queryBudgetRecordList(Map<String, Object> map, int offset, int limit) {
-        return budgetDataDao.queryBudgetRecordList(map,offset,limit);
-    }
+      //创建预算编号
+      String budgetDataId = createNum();
 
-    @Override
-    public List<Map<String, Object>> budgetItemRecordListById(Map<String, Object> map, int offset, int limit) {
-        return budgetDataDao.budgetItemRecordListById(map,offset,limit);
-    }
+      //设置基本的信息插入到budget_data表中
+      budgetData.setStatus(1);//状态审核中
+      budgetData.setUserId(UserUtil.getLoginUser().getId().intValue());
+      budgetData.setApplyDeptId(list.get(0).getBudgetDeptId());
+      budgetData.setApplyDeptName(list.get(0).getBudgetDeptName());
+      budgetData.setGlDeptId(String.valueOf(list.get(0).getBudgetManagerDeptId()));
+      budgetData.setGlDeptName(list.get(0).getBudgetManagerName());
+      budgetData.setBudgetDataId(budgetDataId);
+      int result = budgetDataDao.saveBudgetDataInfo(budgetData);
 
 
-    /**
-     * 开启预算流程的数据
-     *
-     * @return 包含流程数据的map
-     */
-    private Map<String, Object> startBudgetFlow() {
-        Map<String, Object> map = new HashMap<>();
-        Flow flow = createFlow();
-        int insertResult = flowDao.save(flow);
-        if (insertResult > 0) {
-            map.put("flowId", flow.getId());
+      if (result > 0) {
+        for (BudgetDataItem budgetDataItem : list) {
+          budgetDataItem.setBudgetDataId(budgetDataId);
+          budgetDataItem.setBudgetKind(String.valueOf(budgetData.getBudgetKind()));
+          budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
         }
-        return map;
+      }
+      /**
+       * TODO 需要插入流程id数据
+       */
+      //基本数据信息插入到budget_data_item表格中
+      return budgetDataDao.saveBudgetDataItemInfo(list);
     }
+    return 0;
+  }
+
+  @Override
+  public int countBudgetRecord(Map<String, Object> map) {
+    return budgetDataDao.countBudgetRecord(map);
+  }
+
+  @Override
+  public List<Map<String, Object>> queryBudgetRecordList(Map<String, Object> map, int offset, int limit) {
+    return budgetDataDao.queryBudgetRecordList(map, offset, limit);
+  }
+
+  @Override
+  public List<Map<String, Object>> budgetItemRecordListById(Map<String, Object> map, int offset, int limit) {
+    return budgetDataDao.budgetItemRecordListById(map, offset, limit);
+  }
 
 
-    /**
-     * 创建定义的流程
-     *
-     * @return
-     */
-    private Flow createFlow() {
-        Flow flow = new Flow();
-        flow.setFlowname("预算申请流程");
-        flow.setDescription("预算申请时,需经管理部门及财务部门审核");
-        flow.setCreateTime(new Date());
-        flow.setCreateby((UserUtil.getLoginUser().getId()));
-        flow.setMemo("预算申请部门申请--管理部门审核---财务部门审核通过");
-        return flow;
-    }
+  /**
+   * 开启预算流程的数据
+   *
+   * @return 包含流程数据的map
+   */
+  private Map<String, Object> startBudgetFlow() {
+    return null;
+  }
 
 
-    /**
-     * 创建预算编号
-     *
-     * @return
-     */
-    private synchronized String createNum() {
-        return String.valueOf(new Date().getTime());
-    }
+  private Flow getFlowByName() {
+    Flow flow = flowDao.findByName("预算申请流程");
+    return flow;
+  }
+
+  /**
+   * 创建预算编号
+   *
+   * @return
+   */
+  private synchronized String createNum() {
+    return String.valueOf(new Date().getTime());
+  }
 
 }

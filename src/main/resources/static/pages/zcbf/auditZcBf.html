@@ -151,7 +151,7 @@
         {{# } }}
 
         {{# if( d.status == 0 && d.shbStatus == 3 && type == 0 ) { }}
-            <a class="layui-btn layui-btn-xs up_route_btn" data-value="{{d.id}}">上传</a>
+            <a class="layui-btn layui-btn-xs up_route_btn2" data-value="{{d.id}}">上传</a>
             <a class="layui-btn layui-btn-xs" lay-event="zctj">再次提交</a>
             <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="zcsc">删除</a>
         {{# } }}
@@ -515,7 +515,8 @@
 					    debugger
 					    var ta = data;
                         var data = data.data;
-                        $('#bfmx').text("申请部门：" + ta.applyDeptName);
+                        var mx = ta.applyDeptName==null?data.deptname:ta.applyDeptName;
+                        $('#bfmx').text("申请部门：" + mx);
                         var bfdes = data.bfdes;
                         var bfbz = data.bfbz;
                         if ( data.bfdes == null ) {

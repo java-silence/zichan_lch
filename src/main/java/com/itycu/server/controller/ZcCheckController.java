@@ -90,7 +90,7 @@ public class ZcCheckController {
     @GetMapping("/pdeSaveCheck")
     @ApiOperation(value = "PDE保存")
     @Transactional
-    public Map pdeSaveCheck(int profit) {
+    public Map pdeSaveCheck(@RequestParam("profit") Integer profit) {
         SysUser sysUser = UserUtil.getLoginUser();
         long deptid = sysUser.getDeptid();
         logger.info("获取用户部门信息是=={},部门id=={}", sysUser, deptid);
