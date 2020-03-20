@@ -126,9 +126,6 @@ public class BudgetDataServiceImpl implements BudgetDataService {
           budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
         }
       }
-
-
-
       /**
        * TODO 需要插入流程id数据
        */
