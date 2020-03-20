@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 预算数据表(年度预算和月度预算)(BudgetDataItem)表数据库访问层
@@ -75,4 +76,16 @@ public interface BudgetDataDao {
 
     int  saveBudgetDataItemInfo(@Param("list") List<BudgetDataItem> list);
 
+
+    int countBudgetRecord(@Param("params") Map<String, Object> param);
+
+
+    List<Map<String, Object>> queryBudgetRecordList(@Param("params")  Map<String, Object> param,
+                                                    @Param("offset") int offset,
+                                                    @Param("limit") int limit);
+
+
+    List<Map<String, Object>>  budgetItemRecordListById(@Param("params")  Map<String, Object> param,
+                                       @Param("offset") int offset,
+                                       @Param("limit") int limit);
 }

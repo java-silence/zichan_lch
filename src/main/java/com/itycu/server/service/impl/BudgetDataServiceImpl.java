@@ -1,19 +1,22 @@
 package com.itycu.server.service.impl;
 
 import com.itycu.server.dao.BudgetDataDao;
+import com.itycu.server.dao.FlowDao;
 import com.itycu.server.model.BudgetData;
 import com.itycu.server.model.BudgetDataItem;
-import com.itycu.server.model.SysUser;
+import com.itycu.server.model.Flow;
 import com.itycu.server.service.BudgetDataService;
 import com.itycu.server.utils.UserUtil;
-import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 预算数据表(年度预算和月度预算)(BudgetDataItem)表服务实现类
@@ -25,6 +28,10 @@ import java.util.List;
 public class BudgetDataServiceImpl implements BudgetDataService {
     @Resource
     private BudgetDataDao budgetDataDao;
+
+
+    @Autowired
+    FlowDao flowDao;
 
     /**
      * 通过ID查询单条数据
@@ -92,7 +99,15 @@ public class BudgetDataServiceImpl implements BudgetDataService {
             if (CollectionUtils.isEmpty(list)) {
                 return 0;
             }
+
+            //开启流程
+            startBudgetFlow();
+
+            //创建预算编号
             String budgetDataId = createNum();
+
+            //设置基本的信息插入到budget_data表中
+            budgetData.setStatus(1);//状态审核中
             budgetData.setUserId(UserUtil.getLoginUser().getId().intValue());
             budgetData.setApplyDeptId(list.get(0).getBudgetDeptId());
             budgetData.setApplyDeptName(list.get(0).getBudgetDeptName());
@@ -100,28 +115,79 @@ public class BudgetDataServiceImpl implements BudgetDataService {
             budgetData.setGlDeptName(list.get(0).getBudgetManagerName());
             budgetData.setBudgetDataId(budgetDataId);
             int result = budgetDataDao.saveBudgetDataInfo(budgetData);
-            if (result>0) {
+
+
+            if (result > 0) {
                 for (BudgetDataItem budgetDataItem : list) {
                     budgetDataItem.setBudgetDataId(budgetDataId);
                     budgetDataItem.setBudgetKind(String.valueOf(budgetData.getBudgetKind()));
-                    budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0,budgetDataItem.getBudgetType().indexOf(" ")));
+                    budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
                 }
             }
             /**
              * TODO 需要插入流程id数据
              */
+            //基本数据信息插入到budget_data_item表格中
             return budgetDataDao.saveBudgetDataItemInfo(list);
         }
         return 0;
     }
 
+    @Override
+    public int countBudgetRecord(Map<String, Object> map) {
+        return budgetDataDao.countBudgetRecord(map);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryBudgetRecordList(Map<String, Object> map, int offset, int limit) {
+        return budgetDataDao.queryBudgetRecordList(map,offset,limit);
+    }
+
+    @Override
+    public List<Map<String, Object>> budgetItemRecordListById(Map<String, Object> map, int offset, int limit) {
+        return budgetDataDao.budgetItemRecordListById(map,offset,limit);
+    }
+
+
+    /**
+     * 开启预算流程的数据
+     *
+     * @return 包含流程数据的map
+     */
+    private Map<String, Object> startBudgetFlow() {
+        Map<String, Object> map = new HashMap<>();
+        Flow flow = createFlow();
+        int insertResult = flowDao.save(flow);
+        if (insertResult > 0) {
+            map.put("flowId", flow.getId());
+        }
+        return map;
+    }
+
+
+    /**
+     * 创建定义的流程
+     *
+     * @return
+     */
+    private Flow createFlow() {
+        Flow flow = new Flow();
+        flow.setFlowname("预算申请流程");
+        flow.setDescription("预算申请时,需经管理部门及财务部门审核");
+        flow.setCreateTime(new Date());
+        flow.setCreateby((UserUtil.getLoginUser().getId()));
+        flow.setMemo("预算申请部门申请--管理部门审核---财务部门审核通过");
+        return flow;
+    }
+
 
     /**
      * 创建预算编号
+     *
      * @return
      */
-    private synchronized  String  createNum(){
-        return  String.valueOf(new Date().getTime());
+    private synchronized String createNum() {
+        return String.valueOf(new Date().getTime());
     }
 
 }

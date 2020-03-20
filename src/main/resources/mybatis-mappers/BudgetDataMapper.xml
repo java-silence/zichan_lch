@@ -3,6 +3,61 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itycu.server.dao.BudgetDataDao">
 
+
+    <sql id="budgetData">
+      `id` ,
+      `budget_data_id` as budgetDataId,
+      `userId` ,
+      `apply_dept_id` as applyDeptId ,
+      `apply_dept_name` as applyDeptName ,
+      `gl_dept_id` as glDeptId ,
+      `gl_dept_name` as glDeptName ,
+      `applyTime` as applyTime ,
+      `flowid`
+      `stepid` ,
+      `status` ,
+      `budget_kind` as budgetKind,
+      `del` ,
+      `create_time` as createTime ,
+      `update_time` as updateTime ,
+      `filename` ,
+      `fileurl` ,
+      `opinion` ,
+      `mark` ,
+      `data_c01` as dataC01 ,
+      `data_c02` as dataC02,
+      `data_c03`
+    </sql>
+
+
+    <sql id="budgetDataItem">
+       `id` ,
+      `budget_data_id` as budgetDataId ,
+      `budget_period` as budgetPeriod ,
+      `budget_type` as budgetType ,
+      `budget_kind` as budgetKind ,
+      `budget_num` as budgetNum ,
+      `budget_price` as budgetPrice ,
+      `property` ,
+      `budget_unit` as budgetUnit ,
+      `budget_money` as budgetMoney ,
+      `budget_manager_dept_id` as budgetManagerDeptId ,
+      `budget_manager_name` as budgetManagerName,
+      `brand` ,
+      `model` ,
+      `file_url` fileUrl,
+      `remark` ,
+      `create_time`  createTime,
+      `update_time` updateTime,
+      `budget_status`  budgetStatus,
+      `budget_dept_id`  budgetDeptId,
+      `budget_dept_name` budgetDeptName,
+      `budget_c01` budgetC01,
+      `budget_c02` budgetC02,
+      `budget_c03` budgetC03
+    </sql>
+
+
     <sql id="where">
         <where>
             <if test="params.id != null and params.id != ''">
@@ -86,7 +141,7 @@
 
     <insert id="saveBudgetDataItemInfo" parameterType="list">
         INSERT INTO
-     `budget_data_item` (
+        `budget_data_item` (
         `budget_data_id`,
         `budget_period`,
         `budget_type`,
@@ -140,5 +195,33 @@
             )
         </foreach>
     </insert>
+
+
+    <select id="countBudgetRecord" resultType="java.lang.Integer">
+        select count(*) from budget_data
+        <include refid="where"/>
+    </select>
+
+
+    <select id="queryBudgetRecordList"  parameterType="map" resultType="java.util.Map">
+        select
+        <include refid="budgetData"/>
+        from budget_data
+        <include refid="where"/>
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+
+    <select id="budgetItemRecordListById" parameterType="map" resultType="java.util.Map">
+        select
+        <include refid="budgetDataItem"/>
+        from budget_data as data
+        left join budget_data_item as item
+        on data.budget_kind = item.budget_data_id
+        where data.id = #{id}
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
 
 </mapper>

@@ -106,6 +106,10 @@ public class BudgetData implements Serializable {
      */
     private String dataC03;
 
+    /**
+     * 流程步骤名称
+     */
+    private String stepname;
 
 
     private List<BudgetDataItem> budgetDataList;

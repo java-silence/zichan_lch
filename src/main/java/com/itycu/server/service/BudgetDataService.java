@@ -4,6 +4,7 @@ import com.itycu.server.model.BudgetData;
 import com.itycu.server.model.BudgetDataItem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 预算数据表(年度预算和月度预算)(BudgetDataItem)表服务接口
@@ -56,5 +57,28 @@ public interface BudgetDataService {
 
 
     int saveBudgetDataInfo(BudgetData budgetData);
+
+
+    /**
+     * 计算总共有多少的预算记录
+     * @param map
+     * @return
+     */
+    int countBudgetRecord(Map<String,Object> map);
+
+
+    /**
+     * 查询预算的记录列表
+     * @param map 查询参数
+     * @param offset 起始页
+     * @param limit
+     * @return
+     */
+    List<Map<String,Object>> queryBudgetRecordList(Map<String,Object> map, int  offset,int  limit);
+
+
+
+    List<Map<String,Object>> budgetItemRecordListById(Map<String,Object> map, int  offset,int  limit);
+
 
 }

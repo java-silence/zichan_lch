@@ -1,6 +1,6 @@
 package com.itycu.server.model;
 
-public class Flow extends BaseEntity<Long> {
+public class 	Flow extends BaseEntity<Long> {
 
 	private String flowname;
 	private String description;
@@ -13,6 +13,50 @@ public class Flow extends BaseEntity<Long> {
 	private String c01;
 	private String c02;
 	private String c03;
+
+	public void setFlowname(String flowname) {
+		this.flowname = flowname;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setCreateby(Long createby) {
+		this.createby = createby;
+	}
+
+	public void setUpdateby(Long updateby) {
+		this.updateby = updateby;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setDel(String del) {
+		this.del = del;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public void setBiztype(String biztype) {
+		this.biztype = biztype;
+	}
+
+	public void setC01(String c01) {
+		this.c01 = c01;
+	}
+
+	public void setC02(String c02) {
+		this.c02 = c02;
+	}
+
+	public void setC03(String c03) {
+		this.c03 = c03;
+	}
 
 	public String getFlowname() {
 		return flowname;
