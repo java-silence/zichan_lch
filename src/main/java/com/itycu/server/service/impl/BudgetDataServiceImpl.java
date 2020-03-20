@@ -155,30 +155,11 @@ public class BudgetDataServiceImpl implements BudgetDataService {
      * @return 包含流程数据的map
      */
     private Map<String, Object> startBudgetFlow() {
-        Map<String, Object> map = new HashMap<>();
-        Flow flow = createFlow();
-        int insertResult = flowDao.save(flow);
-        if (insertResult > 0) {
-            map.put("flowId", flow.getId());
-        }
-        return map;
+
+        return  null;
     }
 
 
-    /**
-     * 创建定义的流程
-     *
-     * @return
-     */
-    private Flow createFlow() {
-        Flow flow = new Flow();
-        flow.setFlowname("预算申请流程");
-        flow.setDescription("预算申请时,需经管理部门及财务部门审核");
-        flow.setCreateTime(new Date());
-        flow.setCreateby((UserUtil.getLoginUser().getId()));
-        flow.setMemo("预算申请部门申请--管理部门审核---财务部门审核通过");
-        return flow;
-    }
 
 
     /**
