@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;margin-top: 10px;">
+    <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;height: 380px;margin-top: 10px;">
         <div class="layui-col-xs4" style="height: 100%;padding-right: 5px;">
             <div class="grid-demo " style="height: 100%;background-color: #fff;">
                 <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">各县市资产分布图</div>
@@ -46,8 +46,8 @@
                 </div>
             </div>
         </div>
-        <div class="layui-col-xs8" style="padding-left: 5px;height: 100%;">
-            <div class="grid-demo" style="background-color: #fff;">
+        <div class="layui-col-xs8" style="height: 100%;padding-left: 5px;">
+            <div class="grid-demo" style="height: 100%;background-color: #fff;">
                 <div class="" style="height: 100%;">
                     <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月采购</div>
                     <div class="layui-form" style="height: 300px;margin-left: 20px;">
@@ -210,7 +210,6 @@
         baoFeiCount();
     }, 1000);
 
-
     function repair() {
         layui.use('table', function () {
             var table = layui.table;
@@ -220,17 +219,19 @@
                 , url: "/index/queryBenYueRepairCountInfo/" + deptCode + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
-                    {field: 'repairCompany', title: '报修单位',align: 'center', }
-                    , {field: 'repairCount', title: '报修单总数', width:100 }
-                    , {field: 'repairTime', title: '报修时间', width:100 }
-                    , {field: 'wanCheng', title: '已完成', width:100}
-                    , {field: 'weiWanCheng', title: '未完成', width:100}
-                    //, {field: 'statusText', title: '报修结果',  width:100}
-                ]]
+                    {field: 'repairCompany', title: '报修单位',width:'22%',align: 'center', }
+                    , {field: 'repairCount', title: '报修单总数', width:'22%' }
+                    , {field: 'repairTime', title: '报修时间', width:'18%' }
+                    , {field: 'wanCheng', title: '已完成', width:'15%'}
+                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
+                    //, {field: 'statusText', title: '报修结果',  width:'15%'}
+                ]],
+                done: function (res, curr, count){
+                    $('table').css('width', '100%');
+                },
             });
         });
     }
-
 
     function xunjian() {
         layui.use('table', function () {
@@ -241,13 +242,16 @@
                 , url: "/index/queryBenYueXunjianDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
-                    {field: 'xunjianCompany', title: '巡检单位',align: 'center',}
-                    , {field: 'xunjianCount', title: '巡检单总数', width:100 }
-                    , {field: 'xunjianTime', title: '巡检时间', width:100 }
-                    , {field: 'wanCheng', title: '已完成', width:100}
-                    , {field: 'weiWanCheng', title: '未完成', width:100}
-                   // , {field: 'xunjianText', title: '巡检结果', width:100 }
-                ]]
+                    {field: 'xunjianCompany', title: '巡检单位', width:'26%',align: 'center',}
+                    , {field: 'xunjianCount', title: '巡检单总数', width:'22%' }
+                    , {field: 'xunjianTime', title: '巡检时间', width:'22%'}
+                    , {field: 'wanCheng', title: '已完成', width:'15%'}
+                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
+                   // , {field: 'xunjianText', title: '巡检结果',  width:'22%' }
+                ]],
+                done: function (res, curr, count){
+                    $('table').css('width', '100%');
+                },
             });
         });
     }
@@ -261,13 +265,16 @@
                 , url: "/index/queryBenYueBaoFeiDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
-                    {field: 'baofeiCompany', title: '处置单位',align: 'center', }
-                    , {field: 'baofeiCount', title: '处置单总数', width:100}
-                    //, {field: 'baofeiTime', title: '处置时间',  width:100}
-                    , {field: 'wanCheng', title: '已完成', width:100}
-                    , {field: 'weiWanCheng', title: '未完成', width:100}
-                    //, {field: 'baofeiText', title: '处置结果', width:100 }
-                ]]
+                    {field: 'baofeiCompany', title: '处置单位', width:'22%',align: 'center', }
+                    , {field: 'baofeiCount', title: '处置单总数', width:'22%'}
+                    //, {field: 'baofeiTime', title: '处置时间',  width:'18%'}
+                    , {field: 'wanCheng', title: '已完成', width:'15%'}
+                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
+                    //, {field: 'baofeiText', title: '处置结果',  width:'22%' }
+                ]],
+                done: function (res, curr, count){
+                    $('table').css('width', '100%');
+                },
             });
         });
     }
@@ -281,12 +288,12 @@
                 , url: "/index/queryJtBenYueDiaoPeiDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
-                    {field: 'diaoPeiCompany', title: '调配单位',align: 'center', }
-                    , {field: 'diaoPeiCount', title: '调配单总数', width:100}
-                    , {field: 'diaoPeiTime', title: '调配时间', width:100}
-                    , {field: 'wanCheng', title: '已完成', width:100}
-                    , {field: 'weiWanCheng', title: '未完成', width:100}
-                    // , {field: 'diaoPeiStatus', title: '调配结果', width:100,templet:function(d){
+                    {field: 'diaoPeiCompany', title: '调配单位', width:'22%',align: 'center', }
+                    , {field: 'diaoPeiCount', title: '调配单总数',  width:'22%'}
+                    , {field: 'diaoPeiTime', title: '调配时间', width:'18%'}
+                    , {field: 'wanCheng', title: '已完成', width:'15%'}
+                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
+                    // , {field: 'diaoPeiStatus', title: '调配结果',  width:'22%',templet:function(d){
                     //         if (d.diaoPeiStatus==0) {
                     //             return "初始";
                     //         } else if (d.diaoPeiStatus==1) {
@@ -296,7 +303,10 @@
                     //         }
                     //
                     //     }}
-                ]]
+                ]],
+                done: function (res, curr, count){
+                    $('table').css('width', '100%');
+                },
             });
         });
     }
@@ -310,19 +320,20 @@
                 , url: "/index/queryJtBenYueBuyDataInfo/" + deptId + "?v=" + new Date().getDate()
                 // , page: true //开启分页
                 , cols: [[ //表头
-                    {field: 'buyCompany', title: '采购单位',align: 'center',}
-                    , {field: 'goodsTotal', title: '采购单总数', width:100}
-                    , {field: 'buyTime', title: '采购时间', width:100}
-                    , {field: 'wanCheng', title: '已完成', width:100}
-                    , {field: 'weiWanCheng', title: '未完成', width:100}
-                    //, {field: 'statusText', title: '采购结果', width:100}
-                ]]
+                    {field: 'buyCompany', title: '采购单位', width:'22%',align: 'center',}
+                    , {field: 'goodsTotal', title: '采购单总数',  width:'22%'}
+                    , {field: 'buyTime', title: '采购时间', width:'18%'}
+                    , {field: 'wanCheng', title: '已完成', width:'15%'}
+                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
+                    //, {field: 'statusText', title: '采购结果',  width:'22%'}
+                ]],
+                done: function (res, curr, count){
+                    $('table').css('width', '100%');
+                },
             });
         });
 
     }
-
-
 
     var dom = document.getElementById("ajReport");
     var myChart = echarts.init(dom);
