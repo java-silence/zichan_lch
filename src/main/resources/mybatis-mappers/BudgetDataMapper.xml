@@ -31,30 +31,30 @@
 
 
     <sql id="budgetDataItem">
-       `id` ,
-      `budget_data_id` as budgetDataId ,
-      `budget_period` as budgetPeriod ,
-      `budget_type` as budgetType ,
-      `budget_kind` as budgetKind ,
-      `budget_num` as budgetNum ,
-      `budget_price` as budgetPrice ,
-      `property` ,
-      `budget_unit` as budgetUnit ,
-      `budget_money` as budgetMoney ,
-      `budget_manager_dept_id` as budgetManagerDeptId ,
-      `budget_manager_name` as budgetManagerName,
-      `brand` ,
-      `model` ,
-      `file_url` fileUrl,
-      `remark` ,
-      `create_time`  createTime,
-      `update_time` updateTime,
-      `budget_status`  budgetStatus,
-      `budget_dept_id`  budgetDeptId,
-      `budget_dept_name` budgetDeptName,
-      `budget_c01` budgetC01,
-      `budget_c02` budgetC02,
-      `budget_c03` budgetC03
+      item. `id` ,
+      item.`budget_data_id` as budgetDataId ,
+      item.`budget_period` as budgetPeriod ,
+      item.`budget_type` as budgetType ,
+      item.`budget_kind` as budgetKind ,
+      item.`budget_num` as budgetNum ,
+      item.`budget_price` as budgetPrice ,
+      item.`property` ,
+      item.`budget_unit` as budgetUnit ,
+      item.`budget_money` as budgetMoney ,
+      item.`budget_manager_dept_id` as budgetManagerDeptId ,
+      item.`budget_manager_name` as budgetManagerName,
+      item.`brand` ,
+      item.`model` ,
+      item.`file_url` fileUrl,
+      item.`remark` ,
+      item.`create_time`  createTime,
+      item.`update_time` updateTime,
+      item.`budget_status`  budgetStatus,
+      item.`budget_dept_id`  budgetDeptId,
+      item.`budget_dept_name` budgetDeptName,
+      item.`budget_c01` budgetC01,
+      item.`budget_c02` budgetC02,
+      item.`budget_c03` budgetC03
     </sql>
 
 
@@ -214,13 +214,17 @@
 
 
     <select id="budgetItemRecordListById" parameterType="map" resultType="java.util.Map">
-        select
-        <include refid="budgetDataItem"/>
-        from budget_data as data
-        left join budget_data_item as item
-        on data.budget_kind = item.budget_data_id
-        where data.id = #{id}
-        order by create_time desc
+        SELECT
+          concat (dict.k," ",dict.val) as typeName,
+          <include refid="budgetDataItem"/>
+        FROM
+            budget_data
+            AS d LEFT JOIN budget_data_item AS item ON d.budget_data_id = item.budget_data_id
+            left join t_dict as dict on dict.k = item.budget_type
+        WHERE
+            d.id = #{params.id}  and  dict.type  = "budgetType"
+        ORDER BY
+            item.create_time DESC
         limit #{offset}, #{limit}
     </select>
 

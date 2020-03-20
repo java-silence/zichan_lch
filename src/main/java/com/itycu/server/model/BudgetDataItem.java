@@ -115,6 +115,11 @@ public class BudgetDataItem implements Serializable {
 
 
     /**
+     * 预算列别名称
+     */
+    private String typeName;
+
+    /**
      * 预算购买单号
      */
     private String budgetDataId;

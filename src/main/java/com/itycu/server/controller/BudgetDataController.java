@@ -90,16 +90,15 @@ public class BudgetDataController {
 
     @GetMapping("/budgetItemRecordListById")
     @ApiOperation(value = "获取预算申请的记录列表总的id查找所有的预算子项列表")
-    public Map budgetItemRecordListById(PageTableRequest request,HttpServletRequest httpServletRequest) {
+    public Map budgetItemRecordListById(PageTableRequest request,
+                                        HttpServletRequest httpServletRequest) {
         Map<String,Object> map = new HashMap();
-        Integer page = Integer.valueOf((String)request.getParams().get("offset"));
+        Integer page = Integer.valueOf((String)request.getParams().get("page"));
         Integer limit = Integer.MAX_VALUE;
         DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
-        map.put("id","");
-        int count = budgetDataService.countBudgetRecord(request.getParams());
-        List<Map<String,Object>> list = budgetDataService.budgetItemRecordListById(request.getParams(), page*limit-limit, limit);
+        map.put("id",(String)request.getParams().get("zcBuyId"));
+        List<Map<String,Object>> list = budgetDataService.budgetItemRecordListById(map, page*limit-limit, limit);
         map.put("data",list);
-        map.put("count",count);
         map.put("code","0");
         map.put("msg","查询成功");
         return map;
