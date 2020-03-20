@@ -102,6 +102,10 @@ public class BudgetDataServiceImpl implements BudgetDataService {
 
             //开启流程
             startBudgetFlow();
+            Flow flow = getFlowByName();
+            if(null!=flow){
+
+            }
 
             //创建预算编号
             String budgetDataId = createNum();
@@ -159,7 +163,10 @@ public class BudgetDataServiceImpl implements BudgetDataService {
     }
 
 
-
+    private Flow getFlowByName() {
+        Flow flow = flowDao.findByName("预算申请流程");
+        return flow;
+    }
 
     /**
      * 创建预算编号
