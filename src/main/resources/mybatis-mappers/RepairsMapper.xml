@@ -192,6 +192,9 @@
 			<if test="params.glDeptId != null and params.glDeptId != ''">
 				and c.gl_dept_id = #{params.glDeptId} or c.sy_dept_id = #{params.glDeptId}
 			</if>
+			<if test="params.useStatus != null and params.useStatus != ''">
+				and c.use_status = #{params.useStatus}
+			</if>
 			<if test="params.keyword!=null and params.keyword!=''">
 				and (c.zc_name like concat ('%',#{params.keyword},'%')
 				or
