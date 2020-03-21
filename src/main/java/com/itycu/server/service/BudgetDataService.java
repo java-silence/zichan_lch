@@ -81,4 +81,7 @@ public interface BudgetDataService {
     List<Map<String,Object>> budgetItemRecordListById(Map<String,Object> map, int  offset,int  limit);
 
 
+
+    List<Map<String,Object>> getBudgetItemDetailListByTodoId(Map<String,Object> map, int  offset,int  limit);
+
 }

@@ -90,7 +90,7 @@ public class BudgetDataController {
 
     @GetMapping("/budgetItemRecordListById")
     @ApiOperation(value = "获取预算申请的记录列表总的id查找所有的预算子项列表")
-    public Map budgetItemRecordListById(PageTableRequest request,
+    public Map getBudgetItemRecordListById(PageTableRequest request,
                                         HttpServletRequest httpServletRequest) {
         Map<String,Object> map = new HashMap();
         Integer page = Integer.valueOf((String)request.getParams().get("page"));
@@ -103,5 +103,26 @@ public class BudgetDataController {
         map.put("msg","查询成功");
         return map;
     }
+
+
+
+
+    @GetMapping("/getBudgetItemDetailListByTodoId")
+    @ApiOperation(value = "获取审核页面的预算审核数据子列表")
+    public Map getBudgetItemDetailListByTodoId(PageTableRequest request,
+                                        HttpServletRequest httpServletRequest) {
+        Map<String,Object> map = new HashMap();
+        Integer page = Integer.valueOf((String)request.getParams().get("page"));
+        Integer limit = Integer.MAX_VALUE;
+        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+        map.put("id",httpServletRequest.getParameter("todoId"));
+        List<Map<String,Object>> list = budgetDataService.getBudgetItemDetailListByTodoId(map, page*limit-limit, limit);
+        map.put("data",list);
+        map.put("code","0");
+        map.put("msg","查询成功");
+        return map;
+    }
+
+
 
 }

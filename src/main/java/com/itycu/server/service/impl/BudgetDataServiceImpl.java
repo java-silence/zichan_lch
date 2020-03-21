@@ -173,6 +173,11 @@ public class BudgetDataServiceImpl implements BudgetDataService {
     return budgetDataDao.budgetItemRecordListById(map, offset, limit);
   }
 
+  @Override
+  public List<Map<String, Object>> getBudgetItemDetailListByTodoId(Map<String, Object> map, int offset, int limit) {
+    return budgetDataDao.getBudgetItemDetailListByTodoId(map, offset, limit);
+  }
+
 
   /**
    * 开启预算流程的数据
@@ -192,7 +197,7 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       todoInfo.setSendby(findUserByDeptId(String.valueOf(applyDeptId)));
       todoInfo.setBiaoti("【" + applyDeptName + "】申请资产购买");
       //设置业务类型的为20L，预算审核的流程类型都是20L
-      todoInfo.setBizid(20L);
+      todoInfo.setBiztype("20");
       todoInfo.setFlowid(flowId);
       //2表示有管理部门的审核步骤id
       todoInfo.setStepid(queryFlowStepIdByFlowId(flowId, 2));

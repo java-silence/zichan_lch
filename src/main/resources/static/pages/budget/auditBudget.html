@@ -171,15 +171,14 @@
     tableIns2 = table.render({
       elem: '#datas'
       , data: []
-      , url: "/zcBuyItems/listByZcBuyIdNew?todoId=" + todoId
+      , url: "/budgetData/getBudgetItemDetailListByTodoId?todoId=" + todoId
       //,height: 'full-200'
       , cols: [[
-        // {field:'checkbox',title: '序号',checkbox: true}
-        {field: 'id', hide: true}
+         {field: 'id', hide: true}
         , {field: 'flowTodoId', hide: true}
         , {field: 'flowItemId', hide: true}
         , {field: 'itemStatus', hide: true}
-        , {field: 'buyNum', title: '预算单号', width: 170}
+        , {field: 'budgetDataId', title: '预算单号', width: 170}
         , {field: 'budgetPeriod', title: '预算周期', width: 130}
         , {field: 'budgetType', title: '预算类型', width: 120}
         , {field: 'budgetKind', title: '预算种类', width: 100}
@@ -189,9 +188,10 @@
         , {field: 'budgetPrice', title: '预算单价', width: 100}
         , {field: 'budgetMoney', title: '预算金额', width: 100}
         , {field: 'property', title: '资产名称', width: 130}
+        , {field: 'createTime', title: '创建时间', width: 130}
         , {field: 'brand', title: '品牌', width: 130}
         , {field: 'model', title: '规格型号', width: 140}
-        , {field: 'unit', title: '单位', width: 100}
+        , {field: 'budgetUnit', title: '单位', width: 100}
         , {field: 'brand', title: '产品品牌', width: 100}
         , {field: 'remark', title: '备注', width: 100}
         , {
@@ -237,7 +237,7 @@
             return status;
           }
         }
-        , {field: 'caozuo', width: 200, title: '操作', fixed: 'right', align: 'center', toolbar: '#auditBfItem'}
+        // , {field: 'caozuo', width: 200, title: '操作', fixed: 'right', align: 'center', toolbar: '#auditBfItem'}
       ]]
     });
 

@@ -228,4 +228,18 @@
         limit #{offset}, #{limit}
     </select>
 
+
+    <select id="getBudgetItemDetailListByTodoId" resultType="java.util.Map">
+
+         select
+			concat (dict.k," ",dict.val) as typeName,
+			 <include refid="budgetDataItem"/>
+			 from  flow_todo as a  left join  budget_data as b on a.bizid = b.id
+			left join budget_data_item as item on  b.budget_data_id = item.budget_data_id
+			left join t_dict as dict on dict.k = item.budget_type
+			where a.id = 43 and a.biztype = 20  and  dict.type  = "budgetType"
+        limit #{offset}, #{limit}
+
+    </select>
+
 </mapper>
