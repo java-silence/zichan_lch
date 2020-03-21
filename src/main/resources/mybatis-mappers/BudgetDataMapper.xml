@@ -127,7 +127,7 @@
 			now(),
 			#{budgetData.flowid},
 			#{budgetData.stepid},
-			0,
+			#{budgetData.status},
 			#{budgetData.budgetKind},
 			0,
 			#{budgetData.fileName},
