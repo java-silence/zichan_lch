@@ -1,106 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>首页</title>
-    <link rel="stylesheet" href="./layuiadmin/layui/css/layui.css" media="all">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>首页</title>
+  <link rel="stylesheet" href="./layuiadmin/layui/css/layui.css" media="all">
 </head>
 <body>
 
 
 <!-- 内容主体区域 -->
 <div style="padding: 10px;">
-    <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;height: 400px;">
-        <div class="layui-col-xs4" style="height: 100%;padding-right: 5px;">
-            <div class="grid-demo " style="height: 100%;background-color: #fff;">
-                <div style="height: 50px;font-size: 18px;background: linear-gradient(to right,#fff,#fff);line-height: 50px;color: #0a80e6;padding-left: 20px;">资产类别分布图</div>
-                <div id="cllReport" style="width:100%;height:300px;"></div>
+  <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;height: 400px;">
+    <div class="layui-col-xs4" style="height: 100%;padding-right: 5px;">
+      <div class="grid-demo " style="height: 100%;background-color: #fff;">
+        <div
+            style="height: 50px;font-size: 18px;background: linear-gradient(to right,#fff,#fff);line-height: 50px;color: #0a80e6;padding-left: 20px;">
+          资产类别分布图
+        </div>
+        <div id="cllReport" style="width:100%;height:300px;"></div>
 
-                <div style="text-align:center;">
-                    <ul style="display: inline;">
-                        <li style="display: inline-block;">资产总值(元):</li>
-                        <li style="display: inline-block;padding-right: 30px;"><span class="layui-badge-rim" id="zcZongZhi" >0000</span></li><br/>
-                        <li style="display: inline-block;">资产净值(元):</li>
-                        <li style="display: inline-block;padding-right: 30px;"><span class="layui-badge-rim" id="zcJingZhi" >0000</span></li>
+        <div style="text-align:center;">
+          <ul style="display: inline;">
+            <li style="display: inline-block;">资产总值(元):</li>
+            <li style="display: inline-block;padding-right: 30px;"><span class="layui-badge-rim"
+                                                                         id="zcZongZhi">0000</span></li>
+            <br/>
+            <li style="display: inline-block;">资产净值(元):</li>
+            <li style="display: inline-block;padding-right: 30px;"><span class="layui-badge-rim"
+                                                                         id="zcJingZhi">0000</span></li>
 
-                    </ul>
-                </div>
-            </div>
+          </ul>
         </div>
-        <div class="layui-col-xs8" style="padding-left: 5px;height: 100%;">
-            <div class="grid-demo" style="height: 100%;background-color: #fff;">
-                <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">各分行资产数量柱状图</div>
-                <div id="ajReport" style="width:100%;height:300px;"></div>
-            </div>
-        </div>
+      </div>
     </div>
-    <div class="layui-row" style="display:flex;align-items: center;justify-content: space-between;height: 380px;margin-top: 10px;">
-        <div class="layui-col-xs4" style="height: 100%;padding-right: 5px;">
-            <div class="grid-demo " style="height: 100%;background-color: #fff;">
-                <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">各县市资产分布图</div>
-                <div class="layui-card-body">
-                    <div id="RegionMap1"  style="width:100%;height:300px;"></div>
-                </div>
-            </div>
+    <div class="layui-col-xs8" style="padding-left: 5px;height: 100%;">
+      <div class="grid-demo" style="height: 100%;background-color: #fff;">
+        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">
+          各分行资产数量柱状图
         </div>
-        <div class="layui-col-xs8" style="height: 100%;padding-left: 5px;">
-            <div class="grid-demo" style="height: 100%;background-color: #fff;">
-                <div class="" style="height: 100%;">
-                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月采购</div>
-                    <div class="layui-form" style="height: 300px;margin-left: 20px;">
-                        <table class="layui-table" lay-even="" lay-skin="line" id="CaigouTable">
+        <div id="ajReport" style="width:100%;height:300px;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="layui-row"
+       style="display:flex;align-items: center;justify-content: space-between;height: 380px;margin-top: 10px;">
+    <div class="layui-col-xs4" style="height: 100%;padding-right: 5px;">
+      <div class="grid-demo " style="height: 100%;background-color: #fff;">
+        <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #0a80e6;">
+          各县市资产分布图
+        </div>
+        <div class="layui-card-body">
+          <div id="RegionMap1" style="width:100%;height:300px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="layui-col-xs8" style="height: 100%;padding-left: 5px;">
+      <div class="grid-demo" style="height: 100%;background-color: #fff;">
+        <div class="" style="height: 100%;">
+          <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">
+            本月采购
+          </div>
+          <div class="layui-form" style="height: 300px;margin-left: 20px;">
+            <table class="layui-table" lay-even="" lay-skin="line" id="CaigouTable">
 
-                        </table>
-                    </div>
-                </div>
-            </div>
+            </table>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="layui-row" style="height: 400px;margin-top: 10px;">
-        <div class="layui-col-xs12" style="height: 100%;">
-            <div class="grid-demo" style="background-color: #fff;">
-                <div class="layui-col-xs6" style="height: 100%;">
-                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月调配</div>
-                    <div class="layui-form" style="height: 300px;margin-left: 20px;">
-                        <table class="layui-table" lay-even="" lay-skin="line" id="DiaoPeiTable">
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="grid-demo " style="height: 100%;background-color: #fff;">
-                <div class="layui-col-xs6" style="height: 100%;">
-                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月报修</div>
-                    <div class="layui-form" style="height: 300px;margin-left: 20px;">
-                        <table class="layui-table" id="BaoXiuTable" lay-even="" lay-skin="line">
-                        </table>
-                    </div>
-                </div>
-            </div>
+  </div>
+  <div class="layui-row" style="height: 400px;margin-top: 10px;">
+    <div class="layui-col-xs12" style="height: 100%;">
+      <div class="grid-demo" style="background-color: #fff;">
+        <div class="layui-col-xs6" style="height: 100%;">
+          <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">
+            本月调配
+          </div>
+          <div class="layui-form" style="height: 300px;margin-left: 20px;">
+            <table class="layui-table" lay-even="" lay-skin="line" id="DiaoPeiTable">
+            </table>
+          </div>
         </div>
-    </div>
-    <div class="layui-row" style="height: 400px;margin-top: 10px;">
-        <div class="layui-col-xs12" style="height: 100%;">
-            <div class="grid-demo " style="height: 100%;background-color: #fff;">
-                <div class="layui-col-xs6" style="height: 100%;">
-                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月巡检</div>
-                    <div class="layui-form" style="height: 300px;margin-left: 20px;">
-                        <table class="layui-table" lay-even="" lay-skin="line" id="XunJianTable">
-                        </table>
-                    </div>
-                </div>
-                <div class="layui-col-xs6" style="height: 100%;">
-                    <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">本月处置</div>
-                    <div class="layui-form" style="height: 300px;margin-left: 20px;">
-                        <table class="layui-table" lay-even="" lay-skin="line" id="baofeiTable">
-                        </table>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="grid-demo " style="height: 100%;background-color: #fff;">
+        <div class="layui-col-xs6" style="height: 100%;">
+          <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">
+            本月报修
+          </div>
+          <div class="layui-form" style="height: 300px;margin-left: 20px;">
+            <table class="layui-table" id="BaoXiuTable" lay-even="" lay-skin="line">
+            </table>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+  <div class="layui-row" style="height: 400px;margin-top: 10px;">
+    <div class="layui-col-xs12" style="height: 100%;">
+      <div class="grid-demo " style="height: 100%;background-color: #fff;">
+        <div class="layui-col-xs6" style="height: 100%;">
+          <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">
+            本月巡检
+          </div>
+          <div class="layui-form" style="height: 300px;margin-left: 20px;">
+            <table class="layui-table" lay-even="" lay-skin="line" id="XunJianTable">
+            </table>
+          </div>
+        </div>
+        <div class="layui-col-xs6" style="height: 100%;">
+          <div style="height: 50px;line-height: 50px;font-size: 18px;padding-left: 20px;color: #007DDB;">
+            本月处置
+          </div>
+          <div class="layui-form" style="height: 300px;margin-left: 20px;">
+            <table class="layui-table" lay-even="" lay-skin="line" id="baofeiTable">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
@@ -117,336 +138,336 @@
 
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script type="text/javascript">
-    // 获取点击的ID
-    var deptId = getUrlParam("a");
-    var deptCode="01";
-    if (deptId == null || deptId == '') {
-        deptId = deptCode;
-    }
-    //饼状图
-    var cllfx = function (timeType) {
-        var CLLChart = echarts.init(document.getElementById('cllReport'));
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/index/queryJtIndexAssetCategory?v=" + new Date().getDate(),
-            // data: {"timeType": timeType},
-            success: function (data) {
-                if (!data) {
-                    layer.msg("暂无数据");
-                    return;
-                } else {
-                    var array = [];
-                    for (var i = 0; i < data.length; i++) {
-                        var jsonObj = {
-                            'name': "",
-                            'value': ""
-                        };
-                        jsonObj.name = data[i].name;
-                        jsonObj.value = data[i].dataCount;
-                        array.push(jsonObj);
+  // 获取点击的ID
+  var deptId = getUrlParam("a");
+  var deptCode = "01";
+  if (deptId == null || deptId == '') {
+    deptId = deptCode;
+  }
+  //饼状图
+  var cllfx = function (timeType) {
+    var CLLChart = echarts.init(document.getElementById('cllReport'));
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: "/index/queryJtIndexAssetCategory?v=" + new Date().getDate(),
+      // data: {"timeType": timeType},
+      success: function (data) {
+        if (!data) {
+          layer.msg("暂无数据");
+          return;
+        } else {
+          var array = [];
+          for (var i = 0; i < data.length; i++) {
+            var jsonObj = {
+              'name': "",
+              'value': ""
+            };
+            jsonObj.name = data[i].name;
+            jsonObj.value = data[i].dataCount;
+            array.push(jsonObj);
+          }
+          var options =
+              {
+                tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                  orient: 'vertical',
+                  left: 'center',
+                  top: 'bottom',
+                  data: [100, 20, 40, 50, 60, 10]
+                },
+                series: [
+                  {
+                    name: '资产数量',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    data: array,
+                    label: {
+                      normal: {
+                        formatter: '{b}\n{c} ({d}%)',
+                      }
+                    },
+                    itemStyle: {
+                      emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                      }
                     }
-                    var options =
-                        {
-                            tooltip: {
-                                trigger: 'item',
-                                formatter: "{a} <br/>{b} : {c} ({d}%)"
-                            },
-                            legend: {
-                                orient: 'vertical',
-                                left: 'center',
-                                top: 'bottom',
-                                data: [100, 20, 40, 50, 60, 10]
-                            },
-                            series: [
-                                {
-                                    name: '资产数量',
-                                    type: 'pie',
-                                    radius: '55%',
-                                    center: ['50%', '50%'],
-                                    data: array,
-                                    label: {
-                                        normal: {
-                                            formatter: '{b}\n{c} ({d}%)',
-                                        }
-                                    },
-                                    itemStyle: {
-                                        emphasis: {
-                                            shadowBlur: 10,
-                                            shadowOffsetX: 0,
-                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    CLLChart.setOption(options);
+                  }
+                ]
+              }
+          CLLChart.setOption(options);
+        }
+      }
+    });
+  };
+
+  function queryJtIndexJinE() {
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: "/index/queryJtIndexJinE",
+      success: function (data) {
+        $("#zcJingZhi").text(data.zcJingZhi);
+        $("#zcZongZhi").text(data.zcZongZhi);
+
+      }
+    });
+  }
+
+  var test = setTimeout(function () {
+    queryJtIndexJinE();
+    cllfx(1);
+    zhuzhuang();
+    caigouCount();
+    repair();
+    xunjian();
+    diaoPeiCount();
+    baoFeiCount();
+  }, 1000);
+
+  function repair() {
+    layui.use('table', function () {
+      var table = layui.table;
+      table.render({
+        elem: '#BaoXiuTable'
+        , height: 300
+        , url: "/index/queryBenYueRepairCountInfo/" + deptCode + "?v=" + new Date().getDate()
+        // , page: true //开启分页
+        , cols: [[ //表头
+          {field: 'repairCompany', title: '报修单位', width: '22%', align: 'center',}
+          , {field: 'repairCount', title: '报修单总数', width: '22%'}
+          , {field: 'repairTime', title: '报修时间', width: '18%'}
+          , {field: 'wanCheng', title: '已完成', width: '15%'}
+          , {field: 'weiWanCheng', title: '未完成', width: '15%'}
+          //, {field: 'statusText', title: '报修结果',  width:'15%'}
+        ]],
+        done: function (res, curr, count) {
+          $('table').css('width', '100%');
+        },
+      });
+    });
+  }
+
+  function xunjian() {
+    layui.use('table', function () {
+      var table = layui.table;
+      table.render({
+        elem: '#XunJianTable'
+        , height: 300
+        , url: "/index/queryBenYueXunjianDataInfo/" + deptId + "?v=" + new Date().getDate()
+        // , page: true //开启分页
+        , cols: [[ //表头
+          {field: 'xunjianCompany', title: '巡检单位', width: '26%', align: 'center',}
+          , {field: 'xunjianCount', title: '巡检单总数', width: '22%'}
+          , {field: 'xunjianTime', title: '巡检时间', width: '22%'}
+          , {field: 'wanCheng', title: '已完成', width: '15%'}
+          , {field: 'weiWanCheng', title: '未完成', width: '15%'}
+          // , {field: 'xunjianText', title: '巡检结果',  width:'22%' }
+        ]],
+        done: function (res, curr, count) {
+          $('table').css('width', '100%');
+        },
+      });
+    });
+  }
+
+  function baoFeiCount() {
+    layui.use('table', function () {
+      var table = layui.table;
+      table.render({
+        elem: '#baofeiTable'
+        , height: 300
+        , url: "/index/queryBenYueBaoFeiDataInfo/" + deptId + "?v=" + new Date().getDate()
+        // , page: true //开启分页
+        , cols: [[ //表头
+          {field: 'baofeiCompany', title: '处置单位', width: '22%', align: 'center',}
+          , {field: 'baofeiCount', title: '处置单总数', width: '22%'}
+          //, {field: 'baofeiTime', title: '处置时间',  width:'18%'}
+          , {field: 'wanCheng', title: '已完成', width: '15%'}
+          , {field: 'weiWanCheng', title: '未完成', width: '15%'}
+          //, {field: 'baofeiText', title: '处置结果',  width:'22%' }
+        ]],
+        done: function (res, curr, count) {
+          $('table').css('width', '100%');
+        },
+      });
+    });
+  }
+
+  function diaoPeiCount() {
+    layui.use('table', function () {
+      var table = layui.table;
+      table.render({
+        elem: '#DiaoPeiTable'
+        , height: 300
+        , url: "/index/queryJtBenYueDiaoPeiDataInfo/" + deptId + "?v=" + new Date().getDate()
+        // , page: true //开启分页
+        , cols: [[ //表头
+          {field: 'diaoPeiCompany', title: '调配单位', width: '22%', align: 'center',}
+          , {field: 'diaoPeiCount', title: '调配单总数', width: '22%'}
+          , {field: 'diaoPeiTime', title: '调配时间', width: '18%'}
+          , {field: 'wanCheng', title: '已完成', width: '15%'}
+          , {field: 'weiWanCheng', title: '未完成', width: '15%'}
+          // , {field: 'diaoPeiStatus', title: '调配结果',  width:'22%',templet:function(d){
+          //         if (d.diaoPeiStatus==0) {
+          //             return "初始";
+          //         } else if (d.diaoPeiStatus==1) {
+          //             return "审核中";
+          //         } else if (d.diaoPeiStatus==2) {
+          //             return "审核完成";
+          //         }
+          //
+          //     }}
+        ]],
+        done: function (res, curr, count) {
+          $('table').css('width', '100%');
+        },
+      });
+    });
+  }
+
+  function caigouCount() {
+    layui.use('table', function () {
+      var table = layui.table;
+      table.render({
+        elem: '#CaigouTable'
+        , height: 300
+        , url: "/index/queryJtBenYueBuyDataInfo/" + deptId + "?v=" + new Date().getDate()
+        // , page: true //开启分页
+        , cols: [[ //表头
+          {field: 'buyCompany', title: '采购单位', width: '22%', align: 'center',}
+          , {field: 'goodsTotal', title: '采购单总数', width: '22%'}
+          , {field: 'buyTime', title: '采购时间', width: '18%'}
+          , {field: 'wanCheng', title: '已完成', width: '15%'}
+          , {field: 'weiWanCheng', title: '未完成', width: '15%'}
+          //, {field: 'statusText', title: '采购结果',  width:'22%'}
+        ]],
+        done: function (res, curr, count) {
+          $('table').css('width', '100%');
+        },
+      });
+    });
+
+  }
+
+  var dom = document.getElementById("ajReport");
+  var myChart = echarts.init(dom);
+  var app = {};
+  option = null;
+  //柱状图
+  var zhuzhuang = function zhuzhuangtu() {
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: "/index/queryIndexZoneAssetCount/" + deptCode + "?v=" + new Date().getDate(),
+
+      success: function (data) {
+        if (!data) {
+          layer.msg("暂无数据");
+          return;
+        } else {
+          requestData = data;
+          var array = new Array();
+          var value = new Array();
+          for (var i = 0; i < data.length; i++) {
+            array.push(data[i].zoneName);
+            value.push(data[i].dataCount);
+          }
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#3398DB'],
+            tooltip: {},
+            legend: {
+              data: ['资产']
+            },
+            xAxis: {
+              data: array
+            },
+            yAxis: {},
+            series: [{
+              name: '资产总数(件)',
+              type: 'bar',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'inside'
                 }
+              },
+              data: value
             }
-        });
-    };
+            ]
+          };
+          if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+          }
 
-    function queryJtIndexJinE() {
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/index/queryJtIndexJinE",
-            success: function (data){
-            $("#zcJingZhi").text(data.zcJingZhi);
-                $("#zcZongZhi").text(data.zcZongZhi);
-
+          //===========地图数据=====================
+          $.get('js/yc.json', function (yCjson) {
+            echarts.registerMap('运城', yCjson);
+            var chart = echarts.init(document.getElementById('RegionMap1'));
+            var array = [];
+            for (var i = 0; i < data.length; i++) {
+              var jsonObj = {
+                'name': "",
+                'value': ""
+              };
+              jsonObj.name = data[i].zoneName;
+              jsonObj.value = data[i].dataCount;
+              array.push(jsonObj);
             }
-        });
-    }
-
-    var test = setTimeout(function () {
-        queryJtIndexJinE();
-        cllfx(1);
-        zhuzhuang();
-        caigouCount();
-        repair();
-        xunjian();
-        diaoPeiCount();
-        baoFeiCount();
-    }, 1000);
-
-    function repair() {
-        layui.use('table', function () {
-            var table = layui.table;
-            table.render({
-                elem: '#BaoXiuTable'
-                , height: 300
-                , url: "/index/queryBenYueRepairCountInfo/" + deptCode + "?v=" + new Date().getDate()
-                // , page: true //开启分页
-                , cols: [[ //表头
-                    {field: 'repairCompany', title: '报修单位',width:'22%',align: 'center', }
-                    , {field: 'repairCount', title: '报修单总数', width:'22%' }
-                    , {field: 'repairTime', title: '报修时间', width:'18%' }
-                    , {field: 'wanCheng', title: '已完成', width:'15%'}
-                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
-                    //, {field: 'statusText', title: '报修结果',  width:'15%'}
-                ]],
-                done: function (res, curr, count){
-                    $('table').css('width', '100%');
-                },
-            });
-        });
-    }
-
-    function xunjian() {
-        layui.use('table', function () {
-            var table = layui.table;
-            table.render({
-                elem: '#XunJianTable'
-                , height: 300
-                , url: "/index/queryBenYueXunjianDataInfo/" + deptId + "?v=" + new Date().getDate()
-                // , page: true //开启分页
-                , cols: [[ //表头
-                    {field: 'xunjianCompany', title: '巡检单位', width:'26%',align: 'center',}
-                    , {field: 'xunjianCount', title: '巡检单总数', width:'22%' }
-                    , {field: 'xunjianTime', title: '巡检时间', width:'22%'}
-                    , {field: 'wanCheng', title: '已完成', width:'15%'}
-                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
-                   // , {field: 'xunjianText', title: '巡检结果',  width:'22%' }
-                ]],
-                done: function (res, curr, count){
-                    $('table').css('width', '100%');
-                },
-            });
-        });
-    }
-
-    function baoFeiCount() {
-        layui.use('table', function () {
-            var table = layui.table;
-            table.render({
-                elem: '#baofeiTable'
-                , height: 300
-                , url: "/index/queryBenYueBaoFeiDataInfo/" + deptId + "?v=" + new Date().getDate()
-                // , page: true //开启分页
-                , cols: [[ //表头
-                    {field: 'baofeiCompany', title: '处置单位', width:'22%',align: 'center', }
-                    , {field: 'baofeiCount', title: '处置单总数', width:'22%'}
-                    //, {field: 'baofeiTime', title: '处置时间',  width:'18%'}
-                    , {field: 'wanCheng', title: '已完成', width:'15%'}
-                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
-                    //, {field: 'baofeiText', title: '处置结果',  width:'22%' }
-                ]],
-                done: function (res, curr, count){
-                    $('table').css('width', '100%');
-                },
-            });
-        });
-    }
-
-    function diaoPeiCount() {
-        layui.use('table', function () {
-            var table = layui.table;
-            table.render({
-                elem: '#DiaoPeiTable'
-                , height: 300
-                , url: "/index/queryJtBenYueDiaoPeiDataInfo/" + deptId + "?v=" + new Date().getDate()
-                // , page: true //开启分页
-                , cols: [[ //表头
-                    {field: 'diaoPeiCompany', title: '调配单位', width:'22%',align: 'center', }
-                    , {field: 'diaoPeiCount', title: '调配单总数',  width:'22%'}
-                    , {field: 'diaoPeiTime', title: '调配时间', width:'18%'}
-                    , {field: 'wanCheng', title: '已完成', width:'15%'}
-                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
-                    // , {field: 'diaoPeiStatus', title: '调配结果',  width:'22%',templet:function(d){
-                    //         if (d.diaoPeiStatus==0) {
-                    //             return "初始";
-                    //         } else if (d.diaoPeiStatus==1) {
-                    //             return "审核中";
-                    //         } else if (d.diaoPeiStatus==2) {
-                    //             return "审核完成";
-                    //         }
-                    //
-                    //     }}
-                ]],
-                done: function (res, curr, count){
-                    $('table').css('width', '100%');
-                },
-            });
-        });
-    }
-
-    function caigouCount() {
-        layui.use('table', function () {
-            var table = layui.table;
-            table.render({
-                elem: '#CaigouTable'
-                , height: 300
-                , url: "/index/queryJtBenYueBuyDataInfo/" + deptId + "?v=" + new Date().getDate()
-                // , page: true //开启分页
-                , cols: [[ //表头
-                    {field: 'buyCompany', title: '采购单位', width:'22%',align: 'center',}
-                    , {field: 'goodsTotal', title: '采购单总数',  width:'22%'}
-                    , {field: 'buyTime', title: '采购时间', width:'18%'}
-                    , {field: 'wanCheng', title: '已完成', width:'15%'}
-                    , {field: 'weiWanCheng', title: '未完成', width:'15%'}
-                    //, {field: 'statusText', title: '采购结果',  width:'22%'}
-                ]],
-                done: function (res, curr, count){
-                    $('table').css('width', '100%');
-                },
-            });
-        });
-
-    }
-
-    var dom = document.getElementById("ajReport");
-    var myChart = echarts.init(dom);
-    var app = {};
-    option = null;
-    //柱状图
-    var zhuzhuang = function zhuzhuangtu() {
-          $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/index/queryIndexZoneAssetCount/" + deptCode + "?v=" + new Date().getDate(),
-
-            success: function (data) {
-                if (!data) {
-                    layer.msg("暂无数据");
-                    return;
-                } else {
-                    requestData = data;
-                    var array = new Array();
-                    var value = new Array();
-                    for (var i = 0; i < data.length; i++) {
-                        array.push(data[i].zoneName);
-                        value.push(data[i].dataCount);
-                    }
-                    // 指定图表的配置项和数据
-                    var option = {
-                        color: ['#3398DB'],
-                        tooltip: {},
-                        legend: {
-                            data: ['资产']
-                        },
-                        xAxis: {
-                            data: array
-                        },
-                        yAxis: {},
-                        series: [{
-                            name: '资产总数(件)',
-                            type: 'bar',
-                            label: {
-                                normal: {
-                                    show: true,
-                                    position: 'inside'
-                                }
-                            },
-                            data: value
-                        }
-                        ]
-                    };
-                    if (option && typeof option === "object") {
-                        myChart.setOption(option, true);
-                    }
-
-                    //===========地图数据=====================
-                    $.get('js/yc.json', function (yCjson) {
-                        echarts.registerMap('运城', yCjson);
-                        var chart = echarts.init(document.getElementById('RegionMap1'));
-                        var array = [];
-                        for (var i = 0; i < data.length; i++) {
-                            var jsonObj = {
-                                'name': "",
-                                'value': ""
-                            };
-                            jsonObj.name = data[i].zoneName;
-                            jsonObj.value = data[i].dataCount;
-                            array.push(jsonObj);
-                        }
-                        // 指定图表的配置项和数据
-                        var optionZone = {
-                            // title: {
-                            //     text: '运城市农商行固定资产',
-                            //     x: 'center'
-                            // },
-                            tooltip: {
-                                trigger: 'item',
-                                formatter: '{b}<br/>{c}'
-                            },
-                            visualMap: {
-                                inRange: {
-                                    color: ['#87cefa','#255fef', '#0732b1']
-                                }
-                            },
-                            series: [
-                                {
-                                    name: '固定资产数量分布',
-                                    type: 'map',
-                                    map: '运城',
-                                    mapLocation: {
-                                        y: 60
-                                    },
-                                    itemStyle: {
-                                            normal:{label:{show:true}},
-                                            emphasis:{label:{show:true}}
-                                    },
-                                    data: array,
-                                    nameMap: {
-                                        '稷山县': '稷山',
-                                        '新绛县': '新绛',
-                                        '万荣县': '万荣',
-                                        '闻喜县': '闻喜',
-                                        '临猗县': '临猗',
-                                        '垣曲县': '垣曲',
-                                        '临猗县': '临猗',
-                                        '平陆县': '平陆',
-                                        '芮城县': '芮城',
-                                    }
-                                }
-                            ],
-                        };
-                        chart.setOption(optionZone);
-                    });
+            // 指定图表的配置项和数据
+            var optionZone = {
+              // title: {
+              //     text: '运城市农商行固定资产',
+              //     x: 'center'
+              // },
+              tooltip: {
+                trigger: 'item',
+                formatter: '{b}<br/>{c}'
+              },
+              visualMap: {
+                inRange: {
+                  color: ['#87cefa', '#255fef', '#0732b1']
                 }
-            }
-        });
+              },
+              series: [
+                {
+                  name: '固定资产数量分布',
+                  type: 'map',
+                  map: '运城',
+                  mapLocation: {
+                    y: 60
+                  },
+                  itemStyle: {
+                    normal: {label: {show: true}},
+                    emphasis: {label: {show: true}}
+                  },
+                  data: array,
+                  nameMap: {
+                    '稷山县': '稷山',
+                    '新绛县': '新绛',
+                    '万荣县': '万荣',
+                    '闻喜县': '闻喜',
+                    '临猗县': '临猗',
+                    '垣曲县': '垣曲',
+                    '临猗县': '临猗',
+                    '平陆县': '平陆',
+                    '芮城县': '芮城',
+                  }
+                }
+              ],
+            };
+            chart.setOption(optionZone);
+          });
+        }
+      }
+    });
 
-    }
+  }
 </script>

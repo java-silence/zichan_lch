@@ -1,129 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>运城市农村信用合作社联合社资产动态管理云平台</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-<!--    <link rel="stylesheet" href="/css/headerimage.css">-->
-    <style>
-        .layui-badge-dot{
-            display: none;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>运城市农村信用合作社联合社资产动态管理云平台</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+  <!--    <link rel="stylesheet" href="/css/headerimage.css">-->
+  <style>
+    .layui-badge-dot {
+      display: none;
+    }
+  </style>
 </head>
 <body class="layui-layout-body">
 
 
-
-    <div class="layui-layout layui-layout-admin">
-        <div class="layui-header" style="height: 80px;background-color: #fff;">
-            <div style="height:80px;font-size: 25px;font-weight: 600;padding-left: 50px;letter-spacing:3px">
-                <img src="img/logo.jpg" style="height:80px;width: 80px" />
-                <span id="login_departname">运城市农村信用合作社联合社资产动态管理云平台</span></div>
-
-
-            <!-- 头部区域 -->
-            <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right" style="line-height: 80px;" >
-                <li class="layui-nav-item" lay-unselect>
-                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
-                        <i class="layui-icon layui-icon-refresh-3"></i>
-                    </a>
-                </li>
-<!--                <li class="layui-nav-item layui-hide-xs" lay-unselect>-->
-<!--                    <a href="javascript:;" layadmin-event="theme">-->
-<!--                        <i class="layui-icon layui-icon-theme"></i>-->
-<!--                    </a>-->
-<!--                </li>-->
-                <li class="layui-nav-item" lay-unselect>
-                    <a lay-href="pages/notice/noticePubList.html" layadmin-event="message" title="消息中心" lay-text="消息中心">
-                        <i class="layui-icon layui-icon-notice"></i>
-
-                        <!-- 如果有新消息，则显示小圆点 -->
-                        <span class="layui-badge-dot">1</span>
-                    </a>
-                </li>
-
-                <li class="layui-nav-item layui-hide-xs" lay-unselect  >
-                    <a href="javascript:;" layadmin-event="note" title="便签" >
-                        <i class="layui-icon layui-icon-note"></i>
-                    </a>
-                </li>
-                <li class="layui-nav-item layui-hide-xs" lay-unselect >
-                    <a href="javascript:;" layadmin-event="fullscreen" title="最大化/还原">
-                        <i class="layui-icon layui-icon-screen-full"></i>
-                    </a>
-                </li>
-                <li class="layui-nav-item" lay-unselect style="margin-right: 20px;">
-                    <a href="javascript:;">
-                        <cite id="header-user"></cite>
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd style="text-align: center;" ><a lay-href="pages/user/changePassword.html">修改密码</a></dd>
-<!--                                      <dd><a lay-href="pages/user/updateHeadImg.html">修改头像</a></dd>-->
-                                      <hr>
-                                                <dd layadmin-event="logout" style="text-align: center;" onclick="logout()"><a>退出</a></dd>
-                    </dl>
-                </li>
-
-            </ul>
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header" style="height: 80px;background-color: #fff;">
+    <div style="height:80px;font-size: 25px;font-weight: 600;padding-left: 50px;letter-spacing:3px">
+      <img src="img/logo.jpg" style="height:80px;width: 80px"/>
+      <span id="login_departname">运城市农村信用合作社联合社资产动态管理云平台</span></div>
 
 
-        </div>
+    <!-- 头部区域 -->
+    <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right" style="line-height: 80px;">
+      <li class="layui-nav-item" lay-unselect>
+        <a href="javascript:;" layadmin-event="refresh" title="刷新">
+          <i class="layui-icon layui-icon-refresh-3"></i>
+        </a>
+      </li>
+      <!--                <li class="layui-nav-item layui-hide-xs" lay-unselect>-->
+      <!--                    <a href="javascript:;" layadmin-event="theme">-->
+      <!--                        <i class="layui-icon layui-icon-theme"></i>-->
+      <!--                    </a>-->
+      <!--                </li>-->
+      <li class="layui-nav-item" lay-unselect>
+        <a lay-href="pages/notice/noticePubList.html" layadmin-event="message" title="消息中心" lay-text="消息中心">
+          <i class="layui-icon layui-icon-notice"></i>
 
-        <div class="layui-side layui-side-menu" style="top: 85px;">
+          <!-- 如果有新消息，则显示小圆点 -->
+          <span class="layui-badge-dot">1</span>
+        </a>
+      </li>
 
-            <div class="layui-side-scroll">
+      <li class="layui-nav-item layui-hide-xs" lay-unselect>
+        <a href="javascript:;" layadmin-event="note" title="便签">
+          <i class="layui-icon layui-icon-note"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item layui-hide-xs" lay-unselect>
+        <a href="javascript:;" layadmin-event="fullscreen" title="最大化/还原">
+          <i class="layui-icon layui-icon-screen-full"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item" lay-unselect style="margin-right: 20px;">
+        <a href="javascript:;">
+          <cite id="header-user"></cite>
+        </a>
+        <dl class="layui-nav-child">
+          <dd style="text-align: center;"><a lay-href="pages/user/changePassword.html">修改密码</a></dd>
+          <!--                                      <dd><a lay-href="pages/user/updateHeadImg.html">修改头像</a></dd>-->
+          <hr>
+          <dd layadmin-event="logout" style="text-align: center;" onclick="logout()"><a>退出</a></dd>
+        </dl>
+      </li>
 
-                <div style="height:50px;line-height:50px;font-size: 16px;color: #fff;text-align: center;background-color: #282b33  !important;">系统菜单</div>
-                <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" style="margin-top:0  !important;"
-                    lay-filter="layadmin-system-side-menu">
-
-                </ul>
-            </div>
-        </div>
+    </ul>
 
 
-        <!-- 页面标签 -->
-        <div class="layadmin-pagetabs" style="margin-top:35px" id="LAY_app_tabs">
-            <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
-            <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
-            <div class="layui-icon layadmin-tabs-control layui-icon-down">
-                <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
-                    <li class="layui-nav-item" lay-unselect>
-                        <a href="javascript:;"></a>
-                        <dl class="layui-nav-child layui-anim-fadein">
-                            <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
-                            <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
-                            <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
-                        </dl>
-                    </li>
-                </ul>
-            </div>
-            <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
-                <ul class="layui-tab-title" id="LAY_app_tabsheader">
-                    <li lay-id="views/home/console.html" lay-attr="pages/dashboard.html" class="layui-this"><i
-                            class="layui-icon layui-icon-home"></i></li>
-                </ul>
-            </div>
-        </div>
+  </div>
 
-        <!-- 主体内容  -->
-        <div class="layui-body" id="LAY_app_body" style="top: 120px;">
-            <div class="layadmin-tabsbody-item layui-show">
-                <iframe src="pages/dashboard.html" frameborder="0" class="layadmin-iframe"></iframe>
-            </div>
-        </div>
+  <div class="layui-side layui-side-menu" style="top: 85px;">
 
-        <!-- 辅助元素，一般用于移动设备下遮罩 -->
-        <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    <div class="layui-side-scroll">
 
+      <div
+          style="height:50px;line-height:50px;font-size: 16px;color: #fff;text-align: center;background-color: #282b33  !important;">
+        系统菜单
+      </div>
+      <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
+          style="margin-top:0  !important;"
+          lay-filter="layadmin-system-side-menu">
+
+      </ul>
     </div>
+  </div>
+
+
+  <!-- 页面标签 -->
+  <div class="layadmin-pagetabs" style="margin-top:35px" id="LAY_app_tabs">
+    <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+    <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+    <div class="layui-icon layadmin-tabs-control layui-icon-down">
+      <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+        <li class="layui-nav-item" lay-unselect>
+          <a href="javascript:;"></a>
+          <dl class="layui-nav-child layui-anim-fadein">
+            <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+            <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+            <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+    <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+      <ul class="layui-tab-title" id="LAY_app_tabsheader">
+        <li lay-id="views/home/console.html" lay-attr="pages/dashboard.html" class="layui-this"><i
+            class="layui-icon layui-icon-home"></i></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 主体内容  -->
+  <div class="layui-body" id="LAY_app_body" style="top: 120px;">
+    <div class="layadmin-tabsbody-item layui-show">
+      <iframe src="pages/dashboard.html" frameborder="0" class="layadmin-iframe"></iframe>
+    </div>
+  </div>
+
+  <!-- 辅助元素，一般用于移动设备下遮罩 -->
+  <div class="layadmin-body-shade" layadmin-event="shade"></div>
+
+</div>
 
 
 <script src="layuiadmin/layui/layui.js"></script>
@@ -131,95 +133,96 @@
 <script type="text/javascript" src="js/jq.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 <script>
-    layui.config({
-        base: 'layuiadmin/' //静态资源所在路径
-    }).extend({
-        index: 'lib/index' //主入口模块
-    }).use('index');
+  layui.config({
+    base: 'layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use('index');
 </script>
 
 
 <!-- 百度统计 -->
 <script>
 
-    var token = localStorage.token;
-    layui.use('layer',function(){
-        var layer = layui.layer;
+  var token = localStorage.token;
+  layui.use('layer', function () {
+    var layer = layui.layer;
+  });
+  haveNotice();
+  showLoginInfo();
+  // 假设每隔5秒发送一次请求
+  getApi();
+
+  function getApi() {
+    //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
+    setTimeout(getApi, 1 * 1000 * 60 * 5);
+    //setTimeout(getApi,1*1000*6);
+    $.ajax({
+      url: '/users/countTodo',
+      async: false,
+      type: 'get',
+      dataType: 'json',
+      headers: {"token": token},
+      success: function (data) {
+        if (data.num > 0) {
+          var layer = layui.layer;
+          var content = '你有待办任务需要处理，请到【协同管理】-【待办事宜】进行办理!';
+          layer.open({
+            type: 0,
+            content: content
+          })
+          //询问框
+          // layer.confirm(content, {
+          //     btn: ['去办理','关闭'] //按钮
+          // }, function(){
+          //     location.href = "/todo/todoList.html";
+          // });
+        }
+      }
+    })
+  }
+
+  // 判断是否有消息
+  function haveNotice() {
+    $.ajax({
+      type: 'get',
+      url: '/users/countNotice',
+      async: false,
+      headers: {"token": token},
+      success: function (data) {
+        if (data.num > 0) {
+          $('.layui-badge-dot').css('display', 'block');
+        }
+      }
     });
-    haveNotice();
-    showLoginInfo();
-    // 假设每隔5秒发送一次请求
-    getApi();
-    function getApi() {
-        //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
-        setTimeout(getApi,1*1000*60*5);
-        //setTimeout(getApi,1*1000*6);
-        $.ajax({
-            url: '/users/countTodo',
-            async: false,
-            type: 'get',
-            dataType: 'json',
-            headers:{"token":token},
-            success: function (data) {
-                if ( data.num > 0 ) {
-                    var layer = layui.layer;
-                    var content = '你有待办任务需要处理，请到【协同管理】-【待办事宜】进行办理!';
-                    layer.open({
-                        type:0,
-                        content: content
-                    })
-                    //询问框
-                    // layer.confirm(content, {
-                    //     btn: ['去办理','关闭'] //按钮
-                    // }, function(){
-                    //     location.href = "/todo/todoList.html";
-                    // });
-                }
-            }
-        })
-    }
 
-    // 判断是否有消息
-    function haveNotice() {
-        $.ajax({
-            type: 'get',
-            url: '/users/countNotice',
-            async: false,
-            headers:{"token":token},
-            success: function (data) {
-                if (data.num > 0){
-                    $('.layui-badge-dot').css('display','block');
-                }
-            }
-        });
+  }
 
-    }
-
-    function showLoginInfo() {
-        $.ajax({
-            type: 'get',
-            url: '/users/current',
-            async: false,
-            success: function (data) {
-                console.log(data);
-                var system = "运城市农村信用合作社联合社资产动态管理云平台";
-                $("#header-user").text(data.nickname);
-                var name = data.logintitle;
-                if(name==null||name==''){
-                    $("#login_departname").html(system);
-                }
-                $("#login_departname").html(name);
-                //#039c49
-                // if (data.deptid == 0) {
-                //     var name = data.logintitle;
-                //     $("#login_departname").text(name);
-                // } else {
-                //     var name = data.loginUserDepartName + system;
-                //     $("#login_departname").text("山西垣曲农村商业银行股份有限公司毛家支行资产管理云平台");
-                // }
-            }
-        });
-    }
+  function showLoginInfo() {
+    $.ajax({
+      type: 'get',
+      url: '/users/current',
+      async: false,
+      success: function (data) {
+        console.log(data);
+        var system = "运城市农村信用合作社联合社资产动态管理云平台";
+        $("#header-user").text(data.nickname);
+        var name = data.logintitle;
+        if (name == null || name == '') {
+          $("#login_departname").html(system);
+        }
+        $("#login_departname").html(name);
+        //#039c49
+        // if (data.deptid == 0) {
+        //     var name = data.logintitle;
+        //     $("#login_departname").text(name);
+        // } else {
+        //     var name = data.loginUserDepartName + system;
+        //     $("#login_departname").text("山西垣曲农村商业银行股份有限公司毛家支行资产管理云平台");
+        // }
+      }
+    });
+  }
 </script>
 </body>
 </html>

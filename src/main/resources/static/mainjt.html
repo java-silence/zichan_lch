@@ -1,99 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>农商行固定资产管理系统</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-    <!--    <link rel="stylesheet" href="css/headerimage.css">-->
+  <meta charset="utf-8">
+  <title>农商行固定资产管理系统</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+  <!--    <link rel="stylesheet" href="css/headerimage.css">-->
 </head>
 <body class="layui-layout-body" style="background-color: #ccc;">
 
 
 <div class="layui-layout layui-layout-admin">
-    <div class="layui-header" style="height: 80px;background-color: #fff;">
-        <div style="height:80px;font-size: 25px;font-weight: 600;padding-left: 50px;letter-spacing:3px">
-            <img src="img/logo.jpg" style="height:80px;width: 80px" />
-            <span id="login_departname">山西运城农村商业银行有限公司资产管理云平台</span></div>
+  <div class="layui-header" style="height: 80px;background-color: #fff;">
+    <div style="height:80px;font-size: 25px;font-weight: 600;padding-left: 50px;letter-spacing:3px">
+      <img src="img/logo.jpg" style="height:80px;width: 80px"/>
+      <span id="login_departname">山西运城农村商业银行有限公司资产管理云平台</span></div>
 
-        <ul class="layui-nav layui-layout-right" style="line-height: 80px;" >
-            <li class="layui-nav-item" lay-unselect>
-                <a href="javascript:;" layadmin-event="refresh" title="刷新">
-                    <i class="layui-icon layui-icon-refresh-3"></i>
-                </a>
-            </li>
-            <li class="layui-nav-item layui-hide-xs" lay-unselect>
-                <a href="javascript:;" layadmin-event="fullscreen" title="最大化/还原">
-                    <i class="layui-icon layui-icon-screen-full"></i>
-                </a>
-            </li>
-            <li class="layui-nav-item" lay-unselect style="margin-right: 20px;">
-                <a href="javascript:;">
-                    <cite id="header-user"></cite>
-                </a>
-                <dl class="layui-nav-child">
-                    <dd style="text-align: center;"><a lay-href="pages/user/changePassword.html">修改密码</a></dd>
-                    <!--                        <dd><a lay-href="pages/user/updateHeadImg.html">修改头像</a></dd>-->
-                    <hr>
-                    <dd layadmin-event="logout" style="text-align: center;" onclick="logout()"><a>退出</a></dd>
-                </dl>
-            </li>
+    <ul class="layui-nav layui-layout-right" style="line-height: 80px;">
+      <li class="layui-nav-item" lay-unselect>
+        <a href="javascript:;" layadmin-event="refresh" title="刷新">
+          <i class="layui-icon layui-icon-refresh-3"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item layui-hide-xs" lay-unselect>
+        <a href="javascript:;" layadmin-event="fullscreen" title="最大化/还原">
+          <i class="layui-icon layui-icon-screen-full"></i>
+        </a>
+      </li>
+      <li class="layui-nav-item" lay-unselect style="margin-right: 20px;">
+        <a href="javascript:;">
+          <cite id="header-user"></cite>
+        </a>
+        <dl class="layui-nav-child">
+          <dd style="text-align: center;"><a lay-href="pages/user/changePassword.html">修改密码</a></dd>
+          <!--                        <dd><a lay-href="pages/user/updateHeadImg.html">修改头像</a></dd>-->
+          <hr>
+          <dd layadmin-event="logout" style="text-align: center;" onclick="logout()"><a>退出</a></dd>
+        </dl>
+      </li>
 
-        </ul>
+    </ul>
+  </div>
+
+  <!-- 侧边菜单 -->
+  <div class="layui-side layui-bg-black" style="top: 85px;">
+
+    <!--    <div class="layui-side layui-side-menu" style="top: 80px;background-color: #0a80e6 !important;">-->
+    <div class="layui-side-scroll">
+      <div
+          style="height:50px;line-height:50px;font-size: 16px;color: #fff;text-align: center;background-color: #282b33  !important;">
+        运城农商银行组织架构
+      </div>
+      <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
+          lay-filter="layadmin-system-side-menu">
+
+      </ul>
     </div>
+  </div>
 
-    <!-- 侧边菜单 -->
-    <div class="layui-side layui-bg-black" style="top: 85px;">
 
-        <!--    <div class="layui-side layui-side-menu" style="top: 80px;background-color: #0a80e6 !important;">-->
-        <div class="layui-side-scroll">
-            <div style="height:50px;line-height:50px;font-size: 16px;color: #fff;text-align: center;background-color: #282b33  !important;">运城农商银行组织架构</div>
-            <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
-                lay-filter="layadmin-system-side-menu">
-
-            </ul>
-        </div>
+  <!-- 页面标签 -->
+  <div class="layadmin-pagetabs" style="margin-top:35px" id="LAY_app_tabs">
+    <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+    <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+    <div class="layui-icon layadmin-tabs-control layui-icon-down">
+      <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+        <li class="layui-nav-item" lay-unselect>
+          <a href="javascript:;"></a>
+          <dl class="layui-nav-child layui-anim-fadein">
+            <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+            <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+            <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+          </dl>
+        </li>
+      </ul>
     </div>
-
-
-    <!-- 页面标签 -->
-    <div class="layadmin-pagetabs" style="margin-top:35px" id="LAY_app_tabs">
-        <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
-        <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
-        <div class="layui-icon layadmin-tabs-control layui-icon-down">
-            <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
-                <li class="layui-nav-item" lay-unselect>
-                    <a href="javascript:;"></a>
-                    <dl class="layui-nav-child layui-anim-fadein">
-                        <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
-                        <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
-                        <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
-                    </dl>
-                </li>
-            </ul>
-        </div>
-        <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
-            <ul class="layui-tab-title" id="LAY_app_tabsheader">
-                <li lay-id="views/home/console.html" lay-attr="pages/dashboard.html" class="layui-this"><i
-                        class="layui-icon layui-icon-home"></i></li>
-            </ul>
-        </div>
+    <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+      <ul class="layui-tab-title" id="LAY_app_tabsheader">
+        <li lay-id="views/home/console.html" lay-attr="pages/dashboard.html" class="layui-this"><i
+            class="layui-icon layui-icon-home"></i></li>
+      </ul>
     </div>
+  </div>
 
 
-    <!-- 主体内容 -->
-    <div class="layui-body" id="LAY_app_body"  style="top: 120px;">
-        <div class="layadmin-tabsbody-item layui-show">
-            <iframe src="/indexjt.html" frameborder="0" class="layadmin-iframe"></iframe>
-        </div>
+  <!-- 主体内容 -->
+  <div class="layui-body" id="LAY_app_body" style="top: 120px;">
+    <div class="layadmin-tabsbody-item layui-show">
+      <iframe src="/indexjt.html" frameborder="0" class="layadmin-iframe"></iframe>
     </div>
+  </div>
 
-    <!-- 辅助元素，一般用于移动设备下遮罩 -->
-    <div class="layadmin-body-shade" layadmin-event="shade"></div>
+  <!-- 辅助元素，一般用于移动设备下遮罩 -->
+  <div class="layadmin-body-shade" layadmin-event="shade"></div>
 </div>
 </div>
 
@@ -101,259 +104,259 @@
 <script type="text/javascript" src="js/libs/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="js/jq.js"></script>
 <script>
-    layui.config({
-        base: 'layuiadmin/' //静态资源所在路径
-        , pageTabs: false
-    }).extend({
-        index: 'lib/index' //主入口模块
-        , pageTabs: false
-    }).use('index');
+  layui.config({
+    base: 'layuiadmin/' //静态资源所在路径
+    , pageTabs: false
+  }).extend({
+    index: 'lib/index' //主入口模块
+    , pageTabs: false
+  }).use('index');
 </script>
 <script>
 
 
-    var deptid = null;
-    // 登陆用户头像昵称
-    var deptidResult = showLoginInfo();
+  var deptid = null;
+  // 登陆用户头像昵称
+  var deptidResult = showLoginInfo();
 
-    function showLoginInfo() {
-        $.ajax({
-            type: 'get',
-            url: '/users/current',
-            async: false,
-            success: function (data) {
-                console.log(data);
-                deptid = data.deptid;
-                var system = "固定资产管理系统";
-                $("#header-user").text(data.nickname);
-                var name = data.logintitle;
-                $("#login_departname").html(name);
-                if (data.deptid == 0) {
-                    //  $("#login_departname").text("山西运城农村商业银行股份有限公司资产管理云平台");
-                } else {
-                    // var name = data.loginUserDepartName + system;
-                    // $("#login_departname").text(name);
-                    var appendUrl = "/indexzh.html?a=" + data.deptid;
-                    $('iframe').attr('src', appendUrl);
-                }
-            }
-        });
-        return deptid;
-    }
-
-    initMenu();
-
-    function initMenu() {
-        $.ajax({
-            url: "/depts/JtdeptTree",
-            type: "get",
-            async: false,
-            success: function (data) {
-                if (!$.isArray(data.data)) {
-                    location.href = '/login.html';
-                    return;
-                }
-                var menu = $("#LAY-system-side-menu");
-                $.each(data.data, function (i, item) {
-                    if (item.name == "请选择部门") return true;
-                    var a = $("<a href='javascript:;'></a>");
-                    //class='fa layui-icon layui-icon-tabs' 删除一级菜单图标
-                    a.append("<i aria-hidden='true' ></i>");
-                    a.append("<cite>" + item.name + "</cite>");
-                    a.attr("lay-id", item.id);
-                    var href = "/indexzh.html?a=" + item.id;
-
-                    if (deptidResult == 0) {
-                        if (href != null && href != "") {
-                            a.attr("lay-href", href);
-                        }
-                    } else {
-                        if (href != null) {
-                            if (item.id == deptidResult) {
-                                // a.attr("lay-href", "");
-                            } else {
-                                a.attr("lay-href", href);
-                            }
-                        }
-                    }
-
-                    var li = $("<li class='layui-nav-item'></li>");
-                    if (i == 0) {
-                        li.addClass("layui-nav-itemed");
-                    }
-                    li.append(a);
-                    menu.append(li);
-                    //多级菜单
-                    setChild(li, item.children, item.id)
-
-                });
-            }
-        });
-    }
-
-    function setChild(parentElement, child, id) {
-        if (child != null && child.length > 0) {
-            $.each(child, function (j, item2) {
-                //console.log(item2.name + "=====" + item2.deptcode +"======" + item2.id);
-                var ca = $("<a href='javascript:;'></a>");
-                //  if(item2.href){
-                /**
-                 * TODO 权限修改显示同的页面
-                 */
-                ca.attr("lay-href", "/pages/zcinfo/zcBranchInfoList.html?a=" + item2.deptcode + "&id=" + item2.id);
-                // ca.attr("lay-href", "/pages/zcinfo/zcInfoList.html?a="+id);
-                // }
-                ca.attr("lay-id", item2.id);
-                var css2 = item2.css;
-                if (css2 != null && css2 != "") {
-                    ca.append("<i aria-hidden='true' class='fa " + css2 + "'></i>");
-                }
-                ca.append("<cite>" + item2.name + "</cite>");
-                var dd = $("<dd></dd>");
-                dd.append(ca);
-
-                var dl = $("<dl class='layui-nav-child'></dl>");
-                dl.append(dd);
-
-                parentElement.append(dl);
-
-                // 递归
-                setChild(dd, item2.child, id);
-            });
+  function showLoginInfo() {
+    $.ajax({
+      type: 'get',
+      url: '/users/current',
+      async: false,
+      success: function (data) {
+        console.log(data);
+        deptid = data.deptid;
+        var system = "固定资产管理系统";
+        $("#header-user").text(data.nickname);
+        var name = data.logintitle;
+        $("#login_departname").html(name);
+        if (data.deptid == 0) {
+          //  $("#login_departname").text("山西运城农村商业银行股份有限公司资产管理云平台");
+        } else {
+          // var name = data.loginUserDepartName + system;
+          // $("#login_departname").text(name);
+          var appendUrl = "/indexzh.html?a=" + data.deptid;
+          $('iframe').attr('src', appendUrl);
         }
-    }
+      }
+    });
+    return deptid;
+  }
 
-    showUnreadNotice();
+  initMenu();
 
-    function showUnreadNotice() {
-        $.ajax({
-            type: 'get',
-            url: '/notices/count-unread',
-            success: function (data) {
-                $("[unreadNotice]").each(function () {
-                    if (data > 0) {
-                        $(this).html("<span class='layui-badge'>" + data + "</span>");
-                    } else {
-                        $(this).html("");
-                    }
-                });
-
-            }
-        });
-    }
-
-    var active;
-
-    layui.use(['layer', 'element'], function () {
-        var $ = layui.jquery,
-            layer = layui.layer;
-        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-        element.on('nav(demo)', function (elem) {
-            //layer.msg(elem.text());
-        });
-
-        //触发事件
-        active = {
-            tabAdd: function (obj) {
-                var lay_id = $(this).attr("lay-id");
-                var title = $(this).html() + '<i class="layui-icon" data-id="' + lay_id + '"></i>';
-                //新增一个Tab项
-                element.tabAdd('admin-tab', {
-                    title: title,
-                    content: '<iframe src="' + $(this).attr('data-url') + '"></iframe>',
-                    id: lay_id
-                });
-                element.tabChange("admin-tab", lay_id);
-            },
-            tabDelete: function (lay_id) {
-                element.tabDelete("admin-tab", lay_id);
-            },
-            tabChange: function (lay_id) {
-                element.tabChange('admin-tab', lay_id);
-            }
-        };
-        //添加tab
-        $(document).on('click', 'a', function () {
-            if (!$(this)[0].hasAttribute('data-url') || $(this).attr('data-url') === '') {
-                return;
-            }
-            var tabs = $(".layui-tab-title").children();
-            var lay_id = $(this).attr("lay-id");
-
-            for (var i = 0; i < tabs.length; i++) {
-                if ($(tabs).eq(i).attr("lay-id") == lay_id) {
-                    active.tabChange(lay_id);
-                    return;
-                }
-            }
-            active["tabAdd"].call(this);
-            resize();
-        });
-
-        //iframe自适应
-        function resize() {
-            var $content = $('.admin-nav-card .layui-tab-content');
-            $content.height($(this).height() - 147);
-            $content.find('iframe').each(function () {
-                $(this).height($content.height());
-            });
+  function initMenu() {
+    $.ajax({
+      url: "/depts/JtdeptTree",
+      type: "get",
+      async: false,
+      success: function (data) {
+        if (!$.isArray(data.data)) {
+          location.href = '/login.html';
+          return;
         }
+        var menu = $("#LAY-system-side-menu");
+        $.each(data.data, function (i, item) {
+          if (item.name == "请选择部门") return true;
+          var a = $("<a href='javascript:;'></a>");
+          //class='fa layui-icon layui-icon-tabs' 删除一级菜单图标
+          a.append("<i aria-hidden='true' ></i>");
+          a.append("<cite>" + item.name + "</cite>");
+          a.attr("lay-id", item.id);
+          var href = "/indexzh.html?a=" + item.id;
 
-        $(window).on('resize', function () {
-            var $content = $('.admin-nav-card .layui-tab-content');
-            $content.height($(this).height() - 147);
-            $content.find('iframe').each(function () {
-                $(this).height($content.height());
-            });
-        }).resize();
-
-        //toggle左侧菜单
-        $('.admin-side-toggle').on('click', function () {
-            var sideWidth = $('#admin-side').width();
-            if (sideWidth === 200) {
-                $('#admin-body').animate({
-                    left: '0'
-                });
-                $('#admin-footer').animate({
-                    left: '0'
-                });
-                $('#admin-side').animate({
-                    width: '0'
-                });
-            } else {
-                $('#admin-body').animate({
-                    left: '200px'
-                });
-                $('#admin-footer').animate({
-                    left: '200px'
-                });
-                $('#admin-side').animate({
-                    width: '200px'
-                });
+          if (deptidResult == 0) {
+            if (href != null && href != "") {
+              a.attr("lay-href", href);
             }
+          } else {
+            if (href != null) {
+              if (item.id == deptidResult) {
+                // a.attr("lay-href", "");
+              } else {
+                a.attr("lay-href", href);
+              }
+            }
+          }
+
+          var li = $("<li class='layui-nav-item'></li>");
+          if (i == 0) {
+            li.addClass("layui-nav-itemed");
+          }
+          li.append(a);
+          menu.append(li);
+          //多级菜单
+          setChild(li, item.children, item.id)
+
+        });
+      }
+    });
+  }
+
+  function setChild(parentElement, child, id) {
+    if (child != null && child.length > 0) {
+      $.each(child, function (j, item2) {
+        //console.log(item2.name + "=====" + item2.deptcode +"======" + item2.id);
+        var ca = $("<a href='javascript:;'></a>");
+        //  if(item2.href){
+        /**
+         * TODO 权限修改显示同的页面
+         */
+        ca.attr("lay-href", "/pages/zcinfo/zcBranchInfoList.html?a=" + item2.deptcode + "&id=" + item2.id);
+        // ca.attr("lay-href", "/pages/zcinfo/zcInfoList.html?a="+id);
+        // }
+        ca.attr("lay-id", item2.id);
+        var css2 = item2.css;
+        if (css2 != null && css2 != "") {
+          ca.append("<i aria-hidden='true' class='fa " + css2 + "'></i>");
+        }
+        ca.append("<cite>" + item2.name + "</cite>");
+        var dd = $("<dd></dd>");
+        dd.append(ca);
+
+        var dl = $("<dl class='layui-nav-child'></dl>");
+        dl.append(dd);
+
+        parentElement.append(dl);
+
+        // 递归
+        setChild(dd, item2.child, id);
+      });
+    }
+  }
+
+  showUnreadNotice();
+
+  function showUnreadNotice() {
+    $.ajax({
+      type: 'get',
+      url: '/notices/count-unread',
+      success: function (data) {
+        $("[unreadNotice]").each(function () {
+          if (data > 0) {
+            $(this).html("<span class='layui-badge'>" + data + "</span>");
+          } else {
+            $(this).html("");
+          }
         });
 
-        //手机设备的简单适配
-        var treeMobile = $('.site-tree-mobile'),
-            shadeMobile = $('.site-mobile-shade');
-        treeMobile.on('click', function () {
-            $('body').addClass('site-mobile');
-        });
-        shadeMobile.on('click', function () {
-            $('body').removeClass('site-mobile');
-        });
+      }
+    });
+  }
+
+  var active;
+
+  layui.use(['layer', 'element'], function () {
+    var $ = layui.jquery,
+        layer = layui.layer;
+    var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+    element.on('nav(demo)', function (elem) {
+      //layer.msg(elem.text());
     });
 
-    function logout() {
-        $.ajax({
-            type: 'get',
-            url: '/logout',
-            success: function (data) {
-                localStorage.removeItem("token");
-                location.href = '/login.html';
-            }
+    //触发事件
+    active = {
+      tabAdd: function (obj) {
+        var lay_id = $(this).attr("lay-id");
+        var title = $(this).html() + '<i class="layui-icon" data-id="' + lay_id + '"></i>';
+        //新增一个Tab项
+        element.tabAdd('admin-tab', {
+          title: title,
+          content: '<iframe src="' + $(this).attr('data-url') + '"></iframe>',
+          id: lay_id
         });
+        element.tabChange("admin-tab", lay_id);
+      },
+      tabDelete: function (lay_id) {
+        element.tabDelete("admin-tab", lay_id);
+      },
+      tabChange: function (lay_id) {
+        element.tabChange('admin-tab', lay_id);
+      }
+    };
+    //添加tab
+    $(document).on('click', 'a', function () {
+      if (!$(this)[0].hasAttribute('data-url') || $(this).attr('data-url') === '') {
+        return;
+      }
+      var tabs = $(".layui-tab-title").children();
+      var lay_id = $(this).attr("lay-id");
+
+      for (var i = 0; i < tabs.length; i++) {
+        if ($(tabs).eq(i).attr("lay-id") == lay_id) {
+          active.tabChange(lay_id);
+          return;
+        }
+      }
+      active["tabAdd"].call(this);
+      resize();
+    });
+
+    //iframe自适应
+    function resize() {
+      var $content = $('.admin-nav-card .layui-tab-content');
+      $content.height($(this).height() - 147);
+      $content.find('iframe').each(function () {
+        $(this).height($content.height());
+      });
     }
+
+    $(window).on('resize', function () {
+      var $content = $('.admin-nav-card .layui-tab-content');
+      $content.height($(this).height() - 147);
+      $content.find('iframe').each(function () {
+        $(this).height($content.height());
+      });
+    }).resize();
+
+    //toggle左侧菜单
+    $('.admin-side-toggle').on('click', function () {
+      var sideWidth = $('#admin-side').width();
+      if (sideWidth === 200) {
+        $('#admin-body').animate({
+          left: '0'
+        });
+        $('#admin-footer').animate({
+          left: '0'
+        });
+        $('#admin-side').animate({
+          width: '0'
+        });
+      } else {
+        $('#admin-body').animate({
+          left: '200px'
+        });
+        $('#admin-footer').animate({
+          left: '200px'
+        });
+        $('#admin-side').animate({
+          width: '200px'
+        });
+      }
+    });
+
+    //手机设备的简单适配
+    var treeMobile = $('.site-tree-mobile'),
+        shadeMobile = $('.site-mobile-shade');
+    treeMobile.on('click', function () {
+      $('body').addClass('site-mobile');
+    });
+    shadeMobile.on('click', function () {
+      $('body').removeClass('site-mobile');
+    });
+  });
+
+  function logout() {
+    $.ajax({
+      type: 'get',
+      url: '/logout',
+      success: function (data) {
+        localStorage.removeItem("token");
+        location.href = '/login.html';
+      }
+    });
+  }
 </script>
 
 </body>
