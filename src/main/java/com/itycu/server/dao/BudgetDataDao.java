@@ -71,7 +71,7 @@ public interface BudgetDataDao {
 
 
 
-    int  saveBudgetDataInfo(@Param("budgetData") BudgetData budgetData);
+    int  saveBudgetDataInfo(BudgetData budgetData);
 
 
     int  saveBudgetDataItemInfo(@Param("list") List<BudgetDataItem> list);

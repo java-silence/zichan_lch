@@ -20,7 +20,7 @@ public class BudgetData implements Serializable {
     /**
      * 主键ID
      */
-    private Integer id;
+    private int id;
     /**
      * 预算购买单号
      */

@@ -1,12 +1,11 @@
 package com.itycu.server.service.impl;
 
-import com.itycu.server.dao.BudgetDataDao;
-import com.itycu.server.dao.FlowDao;
-import com.itycu.server.model.BudgetData;
-import com.itycu.server.model.BudgetDataItem;
-import com.itycu.server.model.Flow;
+import com.itycu.server.dao.*;
+import com.itycu.server.model.*;
 import com.itycu.server.service.BudgetDataService;
 import com.itycu.server.utils.UserUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +25,30 @@ import java.util.Map;
  */
 @Service("budgetDataService")
 public class BudgetDataServiceImpl implements BudgetDataService {
+
+
+  private static Logger logger = LoggerFactory.getLogger(BudgetDataServiceImpl.class);
+
   @Resource
   private BudgetDataDao budgetDataDao;
 
+  @Autowired
+  private TodoDao todoDao;
+
+
+  private String budgetURL = "budget/auditBudget.html";
 
   @Autowired
   FlowDao flowDao;
+
+  @Autowired
+  DeptDao deptDao;
+
+  @Autowired
+  UserDao userDao;
+
+  @Autowired
+  private FlowstepDao flowstepDao;
 
   /**
    * 通过ID查询单条数据
@@ -101,14 +118,16 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       }
 
       //开启流程
+      Long flowId = null;
       Flow flow = getFlowByName();
       if (null != flow) {
-        budgetData.setFlowid(flow.getId().intValue());
+        logger.info("获得的FlowId==={}", flow.getId());
+        flowId = flow.getId();
+        budgetData.setFlowid(flowId.intValue());
       }
 
       //创建预算编号
       String budgetDataId = createNum();
-
       //设置基本的信息插入到budget_data表中
       budgetData.setStatus(1);//状态审核中
       budgetData.setUserId(UserUtil.getLoginUser().getId().intValue());
@@ -119,6 +138,7 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       budgetData.setBudgetDataId(budgetDataId);
       int result = budgetDataDao.saveBudgetDataInfo(budgetData);
       if (result > 0) {
+        //将预算审核的各项列表数据插入到数据库中
         for (BudgetDataItem budgetDataItem : list) {
           budgetDataItem.setBudgetDataId(budgetDataId);
           budgetDataItem.setBudgetKind(String.valueOf(budgetData.getBudgetKind()));
@@ -129,9 +149,9 @@ public class BudgetDataServiceImpl implements BudgetDataService {
           budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
         }
       }
-      /**
-       * TODO 需要插入流程id数据
-       */
+      //创建待办事项到数据库中
+      int id = budgetData.getId();
+      createToDoInfo(applyDeptId, applyDeptName, glDeptId, flowId,id );
       //基本数据信息插入到budget_data_item表格中
       return budgetDataDao.saveBudgetDataItemInfo(list);
     }
@@ -159,13 +179,64 @@ public class BudgetDataServiceImpl implements BudgetDataService {
    *
    * @return 包含流程数据的map
    */
-  private Map<String, Object> startBudgetFlow() {
-    return null;
+  private void createToDoInfo(int applyDeptId, String applyDeptName, String glDeptId,
+                              Long flowId, int bizid) {
+    try {
+      Todo todoInfo = new Todo();
+      todoInfo.setStatus("0");
+      todoInfo.setNeirong("");
+      todoInfo.setType(0);//审核状态
+      //设置审核人的id
+      todoInfo.setAuditby(findUserByDeptId(String.valueOf(glDeptId)));
+      //设置发送人的id
+      todoInfo.setSendby(findUserByDeptId(String.valueOf(applyDeptId)));
+      todoInfo.setBiaoti("【" + applyDeptName + "】申请资产购买");
+      //设置业务类型的为20L，预算审核的流程类型都是20L
+      todoInfo.setBizid(20L);
+      todoInfo.setFlowid(flowId);
+      //2表示有管理部门的审核步骤id
+      todoInfo.setStepid(queryFlowStepIdByFlowId(flowId, 2));
+      todoInfo.setUrl(budgetURL);
+      todoInfo.setCreateTime(new Date());
+      todoInfo.setUpdateTime(new Date());
+      //设置业务单据的部门
+      todoInfo.setBizdeptid(new Long(applyDeptId));
+      todoInfo.setBizid(new Long(bizid));
+
+      //单据创始人
+      todoInfo.setBizcreateby(UserUtil.getLoginUser().getId());
+      todoDao.save(todoInfo);
+    } catch (Exception e) {
+      logger.error("【预算审核流程】插入数据错误==>>>" + e.getMessage());
+    }
   }
 
 
+  /**
+   * 根据部门的ID查找用户的ID
+   *
+   * @param applyDeptId
+   * @return
+   */
+  private Long findUserByDeptId(String applyDeptId) {
+    SysUser sysUser = userDao.getByDeptId(applyDeptId);
+    return null == sysUser ? null : sysUser.getId();
+  }
+
+
+  private Long queryFlowStepIdByFlowId(long flowId, long stepid) {
+    Flowstep flowstep = flowstepDao.getByStpeId(flowId, stepid);
+    return flowstep.getId();
+  }
+
+
+  /**
+   * 根据名称查找流程的名称。
+   *
+   * @return
+   */
   private Flow getFlowByName() {
-    Flow flow = flowDao.findByName("预算申请流程");
+    Flow flow = flowDao.findByName("预算审核流程");
     return flow;
   }
 

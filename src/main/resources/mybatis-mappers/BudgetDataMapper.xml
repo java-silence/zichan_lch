@@ -100,7 +100,7 @@
         </where>
     </sql>
 
-    <insert id="saveBudgetDataInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="saveBudgetDataInfo" parameterType="com.itycu.server.model.BudgetData" useGeneratedKeys="true" keyProperty="id">
 			INSERT INTO `budget_data` (
 			`budget_data_id`,
 			`userId`,
@@ -120,20 +120,20 @@
 			`update_time` )
 			VALUES
 			(
-			#{budgetData.budgetDataId},
-			#{budgetData.userId},
-			#{budgetData.applyDeptId},
-			#{budgetData.applyDeptName},
+			#{budgetDataId},
+			#{userId},
+			#{applyDeptId},
+			#{applyDeptName},
 			now(),
-			#{budgetData.flowid},
-			#{budgetData.stepid},
-			#{budgetData.status},
-			#{budgetData.budgetKind},
+			#{flowid},
+			#{stepid},
+			#{status},
+			#{budgetKind},
 			0,
-			#{budgetData.fileName},
-			#{budgetData.fileUrl},
-			#{budgetData.glDeptId},
-			#{budgetData.glDeptName},
+			#{fileName},
+			#{fileUrl},
+			#{glDeptId},
+			#{glDeptName},
 			now(),
 			now());
 	</insert>
