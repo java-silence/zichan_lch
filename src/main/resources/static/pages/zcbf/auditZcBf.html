@@ -171,7 +171,7 @@
             <button class='layui-btn layui-btn-xs 333' title='已提交,暂无操作'><i class='layui-icon'>&#x1005;</i></button>
         {{# } }}
 
-        {{# if(d.status > 0 && d.shbStatus == null) { }}
+        {{# if(d.status > 0 && d.shbStatus == null && type == 0) { }}
             <a class="layui-btn layui-btn-warm layui-btn-xs up_route_btn2" data-value="{{d.id}}">鉴定附件</a>
             <a class="layui-btn layui-btn-xs" lay-event="auditAgree">同意</a>
             <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="auditRefuse">拒绝</a>

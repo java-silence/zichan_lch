@@ -177,6 +177,15 @@ public class ZcBfServiceImpl implements ZcBfService {
                 flowTodoId = todo.getId();
             }
             for (ZcBfItem zcBfItem : zcBfItems) {
+
+                FlowTodoItem flowTodoItemSelf = new FlowTodoItem();
+                flowTodoItemSelf.setAuditby(zcBf.getApplyUserId());
+                flowTodoItemSelf.setSendby(zcBf.getApplyUserId());
+                flowTodoItemSelf.setFlowTodoId(flowTodoId1);
+                flowTodoItemSelf.setFlowItemId(zcBfItem.getId());
+                flowTodoItemSelf.setStatus(1);
+                int ressult = flowTodoItemDao.save(flowTodoItemSelf);
+
                 //Long syDeptId = zcBfItem.getSyDeptId();
                 //String childDeptcode = deptMap.get(syDeptId);
                 //if (childDeptcode.startsWith(deptcode) && !zcItemIds.contains(zcBfItem.getId())){
@@ -188,7 +197,7 @@ public class ZcBfServiceImpl implements ZcBfService {
                     flowTodoItem.setFlowTodoId(flowTodoId);
                     flowTodoItem.setFlowItemId(zcBfItem.getId());
                     flowTodoItem.setStatus(0);
-                    int ressult = flowTodoItemDao.save(flowTodoItem);
+                    int res = flowTodoItemDao.save(flowTodoItem);
                     zcItemIds.add(zcBfItem.getId());
                     zcids.add(zcBfItem.getZcId());
                 }
