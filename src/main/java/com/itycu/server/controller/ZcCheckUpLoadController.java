@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class ZcCheckUpLoadController {
                     jsonObject.put("ZcCheck", zcCheck);
                     logger.info("获得的数据是{}", jsonObject.toString());
                     String result = jsonObject.toString();
-                    exportJsonData(JSON.toJSONString(zcCheck),deptname, response);
+                    exportJsonData(JSON.toJSONString(zcCheck),deptname, response,request);
                 }
             } else {
                 logger.error("盘点单的数据不存在");
@@ -131,7 +132,8 @@ public class ZcCheckUpLoadController {
     }
 
 
-    private void exportJsonData(String data, String deptName, HttpServletResponse response) throws IOException {
+    private void exportJsonData(String data, String deptName, HttpServletResponse response,
+                                HttpServletRequest request) throws IOException {
         File file = File.createTempFile("PanDian"+deptName, ".json");
         OutputStreamWriter oStreamWriter = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
         oStreamWriter.append(data);
@@ -145,9 +147,15 @@ public class ZcCheckUpLoadController {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/octet-stream");
         //3.设置content-disposition响应头控制浏览器以下载的形式打开文件
-        String fileName = "PanDian"+deptName+System.currentTimeMillis()+".json";
+        String name = "PanDian"+deptName+System.currentTimeMillis()+".json";
+        String fileName = "";
+        if(request.getHeader("User-Agent").toUpperCase().indexOf("MSIE") > 0){
+            fileName = URLEncoder.encode(name, "UTF-8");
+        }else{
+            fileName = new String(name.getBytes("utf-8"),"ISO8859-1");
+        }
         //response.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(), "utf-8"));
-        response.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"),"ISO8859-1"));
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
         //获取文件输入流
         InputStream in = new FileInputStream(file.getPath());
         int len = 0;

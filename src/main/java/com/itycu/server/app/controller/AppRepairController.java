@@ -87,6 +87,7 @@ public class AppRepairController {
                 params.put("syDeptId", sysUser.getDeptid());
             }
             //params.put("id", sysUser.getDeptid());
+            params.put("useStatus", 1);
             params.put("keyword", repairZcInfoListDTO.getKeyword());
             List<RepairZcInfoListVO> listVOS = repairDao.getRepairVOList(params, page * limit - limit, limit);
             map.put("data", listVOS);
