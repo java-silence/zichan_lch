@@ -82,6 +82,7 @@ public class BudgetDataServiceImpl implements BudgetDataService {
 
   /**
    * 通过主键删除数据
+   *
    * @param id 主键
    * @return 是否成功
    */
@@ -111,18 +112,20 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       //设置基本的信息插入到budget_data表中
       budgetData.setStatus(1);//状态审核中
       budgetData.setUserId(UserUtil.getLoginUser().getId().intValue());
-      budgetData.setApplyDeptId(list.get(0).getBudgetDeptId());
-      budgetData.setApplyDeptName(list.get(0).getBudgetDeptName());
-      budgetData.setGlDeptId(String.valueOf(list.get(0).getBudgetManagerDeptId()));
-      budgetData.setGlDeptName(list.get(0).getBudgetManagerName());
+      int applyDeptId = budgetData.getApplyDeptId();
+      String applyDeptName = budgetData.getApplyDeptName();
+      String glDeptId = budgetData.getGlDeptId();
+      String glDeptName = budgetData.getGlDeptName();
       budgetData.setBudgetDataId(budgetDataId);
       int result = budgetDataDao.saveBudgetDataInfo(budgetData);
-
-
       if (result > 0) {
         for (BudgetDataItem budgetDataItem : list) {
           budgetDataItem.setBudgetDataId(budgetDataId);
           budgetDataItem.setBudgetKind(String.valueOf(budgetData.getBudgetKind()));
+          budgetDataItem.setApplyDeptId(applyDeptId);
+          budgetDataItem.setApplyDeptName(applyDeptName);
+          budgetDataItem.setGlDeptId(Integer.parseInt(glDeptId));
+          budgetDataItem.setGlDeptName(glDeptName);
           budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
         }
       }

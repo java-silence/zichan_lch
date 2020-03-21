@@ -45,23 +45,29 @@
     <form class="layui-form layui-form-pane form-horizontal" onsubmit="return false" id="form">
 
         <input id="type" name="type" type="hidden"/>
-        <input id="budgetDeptId" name="budgetDeptId" type="hidden"/>
+        <input id="applyDeptId" name="applyDeptId" type="hidden"/>
         <input id="budgetkind" name="budgetKind" value="0" type="hidden"/>
         <div class='layui-form-item'>
             <div class='layui-inline'>
                 <label class='layui-form-label'>预算部门</label>
                 <div class='layui-input-inline'>
-                    <input class='layui-input' placeholder='预算部门' type='text' name='companyName' id='companyName'>
+                    <input class='layui-input' placeholder='预算部门' type='text' name='applyDeptName' id='applyDeptName'>
                 </div>
             </div>
 
-            <div class="layui-inline" >
-                <label class='layui-form-label' style="width: 200px" >预算周期(年度)</label>
+
+            <div class='layui-inline'>
+                <label class='layui-form-label'><span class="layui-badge-dot"
+                                                      style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>管理部门</label>
                 <div class='layui-input-inline'>
-                    <input id="budgetPeriod" name="budgetPeriod" type="text" class="form-control layui-input"
-                           placeholder="预算年度">
+                    <input class="layui-input" type="text" id="glDeptName" data-id="" placeholder="请选择管理部门" readonly=""
+                           autocomplete="off">
+                    <div class="eleTree ele5" id="glDeptEleTree" lay-filter="glDeptEleTree"></div>
+                    <input class="layui-input" type="hidden" id="glDeptId" name="glDeptId">
                 </div>
             </div>
+
+
 
 
             <div class='layui-inline'>
@@ -118,17 +124,17 @@
                 </div>
             </div>
 
-
-            <div class='layui-inline'>
-                <label class='layui-form-label'><span class="layui-badge-dot"
-                                                      style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>管理部门</label>
+            <div class="layui-inline" >
+                <label class='layui-form-label' style="width: 150px">
+                    <span class="layui-badge-dot"
+                          style="left:-4px; right: auto; margin: -4px 2px 0 5px;"></span>预算周期(年度)
+                </label>
                 <div class='layui-input-inline'>
-                    <input class="layui-input" type="text" id="glDeptName" data-id="" placeholder="请选择管理部门" readonly=""
-                           autocomplete="off">
-                    <div class="eleTree ele5" id="glDeptEleTree" lay-filter="glDeptEleTree"></div>
-                    <input class="layui-input" type="hidden" id="budgetManagerDeptId" name="budgetManagerDeptId">
+                    <input id="budgetPeriod" name="budgetPeriod" type="text" class="form-control layui-input"
+                           placeholder="预算周期(年度)">
                 </div>
             </div>
+
             <div class='layui-inline'>
                 <label class='layui-form-label'>资产名称</label>
                 <div class='layui-input-inline'>
@@ -208,7 +214,7 @@
         var upload = layui.upload;
         laydate.render({
             elem: '#budgetPeriod'
-            , type: 'year'
+            , type: 'month'
         });
 
         upload.render({
@@ -247,7 +253,7 @@
         eleTree.on("nodeClick(glDeptEleTree)", function (d) {
             $('#glDeptName').trigger('change');
             $("#glDeptName").val(d.data.currentData.name)
-            $("#budgetManagerDeptId").val(d.data.currentData.id);
+            $("#glDeptId").val(d.data.currentData.id);
             $(".eleTree").hide();
         })
         $("#glDeptName").on("click", function (e) {
@@ -268,15 +274,14 @@
                 {checkbox: true}
                 , {type: 'numbers', title: '序号', width: 60,}
                 , {field: 'id', hide: true}
-                , {field: 'budgetManagerDeptId`', hide: true}
-                , {field: 'budgetDeptId`', hide: true}
-                , {field: 'budgetPeriod', title: '预算周期(年度)', width: 100, edit: "text"}
+                , {field: 'glDeptId`', hide: true}
+                , {field: 'applyDeptId`', hide: true}
+                , {field: 'budgetPeriod', title: '预算周期(月度)', width: 140, edit: "text"}
                 , {field: 'budgetType', title: '预算类别', width: 150, edit: "text"}
                 , {field: 'budgetNum', title: '数量', width: 100, edit: "text"}
                 , {field: 'budgetPrice', title: '预算单价', width: 100, edit: "text"}
                 , {field: 'budgetMoney', title: '预算金额', width: 100, edit: "text"}
-                , {field: 'budgetUnit', title: '单位', width: 60, edit: "text"}
-                , {field: 'budgetManagerName', title: '管理部门', width: 100, edit: "text"}
+                , {field: 'budgetUnit', title: '单位', width: 100, edit: "text"}
                 , {field: 'property', title: '资产名称', width: 120, edit: "text"}
                 , {field: 'brand', title: '品牌', width: 100, edit: "text"}
                 , {field: 'model', title: '规格型号', width: 100}
@@ -329,8 +334,8 @@
             url: '/depts/getLoginUserDept',
             async: false,
             success: function (data) {
-                $('#companyName').val(data.deptName);
-                $('#budgetDeptId').val(data.deptId);
+                $('#applyDeptName').val(data.deptName);
+                $('#applyDeptId').val(data.deptId);
             }
         });
     }
@@ -375,15 +380,22 @@
 
     // 保存
     function add() {
+        var glDeptId = $("#glDeptId").val();
+        if (!glDeptId) {
+            layer.msg("请选择管理部门", {icon: 5, time: 1000});
+            return;
+        }
         var formdata = $("#form").serializeObject();
         var data = table.cache["data"];
         if (!data || data.length == 0) {
             layer.msg("请添加预算数据");
             return;
         }
+
         formdata.budgetDataList = data;
         formdata.fileName = $('#fileName').val();
         formdata.fileUrl = $('#fileUrl').val();
+        formdata.glDeptName =  $("#glDeptName").val();
         $.ajax({
             type: 'post',
             url: '/budgetData/save',
@@ -395,7 +407,7 @@
                     // 清除table数据
                     table.reload("data", {data: []});
                     layer.msg("添加成功", {shift: -1, time: 1000}, function () {
-                        location.href = "yearBudget.html";
+                        location.href = "monthBudget.html";
                     });
                 } else {
                     layer.msg(data.msg, {shift: -1, time: 1000});
@@ -413,9 +425,6 @@
 
     // 动态添加表格
     function tianjia() {
-
-
-
         var datas = [];
         var tableData = table.cache["data"];
         //不为空先遍历表格中数据在追加数据
@@ -464,20 +473,13 @@
             layer.msg("请填写预算金额", {icon: 5, time: 1000});
             return;
         }
-        var budgetManagerDeptId = "";
-        if ($("#budgetManagerDeptId").val()) {
-            budgetManagerDeptId = $("#budgetManagerDeptId").val();
-        } else {
-            layer.msg("请选择管理部门", {icon: 5, time: 1000});
-            return;
-        }
 
 
         var budgetPeriod = "";
         if ($("#budgetPeriod").val()) {
             budgetPeriod = $("#budgetPeriod").val();
         } else {
-            layer.msg("请选择预算周期(年度)", {icon: 5, time: 1000});
+            layer.msg("请选择预算周期(月度)", {icon: 5, time: 1000});
             return;
         }
 
@@ -492,12 +494,9 @@
 
         var remark = "";
         remark = $("#remark").val();
-        var glDeptName = "";
-        if ($("#glDeptName").val()) {
-            glDeptName = $("#glDeptName").val();
-        }
 
-        var budgetDeptId = $("#budgetDeptId").val();
+
+        var applyDeptId = $("#applyDeptId").val();
         var budgetDeptName = $("#companyName").val();
 
 
@@ -508,20 +507,18 @@
         //初始,追加单行数据
         datas.push({
             id: '',
-            budgetManagerDeptId: budgetManagerDeptId,
             budgetType: budgetType + " " + str,
             budgetNum: budgetNum,
             budgetUnit: budgetUnit,
             budgetPrice: budgetPrice,
             budgetMoney: budgetMoney,
-            budgetManagerName: glDeptName,
             property: property,
             brand: brand,
             model: model,
             remark: remark,
             budgetPeriod:budgetPeriod,
-            budgetDeptId : budgetDeptId,
-            budgetDeptName: budgetDeptName
+            applyDeptId : $("#applyDeptId").val(),
+            applyDeptName: $("#applyDeptName").val()
         });
         table.reload("data", {
             data: datas
@@ -532,17 +529,18 @@
 
     // 添加后清空表单
     function clearForm() {
-        $("#budgetType").val("");
+        // $("#budgetType").val("");
         $("#budgetNum").val("");
         $("#budgetUnit").val("");
         $("#brand").val("");
         $("#budgetPrice").val("");
         $("#budgetMoney").val("");
-        $("#glDeptName").val("");
         $("#property").val("");
         $("#model").val("");
         $("#remark").val("");
-
+        $("#glDeptId").val("");
+        $("#glDeptName").val("");
+        $("#budgetPeriod").val("");
     }
 
     // 判断报废子单是否重复

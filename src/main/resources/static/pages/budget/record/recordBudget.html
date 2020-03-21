@@ -78,8 +78,10 @@
         {type: 'numbers', title: '序号'}
         , {field: 'id', hide: true}
         , {field: 'budgetDataId', title: '预算单号', width: 150}
+
         , {field: 'applyDeptName', title: '申请部门名称', width: 150}
         , {field: 'applyTime', title: '申请时间', width: 150}
+        , {field: 'glDeptName', title: '管理部门名称', width: 150}
         , {
           field: 'status', title: '审核状态', width: 150, templet: function (d) {
             if (d.status == 0) {
@@ -206,8 +208,9 @@
         , {field: 'budgetNum', title: '数量', width: 120}
         , {field: 'budgetUnit', title: '单位', width: 120}
         , {field: 'budgetMoney', title: '预算金额', width: 100}
-        , {field: 'budgetDeptName', title: '预算申请部门', width: 140}
-        , {field: 'budgetManagerName', title: '预算管理部门', width: 140}
+        , {field: 'glDeptName', title: '管理部门', width: 140}
+        , {field: 'applyDeptName', title: '预算申请部门', width: 140}
+        , {field: 'createTime', title: '创建时间', width: 160}
         , {field: 'brand', title: '品牌', width: 100,  hide: true}
         , {field: 'model', title: '规格', width: 100,}
       ]]
