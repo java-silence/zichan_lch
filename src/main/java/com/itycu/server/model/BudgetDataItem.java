@@ -55,11 +55,11 @@ public class BudgetDataItem implements Serializable {
     /**
     * 管理部门id
     */
-    private Integer budgetManagerDeptId;
+    private Integer glDeptId;
     /**
     * 管理部门名称
     */
-    private String budgetManagerName;
+    private String glDeptName;
     /**
     * 品牌
     */
@@ -95,11 +95,11 @@ public class BudgetDataItem implements Serializable {
     /**
     * 预算部门id
     */
-    private Integer budgetDeptId;
+    private Integer applyDeptId;
     /**
     * 预算部门名称
     */
-    private String budgetDeptName;
+    private String applyDeptName;
     /**
     * 预算预留字段1
     */
