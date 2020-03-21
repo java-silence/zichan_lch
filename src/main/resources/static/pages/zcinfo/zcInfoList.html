@@ -53,7 +53,7 @@
     <!--		<div class="layui-col-md9" style="height:100%">-->
     <div class="layui-card">
         <div class="layui-card-header">资产查询</div>
-        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:330px">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height: auto;min-height:230px;">
             <div class="layui-form-item">
                 <form class="form-inline layui-inline" style="margin-top:15px" id="form" method="post"
                       action="/zcInfos/export" onsubmit="return false" enctype="multipart/form-data">
@@ -86,8 +86,6 @@
                                 <input class="layui-input" type="hidden" id="catCode" name="catCode">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">规格</label>
                             <div class="layui-input-block">
@@ -114,8 +112,6 @@
                                        placeholder="终止日期">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">使用状态</label>
                             <div class="layui-input-block">
@@ -147,8 +143,6 @@
                                        placeholder="原价值">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">净值</label>
                             <div class="layui-input-block">
@@ -177,16 +171,16 @@
                                        placeholder="创建日期">
                             </div>
                         </div>
-                        <button type="button" class="layui-btn layuiadmin-btn-useradmin" lay-submit
-                                lay-filter="LAY-user-front-search" id="searchBt">
-                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                        </button>
-                        <button type="reset" class="layui-btn layuiadmin-btn-useradmin" lay-submit
-                                lay-filter="LAY-user-front-search" >
-                            <i class="layui-icon layui-icon-refresh-3 layuiadmin-button-btn"></i>
-                        </button>
-                    </div>
-                    <div class="layui-form-item">
+
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" id="searchBt">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                            <button type="reset" class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search" >
+                                <i class="layui-icon layui-icon-refresh-3 layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+
                         <div class="layui-inline">
 
                             <button class="layui-btn layuiadmin-btn-useradmin" data-type="add"
