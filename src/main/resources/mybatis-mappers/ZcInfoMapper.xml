@@ -1089,4 +1089,24 @@
         )
     </select>
 
+    <!--条件查询资产信息-->
+    <select id="listZcInfoByCondition" resultType="com.itycu.server.app.vo.zonghang.ZongHangZcInfo">
+        select
+          t.id,
+          t.netvalue,
+          p1.id syDeptId,
+          p1.deptname syDeptName,
+          p2.id glDeptId,
+          p2.deptname syDeptName
+        from
+          zc_info t
+          left join t_dept p1 on t.sy_dept_id = p1.id
+          left join t_dept p2 on t.gl_dept_id = p2.id
+        <where>
+            <if test="params.useStatus != null and params.useStatus != ''">
+                t.use_status != #{params.useStatus}
+            </if>
+        </where>
+    </select>
+
 </mapper>

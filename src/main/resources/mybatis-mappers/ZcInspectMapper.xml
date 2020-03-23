@@ -223,7 +223,7 @@
     <select id="queryZcInspectCountByDeptId" resultType="int">
         select  count(*) from
 
-        zc_inspect as a where a.check_dept_id = #{id}
+        zc_inspect as a where a.check_dept_id = #{deptid}
         and del = 0
     </select>
 </mapper>

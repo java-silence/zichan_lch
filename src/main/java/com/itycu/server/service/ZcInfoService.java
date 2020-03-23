@@ -2,6 +2,7 @@ package com.itycu.server.service;
 
 import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
+import com.itycu.server.app.vo.zonghang.ZongHangMonthNumber;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
 import com.itycu.server.model.ZcInfo;
@@ -39,4 +40,11 @@ public interface ZcInfoService {
 
 
     ZcInfoDto queryZnInfoDtoByEpcId(String epcid);
+
+    /**
+     * 账号664000获取数据
+     * @param sysUser
+     * @return
+     */
+    ZongHangMonthNumber getZongHangZcNumber(SysUser sysUser);
 }

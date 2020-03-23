@@ -5,6 +5,9 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.itycu.server.app.dto.ZcInfoListDTO;
 import com.itycu.server.app.model.AppIndexZcValueAndNumber;
 import com.itycu.server.app.vo.GlDeptZcCountVO;
+import com.itycu.server.app.vo.zonghang.ZhiHangNumber;
+import com.itycu.server.app.vo.zonghang.ZongHangMonthNumber;
+import com.itycu.server.app.vo.zonghang.ZongHangZcInfo;
 import com.itycu.server.dao.*;
 import com.itycu.server.dto.LoginUser;
 import com.itycu.server.dto.ZcInfoDto;
@@ -51,6 +54,8 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     private PermissionDao permissionDao;
     @Autowired
     private ZcInspectDao zcInspectDao;
+    @Autowired
+    private ZongHangBenYueDao zongHangBenYueDao;
 
 
     @Override
@@ -734,7 +739,6 @@ public class ZcInfoServiceImpl implements ZcInfoService {
     @Autowired
     ZcDeployDao zcDeployDao;
 
-
     @Autowired
     private ZcCheckDao zcCheckDao;
 
@@ -755,7 +759,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             }
             List<ZcInfoDto> list = zcInfoDao.queryAllDeptZcList(id);
             if (!CollectionUtils.isEmpty(list)) {
-                int count = CollectionUtils.isEmpty(list) ? list.size() : 0;
+                int count = CollectionUtils.isEmpty(list) ? 0:list.size();
                 result.setZcValue(getTotalValue(list));
                 result.setZcCount(count);
             }
@@ -838,6 +842,77 @@ public class ZcInfoServiceImpl implements ZcInfoService {
         return zcInfoDao.queryZnInfoDtoByEpcId(epcid);
     }
 
+    @Override
+    public ZongHangMonthNumber getZongHangZcNumber(SysUser sysUser) {
+
+        ZongHangMonthNumber zongHangMonthNumber = new ZongHangMonthNumber();
+        ArrayList<ZhiHangNumber> list = new ArrayList<>();
+        // 查询全部在线资产
+        Map<String, Object> params = new HashMap<>();
+        params.put("useStatus",7);
+
+        // 部门信息
+        List<Dept> allDepts = deptDao.listByPid(11l);
+        //List<Long> deptIds = allDepts.stream().map(e -> e.getId()).collect(Collectors.toList());
+        //List<Long> glDeptIds = allDepts.stream().filter(e -> "3".equals(e.getZhfhgl())).map(e -> e.getId()).collect(Collectors.toList());
+        //Collections.sort(glDeptIds);
+        long zhb = 54l;
+        long dzb = 57l;
+        long yyb = 61l;
+        long aqb = 62l;
+
+        List<ZongHangZcInfo> zcInfoList = zcInfoDao.listZcInfoByCondition(params);
+        BigDecimal totalValue = zcInfoList.stream()
+                // 将user对象的age取出来map为Bigdecimal
+                .map(e -> (e.getNetvalue()==null?new BigDecimal("0"):e.getNetvalue()))
+                // 使用reduce()聚合函数,实现累加器
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
+
+        // 遍历部门
+        for (Dept dept : allDepts) {
+            ZhiHangNumber zhiHangNumber = new ZhiHangNumber();
+            zhiHangNumber.setDetId(dept.getId());
+            zhiHangNumber.setDetName(dept.getDeptname());
+            int bwbZcCount = 0;
+            int kjbZcCount = 0;
+            int zhbZcCount = 0;
+            int yybZcCount = 0;
+            for (ZongHangZcInfo zongHangZcInfo : zcInfoList) {
+                // totalValue.add(zongHangZcInfo.getNetvalue()==null?new BigDecimal("0"):zongHangZcInfo.getNetvalue());
+                if (zongHangZcInfo.getSyDeptId().equals(dept.getId()) && zongHangZcInfo.getGlDeptId().equals(zhb)) {
+                    zhbZcCount++;
+                }
+                if (zongHangZcInfo.getSyDeptId().equals(dept.getId()) && zongHangZcInfo.getGlDeptId().equals(dzb)) {
+                    kjbZcCount++;
+                }
+                if (zongHangZcInfo.getSyDeptId().equals(dept.getId()) && zongHangZcInfo.getGlDeptId().equals(yyb)) {
+                    yybZcCount++;
+                }
+                if (zongHangZcInfo.getSyDeptId().equals(dept.getId()) && zongHangZcInfo.getGlDeptId().equals(aqb)) {
+                    bwbZcCount++;
+                }
+            }
+            zhiHangNumber.setBwbZcCount(bwbZcCount);
+            zhiHangNumber.setKjbZcCount(kjbZcCount);
+            zhiHangNumber.setYybZcCount(yybZcCount);
+            zhiHangNumber.setZhbZcCount(zhbZcCount);
+            list.add(zhiHangNumber);
+        }
+
+        zongHangMonthNumber.setZcValue(totalValue);
+        zongHangMonthNumber.setZcCount(zcInfoList.size());
+        zongHangMonthNumber.setAssetsCountList(list);
+        // 本月全部数据统计
+        zongHangMonthNumber.setBaoxiuCount(zongHangBenYueDao.countMonthBaoxiuCount());
+        zongHangMonthNumber.setCaigouCount(zongHangBenYueDao.countMonthCaigouCount());
+        zongHangMonthNumber.setChuzhiCount(zongHangBenYueDao.countMonthChuzhiCount());
+        zongHangMonthNumber.setDiaoboCount(zongHangBenYueDao.countMonthDiaoboCount());
+        zongHangMonthNumber.setPandianCount(zongHangBenYueDao.countMonthPandianCount());
+        zongHangMonthNumber.setXunjianCount(zongHangBenYueDao.countMonthXunjianCount());
+
+        return zongHangMonthNumber;
+    }
+
 
     private BigDecimal getTotalValue(List<ZcInfoDto> list) {
         BigDecimal total = new BigDecimal(BigDecimal.ZERO.intValue());
@@ -845,7 +920,7 @@ public class ZcInfoServiceImpl implements ZcInfoService {
             return total;
         } else {
             for (ZcInfo zcInfo : list) {
-                total = total.add(zcInfo.getNetvalue());
+                total = total.add(zcInfo.getNetvalue()==null?new BigDecimal("0"):zcInfo.getNetvalue());
             }
             return total;
         }

@@ -53,6 +53,16 @@ public class AppApiController {
             Dept dept = deptDao.getById(sysUser.getDeptid());
             String name = dept ==null? null : dept.getDeptname();
             appUserInfo.setDeptName(name);
+
+            // 总部账号对c03处理
+            String username = sysUser.getUsername();
+            if ("664000".equals(username)) {
+                appUserInfo.setC03("zonghang");
+            }
+            if ("650000".equals(username)) {
+                appUserInfo.setC03("zonghang1");
+            }
+
             hashMap.put("code", "0");
             hashMap.put("message", "成功");
             hashMap.put("data",appUserInfo);

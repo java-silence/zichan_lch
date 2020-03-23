@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itycu.server.dao.ZongHangBenYueDao">
+
+    <select id="countMonthBaoxiuCount" resultType="int">
+        SELECT count(t.id) FROM zc_repair_item t
+        LEFT JOIN zc_repair z ON t.zc_repair_id = z.id
+        WHERE z.status = 2
+        and DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+    </select>
+
+    <select id="countMonthCaigouCount" resultType="int">
+        SELECT count(*) FROM zc_buy_item
+        WHERE cwb_status = 1 and del = 0
+        and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+    </select>
+
+    <select id="countMonthChuzhiCount" resultType="int">
+        SELECT count(*) FROM zc_bf_item
+        WHERE cwb_status = 1 and del = 0
+        and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+    </select>
+
+    <select id="countMonthDiaoboCount" resultType="int">
+        SELECT count(*) FROM zc_deploy_item
+        WHERE cwb_status = 1 and del = 0
+        and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+    </select>
+
+    <select id="countMonthPandianCount" resultType="int">
+        SELECT count(*) FROM zc_check_item
+        WHERE result = 2 and del = 0
+        and DATE_FORMAT( finish_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' );
+    </select>
+
+    <select id="countMonthXunjianCount" resultType="int">
+        SELECT count(*) FROM zc_inspect_record
+        WHERE result != NULL
+        and DATE_FORMAT( create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+    </select>
+
+</mapper>

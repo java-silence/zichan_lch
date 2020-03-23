@@ -55,5 +55,5 @@ public interface ZcBuyDao {
     int queryBuyCountById(@Param("id") long id);
 
 
-    int queryDeptBuyCountById(@Param("id") long id);
+    int queryDeptBuyCountById(@Param("id") Long id);
 }

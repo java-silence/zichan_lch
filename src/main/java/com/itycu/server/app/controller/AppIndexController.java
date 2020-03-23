@@ -8,6 +8,7 @@ import com.itycu.server.app.service.IndexService;
 import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.index.IndexZcInfoVO;
 import com.itycu.server.app.vo.todovo.AppTodoVO;
+import com.itycu.server.app.vo.zonghang.ZongHangMonthNumber;
 import com.itycu.server.dto.AppDealStatus;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.SysUser;
@@ -53,6 +54,30 @@ public class AppIndexController {
             }
         } catch (Exception e) {
             logger.error("获取资产净值和资产数量错误,{}", e.getMessage());
+            map = FailMap.createFailMap();
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "总行获取资产统计和支行统计", notes = "总行获取资产统计和支行统计")
+    @PostMapping(value = "/getZongHangZcNumber")
+    public Map<String, Object> getZongHangZcNumber() {
+        Map<String, Object> map = new HashMap<>();
+        SysUser sysUser = UserUtil.getLoginUser();
+        try {
+            if (null != sysUser && "664000".equals(sysUser.getUsername())) {
+                ZongHangMonthNumber zongHangMonthNumber = zcInfoService.getZongHangZcNumber(sysUser);
+
+                map.put("code", 0);
+                map.put("message", "请求成功");
+                map.put("data", zongHangMonthNumber);
+            }else {
+                map.put("code", 500);
+                map.put("message", "你不具备查询条件");
+                map.put("data", null);
+            }
+        } catch (Exception e) {
+            logger.error("总行获取资产统计和支行统计,{}", e.getMessage());
             map = FailMap.createFailMap();
         }
         return map;

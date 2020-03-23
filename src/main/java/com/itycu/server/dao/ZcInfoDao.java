@@ -3,6 +3,7 @@ package com.itycu.server.dao;
 import com.itycu.server.app.vo.GlDeptZcCountVO;
 import com.itycu.server.app.vo.chuzhi.DealZcInfoVO;
 import com.itycu.server.app.vo.xunjian.XunJianVO;
+import com.itycu.server.app.vo.zonghang.ZongHangZcInfo;
 import com.itycu.server.dto.ZcInfoDto;
 import com.itycu.server.model.ZcInfo;
 import org.apache.ibatis.annotations.*;
@@ -160,4 +161,5 @@ public interface ZcInfoDao {
 
     List<ZcInfoDto> xunjianList(@Param("params") Map<String, Object> params);
 
+    List<ZongHangZcInfo> listZcInfoByCondition(@Param("params") Map<String, Object> params);
 }
