@@ -206,7 +206,7 @@
     <select id="queryBudgetRecordList"  parameterType="map" resultType="java.util.Map">
         select
         <include refid="budgetData"/>
-        from budget_data
+        from budget_data as budget
         <include refid="where"/>
         order by create_time desc
         limit #{offset}, #{limit}
