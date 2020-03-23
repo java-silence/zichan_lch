@@ -9,6 +9,7 @@ import com.itycu.server.app.util.FailMap;
 import com.itycu.server.app.vo.chuzhi.DealZcInfoVO;
 import com.itycu.server.app.vo.fenye.PageVO;
 import com.itycu.server.dao.*;
+import com.itycu.server.dto.BfItemDTO;
 import com.itycu.server.dto.ZcBfCheckDto;
 import com.itycu.server.dto.ZcBfDto;
 import com.itycu.server.model.Dept;
@@ -25,10 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -347,6 +345,17 @@ public class AppDealController {
             logger.info("资产处置审核{}", e.getMessage());
             return FailMap.createFailMap();
         }
+        return map;
+    }
+
+    @GetMapping("/updateItem")
+    @ApiOperation(value = "修改附件")
+    public Map updateItem(@RequestBody BfItemDTO bfItemDTO) {
+        Map<String, Object> map = new HashMap<>();
+        FlowTodoItem item = flowTodoItemDao.getById(bfItemDTO.getId());
+        zcBfItemDao.updateById(item.getFlowItemId(),bfItemDTO.getName(),bfItemDTO.getUrl());
+        map.put("code","0");
+        map.put("msg","成功");
         return map;
     }
 

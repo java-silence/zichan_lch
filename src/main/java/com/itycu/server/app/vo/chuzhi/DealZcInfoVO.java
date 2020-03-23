@@ -48,4 +48,19 @@ public class DealZcInfoVO {
     /** 附件地址 */
     private String imageUrl;
 
+    /** 鉴定内容 */
+    private String identifyContent;
+
+    /** 鉴定附件名称 */
+    private String identifyFileName;
+
+    /** 鉴定附件地址 */
+    private String identifyFileUrl;
+
+    /** 报损附件名称 */
+    private String damagedFileName;
+
+    /** 报损附件地址 */
+    private String damagedFileUrl;
+
 }
