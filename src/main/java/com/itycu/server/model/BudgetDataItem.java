@@ -101,7 +101,7 @@ public class BudgetDataItem implements Serializable {
     */
     private String applyDeptName;
     /**
-    * 预算预留字段1
+    * 审核状态 0 待审核 1 审核同意 2 审核拒绝
     */
     private String budgetC01;
     /**

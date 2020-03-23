@@ -5,28 +5,28 @@
 
 
     <sql id="budgetData">
-      `id` ,
-      `budget_data_id` as budgetDataId,
-      `userId` ,
-      `apply_dept_id` as applyDeptId ,
-      `apply_dept_name` as applyDeptName ,
-      `gl_dept_id` as glDeptId ,
-      `gl_dept_name` as glDeptName ,
-      `apply_time` as applyTime ,
-      `flowid`
-      `stepid` ,
-      `status` ,
-      `budget_kind` as budgetKind,
-      `del` ,
-      `create_time` as createTime ,
-      `update_time` as updateTime ,
-      `filename` ,
-      `fileurl` ,
-      `opinion` ,
-      `mark` ,
-      `data_c01` as dataC01 ,
-      `data_c02` as dataC02,
-      `data_c03`
+      budget.`id` ,
+      budget.`budget_data_id` as budgetDataId,
+      budget.`userId`,
+      budget.`apply_dept_id` as applyDeptId ,
+      budget.`apply_dept_name` as applyDeptName ,
+      budget.`gl_dept_id` as glDeptId ,
+      budget.`gl_dept_name` as glDeptName ,
+      budget.`apply_time` as applyTime ,
+      budget.`flowid`,
+      budget.`stepid`,
+      budget.`status` ,
+      budget.`budget_kind` as budgetKind,
+      budget.`del` ,
+      budget.`create_time` as createTime ,
+      budget.`update_time` as updateTime ,
+      budget.`filename` ,
+      budget.`fileurl` ,
+      budget.`opinion` ,
+      budget.`mark` ,
+      budget.`data_c01` as dataC01 ,
+      budget.`data_c02` as dataC02,
+      budget.`data_c03`
     </sql>
 
 
@@ -206,7 +206,7 @@
     <select id="queryBudgetRecordList"  parameterType="map" resultType="java.util.Map">
         select
         <include refid="budgetData"/>
-        from budget_data
+        from budget_data as budget
         <include refid="where"/>
         order by create_time desc
         limit #{offset}, #{limit}
@@ -226,6 +226,76 @@
         ORDER BY
             item.create_time DESC
         limit #{offset}, #{limit}
+    </select>
+
+
+    <select id="getBudgetItemDetailListByTodoId" resultType="java.util.Map">
+
+         select
+			concat (dict.k," ",dict.val) as typeName,
+              a.status as checkStatus,
+			 <include refid="budgetDataItem"/>
+			 from  flow_todo as a  left join  budget_data as b on a.bizid = b.id
+			left join budget_data_item as item on  b.budget_data_id = item.budget_data_id
+			left join t_dict as dict on dict.k = item.budget_type
+			where a.id = 43 and a.biztype = 20  and  dict.type  = "budgetType"
+        limit #{offset}, #{limit}
+
+    </select>
+
+
+    <select id="getTodoInitData" resultType="com.itycu.server.model.BudgetData">
+        SELECT
+             c.nickname as nickname,
+             <include refid="budgetData"/>
+        FROM
+            `flow_todo` AS a
+            LEFT JOIN budget_data AS budget ON a.bizid = budget.id
+            left join sys_user as c on budget.userId = c.id
+        WHERE
+            a.id = #{params.id}
+    </select>
+
+
+    <update id="updateBudgetStatus">
+        UPDATE `budget_data`
+        SET
+        `status` = #{params.status}
+        WHERE
+         `id` = #{params.id}
+    </update>
+
+
+    <select id="getTodoCheckList" resultType="map">
+         SELECT
+        a.`id`,
+        a.`type`,
+        a.`auditby`,
+        a.`sendby`,
+        a.`createTime`,
+        a.`updateTime`,
+        a.`biaoti`,
+        a.`neirong`,
+        a.`biztype`,
+        a.`bizid`,
+        a.`biztable`,
+        a.`bizcreateby`,
+        a.`bizdeptid`,
+        a.`status`,
+        a.`memo`,
+        a.`c01`,
+        a.`c02`,
+        a.`c03`,
+        a.`flowid`,
+        a.`stepid`,
+        a.`url`,
+        a.`todoIds`,
+        b.nickname AS creator
+    FROM
+        flow_todo AS a
+        LEFT JOIN sys_user AS b on   a.sendby = b.id
+    where bizid = #{params.bizid}
+       and flowid = #{params.flowid}
     </select>
 
 </mapper>

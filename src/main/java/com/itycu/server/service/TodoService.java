@@ -1,5 +1,6 @@
 package com.itycu.server.service;
 
+import com.itycu.server.app.vo.todovo.AppTodoVO;
 import com.itycu.server.dto.TodoDto;
 import com.itycu.server.model.Todo;
 
@@ -11,4 +12,7 @@ public interface TodoService {
     Todo update(TodoDto todoDto);
 
     Todo sendTodo(TodoDto todo);
+
+
+    AppTodoVO queryTodoById(String todoId);
 }

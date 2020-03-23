@@ -1,19 +1,23 @@
 package com.itycu.server.controller;
 
-import com.itycu.server.model.BudgetData;
-import com.itycu.server.model.BudgetDataItem;
-import com.itycu.server.model.Dept;
-import com.itycu.server.model.SysUser;
+import com.alibaba.fastjson.JSONObject;
+import com.itycu.server.app.vo.todovo.AppTodoVO;
+import com.itycu.server.model.*;
 import com.itycu.server.page.table.PageTableRequest;
 import com.itycu.server.service.BudgetDataService;
+import com.itycu.server.service.TodoService;
 import com.itycu.server.utils.DynamicConditionUtil;
 import com.itycu.server.utils.UserUtil;
+import com.zaxxer.hikari.util.SuspendResumeLock;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +37,9 @@ public class BudgetDataController {
      */
     @Resource
     private BudgetDataService budgetDataService;
+
+    @Autowired
+    private TodoService todoService;
 
     /**
      * 通过主键查询单条数据
@@ -90,7 +97,7 @@ public class BudgetDataController {
 
     @GetMapping("/budgetItemRecordListById")
     @ApiOperation(value = "获取预算申请的记录列表总的id查找所有的预算子项列表")
-    public Map budgetItemRecordListById(PageTableRequest request,
+    public Map getBudgetItemRecordListById(PageTableRequest request,
                                         HttpServletRequest httpServletRequest) {
         Map<String,Object> map = new HashMap();
         Integer page = Integer.valueOf((String)request.getParams().get("page"));
@@ -103,5 +110,93 @@ public class BudgetDataController {
         map.put("msg","查询成功");
         return map;
     }
+
+
+
+
+    @GetMapping("/getBudgetItemDetailListByTodoId")
+    @ApiOperation(value = "获取审核页面的预算审核数据子列表")
+    public Map getBudgetItemDetailListByTodoId(PageTableRequest request,
+                                        HttpServletRequest httpServletRequest) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        Integer page = Integer.valueOf((String)request.getParams().get("page"));
+        Integer limit = Integer.MAX_VALUE;
+        DynamicConditionUtil.dynamicCondition(request,httpServletRequest);
+        map.put("id",httpServletRequest.getParameter("todoId"));
+        List<Map<String,Object>> list = budgetDataService.getBudgetItemDetailListByTodoId(map, page*limit-limit, limit);
+        map.put("data",list);
+        map.put("code","0");
+        map.put("msg","查询成功");
+        return map;
+    }
+
+
+
+    @GetMapping("/initData")
+    @ApiOperation(value = "待办页面数据的初始化")
+    public Map<String,Object> getTodoInitData(PageTableRequest request,
+                                               HttpServletRequest httpServletRequest) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        JSONObject jsonObject = new JSONObject();
+        map.put("id",httpServletRequest.getParameter("todoId"));
+        BudgetData data = budgetDataService.getTodoInitData(map);
+        map.put("data",data);
+        map.put("code","0");
+        map.put("msg","查询成功");
+        return map;
+    }
+
+
+
+    @GetMapping("/checkRecord")
+    @ApiOperation(value = "获取页面的审批动态数据")
+    public Map<String,Object> getTodoCheckList(PageTableRequest request,
+                                              HttpServletRequest httpServletRequest) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("bizid",httpServletRequest.getParameter("bizid"));
+        map.put("flowid",httpServletRequest.getParameter("flowid"));
+        List<Map<String,Object>> data = budgetDataService.getTodoCheckList(map);
+        map.put("data",data);
+        map.put("code","0");
+        map.put("msg","查询成功");
+        return map;
+    }
+
+
+
+    @PostMapping("/passCheck")
+    @ApiOperation(value = "预算审核通过审核")
+    public Map<String,Object> passCheck(PageTableRequest request,
+                                               HttpServletRequest httpServletRequest) {
+        SysUser sysUser = UserUtil.getLoginUser();
+        if(null!=sysUser){
+
+        }
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("bizid",httpServletRequest.getParameter("bizid"));
+        map.put("flowid",httpServletRequest.getParameter("flowid"));
+        List<Map<String,Object>> data = budgetDataService.getTodoCheckList(map);
+        map.put("data",data);
+        map.put("code","0");
+        map.put("msg","查询成功");
+        return map;
+    }
+
+
+    @PostMapping("/notPassCheck")
+    @ApiOperation(value = "预算审核不通过")
+    public Map<String,Object> notPassCheck(PageTableRequest request,
+                                        HttpServletRequest httpServletRequest) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("bizid",httpServletRequest.getParameter("bizid"));
+        map.put("flowid",httpServletRequest.getParameter("flowid"));
+        List<Map<String,Object>> data = budgetDataService.getTodoCheckList(map);
+        map.put("data",data);
+        map.put("code","0");
+        map.put("msg","查询成功");
+        return map;
+    }
+
+
 
 }
