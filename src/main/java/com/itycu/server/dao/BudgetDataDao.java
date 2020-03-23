@@ -71,6 +71,15 @@ public interface BudgetDataDao {
 
 
 
+    /**
+     * 通过ID查询单条数据
+     *
+     * @param id 主键
+     * @return 实例对象
+     */
+    BudgetData queryBudgetDataById(@Param("id") Integer id);
+
+
     int  saveBudgetDataInfo(BudgetData budgetData);
 
 
@@ -103,4 +112,12 @@ public interface BudgetDataDao {
 
 
     List<Map<String, Object>> getTodoCheckList(@Param("params") Map<String, Object> map);
+
+
+    int updateBudegetItemCheckStatus(@Param("bizid") long bizid,
+                                     @Param("glStatus") String glStatus,
+                                     @Param("cWStatus") String  cWStatus);
+
+
+    String  queryGldeptManagerDeptById(@Param("cwb") String cwb);
 }

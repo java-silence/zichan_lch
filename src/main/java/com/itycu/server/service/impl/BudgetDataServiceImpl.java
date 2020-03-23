@@ -146,12 +146,17 @@ public class BudgetDataServiceImpl implements BudgetDataService {
           budgetDataItem.setApplyDeptName(applyDeptName);
           budgetDataItem.setGlDeptId(Integer.parseInt(glDeptId));
           budgetDataItem.setGlDeptName(glDeptName);
+          //设置为待审核状态
+          budgetDataItem.setBudgetC01("0");
           budgetDataItem.setBudgetType(budgetDataItem.getBudgetType().substring(0, budgetDataItem.getBudgetType().indexOf(" ")));
         }
       }
       //创建待办事项到数据库中
       int id = budgetData.getId();
-      createToDoInfo(applyDeptId, applyDeptName, glDeptId, flowId,id ,budgetData.getBudgetKind());
+      //是否是使用部门首次创建todo
+      boolean init = true;
+      boolean aggree = false;
+      createToDoInfo(applyDeptId, applyDeptName, glDeptId, flowId, id, budgetData.getBudgetKind(), init, aggree);
       //基本数据信息插入到budget_data_item表格中
       return budgetDataDao.saveBudgetDataItemInfo(list);
     }
@@ -188,14 +193,81 @@ public class BudgetDataServiceImpl implements BudgetDataService {
     return budgetDataDao.getTodoCheckList(map);
   }
 
+  @Override
+  public int passCheck(String todoId, String c03) {
+    //是否是使用部门首次创建todo
+    boolean init = false;
+    boolean aggree = false;
+    logger.info("获得的用户身份是===>{}", c03);
+    Todo todo = todoDao.getById(Long.parseLong(todoId));
+    if (null != todo) {
+      //查找财务部的id
+      String glDeptId = budgetDataDao.queryGldeptManagerDeptById("cwb");
+      long bizid = todo.getBizid();
+      //财务部的用户身份审核
+      if ("cwb".equals(c03)) {
+        //20表示业务类型数据预算审核的数据
+        if ("20".equals(todo.getBizid())) {
+          String glStatus = null;
+          //审核通过的状态
+          String cWStatus = "1";
+          updateBudgetItemCheckStatus(bizid, glStatus, cWStatus);
+          SysUser sysUser = UserUtil.getLoginUser();
+          BudgetData budgetData = budgetDataDao.queryBudgetDataById(todo.getBizid().intValue());
+          createToDoInfo(sysUser.getId().intValue(),
+              sysUser.getNickname(),
+              glDeptId,
+              todo.getFlowid(),
+              todo.getBizid().intValue(),
+              budgetData.getBudgetKind(), init,aggree);
+        }
+        //其他部门的审核
+      } else if ("zhb".equals(c03)
+          || "kjb".equals(c03)
+          || "yyb".equals(c03)
+          || "bwb".equals(c03)) {
+        //20表示业务类型数据预算审核的数据
+        if ("20".equals(todo.getBizid())) {
+          //管理部门审核状态
+          String glStatus = "1";
+          // 财务待审核状态
+          String cWStatus = "0";
+          //更新预算子单数据的状态
+          updateBudgetItemCheckStatus(bizid, glStatus, cWStatus);
+          SysUser sysUser = UserUtil.getLoginUser();
+          BudgetData budgetData = budgetDataDao.queryBudgetDataById(todo.getBizid().intValue());
+          createToDoInfo(sysUser.getId().intValue(),
+              sysUser.getNickname(),
+              glDeptId,
+              todo.getFlowid(),
+              todo.getBizid().intValue(),
+              budgetData.getBudgetKind(),
+              init,aggree);
+        }
+      } else {
+        return 0;
+      }
+    }
+    return 0;
+  }
+
+
+  private void updateBudgetItemCheckStatus(long bizid, String glStatus, String cWStatus) {
+    budgetDataDao.updateBudegetItemCheckStatus(bizid, glStatus, cWStatus);
+  }
+
 
   /**
    * 开启预算流程的数据
    *
    * @return 包含流程数据的map
    */
-  private void createToDoInfo(int applyDeptId, String applyDeptName, String glDeptId,
-                              Long flowId, int bizid,int kind) {
+  private int createToDoInfo(int applyDeptId, String applyDeptName, String glDeptId,
+                              Long flowId, int bizid, int kind, boolean init, boolean aggree) {
+    logger.info("applyDeptId==>{},applyDeptName=={}," +
+                "glDeptId=={},flowId=={},bizid=={}," +
+                "kind=={},kind=={},aggree=={}",
+                 applyDeptId,applyDeptName,glDeptId,flowId,bizid,kind,kind,aggree);
     try {
       Todo todoInfo = new Todo();
       todoInfo.setStatus("0");
@@ -205,36 +277,52 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       todoInfo.setAuditby(findUserByDeptId(String.valueOf(glDeptId)));
       //设置发送人的id
       todoInfo.setSendby(findUserByDeptId(String.valueOf(applyDeptId)));
-      if(kind==1){
+      if (kind == 1) {
         todoInfo.setBiaoti("【" + applyDeptName + "】月度预算申请");
         todoInfo.setNeirong(applyDeptName + "月度预算申请");
-      }else{
+      } else {
         todoInfo.setBiaoti("【" + applyDeptName + "】年度预算申请");
         todoInfo.setNeirong(applyDeptName + "年度预算申请");
       }
-      //表示审核意见是同意
-      todoInfo.setC02("同意");
-      //表示审核状态通过审核
-      todoInfo.setC03("1");
-      //表示业务流程开始的地方
-      todoInfo.setTodoIds("start");
+      //表示首次有使用部门创建
+      if (init) {
+        //表示审核意见是同意
+        todoInfo.setC02("同意");
+        //表示审核状态通过审核
+        todoInfo.setC03("1");
+        //表示业务流程开始的地方
+        todoInfo.setTodoIds("start");
+        //2表示有管理部门的审核步骤id
+        todoInfo.setStepid(queryFlowStepIdByFlowId(flowId, 1));
+      } else {
+        //审核状态是同意
+        if (aggree) {
+          //表示审核意见是同意
+          todoInfo.setC02("同意");
+          //表示审核状态通过审核
+          todoInfo.setC03("1");
+        } else {
+          //表示审核意见是同意
+          todoInfo.setC02("不同意");
+          //表示审核状态通过审核
+          todoInfo.setC03("0");
+        }
+      }
       //设置业务类型的为20L，预算审核的流程类型都是20L
       todoInfo.setBiztype("20");
       todoInfo.setFlowid(flowId);
-      //2表示有管理部门的审核步骤id
-      todoInfo.setStepid(queryFlowStepIdByFlowId(flowId, 1));
       todoInfo.setUrl(budgetURL);
       todoInfo.setCreateTime(new Date());
       todoInfo.setUpdateTime(new Date());
       //设置业务单据的部门
       todoInfo.setBizdeptid(new Long(applyDeptId));
       todoInfo.setBizid(new Long(bizid));
-
       //单据创始人
       todoInfo.setBizcreateby(UserUtil.getLoginUser().getId());
-      todoDao.save(todoInfo);
+       return   todoDao.save(todoInfo);
     } catch (Exception e) {
       logger.error("【预算审核流程】插入数据错误==>>>" + e.getMessage());
+      return 0;
     }
   }
 

@@ -102,8 +102,8 @@
           <div class="layui-card-header">审批操作</div>
           <div class="layui-card-body">
             <div class="layui-card-header">
-              <button class="layui-btn" type="submit" onclick="submitProcess()">同意</button>
-              <button class="layui-btn" type="submit layui-btn-danger" onclick="submitProcess()">拒绝</button>
+              <button class="layui-btn" type="submit" onclick="submitProcess(0)">同意</button>
+              <button class="layui-btn" type="submit layui-btn-danger" onclick="submitProcess(1)">拒绝</button>
             </div>
             <div class="layui-card-body layui-row layui-col-space10">
               <div class="layui-col-md12">审批意见</div>
@@ -399,43 +399,22 @@
   }
 
   // 审核提交
-  function submitProcess() {
-    var itatus;
-    var sStatus;
-    var bfid = buyId;
-    var data = table.cache["datas"];
-    itatus = data[0].itemStatus;
-    sStatus = data[0].shbStatus;
-    var b = false;
-    for (var i = 0; i < data.length; i++) {
-      var s = data[i].status;
-      if (s == 0) {
-        b = true;
-      }
-    }
-    if (b) {
-      layer.msg("资产未处理完成");
-      return;
-    }
-    var formdata = $("#form").serializeObject();
-    formdata.flowTodoItems = data;
-    formdata.zcBuyId = buyId;
-    formdata.itemStatus = itatus;
-    if (sStatus == 3) {
-      formdata.againSubmit = sStatus;
+  function submitProcess(value) {
+    var url = "";
+    if(value==1){
+      url = "/budgetData/notPassCheck";
+    }else{
+      url = "/budgetData/passCheck";
     }
     $.ajax({
       type: 'post',
-      url: '/zcBuys/check',
+      url: url ,
       contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(formdata),
+      data: todoId,
       success: function (data) {
         if (data.code == 0) {
           layer.msg("审核成功", {shift: -1, time: 1000}, function () {
           });
-          if (data.status == 3) {
-            printHtml(2);
-          }
           location.href = "/pages/todo/todoList.html";
         } else if (data.code == 1) {
           layer.msg("审核失败", {shift: -1, time: 1000}, function () {

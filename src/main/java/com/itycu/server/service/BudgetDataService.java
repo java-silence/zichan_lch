@@ -109,4 +109,8 @@ public interface BudgetDataService {
    */
   List<Map<String,Object>>  getTodoCheckList(Map<String, Object> map);
 
+
+
+  int passCheck(String todoId,String c03);
+
 }

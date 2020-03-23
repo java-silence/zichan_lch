@@ -100,7 +100,8 @@
         </where>
     </sql>
 
-    <insert id="saveBudgetDataInfo" parameterType="com.itycu.server.model.BudgetData" useGeneratedKeys="true" keyProperty="id">
+    <insert id="saveBudgetDataInfo" parameterType="com.itycu.server.model.BudgetData" useGeneratedKeys="true"
+            keyProperty="id">
 			INSERT INTO `budget_data` (
 			`budget_data_id`,
 			`userId`,
@@ -203,7 +204,7 @@
     </select>
 
 
-    <select id="queryBudgetRecordList"  parameterType="map" resultType="java.util.Map">
+    <select id="queryBudgetRecordList" parameterType="map" resultType="java.util.Map">
         select
         <include refid="budgetData"/>
         from budget_data as budget
@@ -215,30 +216,30 @@
 
     <select id="budgetItemRecordListById" parameterType="map" resultType="java.util.Map">
         SELECT
-          concat (dict.k," ",dict.val) as typeName,
-          <include refid="budgetDataItem"/>
+        concat (dict.k," ",dict.val) as typeName,
+        <include refid="budgetDataItem"/>
         FROM
-            budget_data
-            AS d LEFT JOIN budget_data_item AS item ON d.budget_data_id = item.budget_data_id
-            left join t_dict as dict on dict.k = item.budget_type
+        budget_data
+        AS d LEFT JOIN budget_data_item AS item ON d.budget_data_id = item.budget_data_id
+        left join t_dict as dict on dict.k = item.budget_type
         WHERE
-            d.id = #{params.id}  and  dict.type  = "budgetType"
+        d.id = #{params.id} and dict.type = "budgetType"
         ORDER BY
-            item.create_time DESC
+        item.create_time DESC
         limit #{offset}, #{limit}
     </select>
 
 
     <select id="getBudgetItemDetailListByTodoId" resultType="java.util.Map">
 
-         select
-			concat (dict.k," ",dict.val) as typeName,
-              a.status as checkStatus,
-			 <include refid="budgetDataItem"/>
-			 from  flow_todo as a  left join  budget_data as b on a.bizid = b.id
-			left join budget_data_item as item on  b.budget_data_id = item.budget_data_id
-			left join t_dict as dict on dict.k = item.budget_type
-			where a.id = 43 and a.biztype = 20  and  dict.type  = "budgetType"
+        select
+        concat (dict.k," ",dict.val) as typeName,
+        a.status as checkStatus,
+        <include refid="budgetDataItem"/>
+        from flow_todo as a left join budget_data as b on a.bizid = b.id
+        left join budget_data_item as item on b.budget_data_id = item.budget_data_id
+        left join t_dict as dict on dict.k = item.budget_type
+        where a.id = #{params.id} and a.biztype = 20 and dict.type = "budgetType"
         limit #{offset}, #{limit}
 
     </select>
@@ -246,14 +247,14 @@
 
     <select id="getTodoInitData" resultType="com.itycu.server.model.BudgetData">
         SELECT
-             c.nickname as nickname,
-             <include refid="budgetData"/>
+        c.nickname as nickname,
+        <include refid="budgetData"/>
         FROM
-            `flow_todo` AS a
-            LEFT JOIN budget_data AS budget ON a.bizid = budget.id
-            left join sys_user as c on budget.userId = c.id
+        `flow_todo` AS a
+        LEFT JOIN budget_data AS budget ON a.bizid = budget.id
+        left join sys_user as c on budget.userId = c.id
         WHERE
-            a.id = #{params.id}
+        a.id = #{params.id}
     </select>
 
 
@@ -296,6 +297,32 @@
         LEFT JOIN sys_user AS b on   a.sendby = b.id
     where bizid = #{params.bizid}
        and flowid = #{params.flowid}
+    </select>
+
+
+    <update id="updateBudegetItemCheckStatus">
+        update budget_data_item
+        <trim prefix="set" suffixOverrides=",">
+            <if test="glStatus!=null">
+                budget_c01 = #{glStatus},
+            </if>
+            <if test="cWStatus!=null">
+                budget_c02  = #{cWStatus} ,
+            </if>
+        </trim>
+        where budget_data_id = (select budget_data_id from budget_data where id = #{bizid})
+    </update>
+
+
+    <select id="queryBudgetDataById" resultType="com.itycu.server.model.BudgetData">
+        SEELCT <include refid="budgetData"/> as budget
+        where budget.id  =  #{id}
+    </select>
+
+
+
+    <select id="queryGldeptManagerDeptById" resultType="java.lang.String">
+        select id from sys_user as a where c03 = #{cwb}
     </select>
 
 </mapper>
