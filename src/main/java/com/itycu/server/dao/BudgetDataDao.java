@@ -93,4 +93,14 @@ public interface BudgetDataDao {
     List<Map<String, Object>> getBudgetItemDetailListByTodoId(@Param("params") Map<String, Object> param,
                                                               @Param("offset") int offset,
                                                               @Param("limit") int limit);
+
+
+    BudgetData getTodoInitData(@Param("params") Map<String, Object> param);
+
+
+    int updateBudgetStatus(@Param("params") Map<String, Object> param);
+
+
+
+    List<Map<String, Object>> getTodoCheckList(@Param("params") Map<String, Object> map);
 }

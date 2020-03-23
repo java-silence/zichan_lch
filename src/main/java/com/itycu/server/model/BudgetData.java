@@ -29,6 +29,14 @@ public class BudgetData implements Serializable {
      * 用户ID
      */
     private Integer userId;
+
+
+    /**
+     * 申请人名称
+     */
+    private String nickname;
+
+
     /**
      * 申请部门ID
      */

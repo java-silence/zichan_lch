@@ -69,5 +69,9 @@ public interface TodoDao {
     @Select("select id from flow_todo where bizid = #{bizid} and url = #{actionUrl}")
     List<Long> getByBizidAndUrl(@Param("bizid") Long bizid, @Param("actionUrl") String actionUrl);
 
+
+    AppTodoVO queryTodoById(@Param("todoId") String todoId);
+
+
     List<Map<String, Object>> findAgreeAuditors(@Param("strFlowItemIds") String strFlowItemIds, @Param("strTodoIds") String strTodoIds);
 }

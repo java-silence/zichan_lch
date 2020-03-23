@@ -54,9 +54,9 @@
             <div class="layui-col-xs12 layui-col-sm12">
               <div class="layuiadmin-card-text bfmx">
                 <div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>预算申请单明细</div>
-                <p class="layui-text-bottom" id="buymx">&nbsp;&nbsp;&nbsp;&nbsp;申请人：</p>
-                <p class="layui-text-bottom" id="companyName">申请部门：</p>
-                <p class="layui-text-bottom" id="buyDes">申请时间：</p>
+                <p class="layui-text-bottom" id="nickname">&nbsp;&nbsp;&nbsp;&nbsp;申请人：</p>
+                <p class="layui-text-bottom" id="applyDeptName">申请部门：</p>
+                <p class="layui-text-bottom" id="applyTime">申请时间：</p>
                 <p class="layui-text-bottom" id="fileNameDownLoad"></p><span class="layui-btn" id="downLoad"
                                                                              style="display: none" onclick="download()">下载附件</span>
                 <input type="hidden" name="fileUrl" id="fileUrl"/>
@@ -68,17 +68,18 @@
               <div class="layuiadmin-card-text">
                 <div class="layui-text-top"><i class="layui-icon layui-icon-form"></i>预算审核信息</div>
                 <!--全部同意操作-->
-                <div class="layui-row">
-                  <!--                  <div class="layui-col-md12 btnfloat">-->
-                  <!--                    <button class="layui-btn layui-btn-warm" onclick="printHtml(1)" >打印</button>-->
-                  <!--                  </div>-->
-                </div>
+<!--                <div class="layui-row">-->
+<!--                  <div class="layui-col-md12 btnfloat">-->
+<!--                    <button class="layui-btn layui-btn-danger" id="disaggree" type="submit" style="margin-left: 10px;"-->
+<!--                            onclick="submitProcess()">拒绝-->
+<!--                    </button>-->
+<!--                    <button class="layui-btn " type="submit" id="aggree" onclick="submitProcess()">同意</button>-->
+<!--                  </div>-->
+<!--                </div>-->
                 <table class="layui-hide" id="datas" lay-filter="datas"></table>
                 <script type="text/html" id="barDemo">
                   <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
                 </script>
-                <!--<p class="layui-text-center">修复 checkbox 复选框组件在高分辨屏下出现的样式不雅问题</p>
-                                <p class="layui-text-bottom"><a lay-href="http://www.layui.com/doc/modules/form.html">表单</a><span>7 天前</span></p>-->
               </div>
             </div>
           </div>
@@ -101,9 +102,8 @@
           <div class="layui-card-header">审批操作</div>
           <div class="layui-card-body">
             <div class="layui-card-header">
-              <button class="layui-btn" type="submit" onclick="submitProcess()">审批提交</button>
-              <!--<button class="layui-btn layui-btn-warm" onclick="submitProcess()" >审批拒绝</button>-->
-              <!--<button class="layui-btn layui-btn-danger" onclick="submitProcess()" >审批驳回</button>-->
+              <button class="layui-btn" type="submit" onclick="submitProcess()">同意</button>
+              <button class="layui-btn" type="submit layui-btn-danger" onclick="submitProcess()">拒绝</button>
             </div>
             <div class="layui-card-body layui-row layui-col-space10">
               <div class="layui-col-md12">审批意见</div>
@@ -174,16 +174,24 @@
       , url: "/budgetData/getBudgetItemDetailListByTodoId?todoId=" + todoId
       //,height: 'full-200'
       , cols: [[
-         {field: 'id', hide: true}
+        {field: 'id', hide: true}
         , {field: 'flowTodoId', hide: true}
         , {field: 'flowItemId', hide: true}
         , {field: 'itemStatus', hide: true}
         , {field: 'budgetDataId', title: '预算单号', width: 170}
         , {field: 'budgetPeriod', title: '预算周期', width: 130}
-        , {field: 'budgetType', title: '预算类型', width: 120}
-        , {field: 'budgetKind', title: '预算种类', width: 100}
+        , {field: 'typeName', title: '预算类型', width: 120}
+        , {
+          field: 'budgetKind', title: '预算种类', width: 100, templet: function (d) {
+            if (d.budgetKind == 1) {
+              return "月度预算"
+            } else {
+              return "年度预算"
+            }
+          }
+        }
         , {field: 'glDeptName', title: '管理部门', width: 130}
-        , {field: 'applyDeptName', title: '供应商名称', width: 100}
+        , {field: 'applyDeptName', title: '申请部门', width: 100}
         , {field: 'budgetNum', title: '数量', width: 120}
         , {field: 'budgetPrice', title: '预算单价', width: 100}
         , {field: 'budgetMoney', title: '预算金额', width: 100}
@@ -198,40 +206,26 @@
           field: 'status', title: '状态', align: 'center', width: 100, fixed: 'right', templet: function (d) {
             var status = "";
             if (type == 1) {  // 跟踪事宜
-              //status = "<span style='color: #009688'>已处理</span>";
-              // 待处理 处理中 处理完成
-              if ((d.shbStatus == null || d.shbStatus == '') && (d.cwbStatus == null || d.cwbStatus == '')) {
+
+              //隐藏同意按钮和不同意的按钮
+              $("#disaggree").hide();
+              $("#aggree").hide();
+
+              if (d.budgetC01 == 0) {
                 status = "<span style='color: red'>待处理</span>";
-              }
-              if (d.del == 1) {
-                status = "<span style='color: #FFB800'>拒绝</span>";
-              }
-              if (d.cwbStatus == 1) {
+              } else if (d.budgetC01 == 1) {
                 status = "<span style='color: #009688'>同意</span>";
-              }
-              if (d.cwbStatus == 3 || d.shbStatus == 3) {
-                status = "<span style='color: #009688'>处理中</span>";
+              } else if (d.budgetC01 == 2) {
+                status = "<span style='color: #FFB800;'>拒绝</span>";
               }
             } else if (type == 0) { // 待办事宜
-              if (d.status == 0) {
+              //审核状态
+              if (d.budgetC01 == 0) {
                 status = "<span style='color: red'>待处理</span>";
-              } else if (d.status == 1 && d.itemStatus != 3 && d.shbStatus != 3) {
+              } else if (d.budgetC01 == 1) {
                 status = "<span style='color: #009688'>同意</span>";
-              } else if (d.status == 2 && d.itemStatus != 3 && d.shbStatus != 3) {
+              } else if (d.budgetC01 == 2) {
                 status = "<span style='color: #FFB800;'>拒绝</span>";
-              } else if (d.status == 3 && d.itemStatus != 3 && d.shbStatus != 3) {
-                status = "<span style='color: #FF5722'>驳回</span>";
-              } else if (d.status == 1 && d.itemStatus == 3) {
-                status = "<span style='color: #009688'>同意</span>";
-              } else if (d.status == 2 && d.itemStatus == 3) {
-                status = "<span style='color: #FFB800'>拒绝</span>";
-              } else if (d.status == 1 && d.shbStatus == 3) {
-                status = "<span style='color: #009688'>再次提交</span>";
-              } else if (d.status == 2 && d.shbStatus == 3) {
-                status = "<span style='color: #FFB800'>删除</span>";
-              }
-              if (d.del == 1) {
-                status = "<span style='color: #FFB800'>拒绝</span>";
               }
             }
             return status;
@@ -319,33 +313,31 @@
   });
 
 
-  // 初始化报废主信息
+  // 初始化预算信息
   function initData() {
-    var id = getUrlParam("id");
-    if (id != "") {
-      $.ajax({
-        type: 'get',
-        url: '/zcBuys/getZcBuyDetail?buyId=' + buyId,
-        async: false,
-        success: function (data) {
-          var data = data.data;
-          var name = data.fileName;
-          var url = data.fileUrl;
-          if (name != null && name != '') {
-            $('#fileName').val(name);
-            $('#fileUrl').val(url);
-            $('#fileNameDownLoad').text(name);
-            $('#downLoad').css("display", "inline-block");
-          }
-          $('#buymx').text("申请人:" + data.nickname + "  申请部门：" + data.deptname + "  申请时间：" + data.createTime);
-          $('#companyName').text("部门名称:" + data.companyName);
-          $('#flowid').val(data.flowid);
-          $('#stepid').val(data.stepid);
-          shenpidongtai(data.id, data.flowid);	//提取审批动态
-          initbxFiles(data.id, data.biztype);	//调出本待办事宜审批人自己上传的附件
+    $.ajax({
+      type: 'get',
+      url: '/budgetData/initData?todoId=' + todoId,
+      async: false,
+      success: function (data) {
+        var data = data.data;
+        console.log(data);
+        var name = data.filename;
+        var url = data.fileurl;
+        if (name != null && name != '') {
+          $('#fileName').val(name);
+          $('#fileUrl').val(url);
+          $('#fileNameDownLoad').text(name);
+          $('#downLoad').css("display", "inline-block");
         }
-      });
-    }
+        $('#nickname').text("申请人:" + data.nickname);
+        $('#applyDeptName').text("部门名称:" + data.applyDeptName);
+        $('#applyTime').text("申请时间:" + data.applytime)
+        $('#flowid').val(data.flowid);
+        $('#stepid').val(data.stepid);
+        shenpidongtai(data.id, data.flowid);	//提取审批动态
+      }
+    });
   }
 
   function initbxFiles(bizid, biztype) {
@@ -555,30 +547,38 @@
     console.log(flowid);
     $.ajax({
       type: 'get',
-      url: '/todos/listbizid?bizid=' + bizid + '&flowid=' + flowid,
+      url: '/budgetData/checkRecord?bizid=' + bizid +"&flowid=" + flowid,
       async: false,
       success: function (data) {
-        var length = data.length;
-        console.log(id + "abc" + data);
+        var length = data.data.length;
+        console.log(data.data);
+        console.log(data.length);
         for (var i = 0; i < length; i++) {
           var html = "";
           html += "   <dd>";
           html += "<div class='layui-status-img'><a href='javascript:;'><img src='../../layuiadmin/style/res/logo.png'></a></div>";
           html += "<div>";
-          if (data[i].biztype = "同意") {
-            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:已审核</p>";
+          if (data.data[i].c03 == 1 && data.data[i].todoIds=='start') {
+            html += "<p class='agree'>【" + data.data[i].creator + "】"+ data.data[i].neirong+"</p>";
+            html += "<p><span class='neir'>审批意见:同意" + "</span><br></p>";
+            html += "<span>" + data.data[i].createTime + "</span>";
+            html += "</div>";
+            html += "</dd>";
           } else {
-            html += "<p class='agree'>【" + data[i].auditname + "】审批结果:未通过</p>";
+            if(data.data[i].c03 == 1){
+              html += "<p class='agree'>【" + data.data[i].creator + "】审批结果:已通过</p>";
+            }else{
+              html += "<p class='agree'>【" + data.data[i].creator + "】审批结果:未通过</p>";
+            }
+            var neirong = data.data[i].neirong;
+            if (neirong == null) {
+              neirong = "";
+            }
+            html += "<p><span class='neir'>审批意见:" + neirong + "</span><br></p>";
+            html += "<span>" + data.data[i].createTime + "</span>";
+            html += "</div>";
+            html += "</dd>";
           }
-          // html += "<p>审批意见：</p>";
-          var neirong = data[i].neirong;
-          if (neirong == null) {
-            neirong = "";
-          }
-          html += "<p><span class='neir'>审批意见:" + neirong + "</span><br></p>";
-          html += "<span>" + data[i].updateTime + "</span>";
-          html += "</div>";
-          html += "</dd>";
           $("#shenpidongtai").append(html);
         }
       }

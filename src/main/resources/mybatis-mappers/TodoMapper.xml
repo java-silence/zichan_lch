@@ -247,4 +247,11 @@
 		 order by createTime desc
 	</select>
 
+
+	<select id="queryTodoById" resultType="com.itycu.server.app.vo.todovo.AppTodoVO">
+		 SELECT
+		 	t.*
+		 FROM flow_todo t
+		 where t.id = #{params.id}
+	</select>
 </mapper>

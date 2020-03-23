@@ -1,5 +1,6 @@
 package com.itycu.server.service.impl;
 
+import com.itycu.server.app.vo.todovo.AppTodoVO;
 import com.itycu.server.dao.*;
 import com.itycu.server.dto.TodoDto;
 import com.itycu.server.model.Flowmember;
@@ -162,5 +163,10 @@ public class TodoServiceImpl implements TodoService {
         pushService.PushMsg( "审批消息", todoNext.getBiaoti(), audityBy, todoNext.getUrl(), todoNext.getId(),todoNext.getBizid());
 
         return  todoNext;
+    }
+
+    @Override
+    public AppTodoVO queryTodoById(String todoId) {
+        return   todoDao.queryTodoById(todoId);
     }
 }

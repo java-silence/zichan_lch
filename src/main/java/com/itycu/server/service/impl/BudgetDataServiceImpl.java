@@ -151,7 +151,7 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       }
       //创建待办事项到数据库中
       int id = budgetData.getId();
-      createToDoInfo(applyDeptId, applyDeptName, glDeptId, flowId,id );
+      createToDoInfo(applyDeptId, applyDeptName, glDeptId, flowId,id ,budgetData.getBudgetKind());
       //基本数据信息插入到budget_data_item表格中
       return budgetDataDao.saveBudgetDataItemInfo(list);
     }
@@ -178,6 +178,16 @@ public class BudgetDataServiceImpl implements BudgetDataService {
     return budgetDataDao.getBudgetItemDetailListByTodoId(map, offset, limit);
   }
 
+  @Override
+  public BudgetData getTodoInitData(Map<String, Object> map) {
+    return budgetDataDao.getTodoInitData(map);
+  }
+
+  @Override
+  public List<Map<String, Object>> getTodoCheckList(Map<String, Object> map) {
+    return budgetDataDao.getTodoCheckList(map);
+  }
+
 
   /**
    * 开启预算流程的数据
@@ -185,7 +195,7 @@ public class BudgetDataServiceImpl implements BudgetDataService {
    * @return 包含流程数据的map
    */
   private void createToDoInfo(int applyDeptId, String applyDeptName, String glDeptId,
-                              Long flowId, int bizid) {
+                              Long flowId, int bizid,int kind) {
     try {
       Todo todoInfo = new Todo();
       todoInfo.setStatus("0");
@@ -195,12 +205,24 @@ public class BudgetDataServiceImpl implements BudgetDataService {
       todoInfo.setAuditby(findUserByDeptId(String.valueOf(glDeptId)));
       //设置发送人的id
       todoInfo.setSendby(findUserByDeptId(String.valueOf(applyDeptId)));
-      todoInfo.setBiaoti("【" + applyDeptName + "】申请资产购买");
+      if(kind==1){
+        todoInfo.setBiaoti("【" + applyDeptName + "】月度预算申请");
+        todoInfo.setNeirong(applyDeptName + "月度预算申请");
+      }else{
+        todoInfo.setBiaoti("【" + applyDeptName + "】年度预算申请");
+        todoInfo.setNeirong(applyDeptName + "年度预算申请");
+      }
+      //表示审核意见是同意
+      todoInfo.setC02("同意");
+      //表示审核状态通过审核
+      todoInfo.setC03("1");
+      //表示业务流程开始的地方
+      todoInfo.setTodoIds("start");
       //设置业务类型的为20L，预算审核的流程类型都是20L
       todoInfo.setBiztype("20");
       todoInfo.setFlowid(flowId);
       //2表示有管理部门的审核步骤id
-      todoInfo.setStepid(queryFlowStepIdByFlowId(flowId, 2));
+      todoInfo.setStepid(queryFlowStepIdByFlowId(flowId, 1));
       todoInfo.setUrl(budgetURL);
       todoInfo.setCreateTime(new Date());
       todoInfo.setUpdateTime(new Date());

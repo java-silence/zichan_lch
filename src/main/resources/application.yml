@@ -4,8 +4,10 @@ spring:
     url: jdbc:mysql://123.56.66.231:3306/test_zichan?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
     #url: jdbc:mysql://112.35.81.14:3406/test_zichan?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
     #url: jdbc:mysql://123.56.66.231:3306/yqzichan?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+    #url: jdbc:mysql://127.0.0.1:3306/test_zichan?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
     username: root
     #username: juan
+   # password: juan2437001
     password: juan2437001
     druid:
       initialSize: 5
