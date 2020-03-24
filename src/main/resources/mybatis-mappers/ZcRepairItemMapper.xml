@@ -18,10 +18,10 @@
 				and t.repair_des = #{params.repairDes} 
 			</if>
 			<if test="params.sy != null and params.sy != ''">
-				and t.apply_dept_id = #{params.applyDeptId}
+				and t.apply_dept_id = #{params.syDeptId}
 			</if>
 			<if test="params.gl != null and params.gl != ''">
-				and t.apply_dept_id = #{params.applyDeptId} or
+				and t.apply_dept_id = #{params.syDeptId} or
 				t.gl_dept_id = #{params.glDeptId}
 			</if>
 			<if test="params.repairMode != null and params.repairMode != ''">
